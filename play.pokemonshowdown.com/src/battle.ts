@@ -697,7 +697,7 @@ export class Side {
 	addSideCondition(effect: Effect, persist: boolean) {
 		let condition = effect.id;
 		if (this.sideConditions[condition]) {
-			if (condition === 'spikes' || condition === 'toxicspikes') {
+			if (['spikes', 'toxicspikes', 'permafrost', 'livewire'].includes(condition)) {
 				this.sideConditions[condition][1]++;
 			}
 			this.battle.scene.addSideCondition(this.n, condition);
@@ -729,6 +729,8 @@ export class Side {
 		case 'stealthrock':
 		case 'spikes':
 		case 'toxicspikes':
+		case 'permafrost':
+		case 'livewire':
 		case 'stickyweb':
 			this.sideConditions[condition] = [effect.name, 1, 0, 0];
 			break;
@@ -1445,7 +1447,7 @@ export class Battle {
 	}
 	swapSideConditions() {
 		const sideConditions = [
-			'mist', 'lightscreen', 'reflect', 'spikes', 'safeguard', 'tailwind', 'toxicspikes', 'stealthrock', 'waterpledge', 'firepledge', 'grasspledge', 'stickyweb', 'auroraveil', 'gmaxsteelsurge', 'gmaxcannonade', 'gmaxvinelash', 'gmaxwildfire',
+			'mist', 'lightscreen', 'reflect', 'spikes', 'safeguard', 'tailwind', 'toxicspikes', 'permafrost', 'livewire', 'stealthrock', 'waterpledge', 'firepledge', 'grasspledge', 'stickyweb', 'auroraveil', 'gmaxsteelsurge', 'gmaxcannonade', 'gmaxvinelash', 'gmaxwildfire',
 		];
 		if (this.gameType === 'freeforall') {
 			// TODO: Add FFA support
