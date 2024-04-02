@@ -20460,69 +20460,69 @@ export const BattleMoveAnims: AnimTable = {
 				x: attacker.x,
 				y: attacker.y,
 				z: attacker.z,
-				scale: 0.1,
+				scale: 0.4,
 				opacity: 0.5,
 			}, {
 				x: -25,
 				y: defender.y - 40,
 				z: defender.z,
-				scale: 0.3,
+				scale: 0.6,
 				opacity: 1,
 			}, 'ballistic');
 			scene.showEffect('icicle', {
 				x: attacker.x,
 				y: attacker.y,
 				z: attacker.z,
-				scale: 0.1,
+				scale: 0.4,
 				opacity: 0.5,
 				time: 125,
 			}, {
 				x: +50,
 				y: defender.y - 40,
 				z: defender.z,
-				scale: 0.3,
+				scale: 0.6,
 				opacity: 1,
 			}, 'ballistic');
 			scene.showEffect('icicle', {
 				x: attacker.x,
 				y: attacker.y,
 				z: attacker.z,
-				scale: 0.1,
+				scale: 0.4,
 				opacity: 0.5,
 				time: 250,
 			}, {
 				x: +30,
 				y: defender.y - 45,
 				z: defender.z,
-				scale: 0.3,
+				scale: 0.6,
 				opacity: 1,
 			}, 'ballistic');
 			scene.showEffect('icicle', {
 				x: attacker.x,
 				y: attacker.y,
 				z: attacker.z,
-				scale: 0.1,
+				scale: 0.4,
 				opacity: 0.5,
 				time: 250,
 			}, {
 				x: +10,
 				y: defender.y - 50,
 				z: defender.z,
-				scale: 0.3,
+				scale: 0.6,
 				opacity: 1,
 			}, 'ballistic');
 			scene.showEffect('icicle', {
 				x: attacker.x,
 				y: attacker.y,
 				z: attacker.z,
-				scale: 0.1,
+				scale: 0.4,
 				opacity: 0.5,
 				time: 250,
 			}, {
 				x: -10,
 				y: defender.y - 50,
 				z: defender.z,
-				scale: 0.3,
+				scale: 0.6,
 				opacity: 1,
 			}, 'ballistic');
 		},
@@ -20539,7 +20539,7 @@ export const BattleMoveAnims: AnimTable = {
 				x: -25,
 				y: defender.y - 40,
 				z: defender.z,
-				scale: 0.3,
+				scale: 0.1,
 				opacity: 1,
 			}, 'ballistic');
 			scene.showEffect('lightning', {
@@ -20553,7 +20553,7 @@ export const BattleMoveAnims: AnimTable = {
 				x: +50,
 				y: defender.y - 40,
 				z: defender.z,
-				scale: 0.3,
+				scale: 0.1,
 				opacity: 1,
 			}, 'ballistic');
 			scene.showEffect('lightning', {
@@ -20567,7 +20567,7 @@ export const BattleMoveAnims: AnimTable = {
 				x: +30,
 				y: defender.y - 45,
 				z: defender.z,
-				scale: 0.3,
+				scale: 0.1,
 				opacity: 1,
 			}, 'ballistic');
 			scene.showEffect('lightning', {
@@ -20581,7 +20581,7 @@ export const BattleMoveAnims: AnimTable = {
 				x: +10,
 				y: defender.y - 50,
 				z: defender.z,
-				scale: 0.3,
+				scale: 0.1,
 				opacity: 1,
 			}, 'ballistic');
 			scene.showEffect('lightning', {
@@ -20595,7 +20595,7 @@ export const BattleMoveAnims: AnimTable = {
 				x: -10,
 				y: defender.y - 50,
 				z: defender.z,
-				scale: 0.3,
+				scale: 0.1,
 				opacity: 1,
 			}, 'ballistic');
 		},

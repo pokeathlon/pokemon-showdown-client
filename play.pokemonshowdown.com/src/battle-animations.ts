@@ -1360,7 +1360,7 @@ export class BattleScene implements BattleSceneStub {
 					x: x + 5,
 					y: y - 40,
 					z: side.z,
-					scale: 0.3,
+					scale: 0.6,
 				}, this);
 				this.$spritesFront[spriteIndex].append(spike1.$el!);
 				frostArray.push(spike1);
@@ -1371,7 +1371,7 @@ export class BattleScene implements BattleSceneStub {
 					x: x - 15,
 					y: y - 35,
 					z: side.z,
-					scale: .3,
+					scale: 0.6,
 				}, this);
 				this.$spritesFront[spriteIndex].append(spike2.$el!);
 				frostArray.push(spike2);
@@ -1382,7 +1382,7 @@ export class BattleScene implements BattleSceneStub {
 					x: x + 50,
 					y: y - 40,
 					z: side.z,
-					scale: .3,
+					scale: 0.6,
 				}, this);
 				this.$spritesFront[spriteIndex].append(spike3.$el!);
 				frostArray.push(spike3);
@@ -1393,18 +1393,18 @@ export class BattleScene implements BattleSceneStub {
 					x: x + 20,
 					y: y - 35,
 					z: side.z,
-					scale: .3,
+					scale: 0.6,
 				}, this);
 				this.$spritesFront[spriteIndex].append(spike4.$el!);
 				frostArray.push(spike4);
 			}
-			if (frostArray.length < 4 && frostLevels >= 4) {
+			if (frostArray.length < 5 && frostLevels >= 5) {
 				const spike5 = new Sprite(BattleEffects.icicle, {
 					display: 'block',
 					x: x + 35,
 					y: y - 40,
 					z: side.z,
-					scale: .3,
+					scale: 0.6,
 				}, this);
 				this.$spritesFront[spriteIndex].append(spike5.$el!);
 				frostArray.push(spike5);
@@ -1423,7 +1423,7 @@ export class BattleScene implements BattleSceneStub {
 					x: x + 5,
 					y: y - 40,
 					z: side.z,
-					scale: 0.3,
+					scale: 0.1,
 				}, this);
 				this.$spritesFront[spriteIndex].append(spike1.$el!);
 				wireArray.push(spike1);
@@ -1434,7 +1434,7 @@ export class BattleScene implements BattleSceneStub {
 					x: x - 15,
 					y: y - 35,
 					z: side.z,
-					scale: .3,
+					scale: 0.1,
 				}, this);
 				this.$spritesFront[spriteIndex].append(spike2.$el!);
 				wireArray.push(spike2);
@@ -1445,7 +1445,7 @@ export class BattleScene implements BattleSceneStub {
 					x: x + 50,
 					y: y - 40,
 					z: side.z,
-					scale: .3,
+					scale: 0.1,
 				}, this);
 				this.$spritesFront[spriteIndex].append(spike3.$el!);
 				wireArray.push(spike3);
@@ -1456,18 +1456,18 @@ export class BattleScene implements BattleSceneStub {
 					x: x + 20,
 					y: y - 35,
 					z: side.z,
-					scale: .3,
+					scale: 0.1,
 				}, this);
 				this.$spritesFront[spriteIndex].append(spike4.$el!);
 				wireArray.push(spike4);
 			}
-			if (wireArray.length < 4 && wireLevels >= 4) {
+			if (wireArray.length < 5 && wireLevels >= 5) {
 				const spike5 = new Sprite(BattleEffects.lightning, {
 					display: 'block',
 					x: x + 35,
 					y: y - 40,
 					z: side.z,
-					scale: .3,
+					scale: 0.1,
 				}, this);
 				this.$spritesFront[spriteIndex].append(spike5.$el!);
 				wireArray.push(spike5);
