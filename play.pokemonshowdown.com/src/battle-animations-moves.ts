@@ -20539,7 +20539,7 @@ export const BattleMoveAnims: AnimTable = {
 				x: -25,
 				y: defender.y - 40,
 				z: defender.z,
-				scale: 0.1,
+				scale: 0.2,
 				opacity: 1,
 			}, 'ballistic');
 			scene.showEffect('lightning', {
@@ -20553,7 +20553,7 @@ export const BattleMoveAnims: AnimTable = {
 				x: +50,
 				y: defender.y - 40,
 				z: defender.z,
-				scale: 0.1,
+				scale: 0.2,
 				opacity: 1,
 			}, 'ballistic');
 			scene.showEffect('lightning', {
@@ -20567,7 +20567,7 @@ export const BattleMoveAnims: AnimTable = {
 				x: +30,
 				y: defender.y - 45,
 				z: defender.z,
-				scale: 0.1,
+				scale: 0.2,
 				opacity: 1,
 			}, 'ballistic');
 			scene.showEffect('lightning', {
@@ -20581,7 +20581,7 @@ export const BattleMoveAnims: AnimTable = {
 				x: +10,
 				y: defender.y - 50,
 				z: defender.z,
-				scale: 0.1,
+				scale: 0.2,
 				opacity: 1,
 			}, 'ballistic');
 			scene.showEffect('lightning', {
@@ -20595,7 +20595,7 @@ export const BattleMoveAnims: AnimTable = {
 				x: -10,
 				y: defender.y - 50,
 				z: defender.z,
-				scale: 0.1,
+				scale: 0.2,
 				opacity: 1,
 			}, 'ballistic');
 		},
