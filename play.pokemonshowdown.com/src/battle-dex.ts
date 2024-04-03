@@ -957,9 +957,6 @@ const Dex = new class implements ModdedDex {
 				let head_num = head_species.num.toString();
 				let body_num = body_species.num.toString();
 
-				if (head_species.id === 'necrozmaultra') head_num += '_1';
-				if (body_species.id === 'necrozmaultra') body_num += '_1';
-
 				let extension = head_num + '.' + body_num;
 				const FusionIndex = window.BattleFusionIndex;
 				if (head_num.toString() in FusionIndex && FusionIndex[head_num].includes(body_num.toString())) {
