@@ -883,7 +883,7 @@ const Dex = new class implements ModdedDex {
 		let num = 0;
 		if (typeof item === 'string' && exports.BattleItems) item = exports.BattleItems[toID(item)];
 		if (item?.spritenum) num = item.spritenum;
-		if (num === -1) return 'background:transparent url(https://play.pokeathlon.com/sprites/fangame-sprites/insurgence/items/' + item.id + '.png)';
+		if (num === -1) return 'background:transparent url(https://play.pokeathlon.com/sprites/fangame-sprites/insurgence/items/' + item.id + '.png);background-size:24px';
 
 		let top = Math.floor(num / 16) * 24;
 		let left = (num % 16) * 24;
