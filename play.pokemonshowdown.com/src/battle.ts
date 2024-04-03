@@ -3088,6 +3088,15 @@ export class Battle {
 					}
 				}
 				if (this.gen > 6) maxTimeLeft = 8;
+			} else if (effect.id === 'trickroom') {
+				for (let i = this.pseudoWeather.length - 1; i >= 0; i--) {
+					let pwID = toID(this.pseudoWeather[i][0]);
+					if (pwID === 'trickroom') {
+						this.pseudoWeather.splice(i, 1);
+						continue;
+					}
+				}
+				maxTimeLeft = kwArgs.persistent ? 10 : 8;
 			}
 			if (kwArgs.persistent) minTimeLeft += 2;
 			this.addPseudoWeather(effect.name, minTimeLeft, maxTimeLeft);
