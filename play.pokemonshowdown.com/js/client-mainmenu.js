@@ -1240,6 +1240,7 @@
 				// or an overhaul of BattleFormats.
 				this.open = Storage.prefs('openformats') || {
 					"Infinite Fusion: Regional Dex": true, "Infinite Fusion: Doubles": true, "Infinite Fusion: National Dex": true, "Infinite Fusion: Extra": true,
+					"Insurgence: Regional Dex": true, "Insurgence: Doubles": true, "Insurgence: National Dex": true, "Insurgence: Extra": true,
 					"Pokéathlon: Regional Dex": true, "Pokéathlon: Doubles": true, "Pokéathlon: National Dex": true, "Pokéathlon: Extra": true,
 				};
 			}
