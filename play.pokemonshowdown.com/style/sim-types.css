@@ -409,3 +409,25 @@
 	background: linear-gradient(90deg, hsl(330, 65%, 45%), hsl(126, 71%, 73%), hsl(231, 100%, 86%));
 	border-color: linear-gradient(90deg, hsl(330, 66%, 58%), hsl(126, 79%, 65%), hsl(231, 98%, 65%));
 }
+
+.movemenu button.type-Crystal {
+	/* bg: 97 to 90, border: 70 */
+	background: hsl(162,40%,93%);
+	background: linear-gradient(to bottom,  hsl(162,40%,97%),  hsl(162,40%,84%));
+	border-color: hsl(162,40%,70%);
+}
+.movemenu button.type-Crystal small {
+	color: hsl(162,40%,41%);
+}
+.movemenu button.type-Crystal:hover {
+	/* bg: 95 to 83, border: 41 */
+	background: hsl(150, 15%, 87%);
+	background: linear-gradient(to bottom,  hsl(162,40%,94%),  hsl(162,40%,77%));
+	border-color: hsl(162,40%,41%);
+}
+.movemenu button.type-Crystal:active, .movemenu button.type-Crystal.pressed {
+	/* bg: 83 to 88, border: 41 */
+	background: hsl(150, 16%, 77%);
+	background: linear-gradient(to bottom,  hsl(162,40%,77%),  hsl(162,40%,83%));
+	border-color: hsl(162,40%,41%);
+}
