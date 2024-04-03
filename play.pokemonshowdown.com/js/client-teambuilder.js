@@ -3705,7 +3705,7 @@
 			this.chartIndex = data.index;
 			var species = this.room.curTeam.dex.species.get(this.curSet.species);
 			var baseid = toID(species.baseSpecies);
-			var forms = [baseid].concat(species.cosmeticFormes);
+			var forms = [baseid].concat(species.cosmeticFormes.map(toID));
 			var spriteDir = Dex.resourcePrefix + 'sprites/';
 			var spriteSize = 96;
 			var spriteDim = 'width: 96px; height: 96px;';
@@ -3726,8 +3726,8 @@
 
 			var formCount = forms.length;
 			for (var i = 0; i < formCount; i++) {
-				var formid = forms[i].substring(species.baseSpecies.length);
-				var form = (formid ? formid : '');
+				var formid = forms[i].substring(baseid.length);
+				var form = (formid ? formid[0].toUpperCase() + formid.slice(1) : '');
 				buf += '<button name="setForm" value="' + form + '" style="';
 				if (species.tags.includes('Insurgence')) {
 					buf += 'background-image: url(https://play.pokeathlon.com/sprites/fangame-sprites/insurgence/front/' + baseid + toID(formid) + '.png); width: 120px; height: 120px; background-size: 120px;" class="option';
