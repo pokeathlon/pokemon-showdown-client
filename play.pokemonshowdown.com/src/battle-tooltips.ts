@@ -1109,6 +1109,9 @@ class BattleTooltips {
 		if (ability === 'purepower' || ability === 'hugepower') {
 			stats.atk *= 2;
 		}
+		if (ability === 'athenian') {
+			stats.spa *= 2;
+		}
 		if (ability === 'hustle' || (ability === 'gorillatactics' && !clientPokemon?.volatiles['dynamax'])) {
 			stats.atk = Math.floor(stats.atk * 1.5);
 		}
@@ -1126,8 +1129,17 @@ class BattleTooltips {
 			if (ability === 'sandrush' && weather === 'sandstorm') {
 				speedModifiers.push(2);
 			}
-			if (ability === 'slushrush' && (weather === 'hail' || weather === 'snow')) {
+			if (['slushrush', 'icecleats'].includes(ability) && (weather === 'hail' || weather === 'snow')) {
 				speedModifiers.push(2);
+			}
+			if (ability === 'shadowdance' && weather === 'newmoon') {
+				speedModifiers.push(2);
+			}
+			if (ability === 'absolution' && weather === 'newmoon') {
+				stats.spa = Math.floor(stats.spa * 1.5);
+			}
+			if (ability === 'supercell' && ['raindance', 'primordialsea', 'newmoon'].includes(weather)) {
+				stats.spa = Math.floor(stats.spa * 1.5);
 			}
 			if (item !== 'utilityumbrella') {
 				if (weather === 'sunnyday' || weather === 'desolateland') {
@@ -1565,6 +1577,9 @@ class BattleTooltips {
 					if (value.abilityModify(0, 'Galvanize')) moveType = 'Electric';
 					if (value.abilityModify(0, 'Pixilate')) moveType = 'Fairy';
 					if (value.abilityModify(0, 'Refrigerate')) moveType = 'Ice';
+					if (value.abilityModify(0, 'Intoxicate')) moveType = 'Poison';
+				} if (moveType === 'Rock') {
+					if (value.abilityModify(0, 'Foundry')) moveType = 'Fire';
 				}
 				if (value.abilityModify(0, 'Normalize')) moveType = 'Normal';
 			}
@@ -1584,6 +1599,7 @@ class BattleTooltips {
 			const stats = this.calculateModifiedStats(pokemon, serverPokemon, true);
 			if (stats.atk > stats.spa) category = 'Physical';
 		}
+		if (move.flags.bite && value.abilityModify(0, 'Spectral Jaws')) category = 'Special';
 		return [moveType, category];
 	}
 
@@ -1942,6 +1958,9 @@ class BattleTooltips {
 		if (move.flags['sound']) {
 			value.abilityModify(1.3, "Punk Rock");
 		}
+		if (move.flags['sound']) {
+			value.abilityModify(1.25, "Amplifier");
+		}
 		if (move.flags['slicing']) {
 			value.abilityModify(1.5, "Sharpness");
 		}
@@ -1970,6 +1989,9 @@ class BattleTooltips {
 				value.abilityModify(this.battle.gen > 6 ? 1.2 : 1.3, "Galvanize");
 				value.abilityModify(this.battle.gen > 6 ? 1.2 : 1.3, "Pixilate");
 				value.abilityModify(this.battle.gen > 6 ? 1.2 : 1.3, "Refrigerate");
+				value.abilityModify(this.battle.gen > 6 ? 1.2 : 1.3, "Intoxicate");
+			} if (move.type === 'Rock') {
+				value.abilityModify(this.battle.gen > 6 ? 1.2 : 1.3, "Foundry");
 			}
 			if (this.battle.gen > 6) {
 				value.abilityModify(1.2, "Normalize");
@@ -1977,6 +1999,15 @@ class BattleTooltips {
 		}
 		if (move.recoil || move.hasCrashDamage) {
 			value.abilityModify(1.2, 'Reckless');
+		}
+		if (move.flags.bite) {
+			value.abilityModify(1.3, 'Spectral Jaws');
+		}
+		let curMonth = (new Date()).getMonth();
+		if ([10, 11, 0, 1].includes(curMonth)) {
+			value.abilityModify(1.4, 'Winter Joy');
+		} else if ([4, 5, 6, 7].includes(curMonth)) {
+			value.abilityModify(0.7, 'Winter Joy');
 		}
 
 		if (move.category !== 'Status') {
