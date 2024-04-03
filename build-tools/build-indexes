@@ -41,21 +41,24 @@ const Dex = require('../caches/pokemon-showdown/dist/sim/dex').Dex;
 const toID = Dex.toID;
 process.stdout.write("Loading all dex data... ");
 Dex.includeData();
+Dex.includeModData();
 
 for (const mod in Dex.dexes) {
+	if (!mod.includes('infinitefusion') && !mod.includes('insurgence') && !mod.includes('pokeathlon')) continue;
     const modData = Dex.dexes[mod];
+	const genDex = Dex.mod(mod).gen !== 9 ? Dex.dexes['gen' + Dex.mod(mod).gen] : Dex;
     for (const dataType in modData.data) {
         if (['Pokedex', 'Moves', 'Items', 'Abilities', 'Learnsets'].includes(dataType)) {
             let counter = 0;
             for (const entry in modData.data[dataType]) {
-                if (!(entry in Dex.data[dataType]) && !modData.data[dataType][entry].inherit) {
+                if (!(entry in genDex.data[dataType]) && !modData.data[dataType][entry].inherit) {
                     counter ++;
-                    Dex.data[dataType][entry] = Dex.deepClone(modData.data[dataType][entry]);
-                    if (dataType !== 'Learnsets') Dex.data[dataType][entry].isNonstandard = "Custom";
+                    genDex.data[dataType][entry] = Dex.deepClone(modData.data[dataType][entry]);
+                    if (dataType !== 'Learnsets') genDex.data[dataType][entry].isNonstandard = "Custom";
 					if (dataType === 'Pokedex') {
-						Dex.data[dataType][entry].tier = "Illegal";
-						Dex.data[dataType][entry].natDexTier = "Illegal";
-						Dex.data[dataType][entry].doublesTier = "Illegal";
+						genDex.data[dataType][entry].tier = "Illegal";
+						genDex.data[dataType][entry].natDexTier = "Illegal";
+						genDex.data[dataType][entry].doublesTier = "Illegal";
 					}
                 }
             }
