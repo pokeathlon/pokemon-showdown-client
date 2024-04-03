@@ -891,7 +891,7 @@ const Dex = new class implements ModdedDex {
 
 	getTypeIcon(type: string | null, b?: boolean) { // b is just for utilichart.js
 		type = this.types.get(type).name;
-		if (!type) type = '???';
+		if (!type || type === '???') type = 'notype';
 		let sanitizedType = type.replace(/\?/g, '%3f');
 		return `<img src="https://play.pokeathlon.com/fx/types/${sanitizedType}.png" alt="${type}" height="14" width="32" class="pixelated${b ? ' b' : ''}" />`;
 	}
