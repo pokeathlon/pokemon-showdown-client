@@ -773,7 +773,7 @@ abstract class BattleTypedSearch<T extends SearchType> {
 		let table = BattleTeambuilderTable;
 		if (this.formatType?.startsWith('bdsp')) table = table['gen8bdsp'];
 		if (this.formatType === 'letsgo') table = table['gen7letsgo'];
-		if (['gen7infinitefusion', 'gen9pokeathlon', 'gen9insurgence'].includes(this.dex.modid)) table = table[this.dex.modid];
+		if (['gen7infinitefusion', 'gen9pokeathlon', 'gen9insurgence', 'gen6insurgence'].includes(this.dex.modid)) table = table[this.dex.modid];
 		if (speciesid in table.learnsets) return speciesid;
 		const species = this.dex.species.get(speciesid);
 		if (!species.exists) return '' as ID;
