@@ -1506,8 +1506,8 @@ export class BattleScene implements BattleSceneStub {
 				x: x + side.leftof(-40),
 				y: y - 5,
 				z: side.z,
-				opacity: 0.5,
-				scale: 0.2,
+				opacity: 0.7,
+				scale: 0.3,
 			}, this);
 
 			const fire2 = new Sprite(BattleEffects.fireball, {
@@ -1515,8 +1515,8 @@ export class BattleScene implements BattleSceneStub {
 				x: x + side.leftof(-20),
 				y: y - 35,
 				z: side.z,
-				opacity: 0.5,
-				scale: 0.2,
+				opacity: 0.7,
+				scale: 0.3,
 			}, this);
 
 			const fire3 = new Sprite(BattleEffects.fireball, {
@@ -1524,8 +1524,8 @@ export class BattleScene implements BattleSceneStub {
 				x: x + side.leftof(30),
 				y: y - 25,
 				z: side.z,
-				opacity: 0.5,
-				scale: 0.2,
+				opacity: 0.7,
+				scale: 0.3,
 			}, this);
 
 			const fire4 = new Sprite(BattleEffects.fireball, {
@@ -1533,8 +1533,8 @@ export class BattleScene implements BattleSceneStub {
 				x: x + side.leftof(10),
 				y: y - 35,
 				z: side.z,
-				opacity: 0.5,
-				scale: 0.2,
+				opacity: 0.7,
+				scale: 0.3,
 			}, this);
 
 			this.$spritesFront[spriteIndex].append(fire1.$el!);
