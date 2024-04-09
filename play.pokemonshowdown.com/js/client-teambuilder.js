@@ -2866,8 +2866,7 @@
 			if (!set) return;
 			buf += '<div class="resultheader"><h3>Details</h3></div>';
 			buf += '<form class="detailsform">';
-
-			buf += '<div class="formrow"><label class="formlabel">Level:</label><div><input type="number" min="1" max="100" step="1" name="level" value="' + (typeof set.level === 'number' ? set.level : 100) + '" class="textbox inputform numform" /></div></div>';
+			buf += '<div class="formrow"><label class="formlabel">Level:</label><div><input type="number" min="1" max="200" step="1" name="level" value="' + (typeof set.level === 'number' ? set.level : 100) + '" class="textbox inputform numform" /></div></div>';
 
 			if (this.curTeam.gen > 1) {
 				buf += '<div class="formrow"><label class="formlabel">Gender:</label><div>';
@@ -2970,7 +2969,7 @@
 
 			// level
 			var level = parseInt(this.$chart.find('input[name=level]').val(), 10);
-			if (!level || level > 100 || level < 1) level = 100;
+			if (!level || level > 200 || level < 1) level = 100;
 			if (level !== 100 || set.level) set.level = level;
 
 			// happiness
@@ -3577,6 +3576,12 @@
 					if (baseFormat.substr(0, 19) === 'battlespotspecial17') set.level = 1;
 					if (format && format.teambuilderLevel) {
 						set.level = format.teambuilderLevel;
+					} if (this.curTeam.format in window.Formats) {
+						for (var rule of window.Formats[this.curTeam.format].ruleset) {
+							if (rule.includes('Default Level')) {
+								set.level = Number(rule.split(' = ')[1]);
+							}
+						}
 					}
 				}
 			}

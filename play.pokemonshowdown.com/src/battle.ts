@@ -724,6 +724,9 @@ export class Side {
 		case 'tailwind':
 			this.sideConditions[condition] = [effect.name, 1, this.battle.gen >= 5 ? persist ? 6 : 4 : persist ? 5 : 3, 0];
 			break;
+		case 'jetstream':
+			this.sideConditions[condition] = [effect.name, 1, persist ? 4 : 2, 0];
+			break;
 		case 'luckychant':
 			this.sideConditions[condition] = [effect.name, 1, 5, 0];
 			break;
@@ -732,6 +735,7 @@ export class Side {
 		case 'toxicspikes':
 		case 'permafrost':
 		case 'livewire':
+		case 'hotcoals':
 		case 'stickyweb':
 			this.sideConditions[condition] = [effect.name, 1, 0, 0];
 			break;
@@ -1448,7 +1452,7 @@ export class Battle {
 	}
 	swapSideConditions() {
 		const sideConditions = [
-			'mist', 'lightscreen', 'reflect', 'spikes', 'safeguard', 'tailwind', 'toxicspikes', 'permafrost', 'livewire', 'stealthrock', 'waterpledge', 'firepledge', 'grasspledge', 'stickyweb', 'auroraveil', 'gmaxsteelsurge', 'gmaxcannonade', 'gmaxvinelash', 'gmaxwildfire',
+			'mist', 'lightscreen', 'reflect', 'spikes', 'safeguard', 'tailwind', 'toxicspikes', 'permafrost', 'livewire', 'hotcoals', 'stealthrock', 'waterpledge', 'firepledge', 'grasspledge', 'stickyweb', 'auroraveil', 'gmaxsteelsurge', 'gmaxcannonade', 'gmaxvinelash', 'gmaxwildfire',
 		];
 		if (this.gameType === 'freeforall') {
 			// TODO: Add FFA support

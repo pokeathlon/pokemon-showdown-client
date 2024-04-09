@@ -1500,6 +1500,49 @@ export class BattleScene implements BattleSceneStub {
 				wireArray.push(spike5);
 			}
 			break;
+		case 'hotcoals':
+			const fire1 = new Sprite(BattleEffects.fireball, {
+				display: 'block',
+				x: x + side.leftof(-40),
+				y: y - 5,
+				z: side.z,
+				opacity: 0.5,
+				scale: 0.2,
+			}, this);
+
+			const fire2 = new Sprite(BattleEffects.fireball, {
+				display: 'block',
+				x: x + side.leftof(-20),
+				y: y - 35,
+				z: side.z,
+				opacity: 0.5,
+				scale: 0.2,
+			}, this);
+
+			const fire3 = new Sprite(BattleEffects.fireball, {
+				display: 'block',
+				x: x + side.leftof(30),
+				y: y - 25,
+				z: side.z,
+				opacity: 0.5,
+				scale: 0.2,
+			}, this);
+
+			const fire4 = new Sprite(BattleEffects.fireball, {
+				display: 'block',
+				x: x + side.leftof(10),
+				y: y - 35,
+				z: side.z,
+				opacity: 0.5,
+				scale: 0.2,
+			}, this);
+
+			this.$spritesFront[spriteIndex].append(fire1.$el!);
+			this.$spritesFront[spriteIndex].append(fire2.$el!);
+			this.$spritesFront[spriteIndex].append(fire3.$el!);
+			this.$spritesFront[spriteIndex].append(fire4.$el!);
+			this.sideConditions[siden][id] = [fire1, fire2, fire3, fire4];
+			break;
 		}
 	}
 	removeSideCondition(siden: number, id: ID) {

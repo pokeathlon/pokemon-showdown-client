@@ -20600,6 +20600,65 @@ export const BattleMoveAnims: AnimTable = {
 			}, 'ballistic');
 		},
 	},
+	hotcoals: {
+		anim(scene, [attacker, defender]) {
+			scene.showEffect('fireball', {
+				x: attacker.x,
+				y: attacker.y,
+				z: attacker.z,
+				scale: 0.1,
+				opacity: 0.5,
+			}, {
+				x: defender.leftof(-40),
+				y: defender.y - 5,
+				z: defender.z,
+				scale: 0.2,
+				opacity: 1,
+			}, 'ballistic');
+			scene.showEffect('fireball', {
+				x: attacker.x,
+				y: attacker.y,
+				z: attacker.z,
+				scale: 0.1,
+				opacity: 0.5,
+				time: 75,
+			}, {
+				x: defender.leftof(-20),
+				y: defender.y - 35,
+				z: defender.z,
+				scale: 0.2,
+				opacity: 1,
+			}, 'ballistic');
+			scene.showEffect('fireball', {
+				x: attacker.x,
+				y: attacker.y,
+				z: attacker.z,
+				scale: 0.1,
+				opacity: 0.5,
+				time: 150,
+			}, {
+				x: defender.leftof(30),
+				y: defender.y - 25,
+				z: defender.z,
+				scale: 0.2,
+				opacity: 1,
+			}, 'ballistic');
+			scene.showEffect('fireball', {
+				x: attacker.x,
+				y: attacker.y,
+				z: attacker.z,
+				scale: 0.1,
+				opacity: 0.5,
+				time: 225,
+			}, {
+				x: defender.leftof(10),
+				y: defender.y - 35,
+				z: defender.z,
+				scale: 0.2,
+				opacity: 1,
+			}, 'ballistic');
+		},
+	},
 	leechseed: {
 		anim(scene, [attacker, defender]) {
 			scene.showEffect('energyball', {
