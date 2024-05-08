@@ -2478,8 +2478,8 @@ class BattleTooltips {
 
 		if (pokemon.fusion) {
 
-			const fusionSpecies = Dex.mod('gen9infinitefusion').species.get(pokemon.fusion);
-			const species = Dex.mod('gen9infinitefusion').species.get(pokemon.speciesForme);
+			const fusionSpecies = this.battle.dex.species.get(pokemon.fusion);
+			const species = this.battle.dex.species.get(pokemon.speciesForme);
 
 			let speciesTypes = species.types;
 			let fusionTypes = fusionSpecies.types;
@@ -2525,7 +2525,6 @@ class BattleTooltips {
 			ability: '', baseAbility: '', possibilities: [],
 		};
 		let dex = this.battle.dex;
-		if (toID(this.battle.tier) in window.Formats && window.Formats[toID(this.battle.tier)].mod) dex = Dex.mod(window.Formats[toID(this.battle.tier)].mod);
 		if (clientPokemon) {
 			if (clientPokemon.ability) {
 				abilityData.ability = clientPokemon.ability || clientPokemon.baseAbility;
