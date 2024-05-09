@@ -1086,6 +1086,7 @@ class ModdedDex {
 	species = {
 		get: (name: string): Species => {
 			let id = toID(name);
+			if (id in window.BattlePokedexAltForms) return window.BattlePokedexAltForms[id];
 			if (window.BattleAliases && id in BattleAliases) {
 				name = BattleAliases[id];
 				id = toID(name);
