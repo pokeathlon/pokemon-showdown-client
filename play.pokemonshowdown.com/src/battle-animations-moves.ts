@@ -36317,6 +36317,7 @@ BattleMoveAnims['tripledive'] = {anim: BattleMoveAnims['dive'].anim};
 BattleMoveAnims['hydrosteam'] = {anim: BattleMoveAnims['steameruption'].anim};
 BattleMoveAnims['psyblade'] = {anim: BattleMoveAnims['psychocut'].anim};
 
+// POA Moves
 BattleMoveAnims['boxin'] = BattleMoveAnims['block'];
 BattleMoveAnims['runtimeexception'] = BattleMoveAnims['shiftgear'];
 BattleMoveAnims['fibregraft'] = {
@@ -36350,3 +36351,59 @@ BattleMoveAnims['heal'] = BattleMoveAnims['healpulse'];
 BattleMoveAnims['hyperheal'] = BattleMoveAnims['healpulse'];
 BattleMoveAnims['fullheal'] = BattleMoveAnims['healpulse'];
 BattleMoveAnims['foulstrike'] = BattleMoveAnims['behemothblade'];
+
+// Insurgence Moves
+BattleMoveAnims['achillesheel'] = {anim: BattleMoveAnims['lowkick'].anim};
+BattleMoveAnims['ancientroar'] = {
+	anim(scene, [attacker, defender]) {
+		BattleMoveAnims['hypervoice'].anim(scene, [attacker, defender]);
+		BattleMoveAnims['earthpower'].anim(scene, [attacker, defender]);
+	},
+};
+BattleMoveAnims['corrode'] = {
+	anim(scene, [attacker, defender]) {
+		BattleMoveAnims['corrosivegas'].anim(scene, [attacker, defender]);
+		BattleMoveAnims['sludgewave'].anim(scene, [attacker, defender]);
+	},
+};
+BattleMoveAnims['crystalrush'] = {
+	anim(scene, [attacker, defender]) {
+		BattleMoveAnims['honeclaws'].anim(scene, [attacker, attacker]);
+		BattleMoveAnims['headsmash'].anim(scene, [attacker, defender]);
+	},
+};
+BattleMoveAnims['darkmatter'] = {anim: BattleMoveAnims['blackholeeclipse'].anim};
+BattleMoveAnims['dracojet'] = {
+	anim(scene, [attacker, defender]) {
+		BattleMoveAnims['dragondance'].anim(scene, [attacker, attacker]);
+		BattleMoveAnims['aquajet'].anim(scene, [attacker, defender]);
+	},
+};
+BattleMoveAnims['dragonify'] = {anim: BattleMoveAnims['soak'].anim};
+BattleMoveAnims['drakonvoice'] = {
+	anim(scene, [attacker, defender]) {
+		BattleMoveAnims['spacialrend'].anim(scene, [attacker, defender]);
+		BattleMoveAnims['hypervoice'].anim(scene, [attacker, defender]);
+	},
+};
+BattleMoveAnims['jetstream'] = {anim: BattleMoveAnims['tailwind'].anim};
+BattleMoveAnims['lunarcannon'] = {
+	anim(scene, [attacker, defender]) {
+		BattleMoveAnims['darkpulse'].anim(scene, [attacker, defender]);
+		BattleMoveAnims['ruination'].anim(scene, [attacker, defender]);
+	},
+	prepareAnim: BattleMoveAnims['geomancy'].prepareAnim,
+};
+BattleMoveAnims['medusaray'] = {anim: BattleMoveAnims['glare'].anim};
+BattleMoveAnims['nanorepair'] = {
+	anim(scene, [attacker, defender]) {
+		BattleMoveAnims['shiftgear'].anim(scene, [attacker, attacker]);
+		BattleMoveAnims['recover'].anim(scene, [attacker, attacker]);
+	},
+};
+BattleMoveAnims['newmoon'] = {anim: BattleMoveAnims['raindance'].anim};
+BattleMoveAnims['retrograde'] = {anim: BattleMoveAnims['painsplit'].anim};
+BattleMoveAnims['spiritaway'] = {anim: BattleMoveAnims['skydrop'].anim};
+BattleMoveAnims['wildfire'] = {anim: BattleMoveAnims['incinerate'].anim};
+BattleMoveAnims['wormhole'] = {anim: BattleMoveAnims['dive'].anim};
+BattleMoveAnims['zombiestrike'] = {anim: BattleMoveAnims['shadowpunch'].anim};
