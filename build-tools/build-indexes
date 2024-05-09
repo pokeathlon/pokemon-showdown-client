@@ -1216,7 +1216,7 @@ process.stdout.write("Building `data/teambuilder-tables.js`... ");
 	}
 
 	// Client relevant data that should be overriden by past gens and mods
-	const overrideSpeciesKeys = ['abilities', 'baseStats', 'cosmeticFormes', 'isNonstandard', 'requiredItems', 'types', 'unreleasedHidden', 'num'];
+	const overrideSpeciesKeys = ['abilities', 'baseStats', 'cosmeticFormes', 'isNonstandard', 'requiredItems', 'battleOnly', 'types', 'unreleasedHidden', 'num'];
 	const overrideMoveKeys = ['accuracy', 'basePower', 'category', 'desc', 'flags', 'isNonstandard', 'noSketch', 'pp', 'priority', 'shortDesc', 'target', 'type'];
 	const overrideAbilityKeys = ['desc', 'flags', 'isNonstandard', 'rating', 'shortDesc'];
 
@@ -1316,7 +1316,7 @@ process.stdout.write("Building `data/teambuilder-tables.js`... ");
 			for (const key of overrideSpeciesKeys) {
 				if (JSON.stringify(modEntry[key]) !== JSON.stringify(parentEntry[key])) {
 					if (!overrideSpeciesData[id]) overrideSpeciesData[id] = {};
-					overrideSpeciesData[id][key] = modEntry[key];
+					overrideSpeciesData[id][key] = (modEntry[key] === undefined ? null : modEntry[key]);
 				}
 			}
 		}
@@ -1330,7 +1330,7 @@ process.stdout.write("Building `data/teambuilder-tables.js`... ");
 				if (key === 'category' && modDex.gen <= 3) continue;
 				if (JSON.stringify(modEntry[key]) !== JSON.stringify(parentEntry[key])) {
 					if (!overrideMoveData[id]) overrideMoveData[id] = {};
-					overrideMoveData[id][key] = modEntry[key];
+					overrideMoveData[id][key] = (modEntry[key] === undefined ? null : modEntry[key]);
 				}
 			}
 		}
@@ -1343,7 +1343,7 @@ process.stdout.write("Building `data/teambuilder-tables.js`... ");
 			for (const key of overrideAbilityKeys) {
 				if (JSON.stringify(modEntry[key]) !== JSON.stringify(parentEntry[key])) {
 					if (!overrideAbilityData[id]) overrideAbilityData[id] = {};
-					overrideAbilityData[id][key] = modEntry[key];
+					overrideAbilityData[id][key] = (modEntry[key] === undefined ? null : modEntry[key]);
 				}
 			}
 		}
