@@ -954,6 +954,8 @@ export class BattleScene implements BattleSceneStub {
 				primordialsea: 'Heavy Rain',
 				sandstorm: 'Sandstorm',
 				newmoon: 'New Moon',
+				thunderstorm: 'Thunderstorm',
+				fallout: 'Fallout',
 				hail: 'Hail',
 				snow: 'Snow',
 				deltastream: 'Strong Winds',
