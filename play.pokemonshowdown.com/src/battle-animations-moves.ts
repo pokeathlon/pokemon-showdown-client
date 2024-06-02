@@ -36351,6 +36351,7 @@ BattleMoveAnims['heal'] = BattleMoveAnims['healpulse'];
 BattleMoveAnims['hyperheal'] = BattleMoveAnims['healpulse'];
 BattleMoveAnims['fullheal'] = BattleMoveAnims['healpulse'];
 BattleMoveAnims['foulstrike'] = BattleMoveAnims['behemothblade'];
+BattleMoveAnims['spudmortar'] = {anim: BattleMoveAnims['doomdesire'].anim};
 
 // Insurgence Moves
 BattleMoveAnims['achillesheel'] = {anim: BattleMoveAnims['lowkick'].anim};

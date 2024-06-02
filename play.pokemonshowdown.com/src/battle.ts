@@ -2814,7 +2814,7 @@ export class Battle {
 					break;
 				default:
 					if (effect.effectType === 'Move') {
-						if (effect.name === 'Doom Desire') {
+						if (effect.name === 'Doom Desire' || effect.name === 'Spud Mortar') {
 							this.scene.runOtherAnim('doomdesirehit' as ID, [poke]);
 						}
 						if (effect.name === 'Future Sight') {
