@@ -366,7 +366,7 @@ process.stdout.write("Building `data/teambuilder-tables.js`... ");
 	const LC = GENS.map(num => num + 0.7);
 	const STADIUM = [2.04, 1.04];
 	const NATDEX = [9.1, 8.1];
-	const OTHER = [9.9, 9.80, -9.80, 9.81, -9.81, 9.82, -9.82, 9.822, -9.822, 9.83, -9.83, 9.84, -9.84, 9.6, 9.411, 9.41, 9.401, 9.4, 9.2, -9.4, -9.401, 8.6, 8.4, 8.2, 8.1, -8.4, -8.6, 7.811, -7.811, 7.1, 6.833, -6.833, 6.844, -6.844];
+	const OTHER = [9.9, 9.85, -9.85, 9.81, -9.81, 9.82, -9.82, 9.822, -9.822, 9.83, -9.83, 9.84, -9.84, 9.6, 9.411, 9.41, 9.401, 9.4, 9.2, -9.4, -9.401, 8.6, 8.4, 8.2, 8.1, -8.4, -8.6, 7.811, -7.811, 7.1, 6.833, -6.833, 6.844, -6.844];
 
 	// process.stdout.write("\n  ");
 	for (const genIdent of [...GENS, ...DOUBLES, ...VGC, ...NFE, ...STADIUM, ...OTHER, ...NATDEX, ...LC]) {
@@ -388,7 +388,7 @@ process.stdout.write("Building `data/teambuilder-tables.js`... ");
 		const isFusions = ('' + genIdent).endsWith('.811');
 		const isNatDexPOA = ('' + genIdent).endsWith('.82');
 		const isPOA = ('' + genIdent).endsWith('.822');
-		const isNatDexChaos = ('' + genIdent).endsWith('.80');
+		const isNatDexChaos = ('' + genIdent).endsWith('.85');
 		const isNatDexInsg = ('' + genIdent).endsWith('.83');
 		const isInsg = ('' + genIdent).endsWith('.833');
 		const isNatDexU = ('' + genIdent).endsWith('.84');
