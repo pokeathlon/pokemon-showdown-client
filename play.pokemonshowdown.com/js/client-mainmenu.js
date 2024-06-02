@@ -1241,6 +1241,7 @@
 				// avoiding that decision for now because it requires either an ugly hack
 				// or an overhaul of BattleFormats.
 				this.open = Storage.prefs('openformats') || {
+					"Chaos": true,
 					"Infinite Fusion: Regional Dex": true, "Infinite Fusion: Doubles": true, "Infinite Fusion: National Dex": true, "Infinite Fusion: Extras": true,
 					"Insurgence: Regional Dex": true, "Insurgence: Doubles": true, "Insurgence: National Dex": true, "Insurgence: Extras": true,
 					"Uranium: Regional Dex": true, "Uranium: Doubles": true, "Uranium: National Dex": true, "Uranium: Extras": true,
