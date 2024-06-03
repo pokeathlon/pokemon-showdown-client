@@ -400,7 +400,7 @@ process.stdout.write("Building `data/teambuilder-tables.js`... ");
 			if (isNatDexFusions || isFusions) genStr += 'infinitefusion';
 			if (isNatDexPOA || isPOA) genStr += 'pokeathlon';
 			if (isNatDexChaos) genStr += 'chaos';
-			if (isNatDexChaos) genStr += 'chaosfusion';
+			if (isChaosFusions) genStr += 'chaosfusion';
 			if (isNatDexInsg || isInsg) genStr += 'insurgence';
 			if (isNatDexU || isUranium) genStr += 'uranium';
 			if (isSSDLC1) genStr += 'dlc1';
