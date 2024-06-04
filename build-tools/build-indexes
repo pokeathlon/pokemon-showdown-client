@@ -513,6 +513,7 @@ process.stdout.write("Building `data/teambuilder-tables.js`... ");
 				}
 				if (isNatDexPOA || isNatDexInsg || isNatDexU || isNatDexChaos || isChaosFusions) {
 					let tier = isDoubles ? species.doublesTier : species.natDexTier;
+					if (isChaosFusions && species.isMega) tier = 'Illegal';
 					return tier;
 				}
 				if (isPOA || isInsg || isUranium) {
