@@ -3837,6 +3837,10 @@
 				buf += '<button name="setForm" value="' + form + '" style="';
 				if (species.tags.includes('Insurgence')) {
 					buf += 'background-image: url(https://play.pokeathlon.com/sprites/fangame-sprites/insurgence/front/' + baseid + toID(formid) + '.png); width: 120px; height: 120px; background-size: 120px;" class="option';
+				} else if (species.tags.includes('Pokeathlon')) {
+					buf += 'background-image: url(https://play.pokeathlon.com/sprites/fangame-sprites/pokeathlon/front/' + baseid + toID(formid) + '.png); width: 120px; height: 120px; background-size: 120px;" class="option';
+				} else if (species.tags.includes('Uranium')) {
+					buf += 'background-image: url(https://play.pokeathlon.com/sprites/fangame-sprites/uranium/front/' + baseid + toID(formid) + '.png); width: 120px; height: 120px; background-size: 120px;" class="option';
 				} else {
 					buf += 'background-image: url(' + spriteDir + '/' + baseid + (form ? '-' + toID(formid) : '') + '.png); ' + spriteDim + '" class="option';
 				}
