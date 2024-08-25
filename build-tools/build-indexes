@@ -406,6 +406,7 @@ process.stdout.write("Building `data/teambuilder-tables.js`... ");
 		const ubersUUBans = {};
 		const ndDoublesBans = {};
 		const monotypeBans = {};
+		const gen5zuBans = {};
 		for (const id of pokemon) {
 			const species = Dex.mod(gen).species.get(id);
 			const baseSpecies = Dex.mod(gen).species.get(species.baseSpecies);
