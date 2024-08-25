@@ -13,6 +13,7 @@
 		<meta name="robots" content="noindex" />
 		<meta http-equiv="X-UA-Compatible" content="IE=Edge" />
 		<script async src="//www.ezojs.com/ezoic/sa.min.js"></script>
+		<script src="//ezoicanalytics.com/analytics.js"></script>
 		<script src="https://play.pokeathlon.com/config/config.js??"></script>
 		<script>
 			Config.testclient = true;
@@ -143,19 +144,6 @@
 			window.onload = () => {
 				window.app = new App();
 			}
-
-			const day = Math.floor(Date.now() / 1000 / 60 / 60 / 24);
-
-			var psuedo = day * 300;
-			var available = Object.keys(FusionCredit);
-
-			var dailyKey = available[(psuedo % (available.length - 500)) + 500];
-
-			var box = document.getElementById('daily-fusion');
-			box.innerHTML = `<h4>Fusion of the day...</h4>`;
-			box.innerHTML += `<img draggable="false" class="pixelated" src="sprites/fusion-sprites/CustomBattlers/${dailyKey}.png" width="150">`;
-			box.innerHTML += `<p>sprite by ${FusionCredit[dailyKey]}!!!</p>`;
-
 		</script>
 
 	</body>
