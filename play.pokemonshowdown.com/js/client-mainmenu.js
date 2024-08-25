@@ -902,6 +902,9 @@
 			var bestOfDefault = format && BattleFormats[format] ? BattleFormats[format].bestOfDefault : false;
 			buf += '<p' + (!bestOfDefault ? ' class="hidden">' : '>');
 			buf += '<label class="checkbox"><input type="checkbox" name="bestof" /> <abbr title="Start a team-locked best-of-n series">Best-of-<input name="bestofvalue" type="number" min="3" max="9" step="2" value="3" style="width: 28px; vertical-align: initial;"></abbr></label></p>';
+			var teraPreviewDefault = format && BattleFormats[format] ? BattleFormats[format].teraPreviewDefault : false;
+			buf += '<p' + (!teraPreviewDefault ? ' class="hidden">' : '>');
+			buf += '<label class="checkbox"><input type="checkbox" name="terapreview" /> <abbr title="Start a battle with Tera Type Preview">Tera Type Preview</abbr></label></p>';
 			buf += '<p class="buttonbar"><button name="makeChallenge" class="button"><strong>Challenge</strong></button> <button type="button" name="dismissChallenge" class="button">Cancel</button></p></form>';
 			$challenge.html(buf);
 		},
@@ -952,6 +955,13 @@
 				var hasCustomRules = format.includes('@@@');
 				format += hasCustomRules ? ', ' : '@@@';
 				format += 'Best of = ' + bestOfValue;
+			}
+
+			var teraPreview = $pmWindow.find('input[name=terapreview]').is(':checked');
+			if (teraPreview) {
+				var hasCustomRulesT = format.includes('@@@');
+				format += hasCustomRulesT ? ', ' : '@@@';
+				format += 'Tera Type Preview';
 			}
 
 			var team = null;
@@ -1195,6 +1205,9 @@
 			case 'error':
 				return '<div class="chat message-error">' + BattleLog.escapeHTML(target) + '</div>';
 			case 'html':
+				if (!name) {
+					return {message: '<div class="chat' + hlClass + '">' + timestamp + '<em>' + BattleLog.sanitizeHTML(target) + '</em></div>', noNotify: isNotPM};
+				}
 				return {message: '<div class="chat chatmessage-' + toID(name) + hlClass + mineClass + '">' + timestamp + '<strong style="' + color + '">' + clickableName + ':</strong> <em>' + BattleLog.sanitizeHTML(target) + '</em></div>', noNotify: isNotPM};
 			case 'uhtml':
 			case 'uhtmlchange':
@@ -1398,6 +1411,18 @@
 					} else {
 						$parentTag.addClass('hidden');
 						$bestOfCheckbox.prop('checked', false);
+					}
+				}
+
+				var $teraPreviewCheckbox = this.sourceEl.closest('form').find('input[name=terapreview]');
+				if ($teraPreviewCheckbox) {
+					var $parentTag = $teraPreviewCheckbox.parent().parent();
+					var teraPreviewDefault = BattleFormats[format] && BattleFormats[format].teraPreviewDefault;
+					if (teraPreviewDefault) {
+						$parentTag.removeClass('hidden');
+					} else {
+						$parentTag.addClass('hidden');
+						$teraPreviewCheckbox.prop('checked', false);
 					}
 				}
 

@@ -821,6 +821,7 @@
 				if (!selection || selection === 'random') continue;
 				var obj = app.rooms[room].id === "" ? app.rooms[room] : app.rooms[room].tournamentBox;
 				obj.curTeamIndex++;
+				obj.updateTeams();
 			}
 			this.edit(0);
 		},
@@ -2317,6 +2318,7 @@
 				case 'Sawsbuck':
 				case 'Shellos':
 				case 'Sinistea':
+				case 'Tatsugiri':
 				case 'Vivillon':
 					break;
 				default:
@@ -3320,7 +3322,11 @@
 				}
 				break;
 			case 'move1': case 'move2': case 'move3': case 'move4':
-				val = (id in BattleMovedex ? BattleMovedex[id].name : '');
+				if (id in BattlePokedex && format && format.endsWith("pokemoves")) {
+					val = BattlePokedex[id].name;
+				} else {
+					val = (id in BattleMovedex ? BattleMovedex[id].name : '');
+				}
 				break;
 			}
 			if (!val) {
@@ -3568,7 +3574,7 @@
 				} else if (move.category === 'Physical' && !move.damage && !move.ohko &&
 					!['foulplay', 'endeavor', 'counter', 'bodypress', 'seismictoss', 'bide', 'metalburst', 'superfang'].includes(move.id) && !(this.curTeam.gen < 8 && move.id === 'rapidspin')) {
 					minAtk = false;
-				} else if (['metronome', 'assist', 'copycat', 'mefirst', 'photongeyser', 'shellsidearm'].includes(move.id) || (this.curTeam.gen === 5 && move.id === 'naturepower')) {
+				} else if (['metronome', 'assist', 'copycat', 'mefirst', 'photongeyser', 'shellsidearm', 'terablast'].includes(move.id) || (this.curTeam.gen === 5 && move.id === 'naturepower')) {
 					minAtk = false;
 				}
 				if (minSpe === false && moveName === 'Gyro Ball') {
