@@ -806,10 +806,10 @@
 			buf += '<div class="bglist">';
 
 			buf += '<button name="setBg" value="charizards" class="option' + (cur === 'charizards' ? ' cur' : '') + '"><span class="bg" style="background-position:0 -' + (90 * 0) + 'px"></span>Park</button>';
-			buf += '<button name="setBg" value="horizon" class="option' + (cur === 'horizon' ? ' cur' : '') + '"><span class="bg" style="background-position:0 -' + (90 * 1) + 'px"></span>Ripples</button>';
+			buf += '<button name="setBg" value="horizon" class="option' + (cur === 'horizon' ? ' cur' : '') + '"><span class="bg" style="background-position:0 -' + (90 * 1) + 'px"></span>Luterra</button>';
 			buf += '<button name="setBg" value="waterfall" class="option' + (cur === 'waterfall' ? ' cur' : '') + '"><span class="bg" style="background-position:0 -' + (90 * 2) + 'px"></span>POA</button>';
 			buf += '<button name="setBg" value="ocean" class="option' + (cur === 'ocean' ? ' cur' : '') + '"><span class="bg" style="background-position:0 -' + (90 * 3) + 'px"></span>Reshiram</button>';
-			buf += '<button name="setBg" value="shaymin" class="option' + (cur === 'shaymin' ? ' cur' : '') + '"><span class="bg" style="background-position:0 -' + (90 * 4) + 'px"></span>Zekrom</button>';
+			buf += '<button name="setBg" value="shaymin" class="option' + (cur === 'shaymin' ? ' cur' : '') + '"><span class="bg" style="background-position:0 -' + (90 * 4) + 'px"></span>Season\'s Symphony</button>';
 			buf += '<button name="setBg" value="solidblue" class="option' + (cur === 'solidblue' ? ' cur' : '') + '"><span class="bg" style="background: #344b6c"></span>Solid blue</button>';
 
 			buf += '</div><div style="clear:left"></div>';

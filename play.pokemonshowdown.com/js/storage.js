@@ -80,6 +80,7 @@ Storage.bg = {
 			switch (bgid) {
 			case 'horizon':
 				hues = ["290,30%", "300,30%", "310,30%", "320,30%", "330,30%", "340,30%"];
+				attrib = '<a href="https://www.fusiondex.org/artists/_sadfroggy/" target="_blank" class="subtle">"Luterra" <small>background by Sadfrog! (_sadfroggy on Discord)</small></a>';
 				break;
 			case 'ocean':
 				hues = ["200,35%", "210,35%", "220,35%", "230,35%", "240,35%", "250,35%"];
@@ -89,7 +90,8 @@ Storage.bg = {
 				attrib = '<a href="https://www.instagram.com/idol_is_propaganda" target="_blank" class="subtle">"POA Mons" <small>background by Ruoska! (ru_was_here on Discord)</small></a>';
 				break;
 			case 'shaymin':
-				hues = ["0,0%", "0,0%", "0,0%", "0,0%", "0,0%", "0,0%"];
+				hues = ["0,80%", "5,80%", "10,80%", "15,80%", "20,80%", "25,80%"];
+				attrib = '<a href="https://www.fusiondex.org/artists/.nottomention/" target="_blank" class="subtle">"Season\'s Symphony" <small>background by NotToMention! (.nottomention on Discord)</small></a>';
 				break;
 			case 'charizards':
 				hues = ["250,40%", "260,40%", "270,40%", "280,40%", "290,40%", "300,40%"];
