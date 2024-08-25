@@ -473,7 +473,8 @@
 			'change select[name=theme]': 'setTheme',
 			'change input[name=logchat]': 'setLogChat',
 			'change input[name=selfhighlight]': 'setSelfHighlight',
-			'click img': 'avatars'
+			'click img': 'avatars',
+			'keydown input[name=statustext]': 'editstatus'
 		},
 		update: function () {
 			var name = app.user.get('name');
@@ -483,6 +484,12 @@
 			var buf = '';
 			buf += '<p>' + (avatar ? '<img class="trainersprite" src="' + Dex.resolveAvatar(avatar) + '" width="40" height="40" style="vertical-align:middle;cursor:pointer" />' : '') + '<strong>' + BattleLog.escapeHTML(name) + '</strong></p>';
 			buf += '<p><button class="button" name="avatars">Avatar...</button></p>';
+			if (!this.editingStatus) {
+				buf += '<p><button class="button" name="editstatus">Status...</button></p>';
+			} else {
+				buf += '<p><input name="statustext" />';
+				buf += '<button class="button" name="editstatus"><i class="fa fa-pencil"></i></button></p>';
+			}
 			if (app.user.get('named')) {
 				var registered = app.user.get('registered');
 				if (registered && (registered.userid === app.user.get('userid'))) {
@@ -666,6 +673,29 @@
 		avatars: function () {
 			app.addPopup(AvatarsPopup);
 		},
+		editstatus: function (ev) {
+			// from an input, key isn't enter
+			// there's no event if it's a click fsr
+			if (ev && ev.keyCode !== 13) return;
+			if (!this.editingStatus) {
+				this.editingStatus = true;
+				this.update();
+			} else {
+				var $input = $('input[name=statustext]');
+				var statusText = $input.val();
+				if (!toID(statusText).length) {
+					return;
+				}
+
+				app.send('/status ' + statusText);
+				var $editButton = $('button[name=editstatus]');
+				$editButton.text('Status updated!');
+				$editButton.attr('disabled', true);
+				$input.remove();
+
+				this.editingStatus = false;
+			}
+		},
 		formatting: function () {
 			app.addPopup(FormattingPopup);
 		},
@@ -806,10 +836,10 @@
 			buf += '<div class="bglist">';
 
 			buf += '<button name="setBg" value="charizards" class="option' + (cur === 'charizards' ? ' cur' : '') + '"><span class="bg" style="background-position:0 -' + (90 * 0) + 'px"></span>Park</button>';
-			buf += '<button name="setBg" value="horizon" class="option' + (cur === 'horizon' ? ' cur' : '') + '"><span class="bg" style="background-position:0 -' + (90 * 1) + 'px"></span>Ripples</button>';
+			buf += '<button name="setBg" value="horizon" class="option' + (cur === 'horizon' ? ' cur' : '') + '"><span class="bg" style="background-position:0 -' + (90 * 1) + 'px"></span>Luterra</button>';
 			buf += '<button name="setBg" value="waterfall" class="option' + (cur === 'waterfall' ? ' cur' : '') + '"><span class="bg" style="background-position:0 -' + (90 * 2) + 'px"></span>POA</button>';
 			buf += '<button name="setBg" value="ocean" class="option' + (cur === 'ocean' ? ' cur' : '') + '"><span class="bg" style="background-position:0 -' + (90 * 3) + 'px"></span>Reshiram</button>';
-			buf += '<button name="setBg" value="shaymin" class="option' + (cur === 'shaymin' ? ' cur' : '') + '"><span class="bg" style="background-position:0 -' + (90 * 4) + 'px"></span>Zekrom</button>';
+			buf += '<button name="setBg" value="shaymin" class="option' + (cur === 'shaymin' ? ' cur' : '') + '"><span class="bg" style="background-position:0 -' + (90 * 4) + 'px"></span>Season\'s Symphony</button>';
 			buf += '<button name="setBg" value="solidblue" class="option' + (cur === 'solidblue' ? ' cur' : '') + '"><span class="bg" style="background: #344b6c"></span>Solid blue</button>';
 
 			buf += '</div><div style="clear:left"></div>';

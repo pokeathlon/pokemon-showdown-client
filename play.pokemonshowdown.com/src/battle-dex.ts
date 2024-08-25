@@ -958,7 +958,10 @@ const Dex = new class implements ModdedDex {
 
 		const dex = Dex.mod('gen7infinitefusion' as ID);
 
-		if (dex.species.get(pokemon.fusion).exists && dex.species.get((pokemon.speciesForme || pokemon.species))) {
+		if (
+			dex.species.get(pokemon.fusion).exists && dex.species.get((pokemon.speciesForme || pokemon.species)) &&
+			dex.species.get(pokemon.fusion).isNonstandard !== "Custom" && dex.species.get((pokemon.speciesForme || pokemon.species)).isNonstandard !== "Custom"
+		) {
 			const head_species = dex.species.get((pokemon.speciesForme || pokemon.species));
 			const body_species = dex.species.get(pokemon.fusion);
 
@@ -1058,11 +1061,16 @@ class ModdedDex {
 
 			let data = {...Dex.items.get(name)};
 
-			for (let i = this.gen; i < 9; i++) {
-				const table = window.BattleTeambuilderTable['gen' + i];
-				if (id in table.overrideItemDesc) {
-					data.shortDesc = table.overrideItemDesc[id];
-					break;
+			for (let i = Dex.gen - 1; i >= this.gen; i--) {
+				const table = window.BattleTeambuilderTable[`gen${i}`];
+				if (id in table.overrideItemData) {
+					Object.assign(data, table.overrideItemData[id]);
+				}
+			}
+			if (this.modid !== `gen${this.gen}`) {
+				const table = window.BattleTeambuilderTable[this.modid];
+				if (id in table.overrideItemData) {
+					Object.assign(data, table.overrideItemData[id]);
 				}
 			}
 

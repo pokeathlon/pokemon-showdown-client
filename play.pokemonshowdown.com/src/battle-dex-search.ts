@@ -590,7 +590,7 @@ abstract class BattleTypedSearch<T extends SearchType> {
 			let info = window.Formats[formatName];
 			if ('mod' in info) {
 				this.dex = Dex.mod(info.mod);
-				if (info.mod.includes('infinitefusion') || info.mod.includes('pokeathlon') || info.mod.includes('insurgence') || info.mod.includes('uranium')) {
+				if (info.mod.includes('infinitefusion') || info.mod.includes('pokeathlon') || info.mod.includes('insurgence') || info.mod.includes('uranium') || info.mod.includes('chaos')) {
 					this.formatType = 'natdex';
 					if (info.gameType === 'doubles') {
 						format = 'doublesubers' as ID;
@@ -773,7 +773,7 @@ abstract class BattleTypedSearch<T extends SearchType> {
 		let table = BattleTeambuilderTable;
 		if (this.formatType?.startsWith('bdsp')) table = table['gen8bdsp'];
 		if (this.formatType === 'letsgo') table = table['gen7letsgo'];
-		if (['gen7infinitefusion', 'gen9pokeathlon', 'gen9insurgence', 'gen6insurgence', 'gen9uranium', 'gen6uranium'].includes(this.dex.modid)) table = table[this.dex.modid];
+		if (['gen7infinitefusion', 'gen9pokeathlon', 'gen9insurgence', 'gen6insurgence', 'gen9uranium', 'gen6uranium', 'gen9chaos', 'gen9chaosfusion'].includes(this.dex.modid)) table = table[this.dex.modid];
 		if (speciesid in table.learnsets) return speciesid;
 		const species = this.dex.species.get(speciesid);
 		if (!species.exists) return '' as ID;
@@ -785,7 +785,7 @@ abstract class BattleTypedSearch<T extends SearchType> {
 		if (baseLearnsetid in table.learnsets) return baseLearnsetid;
 		return '' as ID;
 	}
-	protected nextLearnsetid(learnsetid: ID, speciesid: ID) {
+	protected nextLearnsetid(learnsetid: ID, speciesid: ID, checkingMoves = false) {
 		if (learnsetid === 'lycanrocdusk' || (speciesid === 'rockruff' && learnsetid === 'rockruff')) {
 			return 'rockruffdusk' as ID;
 		}
@@ -799,6 +799,15 @@ abstract class BattleTypedSearch<T extends SearchType> {
 
 		const next = lsetSpecies.battleOnly || lsetSpecies.changesFrom || lsetSpecies.prevo;
 		if (next) return toID(next);
+
+		if (checkingMoves && !lsetSpecies.prevo && lsetSpecies.baseSpecies &&
+			this.dex.species.get(lsetSpecies.baseSpecies).prevo) {
+			let baseEvo = this.dex.species.get(lsetSpecies.baseSpecies);
+			while (baseEvo.prevo) {
+				baseEvo = this.dex.species.get(baseEvo.prevo);
+			}
+			return toID(baseEvo);
+		}
 
 		return '' as ID;
 	}
@@ -832,14 +841,14 @@ abstract class BattleTypedSearch<T extends SearchType> {
 			let table = BattleTeambuilderTable;
 			if (this.formatType?.startsWith('bdsp')) table = table['gen8bdsp'];
 			if (this.formatType === 'letsgo') table = table['gen7letsgo'];
-			if (['gen7infinitefusion', 'gen9pokeathlon', 'gen9insurgence', 'gen6insurgence', 'gen9uranium', 'gen6uranium'].includes(this.dex.modid)) table = table[this.dex.modid];
+			if (['gen7infinitefusion', 'gen9pokeathlon', 'gen9insurgence', 'gen6insurgence', 'gen9uranium', 'gen6uranium', 'gen9chaos', 'gen9chaosfusion'].includes(this.dex.modid)) table = table[this.dex.modid];
 			let learnset = table.learnsets[learnsetid];
 			if (learnset && (moveid in learnset) && (!this.format.startsWith('tradebacks') ? learnset[moveid].includes(genChar) :
 				learnset[moveid].includes(genChar) ||
 					(learnset[moveid].includes(`${gen + 1}`) && move.gen === gen))) {
 				return true;
 			}
-			learnsetid = this.nextLearnsetid(learnsetid, speciesid);
+			learnsetid = this.nextLearnsetid(learnsetid, speciesid, true);
 		}
 		return false;
 	}
@@ -1035,11 +1044,21 @@ class BattlePokemonSearch extends BattleTypedSearch<'pokemon'> {
 			} else {
 				tierSet = tierSet.slice(slices.Regular);
 			}
+
+			if (format.endsWith('regh')) {
+				tierSet = tierSet.filter(([type, id]) => {
+					const tags = Dex.species.get(Dex.species.get(id).baseSpecies).tags;
+					return !tags.includes('Sub-Legendary') && !tags.includes('Paradox') &&
+						// The game does not classify these as Paradox Pokemon (Booster Energy can be knocked off)
+						!['gougingfire', 'ironboulder', 'ironcrown', 'ragingbolt'].includes(id);
+				});
+			}
 		} else if (format === 'ou') tierSet = tierSet.slice(slices.OU);
 		else if (format === 'uu' || (format === 'ru' && dex.gen === 3)) tierSet = tierSet.slice(slices.UU);
 		else if (format === 'ru') tierSet = tierSet.slice(slices.RU || slices.UU);
 		else if (format === 'nu') tierSet = tierSet.slice(slices.NU || slices.RU || slices.UU);
 		else if (format === 'pu') tierSet = tierSet.slice(slices.PU || slices.NU);
+		else if (format === 'zu' && dex.gen === 5) tierSet = tierSet.slice(slices.PU || slices.NU);
 		else if (format === 'zu') tierSet = tierSet.slice(slices.ZU || slices.PU || slices.NU);
 		else if (format === 'lc' || format === 'lcuu' || format.startsWith('lc') || (format !== 'caplc' && format.endsWith('lc'))) tierSet = tierSet.slice(slices.LC);
 		else if (format === 'cap' || format.endsWith('cap')) {
@@ -1071,7 +1090,6 @@ class BattlePokemonSearch extends BattleTypedSearch<'pokemon'> {
 				...tierSet.slice(slices.DUU),
 			];
 		}
-
 		if (format === 'ubersuu' && table.ubersUUBans) {
 			tierSet = tierSet.filter(([type, id]) => {
 				if (id in table.ubersUUBans) return false;
@@ -1091,6 +1109,12 @@ class BattlePokemonSearch extends BattleTypedSearch<'pokemon'> {
 					return true;
 				});
 			}
+		}
+		if (format === 'zu' && dex.gen === 5 && table.gen5zuBans) {
+			tierSet = tierSet.filter(([type, id]) => {
+				if (id in table.gen5zuBans) return false;
+				return true;
+			});
 		}
 
 		// Filter out Gmax Pokemon from standard tier selection
@@ -1620,7 +1644,7 @@ class BattleMoveSearch extends BattleTypedSearch<'move'> {
 		if (this.formatType?.startsWith('ssdlc1')) lsetTable = lsetTable['gen8dlc1'];
 		if (this.formatType?.startsWith('predlc')) lsetTable = lsetTable['gen9predlc'];
 		if (this.formatType?.startsWith('svdlc1')) lsetTable = lsetTable['gen9dlc1'];
-		if (['gen7infinitefusion', 'gen9pokeathlon', 'gen9insurgence', 'gen6insurgence', 'gen9uranium', 'gen6uranium'].includes(this.dex.modid)) lsetTable = lsetTable[this.dex.modid];
+		if (['gen7infinitefusion', 'gen9pokeathlon', 'gen9insurgence', 'gen6insurgence', 'gen9uranium', 'gen6uranium', 'gen9chaos', 'gen9chaosfusion'].includes(this.dex.modid)) lsetTable = lsetTable[this.dex.modid];
 		while (learnsetid) {
 			let learnset = lsetTable.learnsets[learnsetid];
 			if (learnset) {
@@ -1629,6 +1653,19 @@ class BattleMoveSearch extends BattleTypedSearch<'move'> {
 					const move = dex.moves.get(moveid);
 					const minGenCode: {[gen: number]: string} = {6: 'p', 7: 'q', 8: 'g', 9: 'a'};
 					if (regionBornLegality && !learnsetEntry.includes(minGenCode[dex.gen])) {
+						continue;
+					}
+					const currentSpecies = dex.species.get(learnsetid);
+					const originalSpecies = dex.species.get(species.id);
+					let nextSpecies = this.nextLearnsetid(species.id, species.id);
+					while (nextSpecies) {
+						if (nextSpecies === learnsetid) break;
+						nextSpecies = this.nextLearnsetid(nextSpecies, species.id);
+					}
+					if (
+						currentSpecies.baseSpecies !== originalSpecies.baseSpecies && !nextSpecies &&
+						(!learnsetEntry.includes('e') || dex.gen !== 9)
+					) {
 						continue;
 					}
 					if (
@@ -1668,7 +1705,117 @@ class BattleMoveSearch extends BattleTypedSearch<'move'> {
 					}
 				}
 			}
-			learnsetid = this.nextLearnsetid(learnsetid, species.id);
+			learnsetid = this.nextLearnsetid(learnsetid, species.id, true);
+		}
+		if (isFusion) {
+			learnsetid = this.firstLearnsetid(toID(this.set?.fusion));
+			while (learnsetid) {
+				let learnset = lsetTable.learnsets[learnsetid];
+				if (learnset) {
+					for (let moveid in learnset) {
+						let learnsetEntry = learnset[moveid];
+						const move = dex.moves.get(moveid);
+						const minGenCode: {[gen: number]: string} = {6: 'p', 7: 'q', 8: 'g', 9: 'a'};
+						if (regionBornLegality && !learnsetEntry.includes(minGenCode[dex.gen])) {
+							continue;
+						}
+						const currentSpecies = dex.species.get(learnsetid);
+						const originalSpecies = dex.species.get(species.id);
+						let nextSpecies = this.nextLearnsetid(species.id, species.id);
+						while (nextSpecies) {
+							if (nextSpecies === learnsetid) break;
+							nextSpecies = this.nextLearnsetid(nextSpecies, species.id);
+						}
+						if (
+							currentSpecies.baseSpecies !== originalSpecies.baseSpecies && !nextSpecies &&
+							(!learnsetEntry.includes('e') || dex.gen !== 9)
+						) {
+							continue;
+						}
+						if (
+							!learnsetEntry.includes(gen) &&
+							(!isTradebacks ? true : !(move.gen <= dex.gen && learnsetEntry.includes('' + (dex.gen + 1))))
+						) {
+							continue;
+						}
+						if (this.formatType !== 'natdex' && move.isNonstandard === "Past") {
+							continue;
+						}
+						if (
+							this.formatType?.startsWith('dlc1') &&
+							BattleTeambuilderTable['gen8dlc1']?.nonstandardMoves.includes(moveid)
+						) {
+							continue;
+						}
+						if (moves.includes(moveid)) continue;
+						moves.push(moveid);
+						if (moveid === 'sketch') sketch = true;
+						if (moveid === 'hiddenpower') {
+							moves.push(
+								'hiddenpowerbug', 'hiddenpowerdark', 'hiddenpowerdragon', 'hiddenpowerelectric', 'hiddenpowerfighting', 'hiddenpowerfire', 'hiddenpowerflying', 'hiddenpowerghost', 'hiddenpowergrass', 'hiddenpowerground', 'hiddenpowerice', 'hiddenpowerpoison', 'hiddenpowerpsychic', 'hiddenpowerrock', 'hiddenpowersteel', 'hiddenpowerwater'
+							);
+						}
+					}
+				}
+				learnsetid = this.nextLearnsetid(learnsetid, toID(this.set?.fusion), true);
+			}
+
+			let fusionSpecies = dex.species.get(this.set?.fusion);
+
+			let allCombinations: string[][] = [];
+			let fusionLine: string[] = [fusionSpecies.name];
+			let speciesLine: string[] = [species.name];
+
+			if (fusionSpecies.prevo) fusionLine.push(fusionSpecies.prevo);
+			if (this.dex.species.get(fusionSpecies.prevo).prevo) fusionLine.push(this.dex.species.get(fusionSpecies.prevo).prevo);
+			
+			if (species.prevo) speciesLine.push(species.prevo);
+			if (this.dex.species.get(species.prevo).prevo) fusionLine.push(this.dex.species.get(species.prevo).prevo);
+
+			for (let head of fusionLine) {
+				for (let body of speciesLine) {
+					allCombinations.push(...[[head, body], [body, head]]);
+				}
+			}
+
+			for (const combination of allCombinations) {
+				const combination_head = dex.species.get(combination[0]);
+				const combination_body = dex.species.get(combination[1]);
+
+				let speciesTypes = combination_head.types;
+				let fusionTypes = combination_body.types;
+
+				if (speciesTypes.length === 2 && speciesTypes.includes('Flying') && speciesTypes.includes('Normal')) speciesTypes = ['Flying'];
+				if (fusionTypes.length === 2 && fusionTypes.includes('Flying') && fusionTypes.includes('Normal')) fusionTypes = ['Flying'];
+
+				const typesSet = new Set([speciesTypes[0]]);
+				const bonusType = this.dex.types.get(fusionTypes[fusionTypes.length - 1]);
+				if (bonusType.exists) typesSet.add(bonusType.name);
+				if (fusionTypes.length === 2 && typesSet.size === 1) typesSet.add(fusionTypes[0]);
+
+				for (let id in fusionMoves) {
+					let data = fusionMoves[id];
+					for (let possibleSource of data) {
+						let canLearn = true;
+						if ("fusion" in possibleSource) {
+							if (!possibleSource["fusion"].includes(combination_head.id) && !possibleSource["fusion"].includes(combination_body.id)) canLearn = false;
+						}
+						if ("type" in possibleSource) {
+							for (let type of possibleSource["type"]) {
+								if (!typesSet.has(type)) canLearn = false;
+							}
+						}
+						if ("learns" in possibleSource) {
+							let canLearnReqMove = false;
+							for (let reqMove of possibleSource["learns"]) {
+								if (this.canLearn(combination_head.id, reqMove as ID) || this.canLearn(combination_body.id, reqMove as ID)) canLearnReqMove = true;
+							}
+							if (!canLearnReqMove) canLearn = false;
+						}
+						if (canLearn && !moves.includes(id) && !expertMoves.includes(id)) expertMoves.push(id);
+					}
+				}
+			}
 		}
 		if (isFusion) {
 			learnsetid = this.firstLearnsetid(toID(this.set?.fusion));
@@ -1774,7 +1921,7 @@ class BattleMoveSearch extends BattleTypedSearch<'move'> {
 				const move = dex.moves.get(id);
 				if (move.gen > dex.gen) continue;
 				if (sketch) {
-					if (move.noSketch || move.isMax || move.isZ) continue;
+					if (move.flags['nosketch'] || move.isMax || move.isZ) continue;
 					if (move.isNonstandard && move.isNonstandard !== 'Past') continue;
 					if (move.isNonstandard === 'Past' && this.formatType !== 'natdex') continue;
 					sketchMoves.push(move.id);

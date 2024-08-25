@@ -2814,7 +2814,7 @@ export class Battle {
 					break;
 				default:
 					if (effect.effectType === 'Move') {
-						if (effect.name === 'Doom Desire') {
+						if (effect.name === 'Doom Desire' || effect.name === 'Spud Mortar') {
 							this.scene.runOtherAnim('doomdesirehit' as ID, [poke]);
 						}
 						if (effect.name === 'Future Sight') {
@@ -3407,6 +3407,10 @@ export class Battle {
 		case 'upkeep': {
 			this.usesUpkeep = true;
 			this.updateTurnCounters();
+			// Prevents getSwitchedPokemon from skipping over a Pokemon that switched out mid turn (e.g. U-turn)
+			for (const side of this.sides) {
+				side.lastPokemon = null;
+			}
 			break;
 		}
 		case 'turn': {
