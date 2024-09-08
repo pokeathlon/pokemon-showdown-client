@@ -1307,7 +1307,7 @@
 			buf += '<div class="setcol setcol-icon">';
 			if (fusionData.alts.length) {
 				buf += '<div class="setcell-sprite changesprite"><i class="fa fa-caret-down"></i></div>';
-			} else if (species.cosmeticFormes && !species.forme.split('-').includes('Mega')) {
+			} else if (species.cosmeticFormes && !species.forme.split('-').includes('Mega') && !['Hydroupa'].includes(species.name)) {
 				buf += '<div class="setcell-sprite changeform"><i class="fa fa-caret-down"></i></div>';
 			} else {
 				buf += '<div class="setcell-sprite"></div>';
