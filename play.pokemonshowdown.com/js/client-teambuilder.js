@@ -3011,7 +3011,7 @@
 			}
 
 			buf += '</form>';
-			if (species.cosmeticFormes && !species.forme.split('-').includes('Mega') && !['Lernean'].includes(species.abilities)) {
+			if (species.cosmeticFormes && !species.forme.split('-').includes('Mega') && !species.includes('Hydroupa')) {
 				buf += '<button class="altform button">Change sprite</button>';
 			}
 
