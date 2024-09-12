@@ -16,6 +16,7 @@
 			var buf = '<div class="pad"><button class="button" style="float:right;font-size:10pt;margin-top:3px" name="closeHide"><i class="fa fa-caret-right"></i> Hide</button>';
 			buf += '<div class="roomlisttop"></div>';
 			buf += '<div class="roomlist"><p><em style="font-size:20pt">Loading...</em></p></div><div class="roomlist"></div></div>';
+			buf += '<!-- Ezoic - under_first_paragraph - under_first_paragraph --><div id="ezoic-pub-ad-placeholder-107"> </div><!-- End Ezoic - under_first_paragraph - under_first_paragraph -->';
 			this.$el.html(buf);
 			app.on('response:rooms', this.update, this);
 			var settings = Dex.prefs('serversettings');
@@ -171,7 +172,7 @@
 				(hiddenRooms.length && this.showMoreRooms ? hiddenRooms.sort(this.compareRooms).map(this.renderRoomBtn).join("") : '')
 			);
 			this.$('.roomlist').last().html(
-				`<div><a href="https://discord.com/invite/vsEN6mzuNj" target="_blank" class="blocklink"><small style="float:right">(1300+ members)</small><strong><i class="fa fa-comments-o"></i> Discord<br></strong><small>The Pok&eacute;athlon Discord.</small></a></div>`
+				`<div><a href="https://discord.com/invite/vsEN6mzuNj" target="_blank" class="blocklink"><small style="float:right">(1600+ members)</small><strong><i class="fa fa-comments-o"></i> Discord<br></strong><small>The Pok&eacute;athlon Discord.</small></a></div>`
 			);
 		},
 		roomlist: function () {
