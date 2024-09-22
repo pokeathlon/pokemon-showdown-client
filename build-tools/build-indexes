@@ -34,8 +34,8 @@ if (!fs.existsSync('play.pokemonshowdown.com/sprites/fangame-sprites')) {
 	});
 }
 
-process.stdout.write("Syncing fangame sprites... \n");
-child_process.execSync('git pull', {cwd: 'play.pokemonshowdown.com/sprites/fangame-sprites'});
+// process.stdout.write("Syncing fangame sprites... \n");
+// child_process.execSync('git pull', {cwd: 'play.pokemonshowdown.com/sprites/fangame-sprites'});
 
 const Dex = require('../caches/pokemon-showdown/dist/sim/dex').Dex;
 const toID = Dex.toID;
@@ -43,8 +43,11 @@ process.stdout.write("Loading all dex data... ");
 Dex.includeData();
 Dex.includeModData();
 
-for (const mod in Dex.dexes) {
-	if (!mod.includes('infinitefusion') && !mod.includes('insurgence') && !mod.includes('uranium') && !mod.includes('pokeathlon') && !mod.includes('chaos')) continue;
+let usedMods = [];
+Dex.formats.all().map(format => {
+	if (!usedMods.includes(format.mod)) usedMods.push(format.mod);
+});
+for (const mod of usedMods) {
     const modData = Dex.dexes[mod];
 	const genDex = Dex.mod(mod).gen !== 9 ? Dex.dexes['gen' + Dex.mod(mod).gen] : Dex;
     for (const dataType in modData.data) {
