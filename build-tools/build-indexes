@@ -24,9 +24,9 @@ if (!fs.existsSync('play.pokemonshowdown.com/sprites/fusion-sprites')) {
 	});
 }
 
-process.stdout.write("Syncing IF sprites from Gitlab repository... \n");
-child_process.execSync('git pull', {cwd: 'play.pokemonshowdown.com/sprites/fusion-sprites'});
-child_process.execSync('git reset --hard', {cwd: 'play.pokemonshowdown.com/sprites/fusion-sprites'});
+// process.stdout.write("Syncing IF sprites from Gitlab repository... \n");
+// child_process.execSync('git pull', {cwd: 'play.pokemonshowdown.com/sprites/fusion-sprites'});
+// child_process.execSync('git reset --hard', {cwd: 'play.pokemonshowdown.com/sprites/fusion-sprites'});
 
 if (!fs.existsSync('play.pokemonshowdown.com/sprites/fangame-sprites')) {
 	child_process.execSync('git clone https://github.com/vikrambarr/fangame-sprites', {
@@ -34,8 +34,8 @@ if (!fs.existsSync('play.pokemonshowdown.com/sprites/fangame-sprites')) {
 	});
 }
 
-// process.stdout.write("Syncing fangame sprites... \n");
-// child_process.execSync('git pull', {cwd: 'play.pokemonshowdown.com/sprites/fangame-sprites'});
+process.stdout.write("Syncing fangame sprites... \n");
+child_process.execSync('git pull', {cwd: 'play.pokemonshowdown.com/sprites/fangame-sprites'});
 
 const Dex = require('../caches/pokemon-showdown/dist/sim/dex').Dex;
 const toID = Dex.toID;
