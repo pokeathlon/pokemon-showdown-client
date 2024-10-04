@@ -984,7 +984,6 @@ const Dex = new class implements ModdedDex {
 				let extension = head_num + '.' + body_num;
 				const FusionIndex = window.BattleFusionIndex;
 				if (head_num.toString() in FusionIndex && FusionIndex[head_num].includes(body_num.toString())) {
-					let altspriteCount = 0;
 					for (let sprite of FusionIndex[head_num]) {
 						if (alphabet.includes(sprite.slice(-1)) &&
 						sprite.slice(0, -1) === body_num.toString() &&
@@ -997,6 +996,18 @@ const Dex = new class implements ModdedDex {
 			}
 		}
 		return fusionData;
+	}
+
+	getPOACredit(pokemon: any) {
+		console.log(pokemon);
+		if (!pokemon || (!pokemon.species && !pokemon.speciesForme)) return false;
+
+		const dex = Dex.mod('gen9pokeathlon' as ID);
+		const species = dex.species.get((pokemon.speciesForme || pokemon.species));
+		if (species.tags.includes("Pokeathlon")) {
+			if (species.name in window.POACredit) return window.POACredit[species.name];
+		}
+		return false;
 	}
 };
 

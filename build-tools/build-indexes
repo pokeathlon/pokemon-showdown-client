@@ -1396,4 +1396,20 @@ process.stdout.write("Building fusion data...");
 	fs.writeFileSync('play.pokemonshowdown.com/data/fusion-credits.js', buf);
 }
 
+/*********************************************************
+ * Build poa-credits.js
+ *********************************************************/
+
+{
+	let POACredit = {};
+	let rawCredit = fs.readFileSync('play.pokemonshowdown.com/sprites/fangame-sprites/pokeathlon/creators.csv').toString();
+
+	for (let line of rawCredit.split('\n')) {
+		const parts = line.split(';');
+		POACredit[parts[0]] = [parts[1], parts[2]];
+	}
+	const buf = `exports.POACredit = JSON.parse('${JSON.stringify(POACredit).replace(/['\\]/g, "\\$&")}');\n\n`;
+	fs.writeFileSync('play.pokemonshowdown.com/data/poa-credits.js', buf);
+}
+
 console.log("DONE");
