@@ -1302,7 +1302,7 @@
 			buf += '<div class="setchart-nickname">';
 			buf += '<label>Nickname</label><input type="text" name="nickname" class="textbox" value="' + BattleLog.escapeHTML(set.name || '') + '" placeholder="' + (fusionData.nickname !== '' ? fusionData.nickname : BattleLog.escapeHTML(species.baseSpecies)) + '" />';
 			buf += '</div>';
-			buf += '<div ' + (fusionData.credit !== '' ? 'title="Sprite by: ' + BattleLog.escapeHTML(fusionData.credit) : (POACredit ? 'title="Concept by: ' + BattleLog.escapeHTML(POACredit[0]) + '<br>Sprite by: ' +  BattleLog.escapeHTML(POACredit[1]) : ''));
+			buf += '<div ' + (fusionData.credit !== '' ? 'title="Sprite by: ' + BattleLog.escapeHTML(fusionData.credit) : (POACredit ? 'title="Concept by: ' + BattleLog.escapeHTML(POACredit[0]) + ', Sprite by: ' +  BattleLog.escapeHTML(POACredit[1]) : ''));
 			buf += '" class="setchart" style="' + Dex.getTeambuilderSprite(set, this.curTeam.gen) + ';">';
 
 			// icon
