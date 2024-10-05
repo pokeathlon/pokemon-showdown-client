@@ -1245,6 +1245,15 @@ function toId() {
 				document.location.reload(true);
 				break;
 
+			case 'openpage':
+				// main server only, side servers don't get this
+				if (Config.server.id !== 'showdown') break;
+				var uri = parts[1];
+				if (!BattleLog.interstice.isWhitelisted(uri)) {
+					uri = BattleLog.interstice.getURI(uri);
+				}
+				this.openInNewWindow(uri);
+				break;
 			case 'c':
 			case 'chat':
 				if (parts[1] === '~') {
@@ -2672,11 +2681,6 @@ function toId() {
 			name: "Driver (%)",
 			type: 'staff',
 			order: 10006
-		},
-		'\u00a7': {
-			name: "Section Leader (\u00a7)",
-			type: 'staff',
-			order: 10007
 		},
 		'*': {
 			name: "Bot (*)",

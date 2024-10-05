@@ -2474,8 +2474,7 @@ export class Battle {
 
 			poke.searchid = args[1].substr(0, 2) + args[1].substr(3) + '|' + args[2];
 
-			let isCustomAnim = species.id !== 'palafinhero';
-			this.scene.animTransform(poke, isCustomAnim, true);
+			this.scene.animTransform(poke, true, true);
 			this.log(args, kwArgs);
 			break;
 		}
@@ -2513,7 +2512,6 @@ export class Battle {
 			let poke = this.getPokemon(args[1])!;
 			let species = Dex.species.get(args[2]);
 			let fromeffect = Dex.getEffect(kwArgs.from);
-			let isCustomAnim = species.name.startsWith('Wishiwashi');
 			if (!poke.getSpeciesForme().endsWith('-Gmax') && !species.name.endsWith('-Gmax')) {
 				poke.removeVolatile('typeadd' as ID);
 				poke.removeVolatile('typechange' as ID);
@@ -2524,7 +2522,7 @@ export class Battle {
 				this.activateAbility(poke, fromeffect);
 			}
 			poke.addVolatile('formechange' as ID, species.name); // the formechange volatile reminds us to revert the sprite change on switch-out
-			this.scene.animTransform(poke, isCustomAnim);
+			this.scene.animTransform(poke, true);
 			this.log(args, kwArgs);
 			break;
 		}
@@ -2726,7 +2724,7 @@ export class Battle {
 			let fromeffect = Dex.getEffect(kwArgs.from);
 			poke.removeVolatile(effect.id);
 
-			if (kwArgs.silent) {
+			if (kwArgs.silent && !(effect.id === 'protosynthesis' || effect.id === 'quarkdrive')) {
 				// do nothing
 			} else {
 				switch (effect.id) {

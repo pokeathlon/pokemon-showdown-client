@@ -1104,7 +1104,7 @@ Storage.unpackTeam = function (buf) {
 			set.fusion = misc[6];
 			set.altsprite = misc[7];
 		}
-		if (j < 0) break;
+		if (j < 0 || buf.indexOf('|', j) < 0) break;
 		i = j + 1;
 	}
 
