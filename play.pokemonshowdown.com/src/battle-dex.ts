@@ -999,7 +999,6 @@ const Dex = new class implements ModdedDex {
 	}
 
 	getPOACredit(pokemon: any) {
-		console.log(pokemon);
 		if (!pokemon || (!pokemon.species && !pokemon.speciesForme)) return false;
 
 		const dex = Dex.mod('gen9pokeathlon' as ID);
