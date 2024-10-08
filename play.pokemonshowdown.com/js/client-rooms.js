@@ -24,10 +24,10 @@
 			app.user.on('change:named', this.updateUser, this);
 			this.update();
 			this.chatroomInterval = setInterval(function () {
-				if (app.curSideRoom && app.curSideRoom.id === 'rooms') {
+				if (app.curSideRoom && ['rooms', 'lobby'].includes(app.curSideRoom.id)) {
 					app.send('/cmd rooms');
 				}
-			}, 20 * 1000);
+			}, 10 * 1000);
 		},
 		initSectionSelection: function () {
 			var buf = ['<option value="">(All rooms)</option>'];
@@ -46,7 +46,7 @@
 			this.update();
 		},
 		focus: function () {
-			if (new Date().getTime() - this.lastUpdate > 20 * 1000) {
+			if (new Date().getTime() - this.lastUpdate > 10 * 1000) {
 				app.send('/cmd rooms');
 				this.lastUpdate = new Date().getTime();
 			}

@@ -1870,6 +1870,15 @@
 			buf += '<li class="userlist-count" id="' + this.room.id + '-userlist-users" style="text-align:center;padding:2px 0">';
 			buf += '<small id="' + this.room.id + '-usercount-users">' + usersString + '</small></li>';
 
+			if (this.room.id == "lobby") {
+				buf += '<li id="' + this.room.id + '-userlist-queue" style="background: rgba(0, 0, 0, 0.45);height: unset;padding: 2px;">';
+				for (var format in app.roomsData.ladderSearches) {
+					buf += '<p style="font-size: 6pt;"><b style="' + BattleLog.hashColor(format) + ';text-shadow: 1px 1px black;">' + format + ':</b> ' + app.roomsData.ladderSearches[format] + '</p>';
+				}
+				buf += '</li>';
+				setInterval(() => this.updateLadderSearches(), 5 * 1000);
+			}
+
 			var users = [];
 			if (this.room.users) {
 				var self = this;
@@ -1913,6 +1922,13 @@
 			var users = Math.max(this.room.userCount.users || 0, this.room.userCount.globalUsers || 0);
 			$('#' + this.room.id + '-usercount-users').html('' + users + (users === 1 ? ' user' : ' users'));
 		},
+		updateLadderSearches: function () {
+			var buf = '';
+			for (var format in app.roomsData.ladderSearches) {
+				buf += '<p style="font-size: 6pt;"><b style="' + BattleLog.hashColor(format) + ';text-shadow: 1px 1px black;">' + format + ':</b> ' + app.roomsData.ladderSearches[format] + '</p>';
+			}
+			$('#' + this.room.id + '-userlist-queue').html(buf);
+		},
 		add: function (userid) {
 			$('#' + this.room.id + '-userlist-user-' + userid).remove();
 			var users = this.$el.children();
@@ -1931,7 +1947,7 @@
 					return;
 				}
 			}
-			$(this.constructItem(userid)).insertAfter($(users[right]));
+			$(this.constructItem(userid)).insertAfter($(users[right + 1]));
 		},
 		remove: function (userid) {
 			$('#' + this.room.id + '-userlist-user-' + userid).remove();
