@@ -2479,8 +2479,8 @@ class BattleTooltips {
 
 		if (pokemon.fusion) {
 
-			const fusionSpecies = this.battle.dex.species.get(pokemon.fusion);
-			const species = this.battle.dex.species.get(pokemon.speciesForme);
+			const fusionSpecies = Dex.mod('gen9infinitefusion').species.get(pokemon.fusion);
+			const species = Dex.mod('gen9infinitefusion').species.get(pokemon.speciesForme);
 
 			let speciesTypes = species.types;
 			let fusionTypes = fusionSpecies.types;
