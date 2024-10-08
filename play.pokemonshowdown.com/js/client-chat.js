@@ -1947,7 +1947,7 @@
 					return;
 				}
 			}
-			$(this.constructItem(userid)).insertAfter($(users[right + 1]));
+			$(this.constructItem(userid)).insertAfter($(users[right ? right : 1]));
 		},
 		remove: function (userid) {
 			$('#' + this.room.id + '-userlist-user-' + userid).remove();
