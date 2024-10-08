@@ -1873,7 +1873,7 @@
 			if (this.room.id == "lobby") {
 				buf += '<li id="' + this.room.id + '-userlist-queue" style="background: rgba(0, 0, 0, 0.45);height: unset;padding: 2px;">';
 				for (var format in app.roomsData.ladderSearches) {
-					buf += '<p style="font-size: 6pt;"><b style="' + BattleLog.hashColor(format) + ';text-shadow: 1px 1px black;">' + format + ':</b> ' + app.roomsData.ladderSearches[format] + '</p>';
+					buf += '<p style="font-size: 5.5pt;"><b style="' + BattleLog.hashColor(format) + ';text-shadow: 1px 1px black;">' + format + ':</b> ' + app.roomsData.ladderSearches[format] + '</p>';
 				}
 				buf += '</li>';
 				setInterval(() => this.updateLadderSearches(), 5 * 1000);
