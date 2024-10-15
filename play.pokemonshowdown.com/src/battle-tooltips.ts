@@ -1119,6 +1119,10 @@ class BattleTooltips {
 		if (ability === 'athenian') {
 			stats.spa *= 2;
 		}
+		if (ability === 'sharpcoral') {
+			stats.spa *= 2; stats.atk *= 2;
+			stats.spd *= 2; stats.def *= 2;
+		}
 		if (ability === 'hustle' || (ability === 'gorillatactics' && !clientPokemon?.volatiles['dynamax'])) {
 			stats.atk = Math.floor(stats.atk * 1.5);
 		}
@@ -1673,6 +1677,8 @@ class BattleTooltips {
 					if (value.abilityModify(0, 'Pixilate')) moveType = 'Fairy';
 					if (value.abilityModify(0, 'Refrigerate')) moveType = 'Ice';
 					if (value.abilityModify(0, 'Intoxicate')) moveType = 'Poison';
+					if (value.abilityModify(0, 'Atomizate')) moveType = 'Nuclear';
+					if (value.abilityModify(0, 'Energizate')) moveType = 'Electric';
 				} if (moveType === 'Rock') {
 					if (value.abilityModify(0, 'Foundry')) moveType = 'Fire';
 				}
@@ -2134,9 +2140,6 @@ class BattleTooltips {
 		if (move.flags['sound']) {
 			value.abilityModify(1.3, "Punk Rock");
 		}
-		if (move.flags['sound']) {
-			value.abilityModify(1.25, "Amplifier");
-		}
 		if (move.flags['slicing']) {
 			value.abilityModify(1.5, "Sharpness");
 		}
@@ -2166,6 +2169,8 @@ class BattleTooltips {
 				value.abilityModify(this.battle.gen > 6 ? 1.2 : 1.3, "Pixilate");
 				value.abilityModify(this.battle.gen > 6 ? 1.2 : 1.3, "Refrigerate");
 				value.abilityModify(this.battle.gen > 6 ? 1.2 : 1.3, "Intoxicate");
+				value.abilityModify(this.battle.gen > 6 ? 1.2 : 1.3, "Atomizate");
+				value.abilityModify(this.battle.gen > 6 ? 1.2 : 1.3, "Energizate");
 			} if (move.type === 'Rock') {
 				value.abilityModify(this.battle.gen > 6 ? 1.2 : 1.3, "Foundry");
 			}
@@ -2173,17 +2178,24 @@ class BattleTooltips {
 				value.abilityModify(1.2, "Normalize");
 			}
 		}
+		if (move.flags['sound']) {
+			value.abilityModify(1.25, "Amplifier");
+			value.abilityModify(1.3, "Sound Boost");
+		}
 		if (move.recoil || move.hasCrashDamage) {
-			value.abilityModify(1.2, 'Reckless');
+			value.abilityModify(1.2, "Reckless");
 		}
 		if (move.flags.bite) {
-			value.abilityModify(1.3, 'Spectral Jaws');
+			value.abilityModify(1.3, "Spectral Jaws");
 		}
 		let curMonth = (new Date()).getMonth();
 		if ([10, 11, 0, 1].includes(curMonth)) {
-			value.abilityModify(1.4, 'Winter Joy');
+			value.abilityModify(1.4, "Winter Joy");
 		} else if ([4, 5, 6, 7].includes(curMonth)) {
-			value.abilityModify(0.7, 'Winter Joy');
+			value.abilityModify(0.7, "Winter Joy");
+		}
+		if (move.priority > 0) {
+			value.abilityModify(1.5, 'Acceleration');
 		}
 
 		if (move.category !== 'Status') {
