@@ -566,7 +566,7 @@ const Dex = new class implements ModdedDex {
 		}
 
 		if (species.tags.includes("Pokeathlon")) {
-			spriteData.url = 'https://play.pokeathlon.com/sprites/fangame-sprites/pokeathlon/' + (spriteData.isFrontSprite ? 'front': 'back') + (spriteData.shiny ? '-shiny': '') + '/' + species.id + '.png';
+			spriteData.url = 'https://play.pokeathlon.com/sprites/fangame-sprites/pokeathlon/' + (spriteData.isFrontSprite ? 'front': 'back') + (spriteData.shiny ? '-shiny': '') + '/' + species.id + '.gif';
 			spriteData.pixelated = true;
 			spriteData.gen = 5;
 			return spriteData;
