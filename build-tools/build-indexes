@@ -700,7 +700,7 @@ process.stdout.write("Building `data/teambuilder-tables.js`... ");
 				continue;
 			}
 			if (item.isNonstandard && !isMetBattle) {
-				if (isNatDex || isNatDexFusions || isNatDexPOA) {
+				if (isNatDex || isNatDexFusions || isNatDexPOA || isNatDexChaos) {
 					let curItem = item;
 					let curGen = genNum;
 					while (item.isNonstandard && curGen >= 7) {
