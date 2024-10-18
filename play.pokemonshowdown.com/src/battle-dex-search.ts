@@ -590,7 +590,7 @@ abstract class BattleTypedSearch<T extends SearchType> {
 			let info = window.Formats[formatName];
 			if ('mod' in info) {
 				this.dex = Dex.mod(info.mod);
-				if (info.mod.includes('infinitefusion') || info.mod.includes('pokeathlon') || info.mod.includes('insurgence') || info.mod.includes('uranium') || info.mod.includes('chaos')) {
+				if (info.mod.includes('infinitefusion') || info.mod.includes('pokeathlon') || info.mod.includes('insurgence') || info.mod.includes('uranium') || info.mod.includes('chaos') || info.mod.includes('xenoverse')) {
 					this.formatType = 'natdex';
 					if (info.gameType === 'doubles') {
 						format = 'doublesubers' as ID;
