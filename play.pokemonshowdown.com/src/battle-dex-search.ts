@@ -771,7 +771,7 @@ abstract class BattleTypedSearch<T extends SearchType> {
 		let table = BattleTeambuilderTable;
 		if (this.formatType?.startsWith('bdsp')) table = table['gen8bdsp'];
 		if (this.formatType === 'letsgo') table = table['gen7letsgo'];
-		if (['gen7infinitefusion', 'gen9pokeathlon', 'gen9insurgence', 'gen6insurgence', 'gen9uranium', 'gen6uranium', 'gen9chaos', 'gen9chaosfusion'].includes(this.dex.modid)) table = table[this.dex.modid];
+		if (['gen7infinitefusion', 'gen9pokeathlon', 'gen9insurgence', 'gen6insurgence', 'gen9uranium', 'gen6uranium', 'gen9xenoverse', 'gen5xenoverse', 'gen9chaos', 'gen9chaosfusion'].includes(this.dex.modid)) table = table[this.dex.modid];
 		if (speciesid in table.learnsets) return speciesid;
 		const species = this.dex.species.get(speciesid);
 		if (!species.exists) return '' as ID;
@@ -839,7 +839,7 @@ abstract class BattleTypedSearch<T extends SearchType> {
 			let table = BattleTeambuilderTable;
 			if (this.formatType?.startsWith('bdsp')) table = table['gen8bdsp'];
 			if (this.formatType === 'letsgo') table = table['gen7letsgo'];
-			if (['gen7infinitefusion', 'gen9pokeathlon', 'gen9insurgence', 'gen6insurgence', 'gen9uranium', 'gen6uranium', 'gen9chaos', 'gen9chaosfusion'].includes(this.dex.modid)) table = table[this.dex.modid];
+			if (['gen7infinitefusion', 'gen9pokeathlon', 'gen9insurgence', 'gen6insurgence', 'gen9uranium', 'gen6uranium', 'gen9xenoverse', 'gen5xenoverse', 'gen9chaos', 'gen9chaosfusion'].includes(this.dex.modid)) table = table[this.dex.modid];
 			let learnset = table.learnsets[learnsetid];
 			const eggMovesOnly = this.eggMovesOnly(learnsetid, speciesid);
 			if (learnset && (moveid in learnset) && (!this.format.startsWith('tradebacks') ? learnset[moveid].includes(genChar) :
@@ -1659,7 +1659,7 @@ class BattleMoveSearch extends BattleTypedSearch<'move'> {
 		if (this.formatType?.startsWith('ssdlc1')) lsetTable = lsetTable['gen8dlc1'];
 		if (this.formatType?.startsWith('predlc')) lsetTable = lsetTable['gen9predlc'];
 		if (this.formatType?.startsWith('svdlc1')) lsetTable = lsetTable['gen9dlc1'];
-		if (['gen7infinitefusion', 'gen9pokeathlon', 'gen9insurgence', 'gen6insurgence', 'gen9uranium', 'gen6uranium', 'gen9chaos', 'gen9chaosfusion'].includes(this.dex.modid)) lsetTable = lsetTable[this.dex.modid];
+		if (['gen7infinitefusion', 'gen9pokeathlon', 'gen9insurgence', 'gen6insurgence', 'gen9uranium', 'gen6uranium', 'gen9xenoverse', 'gen5xenoverse', 'gen9chaos', 'gen9chaosfusion'].includes(this.dex.modid)) lsetTable = lsetTable[this.dex.modid];
 		while (learnsetid) {
 			let learnset = lsetTable.learnsets[learnsetid];
 			if (learnset) {
