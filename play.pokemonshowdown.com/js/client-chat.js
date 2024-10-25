@@ -1450,6 +1450,8 @@
 					name2 = row[3];
 					silent = (row[0] === 'B');
 
+					if (Config.groups[name[0]].type === 'punishment' || Config.groups[name2[0]].type === 'punishment') break;
+
 					var matches = ChatRoom.parseBattleID(id);
 					if (!matches) {
 						return; // bogus room ID could be used to inject JavaScript
@@ -1968,6 +1970,8 @@
 				text += '<strong><em style="' + color + '">' + BattleLog.escapeHTML(user.name) + '</em></strong>';
 			} else if (details.type === 'staff') {
 				text += '<strong style="' + color + '">' + BattleLog.escapeHTML(user.name) + '</strong>';
+			} else if (details.type === 'punishment') {
+				text += '<span>punished user</span>';
 			} else {
 				text += '<span style="' + color + '">' + BattleLog.escapeHTML(user.name) + '</span>';
 			}
