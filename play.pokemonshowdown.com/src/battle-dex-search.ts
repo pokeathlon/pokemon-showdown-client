@@ -957,6 +957,9 @@ class BattlePokemonSearch extends BattleTypedSearch<'pokemon'> {
 			case 'syclar':
 				results.push(['header', "CAP"]);
 				break;
+			case 'bulbmantle':
+				results.push(['header', "Fangames"]);
+				break;
 			case 'pikachucosplay':
 				continue;
 			}
