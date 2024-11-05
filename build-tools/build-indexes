@@ -99,7 +99,7 @@ function requireNoCache(pathSpec) {
 	index = index.concat(Object.keys(Dex.data.Abilities).map(x => x + ' ability'));
 	index = index.concat(Object.keys(Dex.data.TypeChart).map(x => toID(x) + ' type'));
 	index = index.concat(['physical', 'special', 'status'].map(x => toID(x) + ' category'));
-	index = index.concat(['monster', 'water1', 'bug', 'flying', 'field', 'fairy', 'grass', 'humanlike', 'water3', 'mineral', 'amorphous', 'water2', 'ditto', 'dragon', 'undiscovered'].map(x => toID(x) + ' egggroup'));
+	index = index.concat(['pokeathlon', 'insurgence', 'uranium', 'poa'].map(x => toID(x) + ' egggroup'));
 	index = index.concat(['ou', 'uu', 'ru', 'nu', 'pu', 'zu', 'lc', 'nfe', 'uber', 'uubl', 'rubl', 'nubl', 'publ', 'zubl', 'cap', 'caplc', 'capnfe'].map(x => toID(x) + ' tier'));
 
 	let BattleArticleTitles = {};
@@ -274,27 +274,8 @@ function requireNoCache(pathSpec) {
 	index.sort();
 
 	// manually rearrange
-	index[index.indexOf('grass type')] = 'grass egggroup';
-	index[index.indexOf('grass egggroup')] = 'grass type';
-
-	index[index.indexOf('fairy type')] = 'fairy egggroup';
-	index[index.indexOf('fairy egggroup')] = 'fairy type';
-
-	index[index.indexOf('flying type')] = 'flying egggroup';
-	index[index.indexOf('flying egggroup')] = 'flying type';
-
-	index[index.indexOf('dragon type')] = 'dragon egggroup';
-	index[index.indexOf('dragon egggroup')] = 'dragon type';
-
-	index[index.indexOf('bug type')] = 'bug egggroup';
-	index[index.indexOf('bug egggroup')] = 'bug type';
-
 	index[index.indexOf('psychic type')] = 'psychic move';
 	index[index.indexOf('psychic move')] = 'psychic type';
-
-	index[index.indexOf('ditto pokemon')] = 'ditto egggroup';
-	index[index.indexOf('ditto egggroup')] = 'ditto pokemon';
-
 
 	let BattleSearchIndex = index.map(x => {
 		x = x.split(' ');

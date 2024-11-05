@@ -60,7 +60,7 @@ class DexSearch {
 		move: 'Moves',
 		item: 'Items',
 		ability: 'Abilities',
-		egggroup: 'Egg group',
+		egggroup: 'Fangame',
 		category: 'Category',
 		article: 'Article',
 	};

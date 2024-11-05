@@ -216,10 +216,7 @@
 		case 'egggroup':
 			// very hardcode
 			var egName;
-			if (id === 'humanlike') egName = 'Human-Like';
-			else if (id === 'water1') egName = 'Water 1';
-			else if (id === 'water2') egName = 'Water 2';
-			else if (id === 'water3') egName = 'Water 3';
+			if (id === 'poa') egName = 'POA';
 			if (egName) {
 				if (matchLength > 5) matchLength++;
 			} else {
