@@ -2722,7 +2722,8 @@ export class PokemonSprite extends Sprite {
 				BattleOtherAnims.schoolingin.anim(scene, [this]);
 			} else if (speciesid === 'wishiwashi') {
 				BattleOtherAnims.schoolingout.anim(scene, [this]);
-			} else if (speciesid === 'mimikyubusted' || speciesid === 'mimikyubustedtotem') {
+			} else if (speciesid === 'mimikyubusted' || speciesid === 'mimikyubustedtotem' ||
+				speciesid === 'aegislash' || speciesid === 'aegislashblade') {
 				// standard animation
 			} else if (speciesid === 'palafinhero') {
 				skipAnim = true;
