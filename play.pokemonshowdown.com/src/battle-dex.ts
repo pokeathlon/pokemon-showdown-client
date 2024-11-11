@@ -557,7 +557,7 @@ const Dex = new class implements ModdedDex {
 			return spriteData;
 		}
 
-		for (var fangame of ["Infinite Fusion", "Pokeathlon", "Insurgence", "Uranium", "Xenoverse"]) {
+		for (var fangame of ["Infinite Fusion", "Pokeathlon", "Insurgence", "Uranium", "Infinity"]) {
 			if (species.tags.includes(fangame)) {
 				spriteData.url = 'https://play.pokeathlon.com/sprites/fangame-sprites/' + toID(fangame) + '/' + (!["Infinite Fusion"].includes(fangame) ? (spriteData.isFrontSprite ? 'front' : 'back') + (spriteData.shiny ? '-shiny': '') + '/' : '') + species.id + (["Pokeathlon", "Xenoverse"].includes(fangame) ? '.gif' : '.png');
 				spriteData.pixelated = true;
@@ -781,6 +781,11 @@ const Dex = new class implements ModdedDex {
 			return `image-rendering:pixelated;background:transparent url(https://play.pokeathlon.com/sprites/fangame-sprites/uranium/iconsprites/${id}.png) no-repeat scroll ${fainted}`;
 		}
 
+		if (species.tags.includes("Infinity")) {
+			let fainted = ((pokemon as Pokemon | ServerPokemon)?.fainted ? `;opacity:.3;filter:grayscale(100%) brightness(.5)` : ``);
+			return `image-rendering:pixelated;background:transparent url(https://play.pokeathlon.com/sprites/fangame-sprites/infinity/iconsprites/${id}.png) no-repeat scroll ${fainted}`;
+		}
+
 		let top = Math.floor(num / 12) * 30;
 		let left = (num % 12) * 40;
 		let fainted = ((pokemon as Pokemon | ServerPokemon)?.fainted ? `;opacity:.3;filter:grayscale(100%) brightness(.5)` : ``);
@@ -854,7 +859,7 @@ const Dex = new class implements ModdedDex {
 			let url = 'https://play.pokeathlon.com/sprites/fusion-sprites/CustomBattlers/' + fusionData.extension + '.png';
 			return 'background-image:url(' + url + ');background-position:' + data.x + 'px ' + data.y + 'px;background-repeat:no-repeat;background-size:100px;image-rendering:pixelated';
 		}
-		for (var fangame of ["Infinite Fusion", "Pokeathlon", "Insurgence", "Uranium", "Xenoverse"]) {
+		for (var fangame of ["Infinite Fusion", "Pokeathlon", "Insurgence", "Uranium", "Infinity"]) {
 			if (Dex.species.get(pokemon.species).tags.includes(fangame)) {
 				let url = 'https://play.pokeathlon.com/sprites/fangame-sprites/' + toID(fangame) + (!["Infinite Fusion"].includes(fangame) ? '/front' + shiny : '') + '/' + toID(pokemon.species) + (["Pokeathlon", "Xenoverse"].includes(fangame) ? '.gif' : '.png');
 				return 'background-image:url(' + url + ');background-position:' + data.x + 'px ' + data.y + 'px;background-repeat:no-repeat;background-size:100px;image-rendering:pixelated';

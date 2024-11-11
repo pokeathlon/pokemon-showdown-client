@@ -1257,8 +1257,7 @@
 				this.open = Storage.prefs('openformats') || {
 					"Chaos": true,
 					"Infinite Fusion: Regional Dex": true, "Infinite Fusion: Doubles": true, "Infinite Fusion: National Dex": true, "Infinite Fusion: Extras": true,
-					"Insurgence: Regional Dex": true, "Insurgence: Doubles": true, "Insurgence: National Dex": true, "Insurgence: Extras": true,
-					"Uranium: Regional Dex": true, "Uranium: Doubles": true, "Uranium: National Dex": true, "Uranium: Extras": true,
+					"Fangames: Regional Dex": true, "Fangames: Doubles": true, "Fangames: National Dex": true, "Fangames: Extras": true,
 					"Pokéathlon: Regional Dex": true, "Pokéathlon: Doubles": true, "Pokéathlon: National Dex": true, "Pokéathlon: Extras": true,
 				};
 			}
