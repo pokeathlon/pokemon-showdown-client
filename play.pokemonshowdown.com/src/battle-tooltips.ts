@@ -1116,7 +1116,7 @@ class BattleTooltips {
 		if (ability === 'purepower' || ability === 'hugepower') {
 			stats.atk *= 2;
 		}
-		if (ability === 'athenian') {
+		if (ability === 'athenian' || ability === 'purefocus') {
 			stats.spa *= 2;
 		}
 		if (ability === 'sharpcoral') {
@@ -2249,7 +2249,7 @@ class BattleTooltips {
 				value.modify(0.5, 'Misty Terrain + grounded target');
 			}
 		} else if (
-			this.battle.hasPseudoWeather('Grassy Terrain') && ['earthquake', 'bulldoze', 'magnitude'].includes(move.id)
+			this.battle.hasPseudoWeather('Grassy Terrain') && ['earthquake', 'bulldoze', 'magnitude', 'terraforce', 'anvilsmash', 'webwrecker'].includes(move.id)
 		) {
 			if (target ? target.isGrounded() : true) {
 				value.modify(0.5, 'Grassy Terrain + grounded target');
