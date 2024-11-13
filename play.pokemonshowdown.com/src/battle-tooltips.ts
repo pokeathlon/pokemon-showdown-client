@@ -800,16 +800,16 @@ class BattleTooltips {
 		let fuseBuf = pokemon.fusion ? ` <small><b>Fusion: </b>${pokemon.fusion}</small><br />`: ``;
 		
 		let fusionData = Dex.getFusionData(pokemon);
-		let POACredit = Dex.getPOACredit(pokemon);
+		let FangameCredit = Dex.getFangameCredit(pokemon);
 		if (clientPokemon?.volatiles.formechange && clientPokemon.volatiles.transform) {
 			fusionData = Dex.getFusionData({species: clientPokemon.volatiles.formechange[1], fusion: clientPokemon.volatiles.transform[5]});
-			POACredit = Dex.getPOACredit({species: clientPokemon.volatiles.formechange[1]});
+			FangameCredit = Dex.getFangameCredit({species: clientPokemon.volatiles.formechange[1]});
 		}
 		let creditBuf = '';
 		if (fusionData.credit !== '') {
 			creditBuf = fusionData.credit !== '' ? ` <small><b>Sprite: </b>${fusionData.credit}</small><br />`: ``;
-		} else if (POACredit) {
-			creditBuf = ` <small><b>Concept: </b>${POACredit[0]}<br><b>Sprite: </b>${POACredit[1]}</small><br />`;
+		} else if (FangameCredit) {
+			creditBuf = ` <small><b>Concept: </b>${FangameCredit[0]}<br><b>Sprite: </b>${FangameCredit[1]}</small><br />`;
 		}
 
 		let levelBuf = (pokemon.level !== 100 ? ` <small>L${pokemon.level}</small>` : ``);

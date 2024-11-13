@@ -971,13 +971,13 @@ const Dex = new class implements ModdedDex {
 		return fusionData;
 	}
 
-	getPOACredit(pokemon: any) {
+	getFangameCredit(pokemon: any) {
 		if (!pokemon || (!pokemon.species && !pokemon.speciesForme)) return false;
 
-		const dex = Dex.mod('gen9pokeathlon' as ID);
+		const dex = Dex.mod('gen9chaos' as ID);
 		const species = dex.species.get((pokemon.speciesForme || pokemon.species));
-		if (species.tags.includes("Pokeathlon")) {
-			if (species.name in window.POACredit) return window.POACredit[species.name];
+		if (species.tags.includes("Pokeathlon") || species.tags.includes("Insurgence") || species.tags.includes("Uranium") || species.tags.includes("Infinity")) {
+			if (species.id in window.FangameCredit) return window.FangameCredit[species.id];
 		}
 		return false;
 	}
