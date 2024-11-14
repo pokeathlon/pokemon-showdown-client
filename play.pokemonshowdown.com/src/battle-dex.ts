@@ -559,10 +559,11 @@ const Dex = new class implements ModdedDex {
 
 		for (var fangame of ["Infinite Fusion", "Pokeathlon", "Insurgence", "Uranium", "Infinity"]) {
 			if (species.tags.includes(fangame)) {
-				spriteData.url = 'https://play.pokeathlon.com/sprites/fangame-sprites/' + toID(fangame) + '/' + (!["Infinite Fusion"].includes(fangame) ? (spriteData.isFrontSprite ? 'front' : 'back') + (spriteData.shiny ? '-shiny': '') + '/' : '') + species.id + (["Pokeathlon", "Xenoverse"].includes(fangame) ? '.gif' : '.png');
+				if (species.eggGroups.includes("Digimon")) spriteData.url = 'https://play.pokeathlon.com/sprites/fangame-sprites/infinity/digimon/' + species.id + '.png';
+				else spriteData.url = 'https://play.pokeathlon.com/sprites/fangame-sprites/' + toID(fangame) + '/' + (!["Infinite Fusion"].includes(fangame) ? (spriteData.isFrontSprite ? 'front' : 'back') + (spriteData.shiny ? '-shiny': '') + '/' : '') + species.id + (["Pokeathlon", "Xenoverse"].includes(fangame) ? '.gif' : '.png');
 				spriteData.pixelated = true;
 				spriteData.gen = 5;
-				if (fangame === "Infinite Fusion" && !spriteData.isFrontSprite) spriteData.flip = true;
+				if ((fangame === "Infinite Fusion" || species.eggGroups.includes("Digimon")) && !spriteData.isFrontSprite) spriteData.flip = true;
 				return spriteData;
 			}
 		}
@@ -862,6 +863,7 @@ const Dex = new class implements ModdedDex {
 		for (var fangame of ["Infinite Fusion", "Pokeathlon", "Insurgence", "Uranium", "Infinity"]) {
 			if (Dex.species.get(pokemon.species).tags.includes(fangame)) {
 				let url = 'https://play.pokeathlon.com/sprites/fangame-sprites/' + toID(fangame) + (!["Infinite Fusion"].includes(fangame) ? '/front' + shiny : '') + '/' + toID(pokemon.species) + (["Pokeathlon", "Xenoverse"].includes(fangame) ? '.gif' : '.png');
+				if (Dex.species.get(pokemon.species).eggGroups.includes('Digimon')) url = 'https://play.pokeathlon.com/sprites/fangame-sprites/infinity/digimon' + toID(pokemon.species) + '.png';
 				return 'background-image:url(' + url + ');background-position:' + data.x + 'px ' + data.y + 'px;background-repeat:no-repeat;background-size:100px;image-rendering:pixelated';
 			}
 		}
