@@ -972,9 +972,9 @@
 					user: targets[0]
 				}, Storage.safeJSON(function (data) {
 					if (!data || !$.isArray(data)) return self.add('|raw|Error: corrupted ranking data');
-					var buffer = '<div class="ladder"><table><tr><td colspan="8">User: <strong>' + toName(targets[0]) + '</strong></td></tr>';
+					var buffer = '<div class="ladder"><table><tr><td colspan="9">User: <strong>' + toName(targets[0]) + '</strong></td></tr>';
 					if (!data.length) {
-						buffer += '<tr><td colspan="8"><em>This user has not played any ladder games yet.</em></td></tr>';
+						buffer += '<tr><td colspan="9"><em>This user has not played any ladder games yet.</em></td></tr>';
 						buffer += '</table></div>';
 						return self.add('|raw|' + buffer);
 					}
@@ -983,7 +983,7 @@
 					for (var i = 0; i < data.length; i++) {
 						if ('suspect' in data[i]) suspect = true;
 					}
-					if (suspect) buffer += '<th>Suspect test eligible?</th>';
+					if (suspect) buffer += '<th>Suspect reqs possible?</th>';
 					buffer += '</tr>';
 					var hiddenFormats = [];
 					for (var i = 0; i < data.length; i++) {
