@@ -963,7 +963,7 @@ process.stdout.write("Building `data/teambuilder-tables.js`... ");
 		BattleTeambuilderTable[learnsetmod].learnsets = modlearnsets;
 		for (const id in Dex.mod(learnsetmod).data.Learnsets) {
 			const learnset = Dex.mod(learnsetmod).data.Learnsets[id].learnset;
-			if (!learnset) continue;
+			if (!learnset || (Dex.data.Learnsets[id] && JSON.stringify(Dex.data.Learnsets[id].learnset) === JSON.stringify(learnset))) continue;
 			modlearnsets[id] = {};
 			for (const moveid in learnset) {
 				const gens = learnset[moveid].map(x => Number(x[0]));
