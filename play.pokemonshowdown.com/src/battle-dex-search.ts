@@ -1856,7 +1856,7 @@ class BattleMoveSearch extends BattleTypedSearch<'move'> {
 		if (isFusion) {
 			learnsetid = this.firstLearnsetid(toID(this.set?.fusion));
 			while (learnsetid) {
-				let learnset = lsetTable.learnsets[learnsetid];
+				let learnset = lsetTable.learnsets[learnsetid] || BattleTeambuilderTable.learnsets[learnsetid];
 				if (learnset) {
 					for (let moveid in learnset) {
 						let learnsetEntry = learnset[moveid];
