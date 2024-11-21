@@ -979,7 +979,7 @@ const Dex = new class implements ModdedDex {
 		const dex = Dex.mod('gen9chaos' as ID);
 		const species = dex.species.get((pokemon.speciesForme || pokemon.species));
 		if (species.tags.includes("Pokeathlon") || species.tags.includes("Insurgence") || species.tags.includes("Uranium") || species.tags.includes("Infinity")) {
-			if (species.id in window.FangameCredit) return window.FangameCredit[species.id];
+			if (window.FangameCredit && species.id in window.FangameCredit) return window.FangameCredit[species.id];
 		}
 		return false;
 	}
