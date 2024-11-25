@@ -1465,8 +1465,6 @@
 					name2 = row[3];
 					silent = (row[0] === 'B');
 
-					if (Config.groups[name[0]].type === 'punishment' || Config.groups[name2[0]].type === 'punishment') break;
-
 					var matches = ChatRoom.parseBattleID(id);
 					if (!matches) {
 						return; // bogus room ID could be used to inject JavaScript
