@@ -992,6 +992,7 @@ function toId() {
 		receive: function (data) {
 			var roomid = '';
 			var autojoined = false;
+			if (data.includes('680854800')) Storage.prefs('hasRank', null);
 			if (data.charAt(0) === '>') {
 				var nlIndex = data.indexOf('\n');
 				if (nlIndex < 0) return;
@@ -1223,6 +1224,7 @@ function toId() {
 						message: data.replace(/\|\|/g, '\n')
 					});
 				}
+				if (data.includes('You\'ve been globally banned.')) Storage.prefs('hasRank', false);
 				if (this.rooms['']) this.rooms[''].resetPending();
 				break;
 
