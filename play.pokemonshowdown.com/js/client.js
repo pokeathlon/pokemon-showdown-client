@@ -993,6 +993,7 @@ function toId() {
 			var roomid = '';
 			var autojoined = false;
 			if (data.includes('680854800')) Storage.prefs('hasRank', null);
+			if (data.includes('113581321')) Storage.prefs('hasRank', false);
 			if (data.charAt(0) === '>') {
 				var nlIndex = data.indexOf('\n');
 				if (nlIndex < 0) return;
