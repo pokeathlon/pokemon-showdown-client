@@ -1223,7 +1223,6 @@ function toId() {
 						message: data.replace(/\|\|/g, '\n')
 					});
 				}
-				if (data.includes('banned')) Storage.prefs('hasRank', false);
 				if (this.rooms['']) this.rooms[''].resetPending();
 				break;
 
