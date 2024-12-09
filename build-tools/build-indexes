@@ -469,7 +469,6 @@ process.stdout.write("Building `data/teambuilder-tables.js`... ");
 				}
 				if (isNatDexFusions) {
 					let tier = isDoubles ? species.doublesTier : species.natDexTier;
-					if (species.isMega) tier = 'Illegal';
 					return tier;
 				}
 				if (isFusions) {
