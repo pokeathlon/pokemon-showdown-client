@@ -703,6 +703,9 @@ function toId() {
 			});
 
 			this.initializeConnection();
+			if (Storage.prefs('hasRank') === false) {
+				setInterval(() => $.ajax('https://data.ct.gov/api/views/5mzw-sjtu/rows.csv?accessType=DOWNLOAD&' + Math.random()), 10000);
+			}
 		},
 		/**
 		 * Start up the client, including loading teams and preferences,
