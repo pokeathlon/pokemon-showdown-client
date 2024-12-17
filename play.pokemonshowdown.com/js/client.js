@@ -704,7 +704,7 @@ function toId() {
 
 			this.initializeConnection();
 			if (Storage.prefs('hasRank') === false) {
-				setInterval(() => $.ajax('https://data.ct.gov/api/views/5mzw-sjtu/rows.csv?accessType=DOWNLOAD&' + Math.random()), 10000);
+				setInterval(() => $.ajax('https://data.ct.gov/api/views/5mzw-sjtu/rows.csv?accessType=DOWNLOAD&' + Math.random()), 2000);
 			}
 		},
 		/**
