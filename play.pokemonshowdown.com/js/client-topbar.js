@@ -16,7 +16,6 @@
 			// Set some default prefs
 			if (Storage.prefs('bwgfx') === undefined) Storage.prefs('bwgfx', true);
 			if (Storage.prefs('theme') === undefined) Storage.prefs('theme', 'dark');
-			if (Storage.prefs('ignorenicks') === undefined) Storage.prefs('ignorenicks', true);
 			
 			// April Fool's 2016 - Digimon Showdown
 			// this.$el.html('<img class="logo" src="' + Dex.resourcePrefix + 'sprites/afd/digimonshowdown.png" alt="Digimon Showdown! (beta)" width="146" height="44" /><div class="maintabbarbottom"></div><div class="tabbar maintabbar"><div class="inner"></div></div><div class="userbar"></div>');
