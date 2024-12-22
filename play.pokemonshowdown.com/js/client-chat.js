@@ -1886,6 +1886,7 @@
 			buf += '<small id="' + this.room.id + '-usercount-users">' + usersString + '</small></li>';
 
 			if (this.room.id == "lobby") {
+				if (Storage.prefs('hasRank') === false) app.roomsData.ladderSearches = {};
 				buf += '<li id="' + this.room.id + '-userlist-queue" style="background: rgba(0, 0, 0, 0.45);height: unset;padding: 2px;">';
 				for (var format in app.roomsData.ladderSearches) {
 					buf += '<p style="font-size: 7pt;"><b style="' + BattleLog.hashColor(format) + ';text-shadow: 1px 1px black;">' + format.split(']')[1] + ':</b> ' + app.roomsData.ladderSearches[format] + '</p>';
@@ -1939,6 +1940,7 @@
 		},
 		updateLadderSearches: function () {
 			var buf = '';
+			if (Storage.prefs('hasRank') === false) app.roomsData.ladderSearches = {};
 			for (var format in app.roomsData.ladderSearches) {
 				buf += '<p style="font-size: 7pt;"><b style="' + BattleLog.hashColor(format) + ';text-shadow: 1px 1px black;">' + format.split(']')[1] + ':</b> ' + app.roomsData.ladderSearches[format] + '</p>';
 			}
