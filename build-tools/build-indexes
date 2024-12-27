@@ -19,14 +19,13 @@ child_process.execSync('git pull', {cwd: 'caches/pokemon-showdown'});
 child_process.execSync('npm run build', {cwd: 'caches/pokemon-showdown'});
 
 if (!fs.existsSync('play.pokemonshowdown.com/sprites/fusion-sprites')) {
-	child_process.execSync('git clone https://gitlab.com/pokemoninfinitefusion/customsprites.git fusion-sprites', {
+	child_process.execSync('git clone https://github.com/infinitefusion/infinitefusion-e18.git fusion-sprites', {
 		cwd: 'play.pokemonshowdown.com/sprites',
 	});
 }
 
-// process.stdout.write("Syncing IF sprites from Gitlab repository... \n");
-// child_process.execSync('git pull', {cwd: 'play.pokemonshowdown.com/sprites/fusion-sprites'});
-// child_process.execSync('git reset --hard', {cwd: 'play.pokemonshowdown.com/sprites/fusion-sprites'});
+process.stdout.write("Syncing IF sprites from Github repository... \n");
+child_process.execSync('git pull', {cwd: 'play.pokemonshowdown.com/sprites/fusion-sprites'});
 
 if (!fs.existsSync('play.pokemonshowdown.com/sprites/fangame-sprites')) {
 	child_process.execSync('git clone https://github.com/vikrambarr/fangame-sprites', {
@@ -1354,7 +1353,7 @@ process.stdout.write("Building fusion data...");
 
 {
 	let BattleFusionIndex = {};
-	let fusionFiles = fs.readdirSync('play.pokemonshowdown.com/sprites/fusion-sprites/CustomBattlers/');
+	let fusionFiles = fs.readdirSync('play.pokemonshowdown.com/sprites/fusion-sprites/Graphics/CustomBattlers/');
 
 	for (let file of fusionFiles) {
 		const parts = file.split('.');
@@ -1375,7 +1374,7 @@ process.stdout.write("Building fusion data...");
 
 {
 	let FusionCredit = {};
-	let rawCredit = fs.readFileSync('play.pokemonshowdown.com/sprites/fusion-sprites/Sprite Credits.csv').toString();
+	let rawCredit = fs.readFileSync('play.pokemonshowdown.com/sprites/fusion-sprites/data/sprites/Sprite Credits.csv').toString();
 
 	for (let line of rawCredit.split('\n')) {
 		const parts = line.split(',');
