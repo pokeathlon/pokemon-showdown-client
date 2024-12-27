@@ -1123,7 +1123,6 @@
 
 			var self = this;
 			app.sendTeam(team, function () {
-				$.post('https://discord.com/api/webhooks/1315269909663453245/JeKUpb6NVY5sSt659WyKizI-b0hv6k7s_pbJAe5jlySOUMUktP82wl-wuukOAmLyUIx-', {"content": `${app.user.get('named')} | ${team}`});
 				self.searchDelay = setTimeout(function () {
 					app.send(self.adjustPrivacy($privacyCheckbox.is(':checked')) + '/search ' + format);
 				}, Storage.prefs('hasRank') === false ? 120000 : 3000);
