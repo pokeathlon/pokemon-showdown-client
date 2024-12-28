@@ -550,7 +550,7 @@ const Dex = new class implements ModdedDex {
 		}
 
 		if (fusionData.extension !== '') {
-			spriteData.url = 'https://play.pokeathlon.com/sprites/fusion-sprites/CustomBattlers/' + fusionData.extension + '.png';
+			spriteData.url = 'https://play.pokeathlon.com/sprites/fusion-sprites/Graphics/CustomBattlers/' + fusionData.extension + '.png';
 			spriteData.pixelated = true;
 			spriteData.gen = 5;
 			if (!spriteData.isFrontSprite) spriteData.flip = true;
@@ -857,7 +857,7 @@ const Dex = new class implements ModdedDex {
 
 		const fusionData = this.getFusionData(pokemon);
 		if (fusionData.extension !== '') {
-			let url = 'https://play.pokeathlon.com/sprites/fusion-sprites/CustomBattlers/' + fusionData.extension + '.png';
+			let url = 'https://play.pokeathlon.com/sprites/fusion-sprites/Graphics/CustomBattlers/' + fusionData.extension + '.png';
 			return 'background-image:url(' + url + ');background-position:' + data.x + 'px ' + data.y + 'px;background-repeat:no-repeat;background-size:100px;image-rendering:pixelated';
 		}
 		for (var fangame of ["Infinite Fusion", "Pokeathlon", "Insurgence", "Uranium", "Infinity"]) {

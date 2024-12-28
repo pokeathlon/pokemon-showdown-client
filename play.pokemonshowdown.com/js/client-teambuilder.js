@@ -3916,7 +3916,7 @@
 				let alt = extension + alts[i];
 				var offset = '-' + (((i - 1) % 7) * spriteSize) + 'px -' + (Math.floor((i - 1) / 7) * spriteSize) + 'px';
 				buf += '<button name="setSprite" value="' + alts[i] + '"  style="';
-				buf += 'background-position:' + offset + '; background: url(https://play.pokeathlon.com/sprites/fusion-sprites/CustomBattlers/' + alt + '.png) no-repeat; ' + spriteDim + ' background-size: 144px 144px;"';
+				buf += 'background-position:' + offset + '; background: url(https://play.pokeathlon.com/sprites/fusion-sprites/Graphics/CustomBattlers/' + alt + '.png) no-repeat; ' + spriteDim + ' background-size: 144px 144px;"';
 				buf +=  (alts[i] === this.curSet.altsprite ? ' class="cur"' : '') + '></button>';
 			}
 			buf += '</div>';
