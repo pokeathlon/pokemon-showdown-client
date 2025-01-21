@@ -348,7 +348,7 @@ process.stdout.write("Building `data/teambuilder-tables.js`... ");
 	const NFE = GENS.map(num => num + 0.3);
 	const LC = GENS.map(num => num + 0.7);
 	const NATDEX = [9.1, 8.1];
-	const OTHER = [9.9, 9.82, 9.83, -9.83, 9.84, -9.84, -9.82, 9.822, -9.822, 9.85, -9.85, 9.855, -9.855, 9.87, -9.87, 6.877, -6.877, 9.81, -9.81, 9.83, -9.83, 7.811, -7.811, 6.833, -6.833, 6.844, -6.844];
+	const OTHER = [9.9, 9.82, 9.83, -9.83, 9.84, -9.84, -9.82, 9.822, -9.822, 9.8222, -9.8222, 9.85, -9.85, 9.855, -9.855, 9.87, -9.87, 6.877, -6.877, 9.81, -9.81, 9.83, -9.83, 7.811, -7.811, 6.833, -6.833, 6.844, -6.844];
 
 	// process.stdout.write("\n  ");
 	for (const genIdent of [...GENS, ...DOUBLES, ...VGC, ...NFE, ...OTHER, ...NATDEX, ...LC]) {
@@ -363,6 +363,7 @@ process.stdout.write("Building `data/teambuilder-tables.js`... ");
 		const isFusions = ('' + genIdent).endsWith('.811');
 		const isNatDexPOA = ('' + genIdent).endsWith('.82');
 		const isPOA = ('' + genIdent).endsWith('.822');
+		const isPOA2 = ('' + genIdent).endsWith('.8222');
 		const isNatDexChaos = ('' + genIdent).endsWith('.85');
 		const isChaosFusions = ('' + genIdent).endsWith('.855');
 		const isNatDexInsg = ('' + genIdent).endsWith('.83');
@@ -377,6 +378,7 @@ process.stdout.write("Building `data/teambuilder-tables.js`... ");
 			let genStr = 'gen' + genNum;
 			if (isNatDexFusions || isFusions) genStr += 'infinitefusion';
 			if (isNatDexPOA || isPOA) genStr += 'pokeathlon';
+			if (isPOA2) genStr += 'pokeathlon2';
 			if (isNatDexChaos) genStr += 'chaos';
 			if (isChaosFusions) genStr += 'chaosfusion';
 			if (isNatDexInsg || isInsg) genStr += 'insurgence';
@@ -479,11 +481,13 @@ process.stdout.write("Building `data/teambuilder-tables.js`... ");
 				if (isNatDexPOA || isNatDexInsg || isNatDexU || isNatDexInf || isNatDexChaos || isChaosFusions) {
 					let tier = isDoubles ? species.doublesTier : species.natDexTier;
 					if (isChaosFusions && species.isMega) tier = 'Illegal';
+					if (isNatDexPOA && species.isNonstandard) tier = 'Illegal';
 					return tier;
 				}
-				if (isPOA || isInsg || isUranium || isInfinity) {
+				if (isPOA || isPOA2 || isInsg || isUranium || isInfinity) {
 					let tier = isDoubles ? species.doublesTier : species.tier;
 					if (species.num <= 0 || species.isNonstandard === "Unobtainable") tier = 'Illegal';
+					if ((isPOA || isPOA2) && species.isNonstandard === "Custom") tier = 'Illegal';
 					return tier;
 				}
 				if (species.tier === 'CAP' || species.tier === 'CAP NFE' || species.tier === 'CAP LC') {
@@ -552,7 +556,7 @@ process.stdout.write("Building `data/teambuilder-tables.js`... ");
 			BattleTeambuilderTable['gen' + genNum + 'natdex'].ndDoublesBans = ndDoublesBans;
 			BattleTeambuilderTable['gen' + genNum + 'natdex'].monotypeBans = monotypeBans;
 			BattleTeambuilderTable['gen' + genNum + 'natdex'].formatSlices = formatSlices;
-		} else if (isPOA || isNatDexPOA) {
+		} else if (isPOA || isPOA2 || isNatDexPOA) {
 			BattleTeambuilderTable[gen + (isNatDexPOA ? 'natdex' : '') + (isDoubles ? 'doubles' : '')] = {};
 			BattleTeambuilderTable[gen + (isNatDexPOA ? 'natdex' : '') + (isDoubles ? 'doubles' : '')].learnsets = {};
 			BattleTeambuilderTable[gen + (isNatDexPOA ? 'natdex' : '') + (isDoubles ? 'doubles' : '')].tiers = tiers;
@@ -636,7 +640,6 @@ process.stdout.write("Building `data/teambuilder-tables.js`... ");
 			}
 			return ["CAP", "CAP NFE", "CAP LC", "AG", "Uber", "(Uber)", "OU", "(OU)", "UUBL", "UU", "RUBL", "RU", "NUBL", "NU", "PUBL", "PU", "ZUBL", "ZU", "New", "NFE", "LC", "Unreleased"];
 		})();
-
 		for (const tier of tierOrder) {
 			if (tier in {OU:1, AG:1, Uber:1, UU:1, RU:1, NU:1, PU:1, ZU: 1, NFE:1, LC:1, DOU:1, DUU:1, "(DUU)":1, New:1, Legal:1, Regular:1, "Restricted Legendary":1, "CAP LC":1}) {
 				let usedTier = tier;
@@ -658,12 +661,12 @@ process.stdout.write("Building `data/teambuilder-tables.js`... ");
 			tiers.push(...tierTable[tier]);
 		}
 		if (!isDoubles) {
-			if (!formatSlices['OU']) formatSlices['OU'] = formatSlices['New'];
-			if (!formatSlices['UU']) formatSlices['UU'] = formatSlices['New'];
-			if (!formatSlices['RU']) formatSlices['RU'] = formatSlices['New'];
+			if (!('OU' in formatSlices)) formatSlices['OU'] = formatSlices['New'];
+			if (!('UU' in formatSlices)) formatSlices['UU'] = formatSlices['New'];
+			if (!('RU' in formatSlices)) formatSlices['RU'] = formatSlices['New'];
 		} else {
-			if (!formatSlices['DOU']) formatSlices['DOU'] = formatSlices['New'];
-			if (!formatSlices['DUU']) formatSlices['DUU'] = formatSlices['New'];
+			if (!('DOU' in formatSlices)) formatSlices['DOU'] = formatSlices['New'];
+			if (!('DUU' in formatSlices)) formatSlices['DUU'] = formatSlices['New'];
 		}
 
 		const itemList = Object.keys(Dex.data.Items);
@@ -956,7 +959,7 @@ process.stdout.write("Building `data/teambuilder-tables.js`... ");
 			if (gens.indexOf(9) >= 0 && learnset[moveid].some(x => x === '9E')) learnsets[id][moveid] += 'e';
 		}
 	}
-	for (let learnsetmod of ['gen7infinitefusion', 'gen9pokeathlon', 'gen9insurgence', 'gen6insurgence', 'gen9uranium', 'gen6uranium', 'gen9infinity', 'gen6infinity', 'gen9chaos', 'gen9chaosfusion']) {
+	for (let learnsetmod of ['gen7infinitefusion', 'gen9pokeathlon', 'gen9pokeathlon2', 'gen9insurgence', 'gen6insurgence', 'gen9uranium', 'gen6uranium', 'gen9infinity', 'gen6infinity', 'gen9chaos', 'gen9chaosfusion']) {
 		let modlearnsets = {};
 		BattleTeambuilderTable[learnsetmod].learnsets = modlearnsets;
 		for (const id in Dex.mod(learnsetmod).data.Learnsets) {
@@ -1112,7 +1115,7 @@ process.stdout.write("Building `data/teambuilder-tables.js`... ");
 	// Mods
 	//
 
-	for (const mod of ['gen9infinitefusion', 'gen7infinitefusion', 'gen9pokeathlon', 'gen9insurgence', 'gen6insurgence', 'gen9uranium', 'gen6uranium', 'gen9infinity', 'gen6infinity', 'gen9chaos', 'gen9chaosfusion']) {
+	for (const mod of ['gen9infinitefusion', 'gen7infinitefusion', 'gen9pokeathlon', 'gen9pokeathlon2', 'gen9insurgence', 'gen6insurgence', 'gen9uranium', 'gen6uranium', 'gen9infinity', 'gen6infinity', 'gen9chaos', 'gen9chaosfusion']) {
 		const modDex = Dex.mod(mod);
 		const modData = modDex.data;
 		const parentDex = Dex.forGen(modDex.gen);
