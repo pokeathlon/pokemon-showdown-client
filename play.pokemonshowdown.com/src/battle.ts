@@ -603,9 +603,10 @@ export class Pokemon implements PokemonDetails, PokemonHealth {
 		return percentage * maxWidth / 100;
 	}
 	getHPText(precision = 1) {
-		return Pokemon.getHPText(this, precision);
+		return Pokemon.getHPText(this, this.side.battle.reportExactHP, precision);
 	}
-	static getHPText(pokemon: PokemonHealth, precision = 1) {
+	static getHPText(pokemon: PokemonHealth, exactHP: boolean, precision = 1) {
+		if (exactHP) return pokemon.hp + '/' + pokemon.maxhp;
 		if (pokemon.maxhp === 100) return pokemon.hp + '%';
 		if (pokemon.maxhp !== 48) return (100 * pokemon.hp / pokemon.maxhp).toFixed(precision) + '%';
 		let range = Pokemon.getPixelRange(pokemon.hp, pokemon.hpcolor);
@@ -1126,6 +1127,7 @@ export class Battle {
 	rated: string | boolean = false;
 	rules: {[ruleName: string]: 1 | 0} = {};
 	isBlitz = false;
+	reportExactHP = false;
 	endLastTurnPending = false;
 	totalTimeLeft = 0;
 	graceTimeLeft = 0;
@@ -2258,6 +2260,20 @@ export class Battle {
 			let item = Dex.items.get(args[2]);
 			let effect = Dex.getEffect(kwArgs.from);
 			let ofpoke = this.getPokemon(kwArgs.of);
+			if (!poke) {
+				if (effect.id === 'frisk') {
+					const possibleTargets = ofpoke!.side.foe.active.filter(p => p !== null);
+					if (possibleTargets.length === 1) {
+						poke = possibleTargets[0]!;
+					} else {
+						this.activateAbility(ofpoke!, "Frisk");
+						this.log(args, kwArgs);
+						break;
+					}
+				} else {
+					throw new Error('No Pokemon in -item message');
+				}
+			}
 			poke.item = item.name;
 			poke.itemEffect = '';
 			poke.removeVolatile('airballoon' as ID);
@@ -2542,16 +2558,20 @@ export class Battle {
 		case '-terastallize': {
 			let poke = this.getPokemon(args[1])!;
 			let type = Dex.types.get(args[2]).name;
+			let lockForme = false;
 			poke.removeVolatile('typeadd' as ID);
 			poke.teraType = type;
 			poke.terastallized = type;
 			poke.details += `, tera:${type}`;
 			poke.searchid += `, tera:${type}`;
 			if (poke.speciesForme.startsWith("Morpeko")) {
+				lockForme = true;
+				poke.speciesForme = poke.getSpeciesForme();
 				poke.details = poke.details.replace("Morpeko", poke.speciesForme);
 				poke.searchid = `${poke.ident}|${poke.details}`;
+				delete poke.volatiles['formechange'];
 			}
-			this.scene.animTransform(poke, true);
+			this.scene.animTransform(poke, true, lockForme);
 			this.scene.resetStatbar(poke);
 			this.log(args, kwArgs);
 			break;
@@ -3489,6 +3509,7 @@ export class Battle {
 				this.messageFadeTime = 40;
 				this.isBlitz = true;
 			}
+			if (ruleName === 'Exact HP Mod') this.reportExactHP = true;
 			this.rules[ruleName] = 1;
 			this.log(args);
 			break;

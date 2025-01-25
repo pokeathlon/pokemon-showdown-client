@@ -3039,6 +3039,8 @@ export class PokemonSprite extends Sprite {
 				label = Dex.moves.get(id).name;
 			} else if (Dex.abilities.get(id).exists) {
 				label = Dex.abilities.get(id).name;
+			} else if ((BattleNatures as any)[id.substr(0, 1).toUpperCase() + id.substr(1).toLowerCase()]) {
+				label = id.substr(0, 1).toUpperCase() + id.substr(1).toLowerCase();
 			}
 			effect = [label, 'neutral'];
 		}
@@ -3052,7 +3054,7 @@ export class PokemonSprite extends Sprite {
 		if (pokemon.maxhp === 48 || this.scene.battle.hardcoreMode && pokemon.maxhp === 100) {
 			$hptext.hide();
 			$hptextborder.hide();
-		} else if (this.scene.battle.hardcoreMode) {
+		} else if (this.scene.battle.hardcoreMode || this.scene.battle.reportExactHP) {
 			$hptext.html(pokemon.hp + '/');
 			$hptext.show();
 			$hptextborder.show();
