@@ -1121,7 +1121,7 @@ class BattleTooltips {
 		}
 		if (ability === 'sharpcoral') {
 			stats.spa *= 2; stats.atk *= 2;
-			stats.spd *= 2; stats.def *= 2;
+			stats.spd *= 0.5; stats.def *= 0.5;
 		}
 		if (ability === 'hustle' || (ability === 'gorillatactics' && !clientPokemon?.volatiles['dynamax'])) {
 			stats.atk = Math.floor(stats.atk * 1.5);
