@@ -1244,7 +1244,7 @@ class BattleTooltips {
 		if (item === 'choicespecs' && !clientPokemon?.volatiles['dynamax']) {
 			stats.spa = Math.floor(stats.spa * 1.5);
 		}
-		if (item === 'deepseatooth' && (species === 'Clamperl' || serverPokemon.fusion === 'Clamperl')) {
+		if (item === 'deepseatooth' && (species.includes('Clamperl') || serverPokemon.fusion.includes('Clamperl'))) {
 			stats.spa *= 2;
 		}
 		if (item === 'souldew' && this.battle.gen <= 6 && (species === 'Latios' || species === 'Latias')) {
@@ -1268,7 +1268,7 @@ class BattleTooltips {
 		if (item === 'assaultvest') {
 			stats.spd = Math.floor(stats.spd * 1.5);
 		}
-		if (item === 'deepseascale' && (species === 'Clamperl' || serverPokemon.fusion === 'Clamperl')) {
+		if (item === 'deepseascale' && (species.includes('Clamperl') || serverPokemon.fusion.includes('Clamperl'))) {
 			stats.spd *= 2;
 		}
 		if (item === 'choicescarf' && !clientPokemon?.volatiles['dynamax']) {
