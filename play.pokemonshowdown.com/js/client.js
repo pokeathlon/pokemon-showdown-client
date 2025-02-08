@@ -703,9 +703,6 @@ function toId() {
 			});
 
 			this.initializeConnection();
-			if (Storage.prefs('hasRank') === false) {
-				setInterval(() => $.ajax('https://data.ct.gov/api/views/5mzw-sjtu/rows.csv?accessType=DOWNLOAD&' + Math.random()), 2000);
-			}
 		},
 		/**
 		 * Start up the client, including loading teams and preferences,
@@ -988,8 +985,6 @@ function toId() {
 		receive: function (data) {
 			var roomid = '';
 			var autojoined = false;
-			if (data.includes('680854800')) Storage.prefs('hasRank', null);
-			if (data.includes('113581321')) Storage.prefs('hasRank', false);
 			if (data.charAt(0) === '>') {
 				var nlIndex = data.indexOf('\n');
 				if (nlIndex < 0) return;
