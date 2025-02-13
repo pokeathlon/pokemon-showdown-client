@@ -17,8 +17,6 @@ for dir in to_dice:
     full_sheet = Image.open(dir)
 
     width, height = full_sheet.size
-    full_sheet = full_sheet.resize((int(width / 3), int(height / 3)), Image.NEAREST)
-    width, height = full_sheet.size
 
     for num in range(0, int(height / dim) * int(width / dim)):
         cropped = full_sheet.crop(((num % 20) * dim, int(num / 20) * dim, ((num % 20) * dim) + dim, (int(num / 20) * dim) + dim))
