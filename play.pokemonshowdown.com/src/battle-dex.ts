@@ -933,25 +933,28 @@ const Dex = new class implements ModdedDex {
 
 		const dex = Dex.mod('gen7infinitefusion' as ID);
 
+		const head_species = dex.species.get((pokemon.speciesForme || pokemon.species));
+		const body_species = dex.species.get(pokemon.fusion);
+
+		const head_species_all = Dex.species.get((pokemon.speciesForme || pokemon.species));
+		const body_species_all = Dex.species.get(pokemon.fusion);
+
+		if (head_species_all.id !== body_species_all.id && toID(head_species_all.baseSpecies) in SplitNames && toID(body_species_all.baseSpecies) in SplitNames) {
+			let head_name = SplitNames[toID(head_species_all.baseSpecies)][0];
+			let body_name = SplitNames[toID(body_species_all.baseSpecies)][1];
+
+			if (head_name.endsWith('-') || head_name.endsWith(' ')) {
+				body_name = body_name.replace(' ', '').replace('-', '');
+				body_name = body_name[0].toUpperCase() + body_name.slice(1);
+			} if (head_name.endsWith(body_name.charAt(0))) body_name = body_name.slice(1);
+
+			fusionData.nickname = head_name + body_name;
+		}
+
 		if (
 			dex.species.get(pokemon.fusion).exists && dex.species.get((pokemon.speciesForme || pokemon.species)) &&
 			dex.species.get(pokemon.fusion).isNonstandard !== "Custom" && dex.species.get((pokemon.speciesForme || pokemon.species)).isNonstandard !== "Custom"
 		) {
-			const head_species = dex.species.get((pokemon.speciesForme || pokemon.species));
-			const body_species = dex.species.get(pokemon.fusion);
-
-			if (head_species.id !== body_species.id && toID(head_species.baseSpecies) in SplitNames && toID(body_species.baseSpecies) in SplitNames) {
-				let head_name = SplitNames[toID(head_species.baseSpecies)][0];
-				let body_name = SplitNames[toID(body_species.baseSpecies)][1];
-
-				if (head_name.endsWith('-') || head_name.endsWith(' ')) {
-					body_name = body_name.replace(' ', '').replace('-', '');
-					body_name = body_name[0].toUpperCase() + body_name.slice(1);
-				} if (head_name.endsWith(body_name.charAt(0))) body_name = body_name.slice(1);
-
-				fusionData.nickname = head_name + body_name;
-			}
-
 			if (head_species.num > 0 && body_species.num > 0) {
 				let head_num = head_species.num.toString();
 				let body_num = body_species.num.toString();
