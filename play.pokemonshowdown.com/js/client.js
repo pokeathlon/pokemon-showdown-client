@@ -1425,7 +1425,7 @@ function toId() {
 						}
 					}
 					var id = toID(name);
-					var isTeambuilderFormat = !team && name.slice(-11) !== 'Custom Game';
+					var isTeambuilderFormat = !team && name.slice(-11) !== 'Custom Game' && name.slice(-2) !== 'CG';
 					var teambuilderFormat = '';
 					var teambuilderFormatName = '';
 					if (isTeambuilderFormat) {
