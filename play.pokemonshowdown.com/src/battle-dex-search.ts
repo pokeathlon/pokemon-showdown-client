@@ -1801,10 +1801,12 @@ class BattleMoveSearch extends BattleTypedSearch<'move'> {
 			let allCombinations: string[][] = [];
 			let fusionLine: string[] = [fusionSpecies.name];
 			let speciesLine: string[] = [species.name];
-
+			
+			if (fusionSpecies.baseSpecies) fusionLine.push(fusionSpecies.baseSpecies);
 			if (fusionSpecies.prevo) fusionLine.push(fusionSpecies.prevo);
 			if (this.dex.species.get(fusionSpecies.prevo).prevo) fusionLine.push(this.dex.species.get(fusionSpecies.prevo).prevo);
 			
+			if (species.baseSpecies) speciesLine.push(species.baseSpecies);
 			if (species.prevo) speciesLine.push(species.prevo);
 			if (this.dex.species.get(species.prevo).prevo) fusionLine.push(this.dex.species.get(species.prevo).prevo);
 
