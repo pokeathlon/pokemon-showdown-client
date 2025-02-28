@@ -1255,10 +1255,9 @@
 				// avoiding that decision for now because it requires either an ugly hack
 				// or an overhaul of BattleFormats.
 				this.open = Storage.prefs('openformats') || {
-					"Chaos": true,
-					"Infinite Fusion: Regional Dex": true, "Infinite Fusion: Doubles": true, "Infinite Fusion: National Dex": true, "Infinite Fusion: Extras": true,
-					"Fangames: Regional Dex": true, "Fangames: Doubles": true, "Fangames: National Dex": true, "Fangames: Extras": true,
-					"Pokéathlon: Regional Dex": true, "Pokéathlon: Doubles": true, "Pokéathlon: National Dex": true, "Pokéathlon: Extras": true,
+					"Infinite Fusion: Regional Dex": true, "Infinite Fusion: Doubles": true, "Infinite Fusion: National Dex": true, "Infinite Fusion: Extras": true, "Draft": false,
+					"Insurgence Formats": true, "Uranium Formats": true, "Infinity Formats": true, "SLLD Formats": true,
+					"Pokéathlon: Full Dex": true, "Pokéathlon: Gen 2": true, "Pokéathlon: Gen 1": true, "Pokéathlon: Doubles": true, "Pokéathlon: Extras": true, "Chaos": true, "Chaos: Extras": true,
 				};
 			}
 			if (!this.starred) this.starred = Storage.prefs('starredformats') || {};
