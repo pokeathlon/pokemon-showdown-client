@@ -217,6 +217,7 @@
 			// very hardcode
 			var egName;
 			if (id === 'poa') egName = 'POA';
+			if (id === 'mysterygift') egName = 'Mystery Gift';
 			if (egName) {
 				if (matchLength > 5) matchLength++;
 			} else {
