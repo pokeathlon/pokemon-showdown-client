@@ -2157,7 +2157,7 @@ export class Battle {
 			let poke = this.getPokemon(args[1])!;
 			let effect = Dex.getEffect(kwArgs.from);
 			let ofpoke = this.getPokemon(kwArgs.of) || poke;
-			poke.status = args[2] as StatusName;
+			if (poke) poke.status = args[2] as StatusName;
 			this.activateAbility(ofpoke || poke, effect);
 			if (effect.effectType === 'Item') {
 				ofpoke.item = effect.name;
