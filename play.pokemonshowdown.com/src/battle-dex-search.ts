@@ -1802,13 +1802,15 @@ class BattleMoveSearch extends BattleTypedSearch<'move'> {
 			let fusionLine: string[] = [fusionSpecies.name];
 			let speciesLine: string[] = [species.name];
 			
-			if (fusionSpecies.baseSpecies) fusionLine.push(fusionSpecies.baseSpecies);
+			if (fusionSpecies.isMega && fusionSpecies.baseSpecies) fusionLine.push(fusionSpecies.baseSpecies);
+			if (fusionSpecies.changesFrom) fusionLine.push(fusionSpecies.changesFrom);
 			if (fusionSpecies.prevo) fusionLine.push(fusionSpecies.prevo);
 			if (this.dex.species.get(fusionSpecies.prevo).prevo) fusionLine.push(this.dex.species.get(fusionSpecies.prevo).prevo);
 			
-			if (species.baseSpecies) speciesLine.push(species.baseSpecies);
+			if (species.isMega && species.baseSpecies) speciesLine.push(species.baseSpecies);
+			if (species.changesFrom) speciesLine.push(species.changesFrom);
 			if (species.prevo) speciesLine.push(species.prevo);
-			if (this.dex.species.get(species.prevo).prevo) fusionLine.push(this.dex.species.get(species.prevo).prevo);
+			if (this.dex.species.get(species.prevo).prevo) speciesLine.push(this.dex.species.get(species.prevo).prevo);
 
 			for (let head of fusionLine) {
 				for (let body of speciesLine) {
