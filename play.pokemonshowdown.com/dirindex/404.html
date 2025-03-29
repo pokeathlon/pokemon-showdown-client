@@ -1,0 +1,81 @@
+<!DOCTYPE html>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width" />
+
+<title>Not Found - Pok&eacute;mon Showdown!</title>
+
+<link rel="stylesheet" href="//pokemonshowdown.com/style/global.css?v15" />
+
+<!-- Global site tag (gtag.js) - Google Analytics -->
+<script async src="https://www.googletagmanager.com/gtag/js?id=UA-26211653-1"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+
+  gtag('config', 'UA-26211653-1');
+</script>
+<!-- End Google Analytics -->
+
+<style>
+	a {
+		color: #0073aa;
+	}
+	a:visited {
+		color: #8000aa;
+	}
+	.dark a {
+		color: #86cbeb;
+	}
+	.dark a:visited {
+		color: #d4a2e5;
+	}
+	.nav a:visited {
+		color: white;
+	}
+</style>
+
+<div class="body">
+
+	<header>
+		<div class="nav-wrapper"><ul class="nav">
+			<li><a class="button nav-first" href="//pokemonshowdown.com/"><img src="//pokemonshowdown.com/images/pokemonshowdownbeta.png" srcset="//pokemonshowdown.com/images/pokemonshowdownbeta.png 1x, //pokemonshowdown.com/images/pokemonshowdownbeta@2x.png 2x" alt="Pok&eacute;mon Showdown" width="146" height="44" /> Home</a></li>
+			<li><a class="button" href="//pokemonshowdown.com/dex/">Pok&eacute;dex</a></li>
+			<li><a class="button" href="//replay.pokemonshowdown.com/">Replays</a></li>
+			<li><a class="button" href="//pokemonshowdown.com/ladder/">Ladder</a></li>
+			<li><a class="button nav-last" href="//pokemonshowdown.com/forums/">Forum</a></li>
+			<li><a class="button greenbutton nav-first nav-last" href="//play.pokemonshowdown.com/">Play</a></li>
+		</ul></div>
+	</header>
+
+	<div class="main">
+
+		<section class="section" style="max-width:200px;margin:20px auto">
+      <div style="text-align:center">
+        <img src="//play.pokemonshowdown.com/sprites/gen5ani/unown-e.gif" alt="" style="image-rendering: pixelated"
+				/><img src="//play.pokemonshowdown.com/sprites/gen5ani/unown-r.gif" alt="" style="image-rendering: pixelated;margin:0 8px"
+				/><img src="//play.pokemonshowdown.com/sprites/gen5ani/unown-r.gif" alt="" style="image-rendering: pixelated"
+				/><img src="//play.pokemonshowdown.com/sprites/gen5ani/unown-o.gif" alt="" style="image-rendering: pixelated"
+				/><img src="//play.pokemonshowdown.com/sprites/gen5ani/unown-r.gif" alt="" style="image-rendering: pixelated" />
+      </div>
+    </section><section class="section">
+			<h1>Error 404: Not Found</h1>
+			<p>
+				We don't recognize this URL. Did you misspell something? If it's our fault, <a href="//psim.us/bugs">ask in Bug Reports</a>.
+			</p>
+    </section>
+
+	</div>
+
+</div>
+
+<script>
+if (window.matchMedia) {
+	if (window.matchMedia('(prefers-color-scheme: dark)').matches) {
+		document.documentElement.className = 'dark';
+	}
+	window.matchMedia('(prefers-color-scheme: dark)').addEventListener('change', function (event) {
+		document.documentElement.className = event.matches ? "dark" : "";
+	});
+}
+</script>

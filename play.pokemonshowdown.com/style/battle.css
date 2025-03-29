@@ -454,7 +454,7 @@ License: GPLv2
 	background: #594276 url(../fx/weather-fallout.png) no-repeat scroll left top;
 	color: #5a365b;
 }
-.snowweather,
+.snowscapeweather,
 .hailweather {
 	background: #AADDEE url(../fx/weather-hail.png) no-repeat scroll left top;
 	color: #114455;

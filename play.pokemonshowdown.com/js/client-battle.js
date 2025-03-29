@@ -39,7 +39,7 @@
 			this.battle.subscribe(function () { self.updateControls(); });
 
 			this.users = {};
-			this.userCount = {users: 0};
+			this.userCount = { users: 0 };
 			this.$userList = this.$('.userlist');
 			this.userList = new UserList({
 				el: this.$userList,
@@ -76,7 +76,7 @@
 		},
 		requestLeave: function (e) {
 			if ((this.side || this.requireForfeit) && this.battle && !this.battleEnded && !this.expired && !this.battle.forfeitPending) {
-				app.addPopup(ForfeitPopup, {room: this, sourceEl: e && e.currentTarget, gameType: 'battle'});
+				app.addPopup(ForfeitPopup, { room: this, sourceEl: e && e.currentTarget, gameType: 'battle' });
 				return false;
 			}
 			return true;
@@ -217,7 +217,8 @@
 						this.battle.stepQueue.push('|' + args.join('|'));
 						break;
 					}
-				} else if (logLine.substr(0, 7) === '|title|') { // eslint-disable-line no-empty
+				} else if (logLine.substr(0, 7) === '|title|') {
+					// empty
 				} else if (logLine.substr(0, 5) === '|win|' || logLine === '|tie') {
 					this.battleEnded = true;
 					this.battle.stepQueue.push(logLine);
@@ -410,8 +411,8 @@
 					};
 
 					if (this.request.forceSwitch !== true) {
-						var faintedLength = _.filter(this.request.forceSwitch, function (fainted) {return fainted;}).length;
-						var freedomDegrees = faintedLength - _.filter(switchables.slice(this.battle.pokemonControlled), function (mon) {return !mon.fainted;}).length;
+						var faintedLength = _.filter(this.request.forceSwitch, function (fainted) { return fainted; }).length;
+						var freedomDegrees = faintedLength - _.filter(switchables.slice(this.battle.pokemonControlled), function (mon) { return !mon.fainted; }).length;
 						this.choice.freedomDegrees = Math.max(freedomDegrees, 0);
 						this.choice.canSwitch = faintedLength - this.choice.freedomDegrees;
 					}
@@ -542,7 +543,7 @@
 			this.$('.timerbutton').replaceWith(this.getTimerHTML());
 		},
 		openTimer: function () {
-			app.addPopup(TimerPopup, {room: this});
+			app.addPopup(TimerPopup, { room: this });
 		},
 		updateMoveControls: function (type) {
 			var switchables = this.request && this.request.side ? this.battle.myPokemon : [];
@@ -577,7 +578,7 @@
 			var canTerastallize = curActive.canTerastallize || switchables[pos].canTerastallize;
 			if (canZMove && typeof canZMove[0] === 'string') {
 				canZMove = _.map(canZMove, function (move) {
-					return {move: move, target: Dex.moves.get(move).target};
+					return { move: move, target: Dex.moves.get(move).target };
 				});
 			}
 			if (gigantamax) gigantamax = Dex.moves.get(gigantamax);
@@ -641,7 +642,7 @@
 					} else if (moveTarget === 'normal' || moveTarget === 'adjacentAlly' || moveTarget === 'adjacentAllyOrSelf') {
 						if (Math.abs(activePos - i) > 1) disabled = true;
 					}
-					if (moveTarget !== 'adjacentAllyOrSelf' && activePos == i) disabled = true;
+					if (moveTarget !== 'adjacentAllyOrSelf' && activePos === i) disabled = true;
 
 					if (disabled) {
 						targetMenus[1] += '<button disabled style="visibility:hidden"></button> ';
@@ -682,9 +683,9 @@
 					var moveType = this.tooltips.getMoveType(move, typeValueTracker)[0];
 					var tooltipArgs = 'move|' + moveData.move + '|' + pos;
 					if (moveData.disabled) {
-						movebuttons += '<button disabled class="has-tooltip" data-tooltip="' + BattleLog.escapeHTML(tooltipArgs) + '">';
+						movebuttons += '<button disabled class="movebutton has-tooltip" data-tooltip="' + BattleLog.escapeHTML(tooltipArgs) + '">';
 					} else {
-						movebuttons += '<button class="type-' + moveType + ' has-tooltip" name="chooseMove" value="' + (i + 1) + '" data-move="' + BattleLog.escapeHTML(moveData.move) + '" data-target="' + BattleLog.escapeHTML(moveData.target) + '" data-tooltip="' + BattleLog.escapeHTML(tooltipArgs) + '">';
+						movebuttons += '<button class="movebutton type-' + moveType + ' has-tooltip" name="chooseMove" value="' + (i + 1) + '" data-move="' + BattleLog.escapeHTML(moveData.move) + '" data-target="' + BattleLog.escapeHTML(moveData.target) + '" data-tooltip="' + BattleLog.escapeHTML(tooltipArgs) + '">';
 						hasMoves = true;
 					}
 					movebuttons += name + '<br /><small class="type">' + (moveType ? Dex.types.get(moveType).name : "Unknown") + '</small> <small class="pp">' + pp + '</small>&nbsp;</button> ';
@@ -713,7 +714,7 @@
 								var tooltipArgs = classType + 'move|' + baseMove.id + '|' + pos;
 								if (specialMove.id.startsWith('gmax')) tooltipArgs += '|' + specialMove.id;
 								var isDisabled = specialMoves[i].disabled ? 'disabled="disabled"' : '';
-								movebuttons += '<button ' + isDisabled + ' class="type-' + moveType + ' has-tooltip" name="chooseMove" value="' + (i + 1) + '" data-move="' + BattleLog.escapeHTML(specialMoves[i].move) + '" data-target="' + BattleLog.escapeHTML(specialMoves[i].target) + '" data-tooltip="' + BattleLog.escapeHTML(tooltipArgs) + '">';
+								movebuttons += '<button ' + isDisabled + ' class="movebutton type-' + moveType + ' has-tooltip" name="chooseMove" value="' + (i + 1) + '" data-move="' + BattleLog.escapeHTML(specialMoves[i].move) + '" data-target="' + BattleLog.escapeHTML(specialMoves[i].target) + '" data-tooltip="' + BattleLog.escapeHTML(tooltipArgs) + '">';
 								var pp = curActive.moves[i].pp + '/' + curActive.moves[i].maxpp;
 								if (canZMove) {
 									pp = '1/1';
@@ -748,7 +749,10 @@
 					moveMenu += '<br /><label class="megaevo"><input type="checkbox" name="terastallize" />&nbsp;Terastallize<br />' + Dex.getTypeIcon(canTerastallize) + '</label>';
 				}
 				if (this.finalDecisionMove) {
-					moveMenu += '<em style="display:block;clear:both">You <strong>might</strong> have some moves disabled, so you won\'t be able to cancel an attack!</em><br/>';
+					moveMenu += '<em class="movewarning">You <strong>might</strong> have some moves disabled, so you won\'t be able to cancel an attack!</em>';
+				}
+				if (curActive.maybeLocked) {
+					moveMenu += '<em class="movewarning">You <strong>might</strong> be locked into a move. <button class="button" name="chooseFight">Try Fight button</button> (prevents switching if you\'re locked)</em>';
 				}
 				moveMenu += '<div style="clear:left"></div>';
 
@@ -776,7 +780,7 @@
 				} else {
 					switchMenu += this.displayParty(switchables, trapped);
 					if (this.finalDecisionSwitch && this.battle.gen > 2) {
-						switchMenu += '<em style="display:block;clear:both">You <strong>might</strong> be trapped, so you won\'t be able to cancel a switch!</em><br/>';
+						switchMenu += '<em class="movewarning">You <strong>might</strong> be trapped, so you won\'t be able to cancel a switch!</em>';
 					}
 				}
 				var switchControls = (
@@ -840,7 +844,7 @@
 			}
 
 			var switchables = this.request && this.request.side ? this.battle.myPokemon : [];
-			var nearActive = this.battle.nearSide.active;
+			// var nearActive = this.battle.nearSide.active;
 			var isReviving = !!switchables[pos].reviving;
 
 			var requestTitle = '';
@@ -1059,6 +1063,9 @@
 					case 'shift':
 						buf += myPokemon[i].speciesForme + ' will shift position.<br />';
 						break;
+					case 'testfight':
+						buf += myPokemon[i].speciesForme + ' is locked into a move.<br />';
+						break;
 					}
 				}
 			}
@@ -1106,7 +1113,7 @@
 				request.requestType = 'wait';
 			}
 
-			this.choice = choiceText ? {waiting: true} : null;
+			this.choice = choiceText ? { waiting: true } : null;
 			this.finalDecision = this.finalDecisionMove = this.finalDecisionSwitch = false;
 			this.request = request;
 			if (request.side) {
@@ -1184,7 +1191,7 @@
 			this.send('/savereplay');
 		},
 		openBattleOptions: function () {
-			app.addPopup(BattleOptionsPopup, {battle: this.battle, room: this});
+			app.addPopup(BattleOptionsPopup, { battle: this.battle, room: this });
 		},
 		clickReplayDownloadButton: function (e) {
 			var filename = (this.battle.tier || 'Battle').replace(/[^A-Za-z0-9]/g, '');
@@ -1277,7 +1284,7 @@
 				var isTerastal = !!(this.$('input[name=terastallize]')[0] || '').checked;
 
 				var target = e.getAttribute('data-target');
-				var choosableTargets = {normal: 1, any: 1, adjacentAlly: 1, adjacentAllyOrSelf: 1, adjacentFoe: 1};
+				var choosableTargets = { normal: 1, any: 1, adjacentAlly: 1, adjacentAllyOrSelf: 1, adjacentFoe: 1 };
 				if (this.battle.gameType === 'freeforall') delete choosableTargets['adjacentAllyOrSelf'];
 
 				this.choice.choices.push('move ' + pos + (isMega ? ' mega' : '') + (isMegaX ? ' megax' : isMegaY ? ' megay' : '') + (isZMove ? ' zmove' : '') + (isUltraBurst ? ' ultra' : '') + (isDynamax ? ' dynamax' : '') + (isTerastal ? ' terastallize' : ''));
@@ -1294,6 +1301,14 @@
 		chooseMoveTarget: function (posString) {
 			this.choice.choices[this.choice.choices.length - 1] += ' ' + posString;
 			this.chooseMove();
+		},
+		chooseFight: function () {
+			if (!this.choice) return;
+			this.tooltips.hideTooltip();
+
+			// TODO?: change this action
+			this.choice.choices.push('testfight');
+			this.endChoice();
 		},
 		chooseShift: function () {
 			if (!this.choice) return;
@@ -1328,8 +1343,8 @@
 			}
 
 			// After choosing the position to which a pokemon will switch in (Doubles/Triples end-game).
-			if (!this.request || this.request.requestType !== 'switch') return false; //??
-			if (this.choice.canSwitch > _.filter(this.choice.choices, function (choice) {return choice;}).length) {
+			if (!this.request || this.request.requestType !== 'switch') return false; // ??
+			if (this.choice.canSwitch > _.filter(this.choice.choices, function (choice) { return choice; }).length) {
 				// More switches are pending.
 				this.choice.type = 'switch2';
 				this.updateControlsForPlayer();
@@ -1414,8 +1429,10 @@
 				}
 			} else if (this.request.requestType === 'move') {
 				var requestDetails = this.request && this.request.side ? this.battle.myPokemon : [];
-				while (choices.length < this.battle.pokemonControlled &&
-						(!nearActive[choices.length] || requestDetails[choices.length].commanding)) {
+				while (
+					choices.length < this.battle.pokemonControlled &&
+					(!nearActive[choices.length] || requestDetails[choices.length].commanding)
+				) {
 					choices.push('pass');
 				}
 
