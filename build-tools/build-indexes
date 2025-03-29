@@ -481,7 +481,7 @@ process.stdout.write("Building `data/teambuilder-tables.js`... ");
 				if (isNatDexPOA || isNatDexInsg || isNatDexU || isNatDexInf || isNatDexChaos || isChaosFusions) {
 					let tier = isDoubles ? species.doublesTier : species.natDexTier;
 					if (isChaosFusions && species.isMega) tier = 'Illegal';
-					if (isNatDexPOA && species.isNonstandard) tier = 'Illegal';
+					if (isNatDexPOA && species.isNonstandard && species.isNonstandard !== "Unobtainable") tier = 'Illegal';
 					return tier;
 				}
 				if (isPOA || isPOA2 || isInsg || isUranium || isInfinity) {
