@@ -2018,6 +2018,9 @@ class BattleTooltips {
 		if (move.id === 'psyblade' && this.battle.hasPseudoWeather('Electric Terrain')) {
 			value.modify(1.5, 'Electric Terrain');
 		}
+		if (move.id === 'mistbarrage' && this.battle.hasPseudoWeather('Misty Terrain')) {
+			value.modify(1.5, 'Misty Terrain');
+		}
 		if (move.id === 'terrainpulse' && pokemon.isGrounded(serverPokemon)) {
 			if (
 				this.battle.hasPseudoWeather('Electric Terrain') ||
@@ -2250,7 +2253,7 @@ class BattleTooltips {
 			if (pokemon.isGrounded(serverPokemon)) {
 				value.modify(this.battle.gen > 7 ? 1.3 : 1.5, 'Terrain boost');
 			}
-		} else if (this.battle.hasPseudoWeather('Misty Terrain') && moveType === 'Dragon') {
+		} else if (this.battle.hasPseudoWeather('Misty Terrain') && moveType === 'Dragon' && move.id != 'mistbarrage') {
 			if (target ? target.isGrounded() : true) {
 				value.modify(0.5, 'Misty Terrain + grounded target');
 			}
