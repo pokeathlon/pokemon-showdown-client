@@ -85,6 +85,10 @@ export declare namespace Dex {
 		gigantamax?: boolean;
 		/** Defaults to the primary type */
 		teraType?: string;
+		/** Defaults to nothing */
+		fusion?: string;
+		/** Defaults to nothing */
+		altsprite?: string;
 	}
 }
 export type { ID };
