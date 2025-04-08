@@ -152,7 +152,7 @@ export class BattleScene implements BattleSceneStub {
 		this.$battle = $('<div class="innerbattle"></div>');
 		this.$frame.append(this.$battle);
 
-		this.$bg = $('<div class="backdrop" style="background-image:url(' + Dex.resourcePrefix + this.backdropImage + ');display:block;opacity:0.8"></div>');
+		this.$bg = $('<div class="backdrop" style="background-image:url(https://play.pokeathlon.com/' + this.backdropImage + ');display:block;opacity:0.8"></div>');
 		this.$terrain = $('<div class="weather"></div>');
 		this.$weather = $('<div class="weather"></div>');
 		this.$bgEffect = $('<div></div>');
@@ -582,7 +582,9 @@ export class BattleScene implements BattleSceneStub {
 			bg = 'fx/bg-npa.png';
 			this.setBgm(-101);
 		} else {
-			if (gen <= 1) bg = 'fx/bg-gen1.png?';
+			const tier = this.battle.id.split('-')[1];
+			if (tier in window.Formats && window.Formats[tier].mod.includes('mariomon')) bg = `fx/${BattleBackdropsMario[this.numericId % BattleBackdropsMario.length]}`;
+			else if (gen <= 1) bg = 'fx/bg-gen1.png?';
 			else if (gen <= 2) bg = 'fx/bg-gen2.png?';
 			else if (gen <= 3) bg = `fx/${BattleBackdropsThree[this.numericId % BattleBackdropsThree.length]}?`;
 			else if (gen <= 4) bg = `fx/${BattleBackdropsFour[this.numericId % BattleBackdropsFour.length]}`;
@@ -592,7 +594,8 @@ export class BattleScene implements BattleSceneStub {
 
 		this.backdropImage = bg;
 		if (this.$bg) {
-			this.$bg.css('background-image', `url(${Dex.resourcePrefix}${this.backdropImage})`);
+			// add back https://play.pokeathlon.com/
+			this.$bg.css('background-image', `url(${this.backdropImage})`);
 		}
 	}
 
@@ -3421,6 +3424,12 @@ const BattleBackdrops = [
 	'bg-orasdesert.jpg',
 	'bg-orassea.jpg',
 	'bg-skypillar.jpg',
+];
+const BattleBackdropsMario = [
+	'bg-mushroom.png',
+	'bg-mario.png',
+	'bg-galaxy.png',
+	'bg-kingdom.png',
 ];
 
 export const BattleOtherAnims: AnimTable = {

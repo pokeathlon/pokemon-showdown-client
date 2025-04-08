@@ -640,7 +640,7 @@ export const Dex = new class implements ModdedDex {
 			return spriteData;
 		}
 
-		for (var fangame of ["Infinite Fusion", "Pokeathlon", "Insurgence", "Uranium", "Infinity"]) {
+		for (var fangame of ["Infinite Fusion", "Pokeathlon", "Insurgence", "Uranium", "Infinity", "Mariomon"]) {
 			if (species.tags.includes(fangame)) {
 				if (species.eggGroups.includes("Digimon")) spriteData.url = 'https://play.pokeathlon.com/sprites/fangame-sprites/infinity/digimon/' + species.id + '.png';
 				else spriteData.url = 'https://play.pokeathlon.com/sprites/fangame-sprites/' + toID(fangame) + '/' + (!["Infinite Fusion"].includes(fangame) ? (spriteData.isFrontSprite ? 'front' : 'back') + (spriteData.shiny ? '-shiny': '') + '/' : '') + species.id + (["Pokeathlon", "Xenoverse"].includes(fangame) ? '.gif' : '.png');
@@ -870,6 +870,11 @@ export const Dex = new class implements ModdedDex {
 			return `image-rendering:pixelated;background:transparent url(https://play.pokeathlon.com/sprites/fangame-sprites/infinity/iconsprites/${id}.png) no-repeat scroll ${fainted}`;
 		}
 
+		if (species.tags.includes("Mariomon")) {
+			let fainted = ((pokemon as Pokemon | ServerPokemon)?.fainted ? `;opacity:.3;filter:grayscale(100%) brightness(.5)` : ``);
+			return `image-rendering:pixelated;background-image:url(https://play.pokeathlon.com/sprites/fangame-sprites/mariomon/front/${id}.png);background-position:5px 0px;background-repeat:no-repeat;background-size:30px;${fainted}`;
+		}
+
 		let top = Math.floor(num / 12) * 30;
 		let left = (num % 12) * 40;
 		let fainted = ((pokemon as Pokemon | ServerPokemon)?.fainted ? `;opacity:.3;filter:grayscale(100%) brightness(.5)` : ``);
@@ -943,7 +948,7 @@ export const Dex = new class implements ModdedDex {
 			let url = 'https://play.pokeathlon.com/sprites/fusion-sprites/Graphics/CustomBattlers/' + fusionData.extension + '.png';
 			return 'background-image:url(' + url + ');background-position:' + data.x + 'px ' + data.y + 'px;background-repeat:no-repeat;background-size:100px;image-rendering:pixelated';
 		}
-		for (var fangame of ["Infinite Fusion", "Pokeathlon", "Insurgence", "Uranium", "Infinity"]) {
+		for (var fangame of ["Infinite Fusion", "Pokeathlon", "Insurgence", "Uranium", "Infinity", "Mariomon"]) {
 			if (Dex.species.get(pokemon.species).tags.includes(fangame)) {
 				let url = 'https://play.pokeathlon.com/sprites/fangame-sprites/' + toID(fangame) + (!["Infinite Fusion"].includes(fangame) ? '/front' + shiny : '') + '/' + toID(pokemon.species) + (["Pokeathlon", "Xenoverse"].includes(fangame) ? '.gif' : '.png');
 				if (Dex.species.get(pokemon.species).eggGroups.includes('Digimon')) url = 'https://play.pokeathlon.com/sprites/fangame-sprites/infinity/digimon/' + toID(pokemon.species) + '.png';
@@ -1064,7 +1069,7 @@ export const Dex = new class implements ModdedDex {
 
 		const dex = Dex.mod('gen9chaos' as ID);
 		const species = dex.species.get((pokemon.speciesForme || pokemon.species));
-		if (species.tags.includes("Pokeathlon") || species.tags.includes("Insurgence") || species.tags.includes("Uranium") || species.tags.includes("Infinity")) {
+		if (species.tags.includes("Pokeathlon") || species.tags.includes("Insurgence") || species.tags.includes("Uranium") || species.tags.includes("Infinity") || species.tags.includes("Mariomon")) {
 			if (window.FangameCredit && species.id in window.FangameCredit) return window.FangameCredit[species.id];
 		}
 		return false;
