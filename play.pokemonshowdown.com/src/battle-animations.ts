@@ -583,7 +583,7 @@ export class BattleScene implements BattleSceneStub {
 			this.setBgm(-101);
 		} else {
 			const tier = this.battle.id.split('-')[1];
-			if (tier.includes('mariomon')) bg = `fx/${BattleBackdropsMario[this.numericId % BattleBackdropsMario.length]}`;
+			if (tier && tier.includes('mariomon')) bg = `fx/${BattleBackdropsMario[this.numericId % BattleBackdropsMario.length]}`;
 			else if (gen <= 1) bg = 'fx/bg-gen1.png?';
 			else if (gen <= 2) bg = 'fx/bg-gen2.png?';
 			else if (gen <= 3) bg = `fx/${BattleBackdropsThree[this.numericId % BattleBackdropsThree.length]}?`;
