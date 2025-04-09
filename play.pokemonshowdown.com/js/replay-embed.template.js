@@ -29,29 +29,29 @@ function requireScript(url) {
 }
 
 linkStyle('https://play.pokemonshowdown.com/style/font-awesome.css?');
-linkStyle('https://play.pokeathlon.com/style/battle.css?a7');
-linkStyle('https://play.pokeathlon.com/style/replay.css?a7');
-linkStyle('https://play.pokeathlon.com/style/utilichart.css?a7');
+linkStyle('https://play.pokeathlon.com/style/battle.css?a8');
+linkStyle('https://play.pokeathlon.com/style/replay.css?a8');
+linkStyle('https://play.pokeathlon.com/style/utilichart.css?a8');
 
 requireScript('https://play.pokeathlon.com/js/lib/ps-polyfill.js');
-requireScript('https://play.pokeathlon.com/config/config.js?a7');
+requireScript('https://play.pokeathlon.com/config/config.js?a8');
 requireScript('https://play.pokeathlon.com/js/lib/jquery-1.11.0.min.js');
 requireScript('https://play.pokeathlon.com/js/lib/html-sanitizer-minified.js');
 requireScript('https://play.pokeathlon.com/js/battle-sound.js');
-requireScript('https://play.pokeathlon.com/js/battledata.js?a7');
-requireScript('https://play.pokemonshowdown.com/data/pokedex-mini.js?a7');
-requireScript('https://play.pokemonshowdown.com/data/pokedex-mini-bw.js?a7');
-requireScript('https://play.pokeathlon.com/data/graphics.js?a7');
-requireScript('https://play.pokeathlon.com/data/pokedex.js?a7');
-requireScript('https://play.pokeathlon.com/data/moves.js?a7');
-requireScript('https://play.pokeathlon.com/data/abilities.js?a7');
-requireScript('https://play.pokeathlon.com/data/items.js?a7');
-requireScript('https://play.pokeathlon.com/data/teambuilder-tables.js?a7');
-requireScript('https://play.pokeathlon.com/js/battle-tooltips.js?a7');
-requireScript('https://play.pokeathlon.com/js/battle.js?a7');
-requireScript('https://play.pokeathlon.com/data/fusion-index.js?a7');
-requireScript('https://play.pokeathlon.com/data/fusion-credits.js?a7');
-requireScript('https://play.pokeathlon.com/data/poa-credits.js?a7');
+requireScript('https://play.pokeathlon.com/js/battledata.js?a8');
+requireScript('https://play.pokemonshowdown.com/data/pokedex-mini.js?a8');
+requireScript('https://play.pokemonshowdown.com/data/pokedex-mini-bw.js?a8');
+requireScript('https://play.pokeathlon.com/data/graphics.js?a8');
+requireScript('https://play.pokeathlon.com/data/pokedex.js?a8');
+requireScript('https://play.pokeathlon.com/data/moves.js?a8');
+requireScript('https://play.pokeathlon.com/data/abilities.js?a8');
+requireScript('https://play.pokeathlon.com/data/items.js?a8');
+requireScript('https://play.pokeathlon.com/data/teambuilder-tables.js?a8');
+requireScript('https://play.pokeathlon.com/js/battle-tooltips.js?a8');
+requireScript('https://play.pokeathlon.com/js/battle.js?a8');
+requireScript('https://play.pokeathlon.com/data/fusion-index.js?a8');
+requireScript('https://play.pokeathlon.com/data/fusion-credits.js?a8');
+requireScript('https://play.pokeathlon.com/data/poa-credits.js?a8');
 
 var Replays = {
 	battle: null,
