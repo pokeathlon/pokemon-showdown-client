@@ -350,7 +350,7 @@ process.stdout.write("Building `data/teambuilder-tables.js`... ");
 	const NFE = GENS.map(num => num + 0.3);
 	const LC = GENS.map(num => num + 0.7);
 	const NATDEX = [9.1, 8.1];
-	const OTHER = [9.9, 9.82, 9.83, -9.83, 9.84, -9.84, -9.82, 9.822, -9.822, 9.8222, -9.8222, 9.85, -9.85, 9.855, -9.855, 9.87, -9.87, 9.888, -9.888, 6.877, -6.877, 9.81, -9.81, 9.83, -9.83, 7.811, -7.811, 6.833, -6.833, 6.844, -6.844];
+	const OTHER = [9.9, 9.82, 9.83, -9.83, 9.84, -9.84, -9.82, 9.822, -9.822, 9.8222, -9.8222, 9.85, -9.85, 9.855, -9.855, 9.87, -9.87, 9.888, -9.888, 9.889, 6.877, -6.877, 9.81, -9.81, 9.83, -9.83, 7.811, -7.811, 6.833, -6.833, 6.844, -6.844];
 
 	// process.stdout.write("\n  ");
 	for (const genIdent of [...GENS, ...DOUBLES, ...VGC, ...NFE, ...OTHER, ...NATDEX, ...LC]) {
@@ -375,6 +375,7 @@ process.stdout.write("Building `data/teambuilder-tables.js`... ");
 		const isNatDexInf = ('' + genIdent).endsWith('.87');
 		const isInfinity = ('' + genIdent).endsWith('.877');
 		const isMariomon = ('' + genIdent).endsWith('.888');
+		const isMariomonVGC = ('' + genIdent).endsWith('.889');
 		const genNum = Math.floor(isDoubles ? -genIdent : genIdent);
 		const isBW1 = genIdent === 5.1;
 		const gen = (() => {
@@ -387,7 +388,7 @@ process.stdout.write("Building `data/teambuilder-tables.js`... ");
 			if (isNatDexInsg || isInsg) genStr += 'insurgence';
 			if (isNatDexU || isUranium) genStr += 'uranium';
 			if (isNatDexInf || isInfinity) genStr += 'infinity';
-			if (isMariomon) genStr += 'mariomon';
+			if (isMariomon || isMariomonVGC) genStr += 'mariomon';
 			return genStr;
 		})();
 		// process.stdout.write("" + gen + (isDoubles ? " doubles" : "") + "... ");
@@ -472,6 +473,14 @@ process.stdout.write("Building `data/teambuilder-tables.js`... ");
 						species.tags.includes('Restricted Legendary') ? 'Restricted Legendary' :
 						species.nfe ? (species.prevo ? 'NFE' : 'LC') : 'Regular';
 				}
+				if (isMariomonVGC) {
+					if (species.num <= 0 || species.isNonstandard === 'Unobtainable') return 'Illegal';
+					if (baseSpecies.tags.includes('Mythical')) return 'Mythical';
+					if (baseSpecies.tags.includes('Restricted Legendary')) return 'Restricted Legendary';
+					if (species.tier === 'NFE') return 'NFE';
+					if (species.tier === 'LC') return 'LC';
+					return 'Regular';
+				}
 				if (isNatDexFusions) {
 					let tier = isDoubles ? species.doublesTier : species.natDexTier;
 					return tier;
@@ -509,7 +518,7 @@ process.stdout.write("Building `data/teambuilder-tables.js`... ");
 			if (species.forme) {
 				if ((['Meloetta'].includes(species.baseSpecies) && !isFusions) ||
 					[
-						'Aegislash', 'Castform', 'Cherrim', 'Cramorant', 'Eiscue', 'Mimikyu', 'Minior', 'Morpeko', 'Wishiwashi', 'Lunachi', 'Emolga-Delta', 'Caramitti',
+						'Aegislash', 'Castform', 'Cherrim', 'Cramorant', 'Eiscue', 'Mimikyu', 'Minior', 'Morpeko', 'Wishiwashi', 'Lunachi', 'Emolga-Delta', 'Caramitti', 'Hammer Bro', 'Uproot', 'Fuzzy', 'Rex', 'Wiggler',
 					].includes(species.baseSpecies) || species.forme.includes('Totem') || species.forme.includes('Zen') ||
 					(species.baseSpecies === 'Ogerpon' && species.forme.includes('Tera'))
 				) {
@@ -582,9 +591,10 @@ process.stdout.write("Building `data/teambuilder-tables.js`... ");
 			BattleTeambuilderTable[gen + 'lc'].tiers = tiers;
 			BattleTeambuilderTable[gen + 'lc'].overrideTier = overrideTier;
 			BattleTeambuilderTable[gen + 'lc'].formatSlices = formatSlices;
-		} else if (isVGC) {
+		} else if (isVGC || isMariomonVGC) {
 			BattleTeambuilderTable[gen + 'vgc'] = {};
 			BattleTeambuilderTable[gen + 'vgc'].tiers = tiers;
+			BattleTeambuilderTable[gen + 'vgc'].overrideTier = overrideTier
 			BattleTeambuilderTable[gen + 'vgc'].formatSlices = formatSlices;
 		} else if (isDoubles) {
 			BattleTeambuilderTable[gen + 'doubles'] = {};
@@ -634,7 +644,7 @@ process.stdout.write("Building `data/teambuilder-tables.js`... ");
 		}
 
 		const tierOrder = (() => {
-			if (isVGC || isGen9BH) {
+			if (isVGC || isGen9BH || isMariomonVGC) {
 				return ["Mythical", "Restricted Legendary", "Regular", "NFE", "LC"];
 			}
 			if (isDoubles && genNum > 4) {

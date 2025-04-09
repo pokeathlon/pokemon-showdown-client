@@ -1115,6 +1115,14 @@ export class BattleTooltips {
 			}
 		}
 
+		if (item === 'goombaboots' && (speciesName === 'Goomba' || speciesName === 'Goomba Stack')) {
+			stats.spe *= 2;
+		}
+
+		if (item === 'sturdyshell' && (speciesName === 'Koopa' || speciesName === 'Paratroopa' || speciesName === 'Dry Bones')) {
+			stats.def *= 2;
+		}
+
 		// check abilities other than Guts and Quick Feet
 		// check items other than light ball, thick club, metal/quick powder
 		if (this.battle.gen <= 2) {
@@ -1689,6 +1697,7 @@ export class BattleTooltips {
 					if (value.abilityModify(0, 'Intoxicate')) moveType = 'Poison';
 					if (value.abilityModify(0, 'Atomizate')) moveType = 'Nuclear';
 					if (value.abilityModify(0, 'Energizate')) moveType = 'Electric';
+					if (value.abilityModify(0, 'Transmutate')) moveType = 'Psychic';
 				} if (moveType === 'Rock') {
 					if (value.abilityModify(0, 'Foundry')) moveType = 'Fire';
 				}
@@ -2187,6 +2196,7 @@ export class BattleTooltips {
 				value.abilityModify(this.battle.gen > 6 ? 1.2 : 1.3, "Intoxicate");
 				value.abilityModify(this.battle.gen > 6 ? 1.2 : 1.3, "Atomizate");
 				value.abilityModify(this.battle.gen > 6 ? 1.2 : 1.3, "Energizate");
+				value.abilityModify(this.battle.gen > 6 ? 1.2 : 1.3, "Transmutate");
 			} if (move.type === 'Rock') {
 				value.abilityModify(this.battle.gen > 6 ? 1.2 : 1.3, "Foundry");
 			}

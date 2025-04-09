@@ -597,6 +597,7 @@ abstract class BattleTypedSearch<T extends SearchType> {
 					if (info.gameType === 'doubles') {
 						format = 'doublesubers' as ID;
 						if (info.banlist.includes('DUber')) format = 'doublesou' as ID;
+						if (info.ruleset.includes('Flat Rules')) format = 'mariomonvgc' as ID;
 						this.table = info.mod + (info.mod.includes('pokeathlon') && info.ruleTable.includes('standardnatdex') ? 'natdex' : '') + 'doubles';
 					} else {
 						format = 'ag' as ID;
@@ -976,7 +977,7 @@ class BattlePokemonSearch extends BattleTypedSearch<'pokemon'> {
 	getBaseResults(): SearchRow[] {
 		const format = this.format;
 		if (!format) return this.getDefaultResults();
-		const isVGCOrBS = format.startsWith('battlespot') || format.startsWith('bss') ||
+		let isVGCOrBS = format.startsWith('battlespot') || format.startsWith('bss') ||
 			format.startsWith('battlestadium') || format.startsWith('vgc');
 		const isHackmons = format.includes('hackmons') || format.endsWith('bh');
 		let isDoublesOrBS = isVGCOrBS || this.formatType?.includes('doubles');
@@ -1008,6 +1009,9 @@ class BattlePokemonSearch extends BattleTypedSearch<'pokemon'> {
 			table = table['gen8' + this.formatType];
 		} else if (this.formatType === 'letsgo') {
 			table = table['gen7letsgo'];
+		} else if (format === 'mariomonvgc') {
+			table = table['gen9mariomonvgc'];
+			isVGCOrBS = true;
 		} else if (this.table) {
 			table = table[this.table];
 		} else if (this.formatType === 'natdex') {
