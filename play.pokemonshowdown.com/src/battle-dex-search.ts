@@ -598,14 +598,14 @@ abstract class BattleTypedSearch<T extends SearchType> {
 						format = 'doublesubers' as ID;
 						if (info.banlist.includes('DUber')) format = 'doublesou' as ID;
 						if (info.ruleset.includes('Flat Rules')) format = 'mariomonvgc' as ID;
-						this.table = info.mod + (info.mod.includes('pokeathlon') && info.ruleTable.includes('standardnatdex') ? 'natdex' : '') + 'doubles';
+						this.table = info.mod + (info.mod.includes('pokeathlon') && (info.ruleTable.includes('standardnatdex') || info.ruleTable.includes('natdexmod'))  ? 'natdex' : '') + 'doubles';
 					} else {
 						format = 'ag' as ID;
 						if (info.banlist.includes('ND AG') || info.banlist.includes('AG')) format = 'ubers' as ID;
 						if (info.banlist.includes('ND Uber') || info.banlist.includes('Uber')) format = 'ou' as ID;
 						if (info.banlist.includes('ND OU') || info.banlist.includes('OU')) format = 'uu' as ID;
 						if (info.ruleset.includes('Little Cup')) format = 'lc' as ID;
-						this.table = info.mod + (info.mod.includes('pokeathlon') && info.ruleTable.includes('standardnatdex') ? 'natdex' : '');
+						this.table = info.mod + (info.mod.includes('pokeathlon') && (info.ruleTable.includes('standardnatdex') || info.ruleTable.includes('natdexmod')) ? 'natdex' : '');
 					}
 				}
 			}
