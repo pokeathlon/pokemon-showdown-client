@@ -1756,10 +1756,8 @@ export class BattleScene implements BattleSceneStub {
 		this.preloadImage(Dex.resourcePrefix + 'sprites/ani-back/substitute.gif');
 	}
 	rollBgm() {
-		this.animating = true;
 		if (this.battle.dex.modid === 'gen9mariomon') this.setBgm(15 + this.numericId % 3);
 		else this.setBgm(1 + this.numericId % 15);
-		this.animating = false;
 	}
 	setBgm(bgmNum: number) {
 		if (this.bgmNum === bgmNum) return;
