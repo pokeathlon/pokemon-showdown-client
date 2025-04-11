@@ -582,14 +582,12 @@ export class BattleScene implements BattleSceneStub {
 			bg = 'fx/bg-npa.png';
 			this.setBgm(-101);
 		} else {
-			const tier = this.battle.id.split('-')[1];
-			if (tier && tier.includes('mariomon')) bg = `fx/${BattleBackdropsMario[this.numericId % BattleBackdropsMario.length]}`;
+			if (this.battle.tier && this.battle.tier.includes('Mariomon')) bg = `fx/${BattleBackdropsMario[this.numericId % BattleBackdropsMario.length]}`;
 			else if (gen <= 1) bg = 'fx/bg-gen1.png?';
 			else if (gen <= 2) bg = 'fx/bg-gen2.png?';
 			else if (gen <= 3) bg = `fx/${BattleBackdropsThree[this.numericId % BattleBackdropsThree.length]}?`;
 			else if (gen <= 4) bg = `fx/${BattleBackdropsFour[this.numericId % BattleBackdropsFour.length]}`;
-			else if (gen <= 5) bg = `fx/${BattleBackdropsFive[this.numericId % BattleBackdropsFive.length]}`;
-			else bg = `sprites/gen6bgs/${BattleBackdrops[this.numericId % BattleBackdrops.length]}`;
+			else bg = `fx/${BattleBackdropsFive[this.numericId % BattleBackdropsFive.length]}`;
 		}
 
 		this.backdropImage = bg;

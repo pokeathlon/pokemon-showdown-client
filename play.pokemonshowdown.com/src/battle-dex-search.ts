@@ -1930,11 +1930,15 @@ class BattleMoveSearch extends BattleTypedSearch<'move'> {
 			let fusionLine: string[] = [fusionSpecies.name];
 			let speciesLine: string[] = [species.name];
 
+			if (fusionSpecies.isMega && fusionSpecies.baseSpecies) fusionLine.push(fusionSpecies.baseSpecies);
+			if (fusionSpecies.changesFrom) fusionLine.push(fusionSpecies.changesFrom);
 			if (fusionSpecies.prevo) fusionLine.push(fusionSpecies.prevo);
 			if (this.dex.species.get(fusionSpecies.prevo).prevo) fusionLine.push(this.dex.species.get(fusionSpecies.prevo).prevo);
 			
+			if (species.isMega && species.baseSpecies) speciesLine.push(species.baseSpecies);
+			if (species.changesFrom) speciesLine.push(species.changesFrom);
 			if (species.prevo) speciesLine.push(species.prevo);
-			if (this.dex.species.get(species.prevo).prevo) fusionLine.push(this.dex.species.get(species.prevo).prevo);
+			if (this.dex.species.get(species.prevo).prevo) speciesLine.push(this.dex.species.get(species.prevo).prevo);
 
 			for (let head of fusionLine) {
 				for (let body of speciesLine) {
@@ -2267,7 +2271,6 @@ const fusionMoves: {[key: string]: {[key: string]: string[]}[]} = {
 	"prismaticlaser": [{"fusion": ["lanturn", "ampharos", "hooh", "deoxys", "mewtwo", "mew"], "type": ["Psychic"]}],
 	"photongeyser": [{"fusion": ["lanturn", "ampharos", "hooh", "deoxys", "mewtwo", "mew"], "type": ["Psychic"]}],
 	"lunardance": [{"fusion": ["clefairy", "clefable", "staryu", "starmie"]}],
-	"diamondstorm": [{"type": ["Fairy", "Rock"]}, {"type": ["Steel", "Rock"]}, {"fusion": ["dialga", "steelix"]}],
 	"sunsteelstrike": [{"fusion": ["charizard", "volcarona", "flareon", "ninetales", "entei", "hooh", "rapidash"], "type": ["Steel"]}],
 	"doubleironbash": [{"type": ["Steel"], "learns": ["doubleslap"]}],
 	"steameruption": [{"type": ["Water"], "learns": ["eruption"]}],
