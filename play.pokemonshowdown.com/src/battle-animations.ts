@@ -582,7 +582,7 @@ export class BattleScene implements BattleSceneStub {
 			bg = 'fx/bg-npa.png';
 			this.setBgm(-101);
 		} else {
-			if (this.battle.tier && this.battle.tier.includes('Mariomon')) bg = `fx/${BattleBackdropsMario[this.numericId % BattleBackdropsMario.length]}`;
+			if (this.battle.dex.modid === 'gen9mariomon') bg = `fx/${BattleBackdropsMario[this.numericId % BattleBackdropsMario.length]}`;
 			else if (gen <= 1) bg = 'fx/bg-gen1.png?';
 			else if (gen <= 2) bg = 'fx/bg-gen2.png?';
 			else if (gen <= 3) bg = `fx/${BattleBackdropsThree[this.numericId % BattleBackdropsThree.length]}?`;
@@ -1756,8 +1756,10 @@ export class BattleScene implements BattleSceneStub {
 		this.preloadImage(Dex.resourcePrefix + 'sprites/ani-back/substitute.gif');
 	}
 	rollBgm() {
-		if (this.battle.tier && this.battle.tier.includes('Mariomon')) this.setBgm(15 + this.numericId % 3);
+		this.animating = true;
+		if (this.battle.dex.modid === 'gen9mariomon') this.setBgm(15 + this.numericId % 3);
 		else this.setBgm(1 + this.numericId % 15);
+		this.animating = false;
 	}
 	setBgm(bgmNum: number) {
 		if (this.bgmNum === bgmNum) return;

@@ -3460,12 +3460,8 @@ export class Battle {
 				this.messageFadeTime = 40;
 				this.isBlitz = true;
 			}
-			if (this.tier.includes(`Let's Go`)) {
-				this.dex = Dex.mod('gen7letsgo' as ID);
-			}
-			if (this.tier.includes('Super Staff Bros')) {
-				this.dex = Dex.mod('gen9ssb' as ID);
-			}
+			if (window.Formats && toID(this.tier) in window.Formats) this.dex = Dex.mod(window.Formats[toID(this.tier)].mod);
+			this.scene.updateGen();
 			this.log(args);
 			break;
 		}
@@ -3765,7 +3761,6 @@ export class Battle {
 		case 'gen': {
 			this.gen = parseInt(args[1], 10);
 			this.dex = Dex.forGen(this.gen);
-			this.scene.updateGen();
 			this.log(args);
 			break;
 		}
