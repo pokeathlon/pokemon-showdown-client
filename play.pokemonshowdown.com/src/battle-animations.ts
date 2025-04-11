@@ -1756,7 +1756,8 @@ export class BattleScene implements BattleSceneStub {
 		this.preloadImage(Dex.resourcePrefix + 'sprites/ani-back/substitute.gif');
 	}
 	rollBgm() {
-		this.setBgm(1 + this.numericId % 15);
+		if (this.battle.tier && this.battle.tier.includes('Mariomon')) this.setBgm(15 + this.numericId % 3);
+		else this.setBgm(1 + this.numericId % 15);
 	}
 	setBgm(bgmNum: number) {
 		if (this.bgmNum === bgmNum) return;
@@ -1814,10 +1815,21 @@ export class BattleScene implements BattleSceneStub {
 		case 14:
 			this.bgm = BattleSound.loadBgm('audio/sm-trainer.mp3', 8323, 89230, this.bgm);
 			break;
+		case 15:
+			this.bgm = BattleSound.loadBgm('fx/music/vs-alaina.mp3', 88550, 289684, this.bgm);
+			this.message('\u266b <i>vs. Developer (Kobe)</i> - <b>psy_commando</b> \u266b');
+			break;
+		case 16:
+			this.bgm = BattleSound.loadBgm('fx/music/vs-alpharad.mp3', 65519, 182787, this.bgm);
+			this.message('\u266b <i>vs. Director (Alpharad)</i> - <b>Ingolme</b> \u266b');
+			break;
+		case 17:
+			this.bgm = BattleSound.loadBgm('fx/music/world-8.mp3', 18203, 156486, this.bgm);
+			this.message('\u266b <i>World 8</i> - <b>Sam Wolff</b> \u266b');
+			break;
 		case -101:
 			this.bgm = BattleSound.loadBgm('audio/spl-elite4.mp3', 3962, 152509, this.bgm);
 			break;
-		case 15:
 		default:
 			this.bgm = BattleSound.loadBgm('audio/sm-rival.mp3', 11389, 62158, this.bgm);
 			break;
