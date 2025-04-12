@@ -585,12 +585,11 @@ export class BattleScene implements BattleSceneStub {
 			if (this.battle.dex.modid === 'gen9mariomon') {
 				const marioBGs = Object.keys(BattleBackdropsMario);
 				bg = marioBGs[this.numericId % marioBGs.length];
-				this.message(`Background by <b>${BattleBackdropsMario[bg]}</b>`);
 
 				const marioMusic = Object.keys(BattleMusicMario);
 				var bgm = marioMusic[this.numericId % marioMusic.length];
+				if (!this.bgm) this.message(`\u266b <i>${BattleMusicMario[bgm].title}</i> - <b>${BattleMusicMario[bgm].composer}</b> \u266b`);
 				this.bgm = BattleSound.loadBgm(bgm, BattleMusicMario[bgm].loopstart, BattleMusicMario[bgm].loopend, this.bgm);
-				this.message(`\u266b <i>${BattleMusicMario[bgm].title}</i> - <b>${BattleMusicMario[bgm].composer}</b> \u266b`);
 				
 			}
 			else if (gen <= 1) bg = 'fx/bg-gen1.png?';
