@@ -646,6 +646,10 @@ export const Dex = new class implements ModdedDex {
 				else spriteData.url = 'https://play.pokeathlon.com/sprites/fangame-sprites/' + toID(fangame) + '/' + (!["Infinite Fusion"].includes(fangame) ? (spriteData.isFrontSprite ? 'front' : 'back') + (spriteData.shiny ? '-shiny': '') + '/' : '') + species.id + (["Pokeathlon", "Xenoverse"].includes(fangame) ? '.gif' : '.png');
 				spriteData.pixelated = true;
 				spriteData.gen = 5;
+				if (fangame === "Mariomon") {
+					spriteData.gen = 3;
+					if (!spriteData.isFrontSprite) spriteData.y += -16;
+				}
 				if ((fangame === "Infinite Fusion" || species.eggGroups.includes("Digimon")) && !spriteData.isFrontSprite) spriteData.flip = true;
 				return spriteData;
 			}
