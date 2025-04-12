@@ -3433,10 +3433,14 @@ const BattleBackdrops = [
 	'bg-skypillar.jpg',
 ];
 const BattleBackdropsMario: {[k: string]: string} = {
-	'fx/backdrops/bg-mushroom.png': 'anima_nel',
-	'fx/backdrops/bg-mario.png': 'anima_nel',
+	'fx/backdrops/bg-desert.png': 'anima_nel',
 	'fx/backdrops/bg-galaxy.png': 'anima_nel',
+	'fx/backdrops/bg-inside.png': 'anima_nel',
 	'fx/backdrops/bg-kingdom.png': 'anima_nel',
+	'fx/backdrops/bg-molten.png': 'anima_nel',
+	'fx/backdrops/bg-mushroom.png': 'anima_nel',
+	'fx/backdrops/bg-rainbow.png': 'anima_nel',
+	'fx/backdrops/bg-sonic.png': 'anima_nel',
 };
 const BattleMusicMario: {[k: string]: AnyObject} = {
 	'fx/music/vs-alaina.mp3': {
