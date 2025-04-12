@@ -588,7 +588,7 @@ export class BattleScene implements BattleSceneStub {
 
 				const marioMusic = Object.keys(BattleMusicMario);
 				var bgm = marioMusic[this.numericId % marioMusic.length];
-				if (!this.bgm) this.message(`\u266b <i>${BattleMusicMario[bgm].title}</i> - <b>${BattleMusicMario[bgm].composer}</b> \u266b`);
+				if (!this.bgm || (this.bgm && this.bgm.url != bgm)) this.message(`\u266b <i>${BattleMusicMario[bgm].title}</i> - <b>${BattleMusicMario[bgm].composer}</b> \u266b`);
 				this.bgm = BattleSound.loadBgm(bgm, BattleMusicMario[bgm].loopstart, BattleMusicMario[bgm].loopend, this.bgm);
 				
 			}
