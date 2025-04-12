@@ -117,7 +117,7 @@ export const BattleSound = new class {
 		try {
 			const sound = document.createElement('audio');
 			if (url.startsWith('audio/')) sound.src = 'https://' + Config.routes.client + '/' + url;
-			else sound.src = 'https://play.pokeathlon.com' + '/' + url;
+			else sound.src = 'https://play.pokeathlon.com/' + url;
 			sound.volume = this.effectVolume / 100;
 			this.soundCache[url] = sound;
 			return sound;

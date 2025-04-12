@@ -994,7 +994,11 @@ export class BattleTooltips {
 		if (weatherbuf.startsWith('<br />')) {
 			weatherbuf = weatherbuf.slice(6);
 		}
-		buf = `<p>${weatherbuf}</p>` + buf;
+		buf = `<p style="border-bottom:1px solid #888888;">${weatherbuf}</p>` + buf;
+		if (this.battle.dex.modid === 'gen9mariomon') {
+			buf += `<p>Background by <b>${window.BattleBackdropsMario[scene.backdropImage]}</b></p>`;
+			if (scene.bgm) buf += `<p>\u266b <i>${window.BattleMusicMario[scene.bgm.url].title}</i> - <b>${window.BattleMusicMario[scene.bgm.url].composer}</b> \u266b</p>`;
+		}
 		return `<p>${buf}</p>`;
 	}
 

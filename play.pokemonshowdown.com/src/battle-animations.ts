@@ -582,7 +582,17 @@ export class BattleScene implements BattleSceneStub {
 			bg = 'fx/bg-npa.png';
 			this.setBgm(-101);
 		} else {
-			if (this.battle.dex.modid === 'gen9mariomon') bg = `fx/${BattleBackdropsMario[this.numericId % BattleBackdropsMario.length]}`;
+			if (this.battle.dex.modid === 'gen9mariomon') {
+				const marioBGs = Object.keys(BattleBackdropsMario);
+				bg = marioBGs[this.numericId % marioBGs.length];
+				this.message(`Background by <b>${BattleBackdropsMario[bg]}</b>`);
+
+				const marioMusic = Object.keys(BattleMusicMario);
+				var bgm = marioMusic[this.numericId % marioMusic.length];
+				this.bgm = BattleSound.loadBgm(bgm, BattleMusicMario[bgm].loopstart, BattleMusicMario[bgm].loopend, this.bgm);
+				this.message(`\u266b <i>${BattleMusicMario[bgm].title}</i> - <b>${BattleMusicMario[bgm].composer}</b> \u266b`);
+				
+			}
 			else if (gen <= 1) bg = 'fx/bg-gen1.png?';
 			else if (gen <= 2) bg = 'fx/bg-gen2.png?';
 			else if (gen <= 3) bg = `fx/${BattleBackdropsThree[this.numericId % BattleBackdropsThree.length]}?`;
@@ -1756,8 +1766,7 @@ export class BattleScene implements BattleSceneStub {
 		this.preloadImage(Dex.resourcePrefix + 'sprites/ani-back/substitute.gif');
 	}
 	rollBgm() {
-		if (this.battle.dex.modid === 'gen9mariomon') this.setBgm(15 + this.numericId % 3);
-		else this.setBgm(1 + this.numericId % 15);
+		this.setBgm(1 + this.numericId % 15);
 	}
 	setBgm(bgmNum: number) {
 		if (this.bgmNum === bgmNum) return;
@@ -1815,21 +1824,10 @@ export class BattleScene implements BattleSceneStub {
 		case 14:
 			this.bgm = BattleSound.loadBgm('audio/sm-trainer.mp3', 8323, 89230, this.bgm);
 			break;
-		case 15:
-			this.bgm = BattleSound.loadBgm('fx/music/vs-alaina.mp3', 88550, 289684, this.bgm);
-			this.message('\u266b <i>vs. Developer (Kobe)</i> - <b>psy_commando</b> \u266b');
-			break;
-		case 16:
-			this.bgm = BattleSound.loadBgm('fx/music/vs-alpharad.mp3', 65519, 182787, this.bgm);
-			this.message('\u266b <i>vs. Director (Alpharad)</i> - <b>Ingolme</b> \u266b');
-			break;
-		case 17:
-			this.bgm = BattleSound.loadBgm('fx/music/world-8.mp3', 18203, 156486, this.bgm);
-			this.message('\u266b <i>World 8</i> - <b>Sam Wolff</b> \u266b');
-			break;
 		case -101:
 			this.bgm = BattleSound.loadBgm('audio/spl-elite4.mp3', 3962, 152509, this.bgm);
 			break;
+		case 15:
 		default:
 			this.bgm = BattleSound.loadBgm('audio/sm-rival.mp3', 11389, 62158, this.bgm);
 			break;
@@ -3434,12 +3432,32 @@ const BattleBackdrops = [
 	'bg-orassea.jpg',
 	'bg-skypillar.jpg',
 ];
-const BattleBackdropsMario = [
-	'bg-mushroom.png',
-	'bg-mario.png',
-	'bg-galaxy.png',
-	'bg-kingdom.png',
-];
+const BattleBackdropsMario: {[k: string]: string} = {
+	'fx/backdrops/bg-mushroom.png': 'anima_nel',
+	'fx/backdrops/bg-mario.png': 'anima_nel',
+	'fx/backdrops/bg-galaxy.png': 'anima_nel',
+	'fx/backdrops/bg-kingdom.png': 'anima_nel',
+};
+const BattleMusicMario: {[k: string]: AnyObject} = {
+	'fx/music/vs-alaina.mp3': {
+		title: 'vs. Developer (Kobe)',
+		composer: 'psy_commando',
+		loopstart: 88550,
+		loopend: 289684,
+	},
+	'fx/music/vs-alpharad.mp3': {
+		title: 'vs. Director (Alpharad)',
+		composer: 'Ingolme',
+		loopstart: 65519,
+		loopend: 182787,
+	},
+	'fx/music/world-8.mp3': {
+		title: 'World 8',
+		composer: 'Sam Wolff',
+		loopstart: 18203,
+		loopend: 156486,
+	},
+};
 
 export const BattleOtherAnims: AnimTable = {
 	hitmark: {
