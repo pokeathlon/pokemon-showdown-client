@@ -1099,6 +1099,10 @@ export class BattleTooltips {
 			stats.spa *= 2;
 		}
 
+		if (item === 'anchor' && (speciesName === 'Dhelmise' || fusionSpecies === 'Dhelmise')) {
+			stats.atk *= 1.5;
+		}
+
 		if (item === 'thickclub') {
 			if (speciesName === 'Marowak' || speciesName === 'Cubone' || fusionSpecies === 'Marowak' || fusionSpecies === 'Cubone') {
 				stats.atk *= 2;
@@ -1294,7 +1298,7 @@ export class BattleTooltips {
 		if (item === 'choicescarf' && !clientPokemon?.volatiles['dynamax']) {
 			speedModifiers.push(1.5);
 		}
-		if (item === 'ironball' || speedHalvingEVItems.includes(item)) {
+		if (['ironball', 'anchor'].includes(item) || speedHalvingEVItems.includes(item)) {
 			speedModifiers.push(0.5);
 		}
 		if (ability === 'furcoat') {
