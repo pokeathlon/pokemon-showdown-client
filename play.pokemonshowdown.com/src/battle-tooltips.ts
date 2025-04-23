@@ -1094,7 +1094,7 @@ export class BattleTooltips {
 
 		// check for light ball, thick club, metal/quick powder
 		// the only stat modifying items in gen 2 were light ball, thick club, metal powder
-		if (item === 'lightball' && (speciesName === 'Pikachu' || fusionSpecies === 'Pikachu') && this.battle.gen !== 4) {
+		if (item === 'lightball' && (speciesName === 'Pikachu' || fusionSpecies === 'Pikachu' || speciesName === 'Pikachu-Delta' || fusionSpecies === 'Pikachu-Delta') && this.battle.gen !== 4) {
 			if (this.battle.gen > 4) stats.atk *= 2;
 			stats.spa *= 2;
 		}
@@ -1123,11 +1123,11 @@ export class BattleTooltips {
 			}
 		}
 
-		if (item === 'goombaboots' && (speciesName === 'Goomba' || speciesName === 'Goomba Stack')) {
+		if (item === 'goombaboots' && (speciesName === 'Goomba' || speciesName === 'Goomba Stack' || fusionSpecies === 'Goomba' || fusionSpecies === 'Goomba Stack')) {
 			stats.spe *= 2;
 		}
 
-		if (item === 'sturdyshell' && (speciesName === 'Koopa' || speciesName === 'Paratroopa' || speciesName === 'Dry Bones')) {
+		if (item === 'sturdyshell' && (speciesName === 'Koopa' || speciesName === 'Paratroopa' || speciesName === 'Dry Bones' || fusionSpecies === 'Koopa' || fusionSpecies === 'Paratroopa' || fusionSpecies === 'Dry Bones')) {
 			stats.def *= 2;
 		}
 
