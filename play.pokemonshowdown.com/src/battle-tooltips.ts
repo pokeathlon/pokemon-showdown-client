@@ -1984,7 +1984,7 @@ export class BattleTooltips {
 		if (['hex', 'infernalparade'].includes(move.id) && target?.status) {
 			value.modify(2, move.name + ' + status');
 		}
-		if (['vengefulpulse'].includes(move.id) && target?.status) {
+		if (['vengefulpulse'].includes(move.id) && pokemon?.status) {
 			value.modify(1.5, move.name + ' + status');
 		}
 		if (move.id === 'lastrespects') {
