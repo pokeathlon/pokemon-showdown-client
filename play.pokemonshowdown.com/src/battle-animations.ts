@@ -874,7 +874,7 @@ export class BattleScene implements BattleSceneStub {
 				textBuf += pokemon.speciesForme;
 				let url = spriteData.url;
 				// if (this.paused) url.replace('/xyani', '/xy').replace('.gif', '.png');
-				buf += '<img src="' + url + '" width="' + spriteData.w + '" height="' + spriteData.h + '" style="position:absolute;top:' + Math.floor(y - spriteData.h / 2) + 'px;left:' + Math.floor(x - spriteData.w / 2) + 'px"' + (spriteData.flip ? ' class="flip" ' : '') + '/>';
+				buf += '<img src="' + url + '" width="' + spriteData.w + '" height="' + spriteData.h + '" style="image-rendering:pixelated;position:absolute;top:' + Math.floor(y - spriteData.h / 2) + 'px;left:' + Math.floor(x - spriteData.w / 2) + 'px"' + (spriteData.flip ? ' class="flip" ' : '') + '/>';
 				buf2 += '<div style="position:absolute;top:' + (y + 45) + 'px;left:' + (x - 40) + 'px;width:80px;font-size:10px;text-align:center;color:#FFF;">';
 				const gender = pokemon.gender;
 				if (gender === 'M' || gender === 'F') {
