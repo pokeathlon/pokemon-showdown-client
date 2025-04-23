@@ -1100,7 +1100,7 @@ export class BattleTooltips {
 		}
 
 		if (item === 'anchor' && (speciesName === 'Dhelmise' || fusionSpecies === 'Dhelmise')) {
-			stats.atk *= 1.5;
+			stats.atk *= Math.floor(stats.atk * 1.5);
 		}
 
 		if (item === 'thickclub') {
