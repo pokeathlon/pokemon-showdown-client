@@ -38188,12 +38188,5 @@ BattleMoveAnims['quantumleap'] = {
 };
 BattleMoveAnims['radioacid'] = {anim: BattleMoveAnims['acid'].anim};
 BattleMoveAnims['skyfall'] = {anim: BattleMoveAnims['bravebird'].anim};
-BattleMoveAnims['subduction'] = {
-	anim(scene, [attacker, defender]) {
-		BattleMoveAnims['earthquake'].anim(scene, [attacker, defender]);
-		BattleMoveAnims['earthquake'].anim(scene, [attacker, defender]);
-		BattleMoveAnims['earthquake'].anim(scene, [attacker, defender]);
-	},
-};
 BattleMoveAnims['suddenstrike'] = {anim: BattleMoveAnims['shadowpunch'].anim};
 BattleMoveAnims['thunderstorm'] = {anim: BattleMoveAnims['raindance'].anim};
