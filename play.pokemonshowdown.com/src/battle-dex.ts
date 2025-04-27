@@ -642,7 +642,7 @@ export const Dex = new class implements ModdedDex {
 
 		for (var fangame of ["Infinite Fusion", "Pokeathlon", "Insurgence", "Uranium", "Infinity", "Mariomon"]) {
 			if (species.tags.includes(fangame)) {
-				if (species.eggGroups.includes("Digimon")) spriteData.url = 'https://play.pokeathlon.com/sprites/fangame-sprites/infinity/digimon/' + species.id + '.png';
+				if (species.eggGroups.includes("Digimon")) spriteData.url = 'https://play.pokeathlon.com/sprites/fangame-sprites/infinity/digimon/' + (spriteData.isFrontSprite ? 'front' : 'back') + (spriteData.shiny ? '-shiny': '') + '/' + species.id + '.png';
 				else spriteData.url = 'https://play.pokeathlon.com/sprites/fangame-sprites/' + toID(fangame) + '/' + (!["Infinite Fusion"].includes(fangame) ? (spriteData.isFrontSprite ? 'front' : 'back') + (spriteData.shiny ? '-shiny': '') + '/' : '') + species.id + (["Pokeathlon"].includes(fangame) ? '.gif' : '.png');
 				spriteData.pixelated = true;
 				spriteData.gen = 5;
@@ -650,7 +650,7 @@ export const Dex = new class implements ModdedDex {
 					spriteData.gen = 3;
 					if (!spriteData.isFrontSprite) spriteData.y += -16;
 				}
-				if ((fangame === "Infinite Fusion" || species.eggGroups.includes("Digimon")) && !spriteData.isFrontSprite) spriteData.flip = true;
+				if ((fangame === "Infinite Fusion") && !spriteData.isFrontSprite) spriteData.flip = true;
 				return spriteData;
 			}
 		}
