@@ -1259,6 +1259,9 @@ export class BattleTooltips {
 				stats.spa = Math.floor(stats.spa * 1.3333);
 			}
 		}
+		if (ability === 'psychoslider' && this.battle.hasPseudoWeather('Psychic Terrain')) {
+			speedModifiers.push(2);
+		}
 		if (item === 'choicespecs' && !clientPokemon?.volatiles['dynamax']) {
 			stats.spa = Math.floor(stats.spa * 1.5);
 		}
