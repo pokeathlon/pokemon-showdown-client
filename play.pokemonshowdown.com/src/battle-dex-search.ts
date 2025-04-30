@@ -607,6 +607,7 @@ abstract class BattleTypedSearch<T extends SearchType> {
 						if (info.ruleset.includes('Little Cup')) format = 'lc' as ID;
 						this.table = info.mod + (info.mod.includes('pokeathlon') && (info.ruleTable.includes('standardnatdex') || info.ruleTable.includes('natdexmod')) ? 'natdex' : '');
 					}
+					if (formatName.includes('aaa')) format = format + 'aaa' as ID;
 					if (info.ruleTable.includes('chaosstabmonsmovelegality')) format = format + 'stabmons' as ID;
 				}
 			}

@@ -298,7 +298,7 @@
 		let banned = false;
 		if (this.format && this.format in window.Formats) {
 			let format = window.Formats[this.format];
-			if (format.ruleTable.includes('-pokemon:' + id)) banned = true; 
+			if (format.ruleTable.includes('-pokemon:' + pokemon.id) || format.ruleTable.includes('-basepokemon:' + toID(pokemon.baseSpecies))) banned = true; 
 		}
 
 		var buf = '<li class="' + (banned ? 'banned' : 'result') + '"><a' + attrs + ' data-entry="pokemon|' + BattleLog.escapeHTML(pokemon.name) + '">';
