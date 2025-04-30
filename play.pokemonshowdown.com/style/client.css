@@ -2763,6 +2763,7 @@ a.ilink.yours {
 .teambuilder-results .banned a {
 	border-radius: 4px;
 	cursor: not-allowed;
+	opacity: 0.5;
 }
 .teambuilder-results .result a {
 	border-radius: 4px;

@@ -294,7 +294,14 @@
 		if (!pokemon) return '<li class="result">Unrecognized pokemon</li>';
 		var id = toID(pokemon.name);
 		if (Search.urlRoot) attrs += ' href="' + Search.urlRoot + 'pokemon/' + id + '" data-target="push"';
-		var buf = '<li class="result"><a' + attrs + ' data-entry="pokemon|' + BattleLog.escapeHTML(pokemon.name) + '">';
+
+		let banned = false;
+		if (this.format && this.format in window.Formats) {
+			let format = window.Formats[this.format];
+			if (format.ruleTable.includes('-pokemon:' + id)) banned = true; 
+		}
+
+		var buf = '<li class="' + (banned ? 'banned' : 'result') + '"><a' + attrs + ' data-entry="pokemon|' + BattleLog.escapeHTML(pokemon.name) + '">';
 
 		// number
 		var tier = this.engine ? this.engine.getTier(pokemon) : pokemon.num;
