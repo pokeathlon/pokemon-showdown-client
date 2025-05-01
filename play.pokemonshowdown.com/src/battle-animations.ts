@@ -2931,6 +2931,9 @@ export class PokemonSprite extends Sprite {
 		if (pokemon.terastallized) {
 			buf += ` <img src="https://play.pokeathlon.com/fx/types/Tera${pokemon.terastallized}.png" alt="Tera-${pokemon.terastallized}" style="vertical-align:text-bottom;" height="16" width="16" />`;
 		}
+		if ('crest'.includes(pokemon.item)) {
+			buf += ` <img src="https://play.pokeathlon.com/sprites/fangame-sprites/rejuvenation/misc/crest.png" alt="${pokemon.name} Crest" style="vertical-align:text-bottom;" />`;
+		}
 
 		buf += `</strong><div class="hpbar"><div class="hptext"></div><div class="hptextborder"></div><div class="prevhp"><div class="hp"></div></div><div class="status"></div>`;
 		buf += `</div>`;
