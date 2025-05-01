@@ -98,7 +98,7 @@ function requireNoCache(pathSpec) {
 	index = index.concat(Object.keys(Dex.data.Abilities).map(x => x + ' ability'));
 	index = index.concat(Object.keys(Dex.data.TypeChart).map(x => toID(x) + ' type'));
 	index = index.concat(['physical', 'special', 'status'].map(x => toID(x) + ' category'));
-	index = index.concat(['pokeathlon', 'insurgence', 'uranium', 'mysterygift', 'poa', 'infinity', 'digimon', 'mariomon'].map(x => toID(x) + ' egggroup'));
+	index = index.concat(['pokeathlon', 'insurgence', 'uranium', 'mysterygift', 'poa', 'infinity', 'digimon', 'mariomon','rejuvenation'].map(x => toID(x) + ' egggroup'));
 	index = index.concat(['ou', 'uu', 'ru', 'nu', 'pu', 'zu', 'lc', 'nfe', 'uber', 'uubl', 'rubl', 'nubl', 'publ', 'zubl', 'cap', 'caplc', 'capnfe'].map(x => toID(x) + ' tier'));
 
 	const BattleArticleTitles = {};
@@ -376,6 +376,7 @@ process.stdout.write("Building `data/teambuilder-tables.js`... ");
 		const isInfinity = ('' + genIdent).endsWith('.877');
 		const isMariomon = ('' + genIdent).endsWith('.888');
 		const isMariomonVGC = ('' + genIdent).endsWith('.889');
+		const isRejuvenation = ('' + genIdent).endsWith('.86');
 		const genNum = Math.floor(isDoubles ? -genIdent : genIdent);
 		const isBW1 = genIdent === 5.1;
 		const gen = (() => {
@@ -389,6 +390,7 @@ process.stdout.write("Building `data/teambuilder-tables.js`... ");
 			if (isNatDexU || isUranium) genStr += 'uranium';
 			if (isNatDexInf || isInfinity) genStr += 'infinity';
 			if (isMariomon || isMariomonVGC) genStr += 'mariomon';
+			if (isRejuvenation) genStr += 'rejuvenation';
 			return genStr;
 		})();
 		// process.stdout.write("" + gen + (isDoubles ? " doubles" : "") + "... ");
@@ -497,7 +499,7 @@ process.stdout.write("Building `data/teambuilder-tables.js`... ");
 					if (isNatDexPOA && species.isNonstandard && species.isNonstandard !== "Unobtainable") tier = 'Illegal';
 					return tier;
 				}
-				if (isPOA || isPOA2 || isInsg || isUranium || isInfinity || isMariomon) {
+				if (isPOA || isPOA2 || isInsg || isUranium || isInfinity || isMariomon || isRejuvenation) {
 					let tier = isDoubles ? species.doublesTier : species.tier;
 					if (species.num <= 0 || species.isNonstandard === "Unobtainable") tier = 'Illegal';
 					if ((isPOA || isPOA2) && species.isNonstandard === "Custom") tier = 'Illegal';
@@ -607,7 +609,7 @@ process.stdout.write("Building `data/teambuilder-tables.js`... ");
 			BattleTeambuilderTable['bh'].tiers = tiers;
 			BattleTeambuilderTable['bh'].overrideTier = overrideTier;
 			BattleTeambuilderTable['bh'].formatSlices = formatSlices;
-		} else if (isFusions || isNatDexFusions || isInsg || isNatDexInsg || isUranium || isNatDexU || isInfinity || isNatDexInf || isMariomon || isNatDexChaos || isChaosFusions) {
+		} else if (isFusions || isNatDexFusions || isInsg || isNatDexInsg || isUranium || isNatDexU || isInfinity || isNatDexInf || isMariomon || isNatDexChaos || isChaosFusions || isRejuvenation) {
 			BattleTeambuilderTable[gen] = {};
 			BattleTeambuilderTable[gen].learnsets = {};
 			BattleTeambuilderTable[gen].tiers = tiers;
@@ -1012,7 +1014,7 @@ process.stdout.write("Building `data/teambuilder-tables.js`... ");
 			if (gens.indexOf(9) >= 0 && learnset[moveid].some(x => x === '9E')) learnsets[id][moveid] += 'e';
 		}
 	}
-	for (let learnsetmod of ['gen9infinitefusion', 'gen7infinitefusion', 'gen9pokeathlon', 'gen9pokeathlon2', 'gen9insurgence', 'gen6insurgence', 'gen9uranium', 'gen6uranium', 'gen9infinity', 'gen6infinity', 'gen9mariomon', 'gen9chaos', 'gen9chaosfusion']) {
+	for (let learnsetmod of ['gen9infinitefusion', 'gen7infinitefusion', 'gen9pokeathlon', 'gen9pokeathlon2', 'gen9insurgence', 'gen6insurgence', 'gen9uranium', 'gen6uranium', 'gen9infinity', 'gen6infinity', 'gen9mariomon', 'gen9chaos', 'gen9chaosfusion','gen9rejuvenation']) {
 		let modlearnsets = {};
 		BattleTeambuilderTable[learnsetmod].learnsets = modlearnsets;
 		for (const id in Dex.mod(learnsetmod).data.Learnsets) {
