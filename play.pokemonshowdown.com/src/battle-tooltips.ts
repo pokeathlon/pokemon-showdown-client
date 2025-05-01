@@ -662,7 +662,39 @@ export class BattleTooltips {
 		// Deal with Nature Power special case, indicating which move it calls.
 		if (move.id === 'naturepower') {
 			let calls;
-			if (this.battle.gen > 5) {
+			if (this.battle.dex.modid === 'gen9rejuvenation') {
+				if (this.battle.hasPseudoWeather('Electric Terrain')) {
+					calls = 'Thunderbolt';
+				} else if (this.battle.hasPseudoWeather('Grassy Terrain')) {
+					calls = 'Energy Ball';
+				} else if (this.battle.hasPseudoWeather('Misty Terrain')) {
+					calls = 'Mist Ball';
+				} else if (this.battle.hasPseudoWeather('Psychic Terrain')) {
+					calls = 'Psychic';
+				} else if (this.battle.hasPseudoWeather('Volcanic Field')) {
+					calls = 'Flamethrower';
+				} else if (this.battle.hasPseudoWeather('Corrosive Mist Field')) {
+					calls = 'Venoshock';
+				} else if (this.battle.hasPseudoWeather('Ice FIeld')) {
+					calls = 'Ice Beam';
+				} else if (this.battle.hasPseudoWeather('Frozen Dimensional Field')) {
+					calls = 'Ice Beam';
+				} else if (this.battle.hasPseudoWeather('Water Surface Field')) {
+					calls = 'Whirlpool';
+				} else if (this.battle.hasPseudoWeather('Underwater FIeld')) {
+					calls = 'Whirlpool';
+				} else if (this.battle.hasPseudoWeather('Murkwater Surface Field')) {
+					calls = 'Sludge Wave';
+				} else if (this.battle.hasPseudoWeather('Dragons Den Field')) {
+					calls = 'Dragon Pulse';
+				} else if (this.battle.hasPseudoWeather('Sky Field')) {
+					calls = 'Sky Attack';
+				} else if (this.battle.hasPseudoWeather('Infernal Field')) {
+					calls = 'Punishment';
+				} else {
+					calls = 'Tri Attack';
+				}
+			} else if (this.battle.gen > 5) {
 				if (this.battle.hasPseudoWeather('Electric Terrain')) {
 					calls = 'Thunderbolt';
 				} else if (this.battle.hasPseudoWeather('Grassy Terrain')) {
@@ -1172,7 +1204,7 @@ export class BattleTooltips {
 			if (ability === 'sandrush' && weather === 'sandstorm') {
 				speedModifiers.push(2);
 			}
-			if (['slushrush', 'icecleats'].includes(ability) && (weather === 'hail' || weather === 'snowscape')) {
+			if (['slushrush', 'icecleats'].includes(ability) && (weather === 'hail' || weather === 'snowscape' || this.battle.hasPseudoWeather('Icy Field') || this.battle.hasPseudoWeather('Frozen Dimensional Field'))) {
 				speedModifiers.push(2);
 			}
 			if (ability === 'shadowdance' && weather === 'newmoon') {
@@ -1189,7 +1221,7 @@ export class BattleTooltips {
 					if (ability === 'chlorophyll') {
 						speedModifiers.push(2);
 					}
-					if (ability === 'solarpower') {
+					if (ability === 'solarpower' && !this.battle.hasPseudoWeather('Frozen Dimensional Field')) {
 						stats.spa = Math.floor(stats.spa * 1.5);
 					}
 					if (ability === 'orichalcumpulse') {
@@ -1408,6 +1440,29 @@ export class BattleTooltips {
 					}
 				}
 			}
+		}
+
+		//Rejuvenation
+		if (this.battle.dex.modid === 'gen9rejuvenation') {
+			
+			//Abilities
+			if (ability === 'lunaridol' && (weather === 'hail' || weather === 'snow')) {
+				stats.spa = Math.floor(stats.spa * 1.5);
+			}
+			if (ability === 'solaridol' && (weather === 'sunnyday' || weather === 'desolateland')) {
+				stats.atk = Math.floor(stats.atk * 1.5);
+			}
+			// Terrain Interactions
+			if (this.battle.hasPseudoWeather('Grassy Terrain') && !pokemon.status && ability === 'quickfeet') {
+				speedModifiers.push(1.5);
+			}
+			if ((this.battle.hasPseudoWeather('Misty Terrain') || this.battle.hasPseudoWeather('Dragons Den Field')) && !pokemon.status && pokemon.ability === 'marvelscale') {
+				stats.def = Math.floor(stats.def * 1.5);
+			}			
+			if ((this.battle.hasPseudoWeather('Water Surface Field') || this.battle.hasPseudoWeather('Underwater Field') || this.battle.hasPseudoWeather(' Murkwater Surface Field')) && ['surgesurfer','swiftswim'].includes(ability)) {
+				speedModifiers.push(2);
+			}
+
 		}
 
 		const sideConditions = this.battle.mySide.sideConditions;
@@ -1632,7 +1687,37 @@ export class BattleTooltips {
 			}
 		}
 		if (move.id === 'terrainpulse' && pokemon.isGrounded(serverPokemon)) {
-			if (this.battle.hasPseudoWeather('Electric Terrain')) {
+			if (this.battle.dex.modid === 'gen9rejuvenation') {
+				if (this.battle.hasPseudoWeather('Electric Terrain')) {
+					moveType = 'Electric';
+				} else if (this.battle.hasPseudoWeather('Grassy Terrain')) {
+					moveType = 'Grass';
+				} else if (this.battle.hasPseudoWeather('Misty Terrain')) {
+					moveType = 'Fairy';
+				} else if (this.battle.hasPseudoWeather('Psychic Terrain')) {
+					moveType = 'Psychic';
+				} else if (this.battle.hasPseudoWeather('Volcanic Field')) {
+					moveType = 'Fire';
+				} else if (this.battle.hasPseudoWeather('Infernal Field')) {
+					moveType = 'Fire';
+				} else if (this.battle.hasPseudoWeather('Corrosive Mist Field')) {
+					moveType = 'Poison';
+				} else if (this.battle.hasPseudoWeather('Murkwater Surface Field')) {
+					moveType = 'Poison';
+				} else if (this.battle.hasPseudoWeather('Icy Field')) {
+					moveType = 'Ice';
+				} else if (this.battle.hasPseudoWeather('Frozen Dimensional Field')) {
+					moveType = 'Ice';
+				} else if (this.battle.hasPseudoWeather('Water Surface Field')) {
+					moveType = 'Water';
+				} else if (this.battle.hasPseudoWeather('Underwater Field')) {
+					moveType = 'Water';
+				} else if (this.battle.hasPseudoWeather('Dragons Den Field')) {
+					moveType = 'Dragon';
+				} else if (this.battle.hasPseudoWeather('Sky Field')) {
+					moveType = 'Flying';
+				}
+			} else if (this.battle.hasPseudoWeather('Electric Terrain')) {
 				moveType = 'Electric';
 			} else if (this.battle.hasPseudoWeather('Grassy Terrain')) {
 				moveType = 'Grass';
@@ -1721,7 +1806,7 @@ export class BattleTooltips {
 					this.getMaxMoveFromType(moveType, forMaxMove !== true && forMaxMove || undefined) : move
 			).flags['sound'];
 			if (isSound && value.abilityModify(0, 'Liquid Voice')) {
-				moveType = 'Water';
+				moveType = this.battle.hasPseudoWeather('Icy Field')? 'Ice' : 'Water';
 			}
 		}
 
@@ -1984,7 +2069,7 @@ export class BattleTooltips {
 			else basePower = 20;
 			value.set(basePower);
 		}
-		if (['hex', 'infernalparade'].includes(move.id) && target?.status) {
+		if ((['hex', 'infernalparade'].includes(move.id) && target?.status) || this.battle.hasPseudoWeather('infernalfield')) {
 			value.modify(2, move.name + ' + status');
 		}
 		if (['vengefulpulse'].includes(move.id) && pokemon?.status) {
@@ -2025,7 +2110,7 @@ export class BattleTooltips {
 			value.setRange(10, 150);
 		}
 		if (['venoshock', 'barbbarrage'].includes(move.id) && target) {
-			if (['psn', 'tox'].includes(target.status)) {
+			if (['psn', 'tox'].includes(target.status) || this.battle.hasPseudoWeather('corrosivemistfield') || this.battle.hasPseudoWeather('murkwatersurfacefield')) {
 				value.modify(2, move.name + ' + Poison');
 			}
 		}
@@ -2146,7 +2231,7 @@ export class BattleTooltips {
 		if (!value.value) return value;
 
 		// Other ability boosts
-		if (pokemon.status === 'brn' && move.category === 'Special') {
+		if ((pokemon.status === 'brn' || this.battle.hasPseudoWeather('Infernal Field')) && move.category === 'Special' && !this.battle.hasPseudoWeather('Frozen Dimensional Field')) {
 			value.abilityModify(1.5, "Flare Boost");
 		}
 		if (move.flags['punch']) {
@@ -2200,10 +2285,10 @@ export class BattleTooltips {
 			!move.id.startsWith('hiddenpower')
 		) {
 			if (move.type === 'Normal') {
-				value.abilityModify(this.battle.gen > 6 ? 1.2 : 1.3, "Aerilate");
+				value.abilityModify(this.battle.gen > 6 ? 1.2 : (this.battle.dex.modid === 'gen9rejuvenation' && this.battle.hasPseudoWeather('Sky Field'))? 1.5 : 1.3,"Aerilate");
 				value.abilityModify(this.battle.gen > 6 ? 1.2 : 1.3, "Galvanize");
-				value.abilityModify(this.battle.gen > 6 ? 1.2 : 1.3, "Pixilate");
-				value.abilityModify(this.battle.gen > 6 ? 1.2 : 1.3, "Refrigerate");
+				value.abilityModify(this.battle.gen > 6 ? 1.2 : (this.battle.dex.modid === 'gen9rejuvenation' && this.battle.hasPseudoWeather('Misty Terrain'))? 1.5 : 1.3, "Pixilate");
+				value.abilityModify(this.battle.gen > 6 ? 1.2 : (this.battle.dex.modid === 'gen9rejuvenation' && (this.battle.hasPseudoWeather('Icy Field') || this.battle.hasPseudoWeather('Frozen Dimensional Field')))? 1.5 : 1.3, "Refrigerate");
 				value.abilityModify(this.battle.gen > 6 ? 1.2 : 1.3, "Intoxicate");
 				value.abilityModify(this.battle.gen > 6 ? 1.2 : 1.3, "Atomizate");
 				value.abilityModify(this.battle.gen > 6 ? 1.2 : 1.3, "Energizate");
@@ -2403,6 +2488,76 @@ export class BattleTooltips {
 			if (timeDilationBPMod > 2) timeDilationBPMod = 2;
 			value.abilityModify(timeDilationBPMod, "Time Dilation");
 		}
+		// Rejuvenation
+		if (this.battle.dex.modid === 'gen9rejuvenation') {
+
+			// Rejuv moves
+			if (move.id === 'bunrakubeatdown' && target) {
+				if (pokemon.ability === 'worldofnightmares') {
+					for (let i = 1; i <= 6 && i <= target.side.faintCounter; i++) {
+					if (pokemon.volatiles[`slain${i}`]) {
+						value.modify(1 + 15 * i, "Bunraku Beatdown");
+					}
+					}
+				} else {
+					for (let i = 1; i <= 6 && i <= pokemon.side.faintCounter; i++) {
+						if (pokemon.volatiles[`fallen${i}`]) {
+							value.modify(1 + 15 * i, "Bunraku Beatdown");
+						}
+					}
+				}
+			}
+			if (move.id === 'feverpitch') {
+				value.setRange(40, 150);
+			}
+			if (move.id === 'irritation' && target?.status) {
+				value.modify(2, move.name + ' + status');
+			}
+			if (move.id === 'wakeupshock' && target) {
+				if (target.status === 'slp') {
+					value.modify(2, 'Wake-Up Shock + Sleep');
+				}
+			}
+			// Rejuv abilities
+			if (['galvanize','plus','minus'].includes(pokemon.ability) && this.battle.hasPseudoWeather('Electric Terrain')) {
+				value.abilityModify(1.5, 'Ability + Terrain Boost')
+			}
+			if (pokemon.ability === 'teravolt' && move.type === 'Electric' && this.battle.hasPseudoWeather('Electric Terrain')) {
+				value.abilityModify(1.5, 'Teravolt + Terrain Boost')
+			}
+			if (target && target.ability === 'transistor' && move.type === 'Ground' && this.battle.hasPseudoWeather('Electric Terrain')) {
+				value.abilityModify(0.5, 'Transistor + Terrain Weaken')
+			}
+			if (pokemon.ability === 'overgrow' && move.type === 'Grass' && this.battle.hasPseudoWeather('Grassy Terrain')) {
+				value.abilityModify(1.5, 'Overgrow + Terrain Boost')
+			}
+			if (pokemon.ability === 'torrent' && move.type === 'Water' && (this.battle.hasPseudoWeather('Water Surface Field') || this.battle.hasPseudoWeather('Underwater Field'))) {
+				value.abilityModify(1.5, 'Torrent + Terrain Boost')
+			}
+			if (!['psn', 'tox'].includes(pokemon.status) && move.category === 'Physical' && (this.battle.hasPseudoWeather('Corrosive Mist Field') || this.battle.hasPseudoWeather('Murkwater Surface Field'))) {
+				value.abilityModify(1.5, "Toxic Boost");
+			}
+			if (pokemon.ability === 'execution' && target && target.hp < target.maxhp/2) {
+				value.abilityModify(2, "Execution.")
+			}
+			if (pokemon.ability === 'lunaridol' && move.type === 'Ice') {
+				value.abilityModify(2, "Lunar Idol Boost")
+			}
+			if (pokemon.ability === 'solaridol' && move.type === 'Fire') {
+				value.abilityModify(2, "Solar Idol Boost")
+			}
+			if (pokemon.ability === 'trueshot' && move.flags.bullet) {
+				value.abilityModify(1.3, "True Shot Boost")
+			}
+
+			// Rejuv terrain stuff
+			if (['tectonicrage'].includes(move.id) && this.battle.hasPseudoWeather('Electric Terrain')) {
+				value.modify(1.3, 'Terminate Terrain Boost');
+			}
+			if (move.id === 'forestfield' && this.battle.hasPseudoWeather('Forest Field')) value.modify(1.5, 'Terrain Boost');
+			if (['explosion', 'hurricane', 'muddywater', 'selfdestruct', 'smackdown', 'surf', 'thousandarrows', 'wildboltstorm'].includes(move.id) && this.battle.hasPseudoWeather('Electric Terrain')) value.modify(2, 'Terrain Boost')
+			if (move.id === 'magnetbomb' && this.battle.hasPseudoWeather('Electric Terrain')) value.modify(2, 'Terrain Boost')
+		}
 
 		return value;
 	}
@@ -2524,6 +2679,10 @@ export class BattleTooltips {
 			value.itemModify(1.1);
 		}
 
+		// Rejuvenation Items
+		if (item.onMemory && speciesName === 'Silvally' && move.type === item.onMemory && value.serverPokemon.ability === 'silvallycrest') {
+			value.itemModify(1.2)
+		}
 		return value;
 	}
 	getPokemonTypes(pokemon: Pokemon | ServerPokemon, preterastallized = false): ReadonlyArray<TypeName> {
