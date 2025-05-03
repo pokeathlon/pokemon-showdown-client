@@ -3861,6 +3861,8 @@
 					buf += 'background-image: url(https://play.pokeathlon.com/sprites/fangame-sprites/pokeathlon/front/' + baseid + toID(formid) + '.gif); width: 120px; height: 120px; background-size: 120px;" class="option';
 				} else if (species.tags.includes('Uranium')) {
 					buf += 'background-image: url(https://play.pokeathlon.com/sprites/fangame-sprites/uranium/front/' + baseid + toID(formid) + '.png); width: 120px; height: 120px; background-size: 120px;" class="option';
+				}  else if (species.tags.includes('Rejuvenation')) {
+					buf += 'background-image: url(https://play.pokeathlon.com/sprites/fangame-sprites/rejuvenation/front/' + baseid + toID(formid) + '.png); width: 120px; height: 120px; background-size: 120px;" class="option';
 				} else {
 					buf += 'background-image: url(' + spriteDir + '/' + baseid + (form ? '-' + toID(formid) : '') + '.png); ' + spriteDim + '" class="option';
 				}
