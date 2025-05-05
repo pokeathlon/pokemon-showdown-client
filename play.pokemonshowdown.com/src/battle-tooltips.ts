@@ -1487,7 +1487,7 @@ export class BattleTooltips {
 			}
 		}
 
-		//Rejuvenation
+		// Rejuvenation
 		if (this.battle.dex.modid === 'gen9rejuvenation') {
 			
 			//Abilities
@@ -1506,6 +1506,33 @@ export class BattleTooltips {
 			}			
 			if ((this.battle.hasPseudoWeather('Water Surface Field') || this.battle.hasPseudoWeather('Underwater Field') || this.battle.hasPseudoWeather(' Murkwater Surface Field')) && ['surgesurfer','swiftswim'].includes(ability)) {
 				speedModifiers.push(2);
+			}
+			if (this.battle.hasPseudoWeather('Misty Terrain') && this.pokemonHasType(pokemon, 'Fairy')) {
+				stats.spd = Math.floor(stats.spd * 1.5);
+			}
+			if (this.battle.hasPseudoWeather('Icy Field') && this.pokemonHasType(pokemon, 'Ice') && weather === 'hail') {
+				stats.def = Math.floor(stats.def * 1.5)
+			}
+			if (this.battle.hasPseudoWeather('Water Surface Field') && !this.pokemonHasType(pokemon, 'Water') && !(pokemon.ability === 'surgesurfer' || pokemon.ability === 'swiftswim')) {
+				speedModifiers.push(0.75)
+			}
+			if (this.battle.hasPseudoWeather('Underwater Field') && !this.pokemonHasType(pokemon, 'Water') && !(pokemon.ability === 'surgesurfer' || pokemon.ability === 'swiftswim')) {
+				speedModifiers.push(0.5)
+			}
+			if (this.battle.hasPseudoWeather('Murkwater Surface Field') && !this.pokemonHasType(pokemon, 'Water') && !(pokemon.ability === 'surgesurfer' || pokemon.ability === 'swiftswim')) {
+				speedModifiers.push(0.75)
+			}
+			if (this.battle.hasPseudoWeather('Dragons Den Field') && this.pokemonHasType(pokemon, 'Dragon')) {
+				stats.def = Math.floor(stats.def * 1.3)
+				stats.spd = Math.floor(stats.spd * 1.3)
+			}
+			if (this.battle.hasPseudoWeather('Frozen Dimensional Field') && (this.pokemonHasType(pokemon, 'Ice') || this.pokemonHasType(pokemon, 'Ghost'))) {
+				stats.def = Math.floor(stats.def * 1.2)
+				stats.spd = Math.floor(stats.spd * 1.2)
+			}
+			if (this.battle.hasPseudoWeather('Frozen Dimensional Field') && this.pokemonHasType(pokemon, 'Fire')) {
+				stats.def = Math.floor(stats.def * 0.8)
+				stats.spd = Math.floor(stats.spd * 0.8)
 			}
 
 		}
@@ -1916,6 +1943,15 @@ export class BattleTooltips {
 				}
 			}
 		}
+		if (this.battle.dex.modid === 'gen9rejuvenation') {
+			if (['mudbarrage','mudbomb','mudshot','mudslap','thuosandwaves'].includes(move.id) && this.battle.hasPseudoWeather('Murkwater Surface Field')) {
+				move.type === 'Water';
+			}
+			if (['rockclimb', 'strength'].includes(move.id) && this.battle.hasPseudoWeather('Dragons Den Field')) {
+				move.type === 'Rock';
+			}
+		}
+
 		return [moveType, category];
 	}
 
@@ -2023,6 +2059,16 @@ export class BattleTooltips {
 			value.abilityModify(0, 'Sure Hit Sorcery');
 			value.abilityModify(0, 'Eyes of Eternity');
 			if (!value.value) return value;
+		}
+		if (this.battle.dex.modid === 'gen9rejuvenation') { 
+			if (move.id === 'grasswhistle' && this.battle.hasPseudoWeather('Grassy Terrain')) value.set(80, 'Terrain Modifier')
+			if (move.id === 'sweetkiss' && this.battle.hasPseudoWeather('Misty Terrain')) value.set(100, 'Terrain Modifier')
+			if (move.id === 'toxic' && this.battle.hasPseudoWeather('Corrosive Mist Field')) value.set(100, 'Terrain Modifier')
+			if (move.type === 'Electric' && this.battle.hasPseudoWeather('Underwater Field')) value.set(0, 'Terrain Modifier')
+			if (move.id === 'dragonrush' && this.battle.hasPseudoWeather('Dragons Den Field')) value.set(100, 'Terrain Modifier')
+			if (move.id === 'darkvoid' && this.battle.hasPseudoWeather('Frozen Dimensional Field')) value.set(100, 'Terrain Modifier')
+			if (['hurricane','thunder'].includes(move.id) && this.battle.hasPseudoWeather('Sky Field')) value.set(0, 'Terrain Modifier')
+			if (['willowisp','inferno','darkvoid'].includes(move.id) && this.battle.hasPseudoWeather('Infernal Field')) value.set(0, 'Terrain Modifier')
 		}
 
 		// Chaining modifiers
@@ -2433,7 +2479,7 @@ export class BattleTooltips {
 			(this.battle.hasPseudoWeather('Grassy Terrain') && moveType === 'Grass') ||
 			(this.battle.hasPseudoWeather('Psychic Terrain') && moveType === 'Psychic')) {
 			if (pokemon.isGrounded(serverPokemon) && item.id != 'fieldcleats') {
-				value.modify(this.battle.gen > 7 ? 1.3 : 1.5, 'Terrain boost');
+				value.modify(((this.battle.gen > 7) && (this.battle.dex.modid != 'gen9rejuvenation')) ? 1.3 : 1.5, 'Terrain boost');
 			}
 		} else if (this.battle.hasPseudoWeather('Misty Terrain') && moveType === 'Dragon' && move.id != 'mistbarrage' && item.id != 'fieldcleats') {
 			if (target ? target.isGrounded() : true) {
@@ -2626,12 +2672,228 @@ export class BattleTooltips {
 			}
 
 			// Rejuv terrain stuff
-			if (['tectonicrage'].includes(move.id) && this.battle.hasPseudoWeather('Electric Terrain')) {
-				value.modify(1.3, 'Terminate Terrain Boost');
+			if (move.id === 'forestfield' && this.battle.hasPseudoWeather('Forest Field')) {
+				value.modify(1.5, 'Terrain Boost')
 			}
-			if (move.id === 'forestfield' && this.battle.hasPseudoWeather('Forest Field')) value.modify(1.5, 'Terrain Boost');
-			if (['explosion', 'hurricane', 'muddywater', 'selfdestruct', 'smackdown', 'surf', 'thousandarrows', 'wildboltstorm'].includes(move.id) && this.battle.hasPseudoWeather('Electric Terrain')) value.modify(2, 'Terrain Boost')
-			if (move.id === 'magnetbomb' && this.battle.hasPseudoWeather('Electric Terrain')) value.modify(2, 'Terrain Boost')
+				// Electric Terrain
+			if (this.battle.hasPseudoWeather('Electric Terrain')) {
+				if (['explosion', 'hurricane', 'muddywater', 'selfdestruct', 'smackdown', 'surf', 'thousandarrows', 'wildboltstorm'].includes(move.id)&& pokemon.isGrounded()) {
+					value.modify(1.5, 'Terrain Boost')
+				}
+				if (move.id === 'magnetbomb') {
+					value.modify(2, 'Terrain Boost')
+				}
+				if (['tectonicrage'].includes(move.id)) {
+					value.modify(1.3, 'Terminate Terrain Boost');
+				}	
+			}
+				// Grassy Terrain
+			if (this.battle.hasPseudoWeather('Grassy Terrain')) {
+				if (['fairywind', 'grassknot', 'gust', 'icywind', 'ominouswind', 'razorwind', 'silverwind', 'twister'].includes(move.id)) {
+					value.modify(1.5, 'Terrain Boost')
+				}
+				if (['aciddownpour', 'sludgewave'].includes(move.id)) {
+					value.modify(1.3, 'Terminate Terrain Boost');
+				}
+				if (move.type === 'Fire') {
+					if (target ? target.isGrounded() : true) {
+						value.modify(0.5, 'Grassy Terrain + grounded target');
+					}
+				}	
+			}
+				// Misty Terrain
+			if (this.battle.hasPseudoWeather('Misty Terrain')) {
+				if (move.type === 'Fairy' && pokemon.isGrounded()) {
+				value.modify(1.5, 'Terrain Boost')
+				}
+				if (['aurasphere', 'clearsmog', 'doomdesire', 'icywind', 'magicalleaf', 'mistball', 'moongeistbeam', 'mysticalfire', 'silverwind', 'smog', 'springtidestorm', 'steameruption', 'strangestream'].includes(move.id) && this.battle.hasPseudoWeather('Misty Terrain')) {
+					value.modify(1.5, 'Terrain Boost')
+				}
+				if (['gust', 'hurricane', 'razorwind', 'supersonicskystrike','twister','aciddownpour'].includes(move.id)) {
+					value.modify(1.3, 'Terminate Terrain Boost')
+				}
+				if (['darkpulse', 'nightdaze', 'shadowball'].includes(move.id)) {
+					value.modify(0.5, 'Terrain Weaken')
+				}
+				if (move.type === 'Dragon') {
+					if (target ? target.isGrounded() : true) {
+						value.modify(0.5, 'Misty Terrain + grounded target');
+					}
+				}
+			}
+				// Volcanic Field
+			if (this.battle.hasPseudoWeather('Volcanic Field')){
+				if (move.type === 'Fire' && pokemon.isGrounded()) {
+				value.modify(1.5, 'Terrain Boost')
+				}
+				if (['clearsmog','smog'].includes(move.id)) {
+					value.modify(2, 'Terrain Boost')
+				}
+				if (['rockslide', 'smackdown', 'thousandarrows', 'infernalparade'].includes(move.id)) {
+					value.modify(1.5, 'Terrain Boost')
+				}
+				if (['continentalcrush', 'sandtomb','defog', 'gust', 'hurricane', 'razorwind', 'supersonicskystrike', 'tailwind', 'twister', 'whirlwind',
+					'hydrovortex', 'muddywater', 'oceanicoperetta','sparklingaria','surf','waterpledge','watersport','waterspout','sludgewave'].includes(move.id)) {
+					value.modify(1.3, 'Terminate Terrain Boost')
+				}
+				if (['Grass','Ice'].includes(move.type)) {
+					if (target ? target.isGrounded() : true) {
+						value.modify(0.5, 'Volcanic Field + grounded target');
+					}
+				}
+			}
+			if (this.battle.hasPseudoWeather('Corrosive Mist Field')) {
+				if (pokemon.ability === 'corrosion') {
+					value.abilityModify(1.5, 'Corrosion + Corrosive Mist Field')
+				}
+				if (move.type === 'Fire' || ['acidspray','appleacid','bubble','bubblebeam','clearsmog','smog','sparklingaria'].includes(move.id)) {
+					value.modify(1.5, 'Terrain Boost')
+				}
+				if (['acidspray','appleacid','bubble','bubblebeam','clearsmog','smog','sparklingaria'].includes(move.id)) {
+					value.modify(1.5, 'Terrain Boost')
+				}
+				if (['seedflare','gust', 'hurricane', 'razorwind', 'supersonicskystrike', 'twister'].includes(move.id)) {
+					value.modify(1.3, 'Terminate Terrain Boost')
+				}
+			}
+			if (this.battle.hasPseudoWeather('Icy Field')) {
+				if (move.type === 'Ice' || move.id === 'bittermalice') {
+					value.modify(1.5, 'Terrain Boost')
+				}
+				if (move.id === 'bittermalice') {
+					value.modify(1.5, 'Terrain Boost')
+				}
+				if (move.type === 'Fire' || ['scald', 'steameruption'].includes(move.id)) {
+					value.modify(0.5, 'Terrain Weaken')
+				}
+				if (['scald', 'steameruption'].includes(move.id)) {
+					value.modify(0.5, 'Terrain Weaken')
+				}
+				if (['eruption','firepledge','flameburst','heatwave','incinerate','infernooverdrive','lavaplume','magmadrift','mindblown','ragingfury','searingshot'].includes(move.id)) {
+						value.modify(1.3, 'Terminate Terrain Boost')
+				}
+			}
+			if (this.battle.hasPseudoWeather('Water Surface Field')) {
+				if (move.type === 'Water' || (move.type === 'Electric' && target ? target.isGrounded() : true)) {
+					value.modify(1.5, 'Terrain Boost')
+				}
+				if (move.priority > 0 && pokemon.ability === 'propellertail') {
+					value.abilityModify(1.5, 'Propeller Tail + Water Surface Field')
+				}
+				if (['dive', 'hydrovortex', 'muddywater', 'octazooka', 'originpulse', 'surf', 'whirlpool', 'sludgewave'].includes(move.id)) {
+					value.modify(1.2, 'Terrain Boost')
+				}
+				if (move.type === 'Fire' && target? target.isGrounded() : true) {
+					value.modify(0.5, 'Terrain Weaken')
+				}
+				if (['anchorshot', 'dive','gravapple','gravity', 'aciddownpour','blizzard', 'glaciate','subzeroslammer'].includes(move.id)) {
+					value.modify(1.3, 'Terminate Terrain Boost')
+				}
+			}
+			if (this.battle.hasPseudoWeather('Underwater Field')) {
+				if (move.type === 'Electric' || ['anchorshot', 'dragondarts'].includes(move.id)) {
+					value.modify(2, 'Terrain Boost')
+				}
+				if (['anchorshot', 'dragondarts'].includes(move.id)) {
+					value.modify(2, 'Terrain Boost')
+				}
+				if (move.type === 'Water' || move.id === 'waterpulse') {
+					value.modify(1.5, 'Terrain Boost')
+				}
+				if (move.id === 'waterpulse') {
+					value.modify(1.5, 'Terrain Boost')
+				}
+				if (move.priority > 0 && pokemon.ability === 'propellertail') {
+					value.abilityModify(1.5, 'Propeller Tail + Water Surface Field')
+				}
+				if (move.type != 'Water' && !this.pokemonHasType(pokemon, 'Water') && move.category === 'Physical' && !(pokemon.ability === 'swiftswim' || pokemon.ability === 'steelworker')) {
+					value.modify(0.5, 'Terrain Weaken')
+				}
+				if (['bounce','fly','dive','skydrop','aciddownpour'].includes(move.id)) {
+					value.modify(1.3, 'Terminate Terrain Boost')
+				}
+			}
+			if (this.battle.hasPseudoWeather('Murkwater Surface Field')) {
+				if (['Water','Poison'].includes(move.type) || ['mudbarrage','mudbomb','mudshot','mudslap','thuosandwaves','appleacid','smackdown','acid','acidspray','brine'].includes(move.id)){
+					value.modify(1.5, 'Terrain Boost')
+				}
+				if (['mudbarrage','mudbomb','mudshot','mudslap','thuosandwaves','appleacid','smackdown','acid','acidspray','brine'].includes(move.id)){
+					value.modify(1.5, 'Terrain Boost')
+				}
+				if (move.type === 'Electric'){
+					value.modify(1.3, 'Terrain Boost')
+				}
+				if (['whirlpool','blizzard','glaciate','subzeroslammer'].includes(move.id)) {
+					value.modify(1.3, 'Terminate Terrain Boost')
+				}
+			}
+			if (this.battle.hasPseudoWeather('Dragons Den Field')) {
+				if (['smackdown','thousandarrows', 'payday','dragonascent','lusterpurge','mistball'].includes(move.id)) {
+					value.modify(2, 'Terrain Boost')
+				}
+				if (['Fire', 'Dragon'].includes(move.type) || ['rockclimb','strength','diamondstorm','matrixshot','powergem','earthpower','lavaplume','magmastorm','magmadrift','shelltrap','megakick','stompingtantrum'].includes(move.id)) {
+					value.modify(1.5, 'Terrain Boost')
+				}
+				if (['rockclimb','strength','diamondstorm','matrixshot','powergem','earthpower','lavaplume','magmastorm','magmadrift','shelltrap','megakick','stompingtantrum'].includes(move.id)) {
+					value.modify(1.5, 'Terrain Boost')
+				}
+				if (move.type === 'Rock') {
+					value.modify(1.3, 'Terrain Boost')
+				}
+				if (move.type === 'Water') {
+					value.modify(0.5, 'Terrain Weaken')
+				}
+				if (move.id === 'mistball') {
+					value.modify(1.3, 'Terminate Terrain Boost')
+				}
+			}
+			if (this.battle.hasPseudoWeather('Frozen Dimensional Field')) {
+				if (move.type === 'Dark') {
+					value.modify(1.5, 'Terrain Boost')
+				} // separating these bc the boosts stack I think
+				if (['fierywrath','freezingglare','lashout','outrage','ragingfury','rage','roaroftime','stompingtantrum','thrash'].includes(move.id)) {
+					value.modify(1.5, 'Terrain Boost')
+				}
+				if (move.type === 'Ice') {
+					value.modify(1.2, 'Terrain Boost')
+				}
+				if (['darkpulse','hydropump','muddywater','nightslash','surf','waterpulse','hyperspacehole','hyperspacefury'].includes(move.id)) {
+					value.modify(1.2, 'Terrain Boost')
+				}
+				if (['eruption','firepledge','flameburst','heatwave','incinerate','infernooverdrive','lavaplume','mindblown','ragingfury','searingshot'].includes(move.id)) {
+					value.modify(1.3, 'Terminate Terrain Boost')
+				}
+			}
+			if (this.battle.hasPseudoWeather('Sky Field')) {
+				if (move.type === 'Flying') {
+					value.modify(1.5, 'Terrain Boost')
+				}
+				if (pokemon.ability === 'longreach') {
+					value.abilityModify(1.5, 'Long Reach + Sky Field')
+				}
+				if (['dive','twister','aeroblast','bleakwindstorm','dragonascent','dragondarts',
+					'esperwing','fairywind','flyingpress','gravapple','icywind','ominouswind',
+					'razorwind','silverwind','skyuppercut','steelwing','thunder','thunderbolt','thundershock'].includes(move.id)) {
+					value.modify(1.5, 'Terrain Boost')
+				}
+				if (['sandsearstorm','springtidestorm','windboltstorm','gravapple','gravity','ingrain','smackdown','thousandarrows'].includes(move.id)) {
+					value.modify(1.3, 'Terrain Boost')
+				}
+			}
+			if (this.battle.hasPseudoWeather('Infernal Field')) {
+				if (['punishment','smog','dreameater'].includes(move.id)) {
+					value.modify(2)
+				}
+				if (['Dark','Fire'].includes(move.type) || ['blastburn','infernalparade','inferno','infernooverdrive','precipiceblades','ragingfury'].includes(move.id)) {
+					value.modify(1.5, 'Terrain Boost')
+				}
+				if (['glaciate','judgement','originpulse','purify'].includes(move.id)) {
+					value.modify(1.3)
+				}
+				if (['Fairy','Water'].includes(move.type) && move.id != 'spiritbreak') {
+					value.modify(0.5)
+				}
+			}
 		}
 
 		return value;
