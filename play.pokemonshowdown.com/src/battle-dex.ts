@@ -876,6 +876,11 @@ export const Dex = new class implements ModdedDex {
 			return `image-rendering:pixelated;background:transparent;background-image:url(https://play.pokeathlon.com/sprites/fangame-sprites/mariomon/iconsprites/${id}.gif);background-repeat:no-repeat;background-position:4px -1px;${fainted}`;
 		}
 
+		if (species.tags.includes("Rejuvenation")) {
+			// return `image-rendering:pixelated;background-image:url(https://play.pokeathlon.com/sprites/fangame-sprites/mariomon/front/${id}.png);background-position:5px 0px;background-repeat:no-repeat;background-size:30px;${fainted}`;
+			return `image-rendering: pixelated; background: transparent; background-image: url(https://play.pokeathlon.com/sprites/fangame-sprites/rejuvenation/iconsprites/${id}.gif); background-repeat: no-repeat; background-size: 32px 32px; width: 32px; height: 32px; ${fainted}`;
+		}
+
 		let top = Math.floor(num / 12) * 30;
 		let left = (num % 12) * 40;
 		return `image-rendering:pixelated;${fusion.length ? 'animation: rainbowshadow ' + ((Math.random() * 2) + 2) + 's infinite;' : ''}background:transparent url(${Dex.resourcePrefix}sprites/pokemonicons-sheet.png?v16) no-repeat scroll -${left}px -${top}px${fainted}`;
