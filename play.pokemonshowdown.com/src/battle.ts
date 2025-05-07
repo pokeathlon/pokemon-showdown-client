@@ -533,7 +533,7 @@ export class Pokemon implements PokemonDetails, PokemonHealth {
 		if (item === 'ironball') {
 			return true;
 		}
-		if (ability === 'levitate') {
+		if (['levitate', 'solaridol', 'lunaridol'].includes(ability)) {
 			return false;
 		}
 		if (this.volatiles['magnetrise'] || this.volatiles['telekinesis']) {
@@ -2280,6 +2280,7 @@ export class Battle {
 			poke.itemEffect = '';
 			poke.removeVolatile('airballoon' as ID);
 			if (item.id === 'airballoon') poke.addVolatile('airballoon' as ID);
+			if (item.id.includes('crest')) poke.addVolatile('crest' as ID);
 
 			if (effect.id) {
 				switch (effect.id) {
@@ -2330,6 +2331,7 @@ export class Battle {
 					break;
 				}
 			} else {
+				if (item.id.includes('crest')) this.scene.resultAnim(poke, item.name, 'good');
 				switch (item.id) {
 				case 'airballoon':
 					this.scene.resultAnim(poke, 'Balloon', 'good');

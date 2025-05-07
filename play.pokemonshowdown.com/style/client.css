@@ -3326,6 +3326,87 @@ a.ilink.yours {
 .dark iframe.textbox:focus {
 	background: #DDDDDD;
 }
+.mask-fieldUp::after {
+	content: '';
+	position: absolute;
+	top: 0%;
+	left: 0%;
+	width: 100%;
+	height: 100%;
+	background: url('https://play.pokeathlon.com/sprites/fangame-sprites/rejuvenation/misc/fieldUp.png') no-repeat center center;
+	background-size: cover; 
+	opacity: 1; 
+	pointer-events: none; 
+	z-index: 3; 
+  }
+.mask-fieldDown::after {
+	content: '';
+	position: absolute;
+	top: 0%;
+	left: 0%;
+	width: 100%;
+	height: 100%;
+	background: url('https://play.pokeathlon.com/sprites/fangame-sprites/rejuvenation/misc/fieldDown.png') no-repeat center center;
+	background-size: cover; 
+	opacity: 1; 
+	pointer-events: none; 
+	z-index: 3; 
+}.movebutton-rejuv {
+	display: block;
+	width: 155px;
+	height: 40px;
+	background: var(--button-bg) no-repeat center center;
+	background-size: cover;
+
+	border: none;
+	border-radius: 0;
+	box-shadow: none;
+	background-color: transparent;
+	font: 6pt Verdana, sans-serif;
+	text-align: center;
+	cursor: pointer;
+	position: relative;
+}
+
+.movebutton-rejuv:hover {
+	display: block;
+	width: 155px;
+	height: 40px;
+	background: var(--button-bg-hover) no-repeat center center;
+	background-size: cover;
+
+	border: none;
+	border-radius: 0;
+	box-shadow: none;
+	background-color: transparent;
+	font: 6pt Verdana, sans-serif;
+	text-align: center;
+	cursor: pointer;
+	position: relative;
+}
+
+.movebutton-rejuv:disabled {
+	opacity: 0.6;
+	cursor: not-allowed;
+}
+
+.movebutton-rejuv:active,
+.movebutton-rejuv.pressed {
+	background: var(--button-bg) no-repeat center center;
+}
+ /* These two are to prevent the type- class from overwriting the custom buttons, but keeps the information for the tooltips*/
+.movebutton-rejuv[class*="type-"] {
+	background: var(--button-bg) no-repeat center center !important;
+	background-size: cover !important;
+}
+
+.movebutton-rejuv[class*="type-"]:hover {
+	background: var(--button-bg-hover) no-repeat center center !important;
+	background-size: cover !important;
+}
+
+	
+	
 
 /*********************************************************
  * <rainbow>

@@ -1031,6 +1031,9 @@ export class BattleTooltips {
 			buf += `<p style="border-top:1px solid #888888;">Background by <b>${window.BattleBackdropsMario[scene.backdropImage]}</b></p>`;
 			if (scene.bgm) buf += `<p>\u266b <i>${window.BattleMusicMario[scene.bgm.url].title}</i> - <b>${window.BattleMusicMario[scene.bgm.url].composer}</b> \u266b</p>`;
 		}
+		if (this.battle.dex.modid === 'gen9rejuvenation') {
+			buf += `<p style="border-top:1px solid #888888;">Background by <b>${window.BattleBackdropsRejuv[scene.backdropImage]}</b></p>`;
+		}
 		return `<p>${buf}</p>`;
 	}
 
