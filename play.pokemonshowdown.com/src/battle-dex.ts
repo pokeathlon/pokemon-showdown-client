@@ -883,7 +883,7 @@ export const Dex = new class implements ModdedDex {
 
 		if (species.tags.includes("Rejuvenation")) {
 			// return `image-rendering:pixelated;background-image:url(https://play.pokeathlon.com/sprites/fangame-sprites/mariomon/front/${id}.png);background-position:5px 0px;background-repeat:no-repeat;background-size:30px;${fainted}`;
-			return `image-rendering: pixelated; background: transparent; background-image: url(https://play.pokeathlon.com/sprites/fangame-sprites/rejuvenation/iconsprites/${id}.gif); background-repeat: no-repeat; background-size: 32px 32px; width: 32px; height: 32px; ${fainted}`;
+			return `image-rendering:pixelated;background:transparent;background-image:url(https://play.pokeathlon.com/sprites/fangame-sprites/rejuvenation/iconsprites/${id}.gif);background-repeat:no-repeat;background-size:32px 32px;width:40px;height:30px;background-position:4px 0;${fainted}`;
 		}
 
 		let top = Math.floor(num / 12) * 30;

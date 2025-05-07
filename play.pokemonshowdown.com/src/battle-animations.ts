@@ -592,6 +592,10 @@ export class BattleScene implements BattleSceneStub {
 				this.bgm = BattleSound.loadBgm(bgm, BattleMusicMario[bgm].loopstart, BattleMusicMario[bgm].loopend, this.bgm);
 				
 			}
+			if (this.battle.dex.modid === 'gen9rejuvenation') {
+				const rejuvBGs = Object.keys(BattleBackdropsRejuv);
+				bg = rejuvBGs[this.numericId % rejuvBGs.length];
+			}
 			else if (gen <= 1) bg = 'fx/bg-gen1.png?';
 			else if (gen <= 2) bg = 'fx/bg-gen2.png?';
 			else if (gen <= 3) bg = `fx/${BattleBackdropsThree[this.numericId % BattleBackdropsThree.length]}?`;
@@ -2106,6 +2110,7 @@ export class PokemonSprite extends Sprite {
 		adaptivecrystal: ['Adaptive: Crystal', 'good'],
 		adaptivenuclear: ['Adaptive: Nuclear', 'good'],
 		adaptivecosmic: ['Adaptive: Cosmic', 'good'],
+		crest: ['Crest', 'good'],
 	};
 	forme = '';
 	cryurl: string | undefined = undefined;
@@ -2953,8 +2958,8 @@ export class PokemonSprite extends Sprite {
 		if (pokemon.terastallized) {
 			buf += ` <img src="https://play.pokeathlon.com/fx/types/Tera${pokemon.terastallized}.png" alt="Tera-${pokemon.terastallized}" style="vertical-align:text-bottom;" height="16" width="16" />`;
 		}
-		if ('crest'.includes(pokemon.item)) {
-			buf += ` <img src="https://play.pokeathlon.com/sprites/fangame-sprites/rejuvenation/misc/crest.png" alt="${pokemon.name} Crest" style="vertical-align:text-bottom;" />`;
+		if (pokemon.item && pokemon.item.toLowerCase().includes('crest')) {
+			buf += ` <img src="https://play.pokeathlon.com/sprites/fangame-sprites/rejuvenation/misc/crest.png" alt="${pokemon.name} Crest" style="vertical-align:text-bottom;" height="16" width="16" />`;
 		}
 
 		buf += `</strong><div class="hpbar"><div class="hptext"></div><div class="hptextborder"></div><div class="prevhp"><div class="hp"></div></div><div class="status"></div>`;
@@ -3563,6 +3568,10 @@ const BattleMusicMario: {[k: string]: AnyObject} = {
 		loopstart: 63016,
 		loopend: 265390,
 	},
+};
+const BattleBackdropsRejuv: {[k: string]: string} = {
+	'fx/backdrops/bg-blacksteepindoor.png': 'Rejuvenation Team',
+
 };
 
 export const BattleOtherAnims: AnimTable = {

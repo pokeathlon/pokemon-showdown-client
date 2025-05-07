@@ -682,13 +682,45 @@
 					if (name.substr(0, 12) === 'Hidden Power') name = 'Hidden Power';
 					var moveType = this.tooltips.getMoveType(move, typeValueTracker)[0];
 					var tooltipArgs = 'move|' + moveData.move + '|' + pos;
-					if (moveData.disabled) {
+					let fieldMod = '';
+					if (this.battle.dex.modid === 'gen9rejuvenation') { // Rejuv buttons
+						// Terrain masks
+						if (move.id === 'bodyslam' ) {
+							fieldMod = ' mask-fieldDown';
+						} else if (move.id === 'solarbeam' ) {
+							fieldMod = ' mask-fieldUp';
+						}
+						// Type button links
+						const bgBase = `url('https://play.pokeathlon.com/sprites/fangame-sprites/rejuvenation/misc/button${moveType}.png')`;
+						const bgHover = `url('https://play.pokeathlon.com/sprites/fangame-sprites/rejuvenation/misc//button${moveType}active.png')`;
+						if (moveData.disabled) {
+							movebuttons += '<button disabled class="movebutton type-' + moveType +
+								' has-tooltip" data-tooltip="' + BattleLog.escapeHTML(tooltipArgs) + '">';
+						} else {
+							movebuttons += '<button class="movebutton movebutton-rejuv' + fieldMod +
+								' type-' + moveType +
+								' has-tooltip" name="chooseMove" value="' + (i + 1) +
+								'" data-move="' + BattleLog.escapeHTML(moveData.move) +
+								'" data-target="' + BattleLog.escapeHTML(moveData.target) +
+								'" data-tooltip="' + BattleLog.escapeHTML(tooltipArgs) +
+								'" style="--button-bg: ' + bgBase + '; --button-bg-hover: ' + bgHover + ';">';
+							hasMoves = true;
+						}
+						
+						movebuttons += move.name +
+									'<br /><span class="type type-' + moveType + '" style="display:none">' +
+									(moveType ? Dex.types.get(moveType).name : "Unknown") +
+									'</span><small class="pp">' + pp + '</small>&nbsp;</button> ';
+
+					} else { // Vanilla buttons
+						if (moveData.disabled) {
 						movebuttons += '<button disabled class="movebutton has-tooltip" data-tooltip="' + BattleLog.escapeHTML(tooltipArgs) + '">';
 					} else {
 						movebuttons += '<button class="movebutton type-' + moveType + ' has-tooltip" name="chooseMove" value="' + (i + 1) + '" data-move="' + BattleLog.escapeHTML(moveData.move) + '" data-target="' + BattleLog.escapeHTML(moveData.target) + '" data-tooltip="' + BattleLog.escapeHTML(tooltipArgs) + '">';
 						hasMoves = true;
 					}
-					movebuttons += name + '<br /><small class="type">' + (moveType ? Dex.types.get(moveType).name : "Unknown") + '</small> <small class="pp">' + pp + '</small>&nbsp;</button> ';
+					movebuttons += move.name + '<br /><small class="type">' + (moveType ? Dex.types.get(moveType).name : "Unknown") + '</small> <small class="pp">' + pp + '</small>&nbsp;</button> ';
+					}
 				}
 				if (!hasMoves) {
 					moveMenu += '<button class="movebutton" name="chooseMove" value="0" data-move="Struggle" data-target="randomNormal">Struggle<br /><small class="type">Normal</small> <small class="pp">&ndash;</small>&nbsp;</button> ';

@@ -913,3 +913,45 @@ License: GPLv2
 		border-bottom: 2px solid #444444;
 	}
 }
+
+/* Rejuvenation */
+.volcanicfieldweather {
+	background: #813232 url(https://play.pokeathlon.com/sprites/fangame-sprites/rejuvenation/fields/weather-volcanicfield.png) no-repeat scroll left top;
+	color: #FF7029;
+}
+.underwaterfieldweather {
+	background: #1048B0 url(https://play.pokeathlon.com/sprites/fangame-sprites/rejuvenation/fields/weather-underwaterfield.png) no-repeat scroll left top;
+	color: #2040A8;
+}
+.watersurfacefieldweather {
+	background: #7FF7F7 url(https://play.pokeathlon.com/sprites/fangame-sprites/rejuvenation/fields/weather-watersurfacefield.png) no-repeat scroll left top;
+	color: #2767BF;
+}
+.infernalfieldweather {
+	background: #57000D url(https://play.pokeathlon.com/sprites/fangame-sprites/rejuvenation/fields/weather-infernalfield.png) no-repeat scroll left top;
+	color: #7E000F;
+}
+.murkwatersurfacefieldweather {
+	background: #86636E url(https://play.pokeathlon.com/sprites/fangame-sprites/rejuvenation/fields/weather-murkwatersurfacefield.png) no-repeat scroll left top;
+	color: #59323C;
+}
+.icyfieldweather {
+	background: #21A5D0 url(https://play.pokeathlon.com/sprites/fangame-sprites/rejuvenation/fields/weather-icyfield.png) no-repeat scroll left top;
+	color: #41C5F0;
+}
+.dragonsdenweather {
+	background: #C40A00 url(https://play.pokeathlon.com/sprites/fangame-sprites/rejuvenation/fields/weather-dragonsdenfield.png) no-repeat scroll left top;
+	color: #2C0200;
+}
+.corrosivemistfield {
+	background: #CA3E92 url(https://play.pokeathlon.com/sprites/fangame-sprites/rejuvenation/fields/weather-corrosivemistfield.png) no-repeat scroll left top;
+	color: #B24CC8;
+}
+.skyfield {
+	background: #CF6D08 url(https://play.pokeathlon.com/sprites/fangame-sprites/rejuvenation/fields/weather-skyfield.png) no-repeat scroll left top;
+	color: #732106;
+}
+.frozendimensionalfield {
+	background: #7A8CB3 url(https://play.pokeathlon.com/sprites/fangame-sprites/rejuvenation/fields/weather-frozendimensionalfield.png) no-repeat scroll left top;
+	color: #7BB5CB;
+}
