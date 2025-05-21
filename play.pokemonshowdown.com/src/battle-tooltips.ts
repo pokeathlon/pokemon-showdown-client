@@ -1489,7 +1489,106 @@ export class BattleTooltips {
 				}
 			}
 		}
-
+		// Rejuvenation Crests
+		if (item === 'ariadoscrest' && species === 'Ariados') {
+			speedModifiers.push(1.5)
+		}
+		if (item === 'cofagriguscrest' && species === 'Cofagrigus') {
+			stats.spa = Math.floor(stats.spa * 1.25);
+			stats.spd = Math.floor(stats.spd * 1.25);
+		}
+		if (item === 'crabominablecrest' && species === 'Crabominable') {
+			stats.def = Math.floor(stats.def * 1.2);
+			stats.spd = Math.floor(stats.spd * 1.2);
+		}
+		if (item === 'cryogonalcrest' && species === 'Cryogonal') {
+			stats.spd = Math.floor(stats.spd * 1.2)
+			stats.atk = Math.floor(stats.atk + stats.spd * 0.1);
+			stats.def = Math.floor(stats.def + stats.spd * 0.1);
+			stats.spa = Math.floor(stats.spa + stats.spd * 0.1);
+			stats.spe = Math.floor(stats.spe + stats.spd * 0.1);
+		}
+		if (item === 'delcattycrest' && species === 'Delcatty') {
+			let delcattyatk = 0
+			let delcattydef = 0
+			let delcattyspa = 0
+			let delcattyspd = 0
+			let delcattyspe = 0
+			let allyParty = this.battle.myAllyPokemon;
+			if (allyParty) {
+				for (let i = 0; i < allyParty.length; i++) {
+					let poke = allyParty[i];
+					if (poke.fainted) continue;
+					delcattyatk += Math.floor(poke.stats.atk*0.1)
+					delcattydef += Math.floor(poke.stats.def*0.1)
+					delcattyspa += Math.floor(poke.stats.spa*0.1)
+					delcattyspd += Math.floor(poke.stats.spd*0.1)
+					delcattyspe += Math.floor(poke.stats.spe*0.1)
+				}
+				stats.atk = Math.floor(stats.atk + delcattyatk)
+				stats.def = Math.floor(stats.def + delcattydef)
+				stats.spa = Math.floor(stats.spa + delcattyspa)
+				stats.spd = Math.floor(stats.spd + delcattyspd)
+				stats.spe = Math.floor(stats.spe + delcattyspe)
+			}
+		}
+		if (item === 'dusknoircrest' && species === 'Dusknoir') {
+			stats.atk = Math.floor(stats.atk*1.5)
+		}
+		if (item === 'empoleoncrest' && species === 'Empoleon') {
+			if (['Hail', 'Snow'].includes(weather) || this.battle.hasPseudoWeather('Icy Field') || this.battle.hasPseudoWeather('Snowy Mountain') || this.battle.hasPseudoWeather('Frozen Dimensional Field')) {
+				speedModifiers.push(2)
+			}
+		}
+		if (item === 'infernapecrest' && species === 'Infernape') {
+			[stats.atk, stats.def, stats.spa, stats.spd] = [stats.def, stats.atk, stats.spd, stats.spa];
+		}
+		if (item === 'magcargocrest' && species === 'Magcargo') {
+			[stats.def, stats.spe] = [stats.spe, stats.def];
+			stats.spa = Math.floor(stats.spa * 1.1)
+		}
+		if (item === 'noctowlcrest' && species === 'Noctowl') {
+			stats.def = Math.floor(stats.def * 1.2)
+		}
+		if (item === 'oricoriocrest' && species === 'Oricorio') {
+			stats.spa = Math.floor(stats.spa * 1.25)
+			speedModifiers.push(1.25)
+		}
+		if (item === 'phionecrest' && species === 'Phione') {
+			stats.def = Math.floor(stats.def * 1.5)
+			stats.spd = Math.floor(stats.spd * 1.5)
+		}
+		if (item === 'relicanthcrest' && species === 'Relicanth') {
+			stats.atk = Math.floor(stats.atk * 1.2)
+			stats.spd = Math.floor(stats.spd * 1.3)
+		}
+		if (item === 'sevipercrest' && species === 'Seviper') {
+			speedModifiers.push(1.5)
+		}
+		if (item === 'simipourcrest' && species === 'Simipour') {
+			stats.atk = Math.floor(stats.atk * 1.2)
+			stats.spa = Math.floor(stats.spa * 1.2)
+		}
+		if (item === 'simisagecrest' && species === 'Simisage') {
+			stats.atk = Math.floor(stats.atk * 1.2)
+			stats.spa = Math.floor(stats.spa * 1.2)
+		}
+		if (item === 'simisearcrest' && species === 'Simisear') {
+			stats.atk = Math.floor(stats.atk * 1.2)
+			stats.spa = Math.floor(stats.spa * 1.2)
+		}
+		if (item === 'skuntankcrest' && species === 'Skuntank') {
+			stats.atk = Math.floor(stats.atk * 1.2)
+			stats.spa = Math.floor(stats.spa * 1.2)
+		}
+		if (item === 'stantlercrest' && ['stantler','Wyrdeer'].includes(species)) {
+			stats.atk = Math.floor(stats.atk * 1.5)
+		}
+		if (item === 'whiscashcrest' && species === 'Whiscash') {
+			stats.atk = Math.floor(stats.atk * 1.2)
+			stats.spa = Math.floor(stats.spa * 1.2)
+		}
+		
 		// Rejuvenation
 		if (this.battle.dex.modid === 'gen9rejuvenation') {
 			
@@ -1575,6 +1674,8 @@ export class BattleTooltips {
 			return `<p><small>Spe</small> ${min} to ${max} <small>(before items/abilities/modifiers)</small></p>`;
 		}
 		const stats = serverPokemon.stats;
+		console.log(clientPokemon)
+		console.log(serverPokemon)
 		const modifiedStats = this.calculateModifiedStats(clientPokemon, serverPokemon);
 
 		let buf = '<p>';
@@ -2063,6 +2164,16 @@ export class BattleTooltips {
 			value.abilityModify(0, 'Eyes of Eternity');
 			if (!value.value) return value;
 		}
+
+		
+		if (value.tryItem('Hypno Crest') && pokemon.name === 'Hypno') {
+			accuracyModifiers.push(6144);
+			value.itemModify(1.5, "Hypno Crest");
+		}
+		if (value.tryItem('Stantler Crest') && ['Stantler','Wyrdeer'].includes(pokemon.name)) {
+			value.itemModify(1.5, "Stantler Crest");
+		}
+
 		if (this.battle.dex.modid === 'gen9rejuvenation') { 
 			if (move.id === 'grasswhistle' && this.battle.hasPseudoWeather('Grassy Terrain')) value.set(80, 'Terrain Modifier')
 			if (move.id === 'sweetkiss' && this.battle.hasPseudoWeather('Misty Terrain')) value.set(100, 'Terrain Modifier')
@@ -2611,6 +2722,38 @@ export class BattleTooltips {
 					value.abilityModify(1 + 0.05 * i, "The Eminence in the Shadow");
 				}
 			}
+		}
+
+		// Rejuv Crests (not locked to rejuv mod)
+		let item = this.battle.dex.items.get(value.itemName);
+		if (item.id === 'claydolcrest' && pokemon.name === 'Claydol') {
+			if ((move.id).includes('beam')) {
+				value.itemModify(1.5, 'Claydol Crest')
+			}
+		}
+		if (item.id === 'druddigoncrest' && pokemon.name === 'Druddigon') {
+			if (['Dragon', 'Fire'].includes(move.type)) {
+				value.itemModify(1.3, 'Druddigon Crest')
+			}
+		}
+		if (item.id === 'dusknoircrest' && pokemon.name === 'Dusknoir') {
+			if (move.basePower <= 60) {
+				value.itemModify(1.5, 'Dusknoir Crest')
+			}
+		}
+		if (item.id === 'fearowcrest' && pokemon.name === 'Fearow') {
+			const stabbing = ['hornattack', 'furyattack', 'poisonsting', 'twineedle', 'pinmissile', 'peck', 'drillpeck', 'megahorn', 'poisonjab', 'needlearm', 'pluck', 'drillrun', 'hornleech', 'fellstinger', 'smartstrike', 'branchpoke', 'glaciallance', 'gildedarrow', 'gildedhelix', 'quicksilverspear']
+			if (stabbing.includes(move.id)) {
+				value.itemModify(1.5, 'Fearow Crest')
+			}
+		}
+		if (item.id === 'feraligatrcrest' && pokemon.name === 'Feraligatr') {
+			if (move.flags.bite) {
+				value.itemModify(1.5, 'Feraligatr Crest')
+			}
+		}
+		if (item.id === 'spiritombcrest' && pokemon.name === 'Spiritomb') {
+			value.itemModify(1 + 0.2 * pokemon.side.faintCounter, "Spiritomb Crest");
 		}
 		// Rejuvenation
 		if (this.battle.dex.modid === 'gen9rejuvenation') {

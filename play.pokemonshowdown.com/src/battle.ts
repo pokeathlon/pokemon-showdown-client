@@ -545,6 +545,9 @@ export class Pokemon implements PokemonDetails, PokemonHealth {
 		if (item === 'airballoon') {
 			return false;
 		}
+		if (item === 'probopasscrest' && serverPokemon && toID(serverPokemon.name) === 'probopass') {
+			return false;
+		}
 		return !this.getTypeList(serverPokemon).includes('Flying');
 	}
 	effectiveAbility(serverPokemon?: ServerPokemon) {
