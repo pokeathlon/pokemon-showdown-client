@@ -250,6 +250,7 @@ License: GPLv2
 .statbar span.psn,
 .statbar span.slp,
 .statbar span.par,
+.statbar spain.ptr,
 .statbar span.frz {
 	padding: 1px 2px;
 	border: 0;
@@ -540,6 +541,10 @@ License: GPLv2
 .battle .frzresult strong {
 	color: #FFFFFF;
 	background: #009AA4;
+}
+.battle .ptrresults strong {
+	color: #FFFFFF;
+	background: #7D7D7D;
 }
 .battle .abilityresult strong {
 	color: #FFFFFF;
@@ -954,4 +959,8 @@ License: GPLv2
 .frozendimensionalfield {
 	background: #7A8CB3 url(https://play.pokeathlon.com/sprites/fangame-sprites/rejuvenation/fields/weather-frozendimensionalfield.png) no-repeat scroll left top;
 	color: #7BB5CB;
+}
+.statbar span.ptr {
+	background: #7D7D7D;
+	color: #FFFFFF;
 }

@@ -1801,6 +1801,9 @@ p.or:after {
 .status.frz {
 	background: #009AA4;
 }
+.status.ptr {
+	background: #7D7D7D;
+}
 
 .movebutton {
 	float: left;
