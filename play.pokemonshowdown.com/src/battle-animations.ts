@@ -2084,6 +2084,28 @@ export class PokemonSprite extends Sprite {
 		// Gen 1
 		lightscreen: ['Light Screen', 'good'],
 		reflect: ['Reflect', 'good'],
+		// Other
+		adaptivebug: ['Adaptive: Bug', 'good'],
+		adaptivedragon: ['Adaptive: Dragon', 'good'],
+		adaptiveelectric: ['Adaptive: Electric', 'good'],
+		adaptivefighting: ['Adaptive: Fighting', 'good'],
+		adaptivefire: ['Adaptive: Fire', 'good'],
+		adaptiveflying: ['Adaptive: Flying', 'good'],
+		adaptiveghost: ['Adaptive: Ghost', 'good'],
+		adaptivegrass: ['Adaptive: Grass', 'good'],
+		adaptiveground: ['Adaptive: Ground', 'good'],
+		adaptiveice: ['Adaptive: Ice', 'good'],
+		adaptivenormal: ['Adaptive: Normal', 'good'],
+		adaptivepoison: ['Adaptive: Poison', 'good'],
+		adaptivepsychic: ['Adaptive: Psychic', 'good'],
+		adaptiverock: ['Adaptive: Rock', 'good'],
+		adaptivewater: ['Adaptive: Water', 'good'],
+		adaptivedark: ['Adaptive: Dark', 'good'],
+		adaptivesteel: ['Adaptive: Steel', 'good'],
+		adaptivefairy: ['Adaptive: Fairy', 'good'],
+		adaptivecrystal: ['Adaptive: Crystal', 'good'],
+		adaptivenuclear: ['Adaptive: Nuclear', 'good'],
+		adaptivecosmic: ['Adaptive: Cosmic', 'good'],
 	};
 	forme = '';
 	cryurl: string | undefined = undefined;
