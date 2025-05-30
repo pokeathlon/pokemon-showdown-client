@@ -1125,7 +1125,7 @@
 			app.sendTeam(team, function () {
 				self.searchDelay = setTimeout(function () {
 					app.send(self.adjustPrivacy($privacyCheckbox.is(':checked')) + '/search ' + format);
-				}, Storage.prefs('hasRank') === false ? 3000 : 3000);
+				}, 3000);
 			});
 		},
 		cancelSearch: function () {
