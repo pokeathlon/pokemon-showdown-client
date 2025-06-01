@@ -2213,7 +2213,6 @@ const fusionMoves: {[key: string]: {[key: string]: string[]}[]} = {
 	"spiritshackle": [{"fusion": ["banette", "spiritomb", "dusknoir", "shedinja", "cofagrigus"]}],
 	"trickortreat": [{"fusion": ["gastly", "haunter", "gengar", "mimikyu", "zorua", "zoroark"]}, {"type": ["Grass", "Ghost"]}],
 	"tropkick": [{"fusion": ["hitmonlee", "hitmontop", "roserade"]}, {"type": ["Grass", "Fighting"]}],
-	"forestscurse": [{"type": ["Grass", "Ghost"]}],
 	"strengthsap": [{"fusion": ["oddish", "gloom", "vileplume", "bellossom", "hoppip", "skiploom", "jumpluff", "bellsprout", "weepinbell", "victreebel", "paras", "parasect", "drifblim", "breloom"]}],
 	"icehammer": [{"type": ["Ice"], "learns": ["crabhammer", "woodhammer"]}],
 	"multiattack": [{"fusion": ["arceus", "mew", "genesect"]}],

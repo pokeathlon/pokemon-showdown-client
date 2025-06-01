@@ -1127,7 +1127,7 @@ export class BattleTooltips {
 			stats.spe *= 2;
 		}
 
-		if (item === 'sturdyshell' && (speciesName === 'Koopa' || speciesName === 'Paratroopa' || speciesName === 'Dry Bones' || fusionSpecies === 'Koopa' || fusionSpecies === 'Paratroopa' || fusionSpecies === 'Dry Bones')) {
+		if (item === 'sturdyshell' && (['Koopa Troopa', 'Paratroopa', 'Dry Bones'].includes(speciesName) || ['Koopa Troopa', 'Paratroopa', 'Dry Bones'].includes(fusionSpecies))) {
 			stats.def *= 2;
 		}
 
