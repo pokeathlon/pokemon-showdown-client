@@ -2701,7 +2701,7 @@ class BattleStatGuesser {
 		let species = this.dex.species.get(set.species || set.name!);
 		if (item.megaEvolves === species.name) species = this.dex.species.get(item.megaStone);
 		if (!species.exists) return '?';
-		let stats = species.baseStats;
+		let stats = this.getStats(set);
 
 		if (set.moves.length < 1) return '?';
 		let needsFourMoves = !['unown', 'ditto'].includes(species.id);
@@ -2985,7 +2985,7 @@ class BattleStatGuesser {
 		if (!set) return {};
 		if (role === '?') return {};
 		let species = this.dex.species.get(set.species || set.name!);
-		let stats = species.baseStats;
+		let stats = this.getStats(set);
 
 		let hasMove = this.hasMove;
 		let moveCount = this.moveCount;
@@ -3206,7 +3206,7 @@ class BattleStatGuesser {
 
 		let level = set.level || 100;
 
-		let baseStat = species.baseStats[stat];
+		let baseStat = this.getStats(set)[stat];
 
 		let iv = set.ivs?.[stat];
 		if (typeof iv !== 'number') iv = 31;
@@ -3238,6 +3238,21 @@ class BattleStatGuesser {
 		}
 		return ~~(val);
 	}
+
+	getStats(set: Dex.PokemonSet) {
+		let species = this.dex.species.get(set.species);
+		let stats = {...species.baseStats};
+
+		if (set.fusion && this.dex.species.get(set.fusion).exists) {
+			const fusionSpecies = this.dex.species.get(set.fusion);
+			for (const stat in stats) {
+				if (stat === 'hp' || stat === 'spa' || stat === 'spd') stats[stat] = Math.floor((species.baseStats[stat] * 2/3) + (fusionSpecies.baseStats[stat] * 1/3));
+				if (stat === 'atk' || stat === 'def' || stat === 'spe') stats[stat] = Math.floor((species.baseStats[stat] * 1/3) + (fusionSpecies.baseStats[stat] * 2/3));
+			}
+		}
+
+		return stats;
+	}
 }
 
 function BattleStatOptimizer(set: Dex.PokemonSet, formatid: ID) {
@@ -3253,9 +3268,19 @@ function BattleStatOptimizer(set: Dex.PokemonSet, formatid: ID) {
 	if (!supportsEVs || ignoreEVLimits) return false;
 
 	const species = dex.species.get(set.species);
+	let stats = {...species.baseStats};
+
+	if (set.fusion && dex.species.get(set.fusion).exists) {
+		const fusionSpecies = dex.species.get(set.fusion);
+		for (const stat in stats) {
+			if (stat === 'hp' || stat === 'spa' || stat === 'spd') stats[stat] = Math.floor((species.baseStats[stat] * 2/3) + (fusionSpecies.baseStats[stat] * 1/3));
+			if (stat === 'atk' || stat === 'def' || stat === 'spe') stats[stat] = Math.floor((species.baseStats[stat] * 1/3) + (fusionSpecies.baseStats[stat] * 2/3));
+		}
+	}
+
 	const level = set.level || 100;
 	const getStat = (stat: Dex.StatNameExceptHP, ev: number, nature: Dex.Nature) => {
-		const baseStat = species.baseStats[stat];
+		const baseStat = stats[stat];
 		const iv = set.ivs?.[stat] || 31;
 		let val = ~~(~~(2 * baseStat + iv + ~~(ev / 4)) * level / 100 + 5);
 		if (nature.plus === stat) {
