@@ -2234,6 +2234,9 @@ export class BattleTooltips {
 		if (move.priority > 0) {
 			value.abilityModify(1.5, 'Acceleration');
 		}
+		if (move.flags['wind']) {
+			value.abilityModify(1.2, "Windy Spirit");
+		}
 
 		if (move.category !== 'Status') {
 			let auraBoosted = '';
