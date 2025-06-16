@@ -663,7 +663,9 @@ export class BattleTooltips {
 		if (move.id === 'naturepower') {
 			let calls;
 			if (this.battle.gen > 5) {
-				if (this.battle.hasPseudoWeather('Electric Terrain')) {
+				if (item.id === 'fieldcleats') {
+					calls = 'Tri Attack';
+				} else if (this.battle.hasPseudoWeather('Electric Terrain')) {
 					calls = 'Thunderbolt';
 				} else if (this.battle.hasPseudoWeather('Grassy Terrain')) {
 					calls = 'Energy Ball';
@@ -1631,7 +1633,7 @@ export class BattleTooltips {
 				break;
 			}
 		}
-		if (move.id === 'terrainpulse' && pokemon.isGrounded(serverPokemon)) {
+		if (move.id === 'terrainpulse' && pokemon.isGrounded(serverPokemon) && item.id != 'fieldcleats') {
 			if (this.battle.hasPseudoWeather('Electric Terrain')) {
 				moveType = 'Electric';
 			} else if (this.battle.hasPseudoWeather('Grassy Terrain')) {
@@ -1932,6 +1934,7 @@ export class BattleTooltips {
 	getMoveBasePower(move: Dex.Move, moveType: Dex.TypeName, value: ModifiableValue, target: Pokemon | null = null) {
 		const pokemon = value.pokemon;
 		const serverPokemon = value.serverPokemon;
+		let item = this.battle.dex.items.get(serverPokemon.item);
 
 		// apply modifiers for moves that depend on the actual stats
 		const modifiedStats = this.calculateModifiedStats(pokemon, serverPokemon);
@@ -2042,13 +2045,13 @@ export class BattleTooltips {
 		if (move.id === 'hydrosteam') {
 			value.weatherModify(1.5, 'Sunny Day');
 		}
-		if (move.id === 'psyblade' && this.battle.hasPseudoWeather('Electric Terrain')) {
+		if (move.id === 'psyblade' && this.battle.hasPseudoWeather('Electric Terrain') && item.id != 'fieldcleats') {
 			value.modify(1.5, 'Electric Terrain');
 		}
-		if (move.id === 'mistbarrage' && this.battle.hasPseudoWeather('Misty Terrain')) {
+		if (move.id === 'mistbarrage' && this.battle.hasPseudoWeather('Misty Terrain') && item.id != 'fieldcleats') {
 			value.modify(1.5, 'Misty Terrain');
 		}
-		if (move.id === 'terrainpulse' && pokemon.isGrounded(serverPokemon)) {
+		if (move.id === 'terrainpulse' && pokemon.isGrounded(serverPokemon) && item.id != 'fieldcleats') {
 			if (
 				this.battle.hasPseudoWeather('Electric Terrain') ||
 				this.battle.hasPseudoWeather('Grassy Terrain') ||
@@ -2281,15 +2284,15 @@ export class BattleTooltips {
 		if ((this.battle.hasPseudoWeather('Electric Terrain') && moveType === 'Electric') ||
 			(this.battle.hasPseudoWeather('Grassy Terrain') && moveType === 'Grass') ||
 			(this.battle.hasPseudoWeather('Psychic Terrain') && moveType === 'Psychic')) {
-			if (pokemon.isGrounded(serverPokemon)) {
+			if (pokemon.isGrounded(serverPokemon) && item.id != 'fieldcleats') {
 				value.modify(this.battle.gen > 7 ? 1.3 : 1.5, 'Terrain boost');
 			}
-		} else if (this.battle.hasPseudoWeather('Misty Terrain') && moveType === 'Dragon' && move.id != 'mistbarrage') {
+		} else if (this.battle.hasPseudoWeather('Misty Terrain') && moveType === 'Dragon' && move.id != 'mistbarrage' && item.id != 'fieldcleats') {
 			if (target ? target.isGrounded() : true) {
 				value.modify(0.5, 'Misty Terrain + grounded target');
 			}
 		} else if (
-			this.battle.hasPseudoWeather('Grassy Terrain') && ['earthquake', 'bulldoze', 'magnitude', 'terraforce', 'anvilsmash', 'webwrecker'].includes(move.id)
+			this.battle.hasPseudoWeather('Grassy Terrain') && ['earthquake', 'bulldoze', 'magnitude', 'terraforce', 'anvilsmash', 'webwrecker'].includes(move.id) && item.id != 'fieldcleats'
 		) {
 			if (target ? target.isGrounded() : true) {
 				value.modify(0.5, 'Grassy Terrain + grounded target');
@@ -2298,11 +2301,11 @@ export class BattleTooltips {
 		if (
 			move.id === 'expandingforce' &&
 			this.battle.hasPseudoWeather('Psychic Terrain') &&
-			pokemon.isGrounded(serverPokemon)
+			pokemon.isGrounded(serverPokemon) && item.id != 'fieldcleats'
 		) {
 			value.modify(1.5, 'Expanding Force + Psychic Terrain boost');
 		}
-		if (move.id === 'mistyexplosion' && this.battle.hasPseudoWeather('Misty Terrain')) {
+		if (move.id === 'mistyexplosion' && this.battle.hasPseudoWeather('Misty Terrain') && item.id != 'fieldcleats') {
 			value.modify(1.5, 'Misty Explosion + Misty Terrain boost');
 		}
 		if (move.id === 'risingvoltage' && this.battle.hasPseudoWeather('Electric Terrain') && target?.isGrounded()) {
