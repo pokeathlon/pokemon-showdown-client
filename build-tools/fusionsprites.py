@@ -1,6 +1,7 @@
 from PIL import Image
 from glob import glob
 import time
+import os
 
 numbers = '0123456789'
 dim = 96
@@ -21,8 +22,11 @@ for dir in to_dice:
     for num in range(0, int(height / dim) * int(width / dim)):
         cropped = full_sheet.crop(((num % 20) * dim, int(num / 20) * dim, ((num % 20) * dim) + dim, (int(num / 20) * dim) + dim))
         colors = cropped.getcolors()
+        path = 'play.pokemonshowdown.com/sprites/fusion-sprites/Graphics/CustomBattlers/' + head + '.' + str(num) + alt + '.png'
         if colors and len(colors) != 1:
-            cropped.save('play.pokemonshowdown.com/sprites/fusion-sprites/Graphics/CustomBattlers/' + head + '.' + str(num) + alt + '.png')
+            cropped.save(path)
+        elif os.path.exists(path):
+            os.remove(path)
 
     times.append(time.time() - start)
     seconds_left = int((sum(times) / len(times)) * (todo - counter))
