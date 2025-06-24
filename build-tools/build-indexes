@@ -18,15 +18,6 @@ process.stdout.write("Syncing data from Git repository... \n");
 child_process.execSync('git pull', { cwd: 'caches/pokemon-showdown' });
 child_process.execSync('npm run build', { cwd: 'caches/pokemon-showdown' });
 
-if (!fs.existsSync('play.pokemonshowdown.com/sprites/fusion-sprites')) {
-	child_process.execSync('git clone https://github.com/infinitefusion/infinitefusion-e18.git fusion-sprites', {
-		cwd: 'play.pokemonshowdown.com/sprites',
-	});
-}
-
-process.stdout.write("Syncing IF sprites from Github repository... \n");
-child_process.execSync('git fetch origin releases --depth 1', {cwd: 'play.pokemonshowdown.com/sprites/fusion-sprites'});
-
 if (!fs.existsSync('play.pokemonshowdown.com/sprites/fangame-sprites')) {
 	child_process.execSync('git clone https://github.com/vikrambarr/fangame-sprites', {
 		cwd: 'play.pokemonshowdown.com/sprites',
