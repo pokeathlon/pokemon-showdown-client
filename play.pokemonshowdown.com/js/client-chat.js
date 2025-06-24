@@ -1886,7 +1886,7 @@
 			if (this.room.id == "lobby") {
 				buf += '<li id="' + this.room.id + '-userlist-queue" style="background: rgba(0, 0, 0, 0.45);height: unset;padding: 2px;">';
 				for (var format in app.roomsData.ladderSearches) {
-					buf += '<p style="font-size: 7pt;"><b style="' + BattleLog.hashColor(format) + ';text-shadow: 1px 1px black;">' + format.split(']')[1] + ':</b> ' + app.roomsData.ladderSearches[format] + '</p>';
+					buf += '<p style="font-size: 7pt;"><b style="' + BattleLog.hashColor(format) + ';text-shadow: 1px 1px black;">' + format.split(']').slice(1).join(']') + ':</b> ' + app.roomsData.ladderSearches[format] + '</p>';
 				}
 				buf += '</li>';
 				setInterval(() => this.updateLadderSearches(), 5 * 1000);
@@ -1938,7 +1938,7 @@
 		updateLadderSearches: function () {
 			var buf = '';
 			for (var format in app.roomsData.ladderSearches) {
-				buf += '<p style="font-size: 7pt;"><b style="' + BattleLog.hashColor(format) + ';text-shadow: 1px 1px black;">' + format.split(']')[1] + ':</b> ' + app.roomsData.ladderSearches[format] + '</p>';
+				buf += '<p style="font-size: 7pt;"><b style="' + BattleLog.hashColor(format) + ';text-shadow: 1px 1px black;">' + format.split(']').slice(1).join(']') + ':</b> ' + app.roomsData.ladderSearches[format] + '</p>';
 			}
 			$('#' + this.room.id + '-userlist-queue').html(buf);
 		},
