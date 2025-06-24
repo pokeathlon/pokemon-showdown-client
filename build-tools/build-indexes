@@ -1409,7 +1409,7 @@ process.stdout.write("Building fusion data...");
 
 {
 	let BattleFusionIndex = {};
-	let fusionFiles = fs.readdirSync('play.pokemonshowdown.com/sprites/fusion-sprites/Graphics/CustomBattlers/');
+	let fusionFiles = fs.readdirSync('play.pokemonshowdown.com/sprites/fusion-sprites/');
 
 	for (let file of fusionFiles) {
 		const parts = file.split('.');
@@ -1430,7 +1430,7 @@ process.stdout.write("Building fusion data...");
 
 {
 	let FusionCredit = {};
-	let rawCredit = fs.readFileSync('play.pokemonshowdown.com/sprites/fusion-sprites/Data/sprites/Sprite Credits.csv').toString();
+	let rawCredit = fs.readFileSync('play.pokemonshowdown.com/sprites/fusion-sprites/Sprite Credits.csv').toString();
 
 	for (let line of rawCredit.split('\n')) {
 		const parts = line.split(',');
