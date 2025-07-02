@@ -9,7 +9,7 @@ const rootDir = path.resolve(__dirname, '..');
 process.chdir(rootDir);
 
 if (!fs.existsSync('caches/pokemon-showdown')) {
-	child_process.execSync('git clone https://github.com/vikrambarr/pokemon-showdown.git', {
+	child_process.execSync('git clone https://github.com/pokeathlon/pokemon-showdown.git', {
 		cwd: 'caches',
 	});
 }
@@ -19,7 +19,7 @@ child_process.execSync('git pull', { cwd: 'caches/pokemon-showdown' });
 child_process.execSync('npm run build', { cwd: 'caches/pokemon-showdown' });
 
 if (!fs.existsSync('play.pokemonshowdown.com/sprites/fangame-sprites')) {
-	child_process.execSync('git clone https://github.com/vikrambarr/fangame-sprites', {
+	child_process.execSync('git clone https://github.com/pokeathlon/sprites fangame-sprites', {
 		cwd: 'play.pokemonshowdown.com/sprites',
 	});
 }
