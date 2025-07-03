@@ -488,7 +488,7 @@ process.stdout.write("Building `data/teambuilder-tables.js`... ");
 				if (isPOA || isInsg || isUranium || isInfinity || isMariomon) {
 					let tier = isDoubles ? species.doublesTier : species.tier;
 					if (species.isNonstandard === "Custom") tier = 'Illegal';
-					if ((isPOA) && species.isNonstandard === "Custom") tier = 'Illegal';
+					if ((isPOA) && ["Custom", "Unobtainable"].includes(species.isNonstandard)) tier = 'Illegal';
 					return tier;
 				}
 				if (species.tier === 'CAP' || species.tier === 'CAP NFE' || species.tier === 'CAP LC') {
