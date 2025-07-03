@@ -475,7 +475,6 @@ process.stdout.write("Building `data/teambuilder-tables.js`... ");
 					return tier;
 				}
 				if (isFusions) {
-					if (species.name === 'Greninja-Ash') console.log(Dex.mod(gen).species.get('greninjaash'));
 					let tier = isDoubles ? species.doublesTier : species.tier;
 					if (species.isMega || species.isNonstandard === "Custom") tier = 'Illegal';
 					return tier;
