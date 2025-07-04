@@ -395,7 +395,7 @@ process.stdout.write("Building `data/teambuilder-tables.js`... ");
 						species.nfe ? (species.prevo ? 'NFE' : 'LC') : 'Regular';
 				}
 				if (isMariomonVGC) {
-					if (species.num <= 0 || species.isNonstandard === 'Unobtainable') return 'Illegal';
+					if (species.isNonstandard) return 'Illegal';
 					if (baseSpecies.tags.includes('Mythical')) return 'Mythical';
 					if (baseSpecies.tags.includes('Restricted Legendary')) return 'Restricted Legendary';
 					if (species.tier === 'NFE') return 'NFE';
