@@ -433,7 +433,8 @@ function toId() {
 			// 		type: 'modal'
 			// 	});
 			} else {
-				if (document.location.hostname === Config.routes.client || Config.testclient) {
+				var hostname = document.location.hostname;
+				if (hostname === Config.routes.client || Config.testclient || hostname.startsWith(Config.defaultserver.id + '-')) {
 					this.addRoom('rooms', null, true);
 				} else {
 					this.addRoom('lobby', null, true);
@@ -747,9 +748,43 @@ function toId() {
 		 */
 		initializeConnection: function () {
 			Storage.whenPrefsLoaded(function () {
-				// if (Config.server.id !== 'smogtours') Config.server.afd = true;
+				app.setAFD();
 				app.connect();
 			});
+		},
+		setAFD: function (mode) {
+			if (mode === undefined) {
+				// init
+				if (typeof BattleTextAFD !== 'undefined') {
+					for (var id in BattleTextNotAFD) {
+						if (!BattleTextAFD[id]) {
+							BattleTextAFD[id] = BattleTextNotAFD[id];
+						} else {
+							var combined = {};
+							Object.assign(combined, BattleTextNotAFD[id]);
+							Object.assign(combined, BattleTextAFD[id]);
+							BattleTextAFD[id] = combined;
+						}
+					}
+				}
+
+				if (Config.server.afd) {
+					mode = true;
+				} else if (Dex.prefs('afd') !== undefined) {
+					mode = Dex.prefs('afd');
+				} else {
+					// uncomment on April Fools' Day
+					// mode = true;
+				}
+			}
+
+			Dex.afdMode = mode;
+
+			if (mode === true) {
+				BattleText = BattleTextAFD;
+			} else {
+				BattleText = BattleTextNotAFD;
+			}
 		},
 		/**
 		 * This function establishes the actual connection to the sim server.
@@ -929,7 +964,7 @@ function toId() {
 		},
 		submitSend: function (e) {
 			// Most of the code relating to this is nightmarish because of some dumb choices
-			// made when writing the original Backbone code. At least in the Preact client, event
+			// made when writing the original Backbone code. At least in the client rewrite, event
 			// handling is a lot more straightforward because it doesn't rely on Backbone's event
 			// dispatch system.
 			var target = e.currentTarget;
@@ -1516,9 +1551,13 @@ function toId() {
 				) && this.className !== 'no-panel-intercept') {
 					if (!e.cmdKey && !e.metaKey && !e.ctrlKey) {
 						var target = this.pathname.substr(1);
-						var shortLinks = /^(rooms?suggestions?|suggestions?|adminrequests?|bugs?|bugreports?|rules?|faq|credits?|news|privacy|contact|dex|insecure|replays?|forgotpassword|devdiscord)$/;
+
+						// keep this in sync with .htaccess
+						var shortLinks = /^(rooms?suggestions?|suggestions?|adminrequests?|forgotpassword|bugs?(reports?)?|formatsuggestions|rules?|faq|credits?|news|privacy|contact|dex|(damage)?calc|insecure|replays?|devdiscord|smogdex|smogcord|forums?|trustworthy\-dlc\-link)$/;
 						if (target === 'appeal' || target === 'appeals') target = 'view-help-request--appeal';
 						if (target === 'report') target = 'view-help-request--report';
+						if (target === 'requesthelp') target = 'view-help-request--other';
+
 						if (isReplayLink) {
 							if (!target || target === 'search') {
 								target = '.';

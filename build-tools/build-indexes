@@ -28,6 +28,7 @@ process.stdout.write("Syncing fangame sprites... \n");
 child_process.execSync('git pull', {cwd: 'play.pokemonshowdown.com/sprites/fangame-sprites'});
 
 const Dex = require('../caches/pokemon-showdown/dist/sim/dex').Dex;
+const CompoundWordNames = require('../caches/pokemon-showdown/dist/data/aliases').CompoundWordNames;
 const toID = Dex.toID;
 process.stdout.write("Loading all dex data... ");
 Dex.includeData();
@@ -114,134 +115,45 @@ function requireNoCache(pathSpec) {
 	index.push('pokemon article');
 	index.push('moves article');
 
+	const compoundTable = new Map(CompoundWordNames.map(word => [toID(word), word]));
 	// generate aliases
 	function generateAlias(id, name, type) {
-		let offset = name.lastIndexOf(' ');
-		if (offset < 0) offset = name.lastIndexOf('-');
-		if (name.endsWith('-Mega-X') || name.endsWith('-Mega-Y') || name.endsWith('-Mega-M') || name.endsWith('-Mega-F')) {
+		name = compoundTable.get(id) || name;
+		if (type === 'pokemon' && !compoundTable.has(id)) {
+			const species = Dex.species.get(id);
+			const baseid = toID(species.baseSpecies);
+			if (baseid !== id) {
+				name = (compoundTable.get(baseid) || species.baseSpecies) + ' ' + species.forme;
+			}
+		}
+		if (name.endsWith(' Mega-X') || name.endsWith(' Mega-Y') || name.endsWith('-Mega-M') || name.endsWith('-Mega-F')) {
 			index.push('mega' + toID(name.slice(0, -7) + name.slice(-1)) + ' ' + type + ' ' + id + ' 0');
 			index.push('m' + toID(name.slice(0, -7) + name.slice(-1)) + ' ' + type + ' ' + id + ' 0');
 			index.push('mega' + toID(name.slice(-1)) + ' ' + type + ' ' + id + ' ' + toID(name.slice(0, -7)).length);
-			return;
-		}
-		if (name.endsWith('-Mega')) {
+		} else if (name.endsWith(' Mega')) {
 			index.push('mega' + toID(name.slice(0, -5)) + ' ' + type + ' ' + id + ' 0');
 			index.push('m' + toID(name.slice(0, -5)) + ' ' + type + ' ' + id + ' 0');
-			return;
-		}
-		if (name.endsWith('-Alola')) {
+		} else if (name.endsWith(' Alola')) {
 			index.push('alolan' + toID(name.slice(0, -6)) + ' ' + type + ' ' + id + ' 0');
-			return;
+		} else if (name.endsWith(' Galar')) {
+			index.push('galarian' + toID(name.slice(0, -6)) + ' ' + type + ' ' + id + ' 0');
+		} else if (name.endsWith(' Hisui')) {
+			index.push('hisuian' + toID(name.slice(0, -6)) + ' ' + type + ' ' + id + ' 0');
 		}
-		const oldOffset = offset;
-		if (name === 'Alakazam') offset = 5;
-		if (name === 'Arctovish') offset = 5;
-		if (name === 'Arctozolt') offset = 5;
-		if (name === 'Articuno') offset = 5;
-		if (name === 'Breloom') offset = 3;
-		if (name === 'Bronzong') offset = 4;
-		if (name === 'Celebi') offset = 4;
-		if (name === 'Charizard') offset = 5;
-		if (name === 'Donphan') offset = 3;
-		if (name === 'Dracovish') offset = 5;
-		if (name === 'Dracozolt') offset = 5;
-		if (name === 'Dragapult') offset = 5;
-		if (name === 'Dusclops') offset = 3;
-		if (name === 'Electabuzz') offset = 6;
-		if (name === 'Exeggutor') offset = 2;
-		if (name === 'Garchomp') offset = 3;
-		if (name === 'Hariyama') offset = 4;
-		if (name === 'Magearna') offset = 2;
-		if (name === 'Magnezone') offset = 5;
-		if (name === 'Mamoswine') offset = 4;
-		if (name === 'Moltres') offset = 3;
-		if (name === 'Nidoking') offset = 4;
-		if (name === 'Nidoqueen') offset = 4;
-		if (name === 'Nidorina') offset = 4;
-		if (name === 'Nidorino') offset = 4;
-		if (name === 'Regice') offset = 3;
-		if (name === 'Regidrago') offset = 4;
-		if (name === 'Regieleki') offset = 4;
-		if (name === 'Regigigas') offset = 4;
-		if (name === 'Regirock') offset = 4;
-		if (name === 'Registeel') offset = 4;
-		if (name === 'Slowbro') offset = 4;
-		if (name === 'Slowking') offset = 4;
-		if (name === 'Starmie') offset = 4;
-		if (name === 'Tyranitar') offset = 6;
-		if (name === 'Zapdos') offset = 3;
-
-		if (name === 'Acupressure') offset = 3;
-		if (name === 'Aromatherapy') offset = 5;
-		if (name === 'Boomburst') offset = 4;
-		if (name === 'Crabhammer') offset = 4;
-		if (name === 'Discharge') offset = 3;
-		if (name === 'Earthquake') offset = 5;
-		if (name === 'Extrasensory') offset = 5;
-		if (name === 'Flamethrower') offset = 5;
-		if (name === 'Headbutt') offset = 4;
-		if (name === 'Moonblast') offset = 4;
-		if (name === 'Moonlight') offset = 4;
-		if (name === 'Overheat') offset = 4;
-		if (name === 'Outrage') offset = 3;
-		if (name === 'Octazooka') offset = 4;
-		if (name === 'Payback') offset = 3;
-		if (name === 'Psyshock') offset = 3;
-		if (name === 'Psywave') offset = 3;
-		if (name === 'Rototiller') offset = 4;
-		if (name === 'Rollout') offset = 4;
-		if (name === 'Safeguard') offset = 4;
-		if (name === 'Sandstorm') offset = 4;
-		if (name === 'Smokescreen') offset = 5;
-		if (name === 'Stockpile') offset = 5;
-		if (name === 'Steamroller') offset = 5;
-		if (name === 'Superpower') offset = 5;
-		if (name === 'Supersonic') offset = 5;
-		if (name === 'Synchronoise') offset = 7;
-		if (name === 'Tailwind') offset = 4;
-		if (name === 'Telekinesis') offset = 4;
-		if (name === 'Teleport') offset = 4;
-		if (name === 'Thunderbolt') offset = 7;
-		if (name === 'Twineedle') offset = 3;
-		if (name === 'Uproar') offset = 2;
-		if (name === 'Venoshock') offset = 4;
-		if (name === 'Whirlpool') offset = 5;
-		if (name === 'Whirlwind') offset = 5;
-		let acronym;
-		if (oldOffset < 0 && offset > 0) {
-			acronym = toID(name.charAt(0) + name.slice(offset));
-		}
-		if (offset < 0) return;
-		index.push('' + toID(name.slice(offset)) + ' ' + type + ' ' + id + ' ' + toID(name.slice(0, offset)).length);
-		if (name.startsWith('Hidden Power ')) {
-			acronym = 'hp' + toID(name.substr(13));
-			index.push('' + acronym + ' ' + type + ' ' + id + ' 0');
-		} else if (name === 'Hidden Power') {
-			index.push('hp ' + type + ' ' + id + ' 0');
-		} else if (name.includes(' ')) {
-			acronym = toID(name.split(' ').map((x, i) => i !== 0 ? x : x.charAt(0)).join(''));
-		} else if (name.includes('-') && name.charAt(1) !== '-') {
-			acronym = toID(name.split('-').map((x, i) => i !== 0 ? x : x.charAt(0)).join(''));
-		}
-		if (acronym) {
-			index.push('' + acronym + ' ' + type + ' ' + id + ' 0');
-		}
-		if (name === 'High Jump Kick') {
-			index.push('hjkick ' + type + ' ' + id + ' 0');
-		} else if (name === 'Wake-Up Slap') {
-			index.push('wuslap ' + type + ' ' + id + ' 0');
-			index.push('wupslap ' + type + ' ' + id + ' 0');
-		} else if (name === 'Zen Headbutt') {
-			index.push('zhbutt ' + type + ' ' + id + ' 0');
-		} else if (name === 'Articuno') {
-			index.push('cuno ' + type + ' ' + id + ' 4');
+		const fullSplit = name.split(/ |-/).map(toID);
+		if (fullSplit.length < 2) return;
+		const fullAcronym = fullSplit.map(x => x.charAt(0)).join('') + fullSplit.at(-1).slice(1);
+		index.push('' + fullAcronym + ' ' + type + ' ' + id + ' 0');
+		for (let i = 1; i < fullSplit.length; i++) {
+			index.push('' + fullSplit.slice(i).join('') + ' ' + type + ' ' + id + ' ' + fullSplit.slice(0, i).join('').length);
 		}
 
-		let i2 = name.lastIndexOf(' ', offset - 1);
-		if (i2 < 0) i2 = name.lastIndexOf('-', offset - 1);
-		if (name === 'Zen Headbutt') i2 = 8;
-		if (i2 >= 0) {
-			index.push('' + toID(name.slice(i2)) + ' ' + type + ' ' + id + ' ' + toID(name.slice(0, i2)).length);
+		const spaceSplit = name.split(' ').map(toID);
+		if (spaceSplit.length !== fullSplit.length) {
+			const spaceAcronym = spaceSplit.map(x => x.charAt(0)).join('') + spaceSplit.at(-1).slice(1);
+			if (spaceAcronym !== fullAcronym) {
+				index.push('' + spaceAcronym + ' ' + type + ' ' + id + ' 0');
+			}
 		}
 	}
 	for (const id in Dex.data.Pokedex) {
@@ -259,6 +171,24 @@ function requireNoCache(pathSpec) {
 	for (const id in Dex.data.Abilities) {
 		const name = Dex.data.Abilities[id].name;
 		generateAlias(id, name, 'ability');
+	}
+
+	// hardcode ultra beasts
+	const ultraBeasts = {
+		ub01symbiont: "nihilego",
+		ub02absorption: "buzzwole",
+		ub02beauty: "pheromosa",
+		ub03lightning: "xurkitree",
+		ub04blade: "kartana",
+		ub04blaster: "celesteela",
+		ub05glutton: "guzzlord",
+		ubburst: "blacephalon",
+		ubassembly: "stakataka",
+		ubadhesive: "poipole",
+		ubstinger: "naganadel",
+	};
+	for (const [ubCode, id] of Object.entries(ultraBeasts)) {
+		index.push(`${ubCode} pokemon ${id} 0`);
 	}
 
 	index.sort();
@@ -341,7 +271,7 @@ process.stdout.write("Building `data/teambuilder-tables.js`... ");
 	const NFE = GENS.map(num => num + 0.3);
 	const LC = GENS.map(num => num + 0.7);
 	const NATDEX = [9.1, 8.1];
-	const OTHER = [9.9, 9.82, 9.83, -9.83, 9.84, -9.84, -9.82, 9.822, -9.822, 9.85, -9.85, 9.855, -9.855, 9.87, -9.87, 9.888, -9.888, 9.889, 6.877, -6.877, 9.81, -9.81, 9.83, -9.83, 7.811, -7.811, 6.833, -6.833, 6.844, -6.844];
+	const OTHER = [9.9, 9.82, 9.83, -9.83, 9.84, -9.84, -9.82, 9.822, -9.822, 9.85, -9.85, 9.855, -9.855, 9.87, -9.87, 9.888, -9.888, 9.889, 6.877, -6.877, 9.81, -9.81, 9.83, -9.83, 7.811, -7.811, 6.833, -6.833, 6.844, -6.844, 3.1];
 
 	// process.stdout.write("\n  ");
 	for (const genIdent of [...GENS, ...DOUBLES, ...VGC, ...NFE, ...OTHER, ...NATDEX, ...LC]) {
@@ -368,6 +298,7 @@ process.stdout.write("Building `data/teambuilder-tables.js`... ");
 		const isMariomonVGC = ('' + genIdent).endsWith('.889');
 		const genNum = Math.floor(isDoubles ? -genIdent : genIdent);
 		const isBW1 = genIdent === 5.1;
+		const isRS = genIdent === 3.1;
 		const gen = (() => {
 			let genStr = 'gen' + genNum;
 			if (isNatDexFusions || isFusions) genStr += 'infinitefusion';
@@ -378,6 +309,7 @@ process.stdout.write("Building `data/teambuilder-tables.js`... ");
 			if (isNatDexU || isUranium) genStr += 'uranium';
 			if (isNatDexInf || isInfinity) genStr += 'infinity';
 			if (isMariomon || isMariomonVGC) genStr += 'mariomon';
+			if (isRS) genStr += 'rs';
 			return genStr;
 		})();
 		// process.stdout.write("" + gen + (isDoubles ? " doubles" : "") + "... ");
@@ -390,6 +322,7 @@ process.stdout.write("Building `data/teambuilder-tables.js`... ");
 		const thirtyfivePokes = {};
 		const monotypeBans = {};
 		const gen5zuBans = {};
+		const gen4puBans = {};
 		for (const id of pokemon) {
 			const species = Dex.mod(gen).species.get(id);
 			const baseSpecies = Dex.mod(gen).species.get(species.baseSpecies);
@@ -432,7 +365,8 @@ process.stdout.write("Building `data/teambuilder-tables.js`... ");
 					let tier = species.tier;
 					const lc = Dex.formats.get(gen + 'lc');
 					const lcBanlist = Dex.formats.getRuleTable(lc);
-					if (!species.nfe || species.prevo || lcBanlist.isBannedSpecies(species)) {
+					const prevoSpecies = Dex.mod(gen).species.get(species.prevo);
+					if (!species.nfe || (prevoSpecies.exists && prevoSpecies.gen <= genNum) || lcBanlist.isBannedSpecies(species)) {
 						tier = 'Illegal';
 					}
 					if (/^([OURNPZ]U(BL)?|Uber|AG)$/g.test(tier) && tier !== 'Illegal') {
@@ -447,6 +381,18 @@ process.stdout.write("Building `data/teambuilder-tables.js`... ");
 					if (species.tier === 'NFE') return 'NFE';
 					if (species.tier === 'LC') return 'LC';
 					return 'Regular';
+				}
+				if (isRS) {
+					if (species.isNonstandard) {
+						if (species.isNonstandard === 'Unobtainable') return 'Unreleased';
+						return 'Illegal';
+					}
+					if (species.tier === 'Uber') return 'Uber';
+					if (species.nfe) {
+						if (species.prevo.length === 0) return "LC";
+						return "NFE";
+					}
+					return "Regular";
 				}
 				if (isGen9BH) {
 					if ((species.natDexTier === 'Illegal' || species.forme.includes('Totem')) &&
@@ -522,13 +468,15 @@ process.stdout.write("Building `data/teambuilder-tables.js`... ");
 				if (ubersUU.exists && Dex.formats.getRuleTable(ubersUU).isBannedSpecies(species)) {
 					ubersUUBans[species.id] = 1;
 				}
-				const ndDoubles = Dex.formats.get(gen + 'nationaldexdoubles');
-				if (ndDoubles.exists && Dex.formats.getRuleTable(ndDoubles).isBannedSpecies(species)) {
-					ndDoublesBans[species.id] = 1;
-				}
 				const nd35Pokes = Dex.formats.get(gen + 'nationaldex35pokes');
 				if (nd35Pokes.exists && !Dex.formats.getRuleTable(nd35Pokes).isBannedSpecies(species)) {
 					thirtyfivePokes[species.id] = 1;
+				}
+			}
+			if (genNum >= 8) {
+				const ndDoubles = Dex.formats.get(gen + 'nationaldexdoubles');
+				if (ndDoubles.exists && Dex.formats.getRuleTable(ndDoubles).isBannedSpecies(species)) {
+					ndDoublesBans[species.id] = 1;
 				}
 			}
 			if (genNum >= 5) {
@@ -543,7 +491,19 @@ process.stdout.write("Building `data/teambuilder-tables.js`... ");
 					monotypeBans[species.id] = 1;
 				}
 			}
+			if (genNum === 4) {
+				const gen4pu = Dex.formats.get(gen + 'pu');
+				if (gen4pu.exists && Dex.formats.getRuleTable(gen4pu).isBannedSpecies(species)) {
+					gen4puBans[species.id] = 1;
+				}
+			}
 		}
+
+		nonstandardMoves.push(...Object.keys(Dex.data.Moves).filter(id => {
+			const move = Dex.mod(isSSDLC1 ? 'gen8dlc1' : isPreDLC ? 'gen9predlc' : 'gen9dlc1').moves.get(id);
+			const bMove = Dex.mod(isSSDLC1 ? 'gen8' : 'gen9').moves.get(id);
+			return bMove.isNonstandard !== move.isNonstandard;
+		}));
 
 		const tiers = [];
 		const items = [];
@@ -609,7 +569,7 @@ process.stdout.write("Building `data/teambuilder-tables.js`... ");
 			BattleTeambuilderTable.ubersUUBans = ubersUUBans;
 			BattleTeambuilderTable.monotypeBans = monotypeBans;
 			BattleTeambuilderTable.formatSlices = formatSlices;
-		} else if (isBW1) {
+		} else if (isBW1 || isRS) {
 			BattleTeambuilderTable[gen] = {};
 			BattleTeambuilderTable[gen].overrideTier = overrideTier;
 			BattleTeambuilderTable[gen].tiers = tiers;
@@ -621,6 +581,9 @@ process.stdout.write("Building `data/teambuilder-tables.js`... ");
 			BattleTeambuilderTable[gen] = {};
 			if (genNum === 5) {
 				BattleTeambuilderTable[gen].gen5zuBans = gen5zuBans;
+			}
+			if (genNum === 4) {
+				BattleTeambuilderTable[gen].gen4puBans = gen4puBans;
 			}
 			BattleTeambuilderTable[gen].overrideTier = overrideTier;
 			BattleTeambuilderTable[gen].tiers = tiers;
@@ -634,6 +597,9 @@ process.stdout.write("Building `data/teambuilder-tables.js`... ");
 		const tierOrder = (() => {
 			if (isVGC || isGen9BH || isMariomonVGC) {
 				return ["Mythical", "Restricted Legendary", "Regular", "NFE", "LC"];
+			}
+			if (isRS) {
+				return ["Regular", "NFE", "LC", "Uber"];
 			}
 			if (isDoubles && genNum > 4) {
 				return ["DUber", "(DUber)", "DOU", "DBL", "(DOU)", "DUU", "(DUU)", "New", "NFE", "LC"];
@@ -682,7 +648,7 @@ process.stdout.write("Building `data/teambuilder-tables.js`... ");
 
 		const greatItems = [['header', "Popular items"]];
 		const goodItems = [['header', "Items"]];
-		const specificItems = [['header', "Pok&eacute;mon-specific items"]];
+		const specificItems = [['header', "Pok\u00e9mon-specific items"]];
 		const poorItems = [['header', "Usually useless items"]];
 		const badItems = [['header', "Useless items"]];
 		const unreleasedItems = [];
@@ -917,8 +883,6 @@ process.stdout.write("Building `data/teambuilder-tables.js`... ");
 				} else if (item.name.endsWith(" Gem") && item.name !== "Normal Gem") {
 					if (genNum >= 6) {
 						unreleasedItems.push(id);
-					} else if (item.name === "Flying Gem") {
-						greatItems.push(id);
 					} else {
 						goodItems.push(id);
 					}
@@ -1156,7 +1120,7 @@ process.stdout.write("Building `data/teambuilder-tables.js`... ");
 	// Mods
 	//
 
-	for (const mod of ['gen9infinitefusion', 'gen7infinitefusion', 'gen9pokeathlon', 'gen9insurgence', 'gen6insurgence', 'gen9uranium', 'gen6uranium', 'gen9infinity', 'gen6infinity', 'gen9mariomon', 'gen9chaos', 'gen9chaosfusion']) {
+	for (const mod of ['gen3rs', 'gen9infinitefusion', 'gen7infinitefusion', 'gen9pokeathlon', 'gen9insurgence', 'gen6insurgence', 'gen9uranium', 'gen6uranium', 'gen9infinity', 'gen6infinity', 'gen9mariomon', 'gen9chaos', 'gen9chaosfusion']) {
 		const modDex = Dex.mod(mod);
 		const modData = modDex.data;
 		const parentDex = Dex.forGen(modDex.gen);

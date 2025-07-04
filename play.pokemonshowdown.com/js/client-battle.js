@@ -302,7 +302,7 @@
 
 			if (this.battle.ended) {
 
-				var replayDownloadButton = '<span style="float:right;"><a href="//' + Config.routes.replays + '/" class="button replayDownloadButton"><i class="fa fa-download"></i> Download replay</a><br /><br /><button class="button" name="saveReplay"><i class="fa fa-upload"></i> Upload and share replay</button></span>';
+				var replayDownloadButton = '<span style="float:right;"><a href="//' + Config.routes.replays + '/download" class="button replayDownloadButton"><i class="fa fa-download"></i> Download replay</a><br /><br /><button class="button" name="saveReplay"><i class="fa fa-upload"></i> Upload and share replay</button></span>';
 
 				// battle has ended
 				if (this.side) {
@@ -574,7 +574,7 @@
 			var canUltraBurst = curActive.canUltraBurst || switchables[pos].canUltraBurst;
 			var canDynamax = curActive.canDynamax || switchables[pos].canDynamax;
 			var maxMoves = curActive.maxMoves || switchables[pos].maxMoves;
-			var gigantamax = curActive.gigantamax;
+			var gigantamax = curActive.maxMoves && curActive.maxMoves.gigantamax;
 			var canTerastallize = curActive.canTerastallize || switchables[pos].canTerastallize;
 			if (canZMove && typeof canZMove[0] === 'string') {
 				canZMove = _.map(canZMove, function (move) {
@@ -706,10 +706,10 @@
 								// when possible, use Z move to decide type, for cases like Z-Hidden Power
 								var baseMove = this.battle.dex.moves.get(curActive.moves[i].move);
 								// might not exist, such as for Z status moves - fall back on base move to determine type then
-								var specialMove = gigantamax || this.battle.dex.moves.get(specialMoves[i].move);
-								var moveType = this.tooltips.getMoveType(specialMove.exists && !specialMove.isMax ? specialMove : baseMove, typeValueTracker, specialMove.isMax ? gigantamax || switchables[pos].gigantamax || true : undefined)[0];
-								if (specialMove.isMax && specialMove.name !== 'Max Guard' && !specialMove.id.startsWith('gmax')) {
-									specialMove = this.tooltips.getMaxMoveFromType(moveType);
+								var specialMove = this.battle.dex.moves.get(specialMoves[i].move);
+								var moveType = this.tooltips.getMoveType(specialMove.exists && !specialMove.isMax ? specialMove : baseMove, typeValueTracker, specialMove.isMax ? gigantamax || true : undefined)[0];
+								if (specialMove.isMax && specialMove.name !== 'Max Guard') {
+									specialMove = this.tooltips.getMaxMoveFromType(moveType, gigantamax);
 								}
 								var tooltipArgs = classType + 'move|' + baseMove.id + '|' + pos;
 								if (specialMove.id.startsWith('gmax')) tooltipArgs += '|' + specialMove.id;
@@ -723,30 +723,37 @@
 								}
 								movebuttons += specialMove.name + '<br /><small class="type">' + (moveType ? Dex.types.get(moveType).name : "Unknown") + '</small> <small class="pp">' + pp + '</small>&nbsp;</button> ';
 							} else {
-								movebuttons += '<button disabled>&nbsp;</button>';
+								movebuttons += '<button class="movebutton" disabled>&nbsp;</button>';
 							}
 						}
 						if (!currentlyDynamaxed) movebuttons += '</div>';
 					}
 					moveMenu += movebuttons;
 				}
+				var checkboxes = [];
 				if (canMegaEvo) {
-					moveMenu += '<br /><label class="megaevo"><input type="checkbox" name="megaevo" />&nbsp;Mega&nbsp;Evolution</label>';
-				} else if (canMegaEvoX && canMegaEvoY) {
-					moveMenu += '<br /><label class="megaevo"><input type="checkbox" name="megaevox" />&nbsp;Mega&nbsp;Evolution X</label>';
-					moveMenu += '<label class="megaevo"><input type="checkbox" name="megaevoy" />&nbsp;Mega&nbsp;Evolution Y</label>';
-				} else if (canMegaEvoX) {
-					moveMenu += '<br /><label class="megaevo"><input type="checkbox" name="megaevox" />&nbsp;Mega&nbsp;Evolution X</label>';
-				} else if (canMegaEvoY) {
-					moveMenu += '<br /><label class="megaevo"><input type="checkbox" name="megaevoy" />&nbsp;Mega&nbsp;Evolution Y</label>';
-				} else if (canZMove) {
-					moveMenu += '<br /><label class="megaevo"><input type="checkbox" name="zmove" />&nbsp;Z-Power</label>';
-				} else if (canUltraBurst) {
-					moveMenu += '<br /><label class="megaevo"><input type="checkbox" name="ultraburst" />&nbsp;Ultra Burst</label>';
-				} else if (canDynamax) {
-					moveMenu += '<br /><label class="megaevo"><input type="checkbox" name="dynamax" />&nbsp;Dynamax</label>';
-				} else if (canTerastallize) {
-					moveMenu += '<br /><label class="megaevo"><input type="checkbox" name="terastallize" />&nbsp;Terastallize<br />' + Dex.getTypeIcon(canTerastallize) + '</label>';
+					checkboxes.push('<label class="megaevo"><input type="checkbox" name="megaevo" />&nbsp;Mega&nbsp;Evolution</label>');
+				}
+				if (canMegaEvoX) {
+					checkboxes.push('<label class="megaevo"><input type="checkbox" name="megaevox" />&nbsp;Mega&nbsp;Evolution&nbsp;X</label>');
+				}
+				if (canMegaEvoY) {
+					checkboxes.push('<label class="megaevo"><input type="checkbox" name="megaevoy" />&nbsp;Mega&nbsp;Evolution&nbsp;Y</label>');
+				}
+				if (canZMove) {
+					checkboxes.push('<label class="megaevo"><input type="checkbox" name="zmove" />&nbsp;Z-Power</label>');
+				}
+				if (canUltraBurst) {
+					checkboxes.push('<label class="megaevo"><input type="checkbox" name="ultraburst" />&nbsp;Ultra Burst</label>');
+				}
+				if (canDynamax) {
+					checkboxes.push('<label class="megaevo"><input type="checkbox" name="dynamax" />&nbsp;Dynamax</label>');
+				}
+				if (canTerastallize) {
+					checkboxes.push('<label class="megaevo"><input type="checkbox" name="terastallize" />&nbsp;Terastallize<br />' + Dex.getTypeIcon(canTerastallize) + '</label>');
+				}
+				if (checkboxes.length) {
+					moveMenu += '<div class="megaevo-box">' + checkboxes.join('') + '</div>';
 				}
 				if (this.finalDecisionMove) {
 					moveMenu += '<em class="movewarning">You <strong>might</strong> have some moves disabled, so you won\'t be able to cancel an attack!</em>';

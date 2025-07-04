@@ -1,5 +1,30 @@
 <?php
 
+$fa5pro = file_exists(__DIR__ . '/fontawesome5-solid-duotone.min.css');
+
+$sprites_whitelist = [
+	'/sprites/afd-back-shiny/' => '*.png',
+	'/sprites/afd-shiny/' => '*.png',
+	'/sprites/gen1/' => '*.png',
+	'/sprites/gen1-back/' => '*.png',
+	'/sprites/gen1rb/' => '*.png',
+	'/sprites/gen1rg/' => '*.png',
+	'/sprites/gen1rgb-back/' => '*.png',
+	'/sprites/gen2/' => '*.png',
+	'/sprites/gen2-back/' => '*.png',
+	// gen 3+? too many sprites, not gonna make that easy on people
+	'/sprites/misc/' => '*.png',
+	'/sprites/types/' => '*.png',
+	'/sprites/digimon/sprites/digimon/' => '*.png',
+	'/sprites/digimon/sprites/digimon-back/' => '*.png',
+	'/sprites/digimon/sprites/digimonani/' => '*.gif',
+	'/sprites/digimon/sprites/digimonani-back/' => '*.gif',
+	'/sprites/digimon/sprites/pokemon/' => '*.png',
+	'/sprites/digimon/sprites/pokemon-back/' => '*.png',
+	'/sprites/digimon/sprites/pokemonani/' => '*.gif',
+	'/sprites/digimon/sprites/pokemonani-back/' => '*.gif',
+];
+
 $rel_dir = explode('?', $_SERVER['REQUEST_URI'])[0];
 $slash_pos = strrpos($rel_dir, '/');
 if ($slash_pos !== false) $rel_dir = substr($rel_dir, 0, $slash_pos + 1);
@@ -12,39 +37,105 @@ $fileinfo = [];
 $at_root = ($rel_dir === '/');
 $up = null;
 
-function get_icon($file, $is_dir) {
+function get_icon(string $file, bool $is_dir) {
+	global $fa5pro;
+	if ($fa5pro) return get_icon_fa5pro($file, $is_dir);
+
 	if ($is_dir) {
-		return 'folder-open';
+		return 'fa fa-folder-open';
 	} else {
 		$info = pathinfo($file);
 		$ext = strtolower($info['extension'] ?? '.');
-		if ($ext === 'jpg' || $ext === 'jpeg' || $ext === 'png' || $ext === 'gif' || $ext === 'bmp' || $ext === 'webp' || $ext === 'svg') {
-			return 'picture-o';
+		if ($ext === 'jpg' || $ext === 'jpeg' || $ext === 'png' || $ext === 'bmp' || $ext === 'webp' || $ext === 'svg') {
+			return 'fa fa-picture-o';
+		} else if ($ext === 'gif') {
+			return 'fa fa-film';
 		} else if ($ext === 'mp4' || $ext === 'webm' || $ext === 'mkv' || $ext === 'avi' || $ext === 'mov') {
-			return 'video-camera';
+			return 'fa fa-video-camera';
 		} else if ($ext === 'mp3' || $ext === 'ogg' || $ext === 'wav' || $ext === 'flac' || $ext === 'aac') {
-			return 'volume-up';
+			return 'fa fa-volume-up';
 		} else if ($ext === 'zip' || $ext === 'tar' || $ext === 'gz') {
-			return 'file-archive-o';
+			return 'fa fa-file-archive-o';
 		} else if ($ext === 'txt' || $ext === 'md') {
-			return 'file-text-o';
+			return 'fa fa-file-text-o icon-' . $ext;
 		} else if ($ext === 'html' || $ext === 'php') {
-			return 'file-code-o';
-		} else if ($ext === 'c' || $ext === 'cpp' || $ext === 'h' || $ext === 'hpp' || $ext === 'py' || $ext === 'js' || $ext === 'ts' || $ext === 'jsx' || $ext === 'tsx' || $ext === 'json' || $ext === 'xml' || $ext === 'css' || $ext === 'java' || $ext === 'rb' || $ext === 'go' || $ext === 'swift' || $ext === 'rs' || $ext === 'map') {
-			return 'code';
+			return 'fa fa-file-code-o icon-' . $ext;
+		} else if ($ext === 'js' || $ext === 'ts' || $ext === 'jsx' || $ext === 'tsx' || $ext === 'json') {
+			return 'fa fa-code icon-' . substr($ext, 0, 2);
+		} else if ($ext === 'mts' || $ext === 'cts' || $ext === 'mjs' || $ext === 'cjs') {
+			return 'fa fa-code icon-' . substr($ext, 1, 2);
+		} else if ($ext === 'c' || $ext === 'cpp' || $ext === 'h' || $ext === 'hpp' || $ext === 'py' || $ext === 'xml' || $ext === 'java' || $ext === 'rb' || $ext === 'go' || $ext === 'swift' || $ext === 'rs' || $ext === 'map' || $ext === 'csv') {
+			return 'fa fa-code';
+		} else if ($ext === 'css') {
+			return 'fa fa-code icon-' . $ext;
 		} else if ($ext === 'woff' || $ext === 'woff2' || $ext === 'ttf' || $ext === 'otf' || $ext === 'eot') {
-			return 'font';
+			return 'fa fa-font';
 		} else if ($ext === 'pdf') {
-			return 'file-pdf-o';
+			return 'fa fa-file-pdf-o';
 		} else if ($ext === 'doc' || $ext === 'docx' || $ext === 'odt') {
-			return 'file-word-o';
+			return 'fa fa-file-word-o';
 		} else if ($ext === 'xls' || $ext === 'xlsx' || $ext === 'ods') {
-			return 'file-excel-o';
+			return 'fa fa-file-excel-o';
 		} else if ($ext === 'ppt' || $ext === 'pptx' || $ext === 'odp') {
-			return 'file-powerpoint-o';
+			return 'fa fa-file-powerpoint-o';
+		} else if ($ext === 'epub' || $ext === 'mobi') {
+			return 'fa fa-book';
+		} else if ($ext === 'exe' || $ext === 'dmg') {
+			return 'fa fa-window-maximize';
 		}
 	}
-	return 'file-o';
+	return 'fa fa-file-o';
+}
+
+function get_icon_fa5pro(string $file, bool $is_dir) {
+	if ($is_dir) {
+		return 'fad fa-folder-open';
+	} else {
+		$info = pathinfo($file);
+		$ext = strtolower($info['extension'] ?? '.');
+		if ($ext === 'jpg' || $ext === 'jpeg' || $ext === 'png' || $ext === 'bmp' || $ext === 'webp' || $ext === 'svg') {
+			return 'fad fa-image';
+		} else if ($ext === 'gif') {
+			return 'fad fa-film';
+		} else if ($ext === 'mp4' || $ext === 'webm' || $ext === 'mkv' || $ext === 'avi' || $ext === 'mov') {
+			return 'fas fa-video';
+		} else if ($ext === 'mp3' || $ext === 'ogg' || $ext === 'wav' || $ext === 'flac' || $ext === 'aac') {
+			return 'fas fa-volume';
+		} else if ($ext === 'zip' || $ext === 'tar' || $ext === 'gz') {
+			return 'fad fa-file-archive';
+		} else if ($ext === 'txt' || $ext === 'md') {
+			return 'fad fa-file-alt icon-' . $ext;
+		} else if ($ext === 'html' || $ext === 'php') {
+			return 'fad fa-file-code icon-' . $ext;
+		} else if ($ext === 'js' || $ext === 'ts' || $ext === 'jsx' || $ext === 'tsx' || $ext === 'json') {
+			return 'fad fa-code icon-' . substr($ext, 0, 2);
+		} else if ($ext === 'mts' || $ext === 'cts' || $ext === 'mjs' || $ext === 'cjs') {
+			return 'fad fa-code icon-' . substr($ext, 1, 2);
+		} else if ($ext === 'css') {
+			return 'fad fa-code icon-' . $ext;
+		} else if ($ext === 'c' || $ext === 'cpp' || $ext === 'h' || $ext === 'hpp' || $ext === 'py' || $ext === 'xml' || $ext === 'css' || $ext === 'java' || $ext === 'rb' || $ext === 'go' || $ext === 'swift' || $ext === 'rs' || $ext === 'map') {
+			return 'fa fa-code';
+		} else if ($ext === 'woff' || $ext === 'woff2' || $ext === 'ttf' || $ext === 'otf' || $ext === 'eot') {
+			return 'fad fa-font-case';
+		} else if ($ext === 'pdf') {
+			return 'fad fa-file-pdf';
+		} else if ($ext === 'csv') {
+			return 'fad fa-file-csv';
+		} else if ($ext === 'doc' || $ext === 'docx' || $ext === 'odt') {
+			return 'fad fa-file-word';
+		} else if ($ext === 'xls' || $ext === 'xlsx' || $ext === 'ods') {
+			return 'fad fa-file-excel';
+		} else if ($ext === 'ppt' || $ext === 'pptx' || $ext === 'odp') {
+			return 'fad fa-file-powerpoint';
+		} else if ($ext === 'epub' || $ext === 'mobi') {
+			return 'fad fa-book';
+		} else if ($ext === 'exe') {
+			return 'fad fa-window-alt';
+		} else if ($ext === 'dmg') {
+			return 'fad fa-window';
+		}
+	}
+	return 'fad fa-file';
 }
 
 foreach ($files as $file) {
@@ -55,10 +146,8 @@ foreach ($files as $file) {
 
 	$is_dir = is_dir($path);
 	$ext = '';
-	$type = get_icon($file, $is_dir);
-	if ($file === '..') {
-		$type = 'arrow-circle-o-up';
-	} else if (!$is_dir) {
+	$icon = get_icon($file, $is_dir);
+	if (!$is_dir) {
 		$info = pathinfo($file);
 		$ext = strtolower($info['extension'] ?? '.');
 	}
@@ -80,13 +169,13 @@ foreach ($files as $file) {
 	$next = [
 		'name' => htmlentities($file),
 		'mtime' => date('Y-m-d H:i:s', filemtime($path)),
-		'type' => $type,
+		'icon' => $icon,
 		'size' => $size,
 		'ext' => $ext,
 		'size_text' => $size_text,
 	];
 	if ($file === '..') {
-		$up = $next;
+		if (!$at_root) $up = $next;
 	} else {
 		$fileinfo[] = $next;
 	}
@@ -102,15 +191,16 @@ function sort_icon($col) {
 	}
 	return '';
 }
-function sort_link($col) {
-	global $sort_by, $sort_order;
+function sort_link(string $col) {
+	global $sort_by, $sort_order, $has_sprites, $view;
+	$viewa = (!$has_sprites && $view === 'dir' ? '' : 'view=' . $view);
 	if ($col === $sort_by && $sort_order === 'asc') {
-		return './?sort=' . $col . '&order=desc';
+		return './?' . ($viewa ? $viewa . '&' : '') . 'sort=' . $col . '&order=desc';
 	}
 	if ($col === $sort_by && $sort_order === 'desc') {
-		return './';
+		return './' . ($viewa ? '?' . $viewa : '');
 	}
-	return './?sort=' . $col;
+	return './?' . ($viewa ? $viewa . '&' : '') . 'sort=' . $col;
 }
 
 if ($sort_by === 'name' || $sort_by === 'N') {
@@ -125,19 +215,18 @@ if ($sort_by === 'name' || $sort_by === 'N') {
 	usort($fileinfo, fn($a, $b) => !!$a['ext'] <=> !!$b['ext']) * ($sort_order === 'asc' ? 1 : -1);
 }
 
-if ($up !== null && !$at_root) array_unshift($fileinfo, $up);
-
-$title = 'Index of ' . $rel_dir;
-
 ?><!DOCTYPE html>
 <html lang="en"><head>
 
 	<meta charset="UTF-8" />
 
-	<title><?= htmlentities($title) ?></title>
+	<title><?= htmlentities(function_exists('dirindex_title') ? dirindex_title() : $rel_dir) ?> - Showdown!</title>
 
 	<meta name="viewport" content="width=device-width" />
 	<link rel="stylesheet" href="/dirindex/font-awesome.min.css" />
+<?php if ($fa5pro) { ?>
+	<link rel="stylesheet" href="/dirindex/fontawesome5-solid-duotone.min.css?" />
+<?php } ?>
 
 	<style>
 		/*********************************************************
@@ -175,6 +264,9 @@ $title = 'Index of ' . $rel_dir;
 			position: relative;
 		}
 		.nav {
+			padding: 0;
+		}
+		.nav-wrapper .nav {
 			padding-left: 140px;
 			padding-top: 5px;
 		}
@@ -243,13 +335,23 @@ $title = 'Index of ' . $rel_dir;
 			background: linear-gradient(to bottom, #276136, #4ca363);
 			box-shadow: 0 1px 2px rgba(255, 255, 255, 0.45), inset 0.5px 1px -1px rgba(255, 255, 255, 0.5);
 		}
+		.nav a.purplebutton {
+			background: linear-gradient(to bottom,hsl(267, 36.40%, 46.90%),hsl(267, 42.60%, 26.70%));
+		}
+		.nav a.purplebutton:hover {
+			background: linear-gradient(to bottom,hsl(267, 49.30%, 56.70%),hsl(267, 46.00%, 34.10%));
+		}
+		.nav a.purplebutton:active {
+			background: linear-gradient(to bottom,hsl(267, 42.60%, 26.70%),hsl(267, 36.40%, 46.90%));
+			box-shadow: 0 1px 2px rgba(255, 255, 255, 0.45), inset 0.5px 1px -1px rgba(255, 255, 255, 0.5);
+		}
 
 		@media (max-width:700px) {
 			.nav-wrapper {
 				width: auto;
 				display: inline-block;
 			}
-			.nav {
+			.nav-wrapper .nav {
 				padding-left: 135px;
 			}
 			.nav a {
@@ -265,7 +367,7 @@ $title = 'Index of ' . $rel_dir;
 			header {
 				height: 100px;
 			}
-			.nav {
+			.nav-wrapper .nav {
 				padding-left: 0;
 				padding-top: 50px;
 			}
@@ -337,6 +439,9 @@ $title = 'Index of ' . $rel_dir;
 			font-size: 11pt;
 			cursor: pointer;
 		}
+		.button:hover {
+			text-decoration: none;
+		}
 		main {
 			margin: 0 auto;
 			padding: 0 15px 15px 15px;
@@ -367,10 +472,14 @@ $title = 'Index of ' . $rel_dir;
 			background: #e7ebee;
 			border-color: #5f8a9e;
 		}
+		.parentlink i, .parentlink em {
+			vertical-align: middle;
+		}
 		@media (prefers-color-scheme: dark) {
 			html {
 				background: #000;
 				color: #ddd;
+				color-scheme: dark;
 			}
 			a {
 				color:rgb(99, 174, 209);
@@ -415,6 +524,7 @@ $title = 'Index of ' . $rel_dir;
 			color: inherit;
 		}
 		.header a:hover {
+			text-decoration: none;
 			background: #dddddd;
 		}
 		a.row {
@@ -438,16 +548,40 @@ $title = 'Index of ' . $rel_dir;
 			margin-left: -32px;
 			font-size: 20px;
 			text-align: center;
-			color: #555;
+			color: #777;
 		}
 		.icon.fa-arrow-circle-o-up, .icon.fa-folder-open {
 			color: #3798c5;
+			--fa-secondary-opacity: 0.55;
+		}
+		.icon.fa-image, .icon.fa-picture-o, .icon.fa-film, .icon.fa-video, .icon.fa-video-camera, .icon.fa-volume, .icon.fa-volume-up {
+			color: rgb(139, 115, 82);
+			--fa-secondary-opacity: 0.4;
+		}
+		.icon.icon-js {
+			color: rgb(160, 153, 89);
+		}
+		.icon.icon-ts, .icon.icon-md {
+			color: rgb(83, 112, 149);
+		}
+		.icon.icon-html {
+			color: rgb(166, 125, 67);
+		}
+		.icon.icon-php, .icon.icon-css {
+			color: rgb(125, 83, 149);
+		}
+		.icon.fa-file-pdf, .icon.fa-file-pdf-o, .icon.fa-font-case {
+			color: rgb(149, 83, 83);
+		}
+		.icon.fa-file-archive, .icon.fa-file-archive-o {
+			color:rgb(116, 149, 163);
 		}
 		.filename {
 			display: inline-block;
 			width: 50%;
 			min-width: 260px;
 			font-family: monospace;
+			font-size: 10pt;
 		}
 		.parentlink .filename {
 			font-family: inherit;
@@ -489,23 +623,101 @@ $title = 'Index of ' . $rel_dir;
 				color: #888;
 			}
 		}
+
+		/*********************************************************
+		 * Icons
+		 *********************************************************/
+
+		.dirlist-icons {
+			font-size: 0;
+		}
+		.dirlist-icons li {
+			display: inline-block;
+			vertical-align: top;
+			width: 133px;
+			font-size: 10pt;
+		}
+		.dirlist-icons li.header {
+			display: block;
+			width: auto;
+			height: auto;
+			margin-bottom: 2px;
+		}
+		.dirlist-icons .row, .dirlist-icons a.row:hover {
+			text-align: center;
+			padding: 0;
+			text-decoration: none;
+		}
+		.dirlist-icons .row .filesize, .dirlist-icons .row .filemtime {
+			display: none;
+		}
+		.dirlist-icons .row .icon, .dirlist-icons a.row:hover .icon {
+			display: block;
+			font-size: 60px;
+			margin: 0;
+			width: auto;
+			text-decoration: none;
+		}
+		.dirlist-icons .row .filename {
+			display: block;
+			min-width: auto;
+			width: auto;
+			font-size: 9pt;
+		}
+
+		/*********************************************************
+		 * Spriteindex
+		 *********************************************************/
+
+		figure {
+			width: 96px;
+			display: inline-block;
+			vertical-align: top;
+			text-align: center;
+			margin: 0.5em 10px;
+			overflow-wrap: break-word;
+		}
+		figure img {
+			image-rendering: pixelated;
+		}
+		figure figcaption {
+			font-size: 12px;
+			text-align: center;
+		}
+		a {
+			text-decoration: none;
+		}
+		a:hover {
+			text-decoration: underline;
+		}
 	</style>
+	<!-- Global site tag (gtag.js) - Google Analytics -->
+	<script async src="https://www.googletagmanager.com/gtag/js?id=UA-26211653-1"></script>
+	<script>
+		window.dataLayer = window.dataLayer || [];
+		function gtag(){dataLayer.push(arguments);}
+		gtag('js', new Date());
+
+		gtag('config', 'UA-26211653-1');
+	</script>
+	<!-- End Google Analytics -->
 </head><body>
 
 	<header>
 		<div class="nav-wrapper"><ul class="nav">
 			<li><a class="button nav-first" href="//pokemonshowdown.com/"><img src="//play.pokemonshowdown.com/pokemonshowdownbeta.png" srcset="//play.pokemonshowdown.com/pokemonshowdownbeta.png 1x, //play.pokemonshowdown.com/pokemonshowdownbeta@2x.png 2x" alt="Pok&eacute;mon Showdown" width="146" height="44" /> Home</a></li>
 			<li><a class="button" href="//pokemonshowdown.com/dex/">Pok&eacute;dex</a></li>
-			<li><a class="button" href="//replay.pokemonshowdown.com/">Replays</a></li>
-			<li><a class="button" href="//pokemonshowdown.com/ladder/">Ladder</a></li>
-			<li><a class="button nav-last" href="//pokemonshowdown.com/forums/">Forum</a></li>
+			<li><a class="button" href="//replay.pokemonshowdown.com/">Replay</a></li>
+			<li><a class="button purplebutton" href="//smogon.com/dex/" target="_blank">Strategy</a></li>
+			<li><a class="button nav-last purplebutton" href="//smogon.com/forums/" target="_blank">Forum</a></li>
 			<li><a class="button greenbutton nav-first nav-last" href="//play.pokemonshowdown.com/">Play</a></li>
 		</ul></div>
 	</header>
 
-	<main><h1>
-		Index of
-		<a href="/"><?= htmlentities($_SERVER['SERVER_NAME']) ?></a><?php
+	<main>
+		<h1>
+			Index of
+			<a href="/"><?= htmlentities($_SERVER['SERVER_NAME']) ?></a><?php
 
 $path = '';
 $pathparts = array_slice(explode('/', $rel_dir), 1, -1);
@@ -515,35 +727,87 @@ foreach ($pathparts as $cur_dir) {
 	echo '<wbr />/';
 	echo '<a href="' . htmlentities($path) . '/">' . htmlentities($cur_dir) . '</a>';
 }
-echo '<wbr />/' . htmlentities($lastpart) . '/';
+echo '<wbr />/' . ($lastpart ? htmlentities($lastpart) . '/' : '');
 
 ?>
 
-	</h1>
+		</h1>
 
-	<ul class="dirlist">
-		<li class="header">
-			<a class="icon" href="<?= sort_link('type') ?>">&nbsp;<?= sort_icon('type') ?>
-
-			</a><a class="filename" href="<?= sort_link('name') ?>">Name<?= sort_icon('name') ?>
-
-			</a><a class="filesize" href="<?= sort_link('size') ?>">Size<?= sort_icon('size') ?>
-
-			</a><a class="filemtime" href="<?= sort_link('mtime') ?>">Last Modified<?= sort_icon('mtime') ?></a>
-		</li>
-<?php foreach ($fileinfo as $file) : ?>
-		<li<?= $file['name'] === '..' ? ' class="parentlink"' : '' ?>>
-			<a class="row" href="./<?= htmlentities($file['name']) ?>">
-				<i class="icon fa fa-<?= $file['type'] ?>">
-				</i><code class="filename"><?= $file['name'] === '..' ? '(Parent directory)' : htmlentities($file['name']) ?>
-
-				</code><em class="filesize"><?= $file['size_text'] ?>
-
-				</em><small class="filemtime"><?= $file['mtime'] ?></small>
+<?php if ($up) { ?>
+		<p class="parentlink">
+			<a class="row" href="../">
+				<i class="icon fa fa-arrow-circle-o-up">
+				</i><em>(Parent directory)
+				</em>
 			</a>
-		</li>
+		</p>
+<?php } ?>
+<?php
+if (function_exists('dirindex_intro')) {
+	dirindex_intro();
+}
+$has_sprites = false;
+$special_sprites = function_exists('dirindex_sprites');
+$view = $_GET['view'] ?? ($special_sprites ? 'sprites' : 'dir');
+if ($special_sprites || array_key_exists($rel_dir, $sprites_whitelist)) {
+	$has_sprites = true;
+	if ($view === 'sprites') {
+		require_once __DIR__ . '/spriteindex.inc.php';
+		if ($special_sprites) {
+			$sprites = dirindex_sprites();
+		} else {
+			chdir($dir);
+			$sprites = $sprites_whitelist[$rel_dir];
+		}
+		showSpriteIndex($sprites, $dir);
+		echo "</html>\n";
+		die();
+	}
+?>
+	<div>
+		View:
+		<ul class="nav" style="display:inline-block;vertical-align:middle;margin:0 10px 0 0">
+			<li><a class="button nav-first" href="./?view=sprites">Sprites</a></li>
+			<li><a class="button nav-last cur" href="./?view=dir">Directory</a></li>
+		</ul>
+	</div>
+<?php
+} else {
+?>
+	<div>
+		View:
+		<ul class="nav" style="display:inline-block;vertical-align:middle;margin:0 10px 0 0">
+			<li><a class="button nav-first<?= $view === 'dir' ? ' cur' : '' ?>" href="./?view=dir">Directory</a></li>
+			<li><a class="button nav-last<?= $view === 'icons' ? ' cur' : '' ?>" href="./?view=icons">Icons</a></li>
+		</ul>
+	</div>
+<?php
+}
+?>
+
+		<ul class="dirlist<?= $view === 'icons' ? ' dirlist-icons' : '' ?>">
+			<li class="header">
+				<a class="icon" href="<?= sort_link('type') ?>">&nbsp;<?= sort_icon('type') ?>
+
+				</a><a class="filename" href="<?= sort_link('name') ?>">Name<?= sort_icon('name') ?>
+
+				</a><a class="filesize" href="<?= sort_link('size') ?>">Size<?= sort_icon('size') ?>
+
+				</a><a class="filemtime" href="<?= sort_link('mtime') ?>">Last Modified<?= sort_icon('mtime') ?></a>
+			</li>
+<?php foreach ($fileinfo as $file) : ?>
+			<li>
+				<a class="row" href="./<?= urlencode($file['name']) ?>">
+					<i class="icon <?= $file['icon'] ?>">
+					</i><code class="filename"><?= $file['name'] === '..' ? '(Parent directory)' : htmlentities($file['name']) ?>
+
+					</code><em class="filesize"><?= $file['size_text'] ?>
+
+					</em><small class="filemtime"><?= $file['mtime'] ?></small>
+				</a>
+			</li>
 <?php endforeach; ?>
-	</ul>
+		</ul>
 
 	</main>
 

@@ -47,7 +47,7 @@ export class BattleTextParser {
 		switch (cmd) {
 		case 'chatmsg': case 'chatmsg-raw': case 'raw': case 'error': case 'html':
 		case 'inactive': case 'inactiveoff': case 'warning':
-		case 'fieldhtml': case 'controlshtml': case 'bigerror':
+		case 'fieldhtml': case 'controlshtml': case 'pagehtml': case 'bigerror':
 		case 'debug': case 'tier': case 'challstr': case 'popup': case '':
 			return [cmd, line.slice(index + 1)];
 		case 'c': case 'chat': case 'uhtml': case 'uhtmlchange': case 'queryresponse': case 'showteam':
@@ -761,6 +761,10 @@ export class BattleTextParser {
 		case '-status': {
 			const [, pokemon, status] = args;
 			const line1 = this.maybeAbility(kwArgs.from, kwArgs.of || pokemon);
+			if (kwArgs.from?.startsWith('item:')) {
+				const template = this.template('startFromItem', status);
+				return line1 + template.replace('[POKEMON]', this.pokemon(pokemon)).replace('[ITEM]', this.effect(kwArgs.from));
+			}
 			if (BattleTextParser.effectId(kwArgs.from) === 'rest') {
 				const template = this.template('startFromRest', status);
 				return line1 + template.replace('[POKEMON]', this.pokemon(pokemon));

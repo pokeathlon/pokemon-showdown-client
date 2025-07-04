@@ -4,7 +4,7 @@
 
 <title>Not Found - Pok&eacute;mon Showdown!</title>
 
-<link rel="stylesheet" href="//pokemonshowdown.com/style/global.css?v15" />
+<link rel="stylesheet" href="//pokemonshowdown.com/style/global.css?v16" />
 
 <!-- Global site tag (gtag.js) - Google Analytics -->
 <script async src="https://www.googletagmanager.com/gtag/js?id=UA-26211653-1"></script>
@@ -41,9 +41,9 @@
 		<div class="nav-wrapper"><ul class="nav">
 			<li><a class="button nav-first" href="//pokemonshowdown.com/"><img src="//pokemonshowdown.com/images/pokemonshowdownbeta.png" srcset="//pokemonshowdown.com/images/pokemonshowdownbeta.png 1x, //pokemonshowdown.com/images/pokemonshowdownbeta@2x.png 2x" alt="Pok&eacute;mon Showdown" width="146" height="44" /> Home</a></li>
 			<li><a class="button" href="//pokemonshowdown.com/dex/">Pok&eacute;dex</a></li>
-			<li><a class="button" href="//replay.pokemonshowdown.com/">Replays</a></li>
-			<li><a class="button" href="//pokemonshowdown.com/ladder/">Ladder</a></li>
-			<li><a class="button nav-last" href="//pokemonshowdown.com/forums/">Forum</a></li>
+			<li><a class="button" href="//replay.pokemonshowdown.com/">Replay</a></li>
+			<li><a class="button purplebutton" href="//smogon.com/dex/" target="_blank">Strategy</a></li>
+			<li><a class="button nav-last purplebutton" href="//smogon.com/forums/" target="_blank">Forum</a></li>
 			<li><a class="button greenbutton nav-first nav-last" href="//play.pokemonshowdown.com/">Play</a></li>
 		</ul></div>
 	</header>
@@ -52,11 +52,32 @@
 
 		<section class="section" style="max-width:200px;margin:20px auto">
       <div style="text-align:center">
-        <img src="//play.pokemonshowdown.com/sprites/gen5ani/unown-e.gif" alt="" style="image-rendering: pixelated"
+        <noscript><img src="//play.pokemonshowdown.com/sprites/gen5ani/unown-e.gif" alt="" style="image-rendering: pixelated"
 				/><img src="//play.pokemonshowdown.com/sprites/gen5ani/unown-r.gif" alt="" style="image-rendering: pixelated;margin:0 8px"
 				/><img src="//play.pokemonshowdown.com/sprites/gen5ani/unown-r.gif" alt="" style="image-rendering: pixelated"
 				/><img src="//play.pokemonshowdown.com/sprites/gen5ani/unown-o.gif" alt="" style="image-rendering: pixelated"
-				/><img src="//play.pokemonshowdown.com/sprites/gen5ani/unown-r.gif" alt="" style="image-rendering: pixelated" />
+				/><img src="//play.pokemonshowdown.com/sprites/gen5ani/unown-r.gif" alt="" style="image-rendering: pixelated" /></noscript>
+				<script>
+					var unownMessages = ['E R ROR', 'SOR R Y', 'T Y PO?'];
+					var unownMessage = unownMessages[Math.trunc(Math.random() * unownMessages.length)];
+					for (var i = 0; i < unownMessage.length; i++) {
+						var current = unownMessage[i];
+						var next = unownMessage[i + 1];
+						var unown = '';
+						var margin = next === ' ' ? ';margin-right:8px' : '';
+						if (current.charCodeAt(0) >= 'A'.charCodeAt(0) && current.charCodeAt(0) <= 'Z'.charCodeAt(0)) {
+							unown = current.toLowerCase();
+						} else if (current === '?') {
+							unown = 'question';
+						}
+						if (unown) {
+							document.write(
+								'<img src="//play.pokemonshowdown.com/sprites/gen5ani/unown-' + unown +
+								'.gif" alt="" style="image-rendering: pixelated' + margin + '" />'
+							);
+						}
+					}
+				</script>
       </div>
     </section><section class="section">
 			<h1>Error 404: Not Found</h1>
