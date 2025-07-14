@@ -438,7 +438,7 @@ process.stdout.write("Building `data/teambuilder-tables.js`... ");
 			if (species.forme) {
 				if ((['Meloetta'].includes(species.baseSpecies) && !isFusions && isNatDexFusions && !isNatDexChaos && !isChaosFusions) ||
 					[
-						'Aegislash', 'Castform', 'Cherrim', 'Cramorant', 'Eiscue', 'Mimikyu', 'Minior', 'Morpeko', 'Wishiwashi', 'Lunachi', 'Emolga-Delta', 'Caramitti', 'Hammer Bro', 'Uproot', 'Fuzzy', 'Rex', 'Wiggler',
+						'Aegislash', 'Castform', 'Cherrim', 'Cramorant', 'Eiscue', 'Mimikyu', 'Minior', 'Morpeko', 'Ramnarok', 'Wishiwashi', 'Lunachi', 'Emolga-Delta', 'Caramitti', 'Hammer Bro', 'Uproot', 'Fuzzy', 'Rex', 'Wiggler',
 					].includes(species.baseSpecies) || species.forme.includes('Totem') || species.forme.includes('Zen') ||
 					(species.baseSpecies === 'Ogerpon' && species.forme.includes('Tera'))
 				) {
