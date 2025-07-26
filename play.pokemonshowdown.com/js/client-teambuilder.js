@@ -3753,6 +3753,8 @@
 			var baseStatsFusion = {'hp': 0, 'atk': 0, 'def': 0, 'spa': 0, 'spd': 0, 'spe': 0};
 			var baseStats = species.baseStats;
 			
+			if (this.curTeam.format.includes('averagemons')) return {'hp': 100, 'atk': 100, 'def': 100, 'spa': 100, 'spd': 100, 'spe': 100};
+
 			if (set.fusion && this.curTeam.dex.species.get(set.fusion).exists) {
 				const fusionSpecies = this.curTeam.dex.species.get(set.fusion);
 				for (const stat in baseStatsFusion) {
