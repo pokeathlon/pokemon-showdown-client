@@ -601,6 +601,12 @@ export class BattleTooltips {
 					case 'snowscape':
 						zMove = this.battle.dex.moves.get(BattleTooltips.zMoveTable['Ice']);
 						break;
+					case 'newmoon':
+						zMove = this.battle.dex.moves.get(BattleTooltips.zMoveTable['Dark']);
+						break;
+					case 'thunderstorm':
+						zMove = this.battle.dex.moves.get(BattleTooltips.zMoveTable['Electric']);
+						break;
 					}
 				}
 				move = new Move(zMove.id, zMove.name, {
@@ -1667,6 +1673,12 @@ export class BattleTooltips {
 			case 'hail':
 			case 'snowscape':
 				moveType = 'Ice';
+				break;
+			case 'newmoon':
+				moveType = 'Dark';
+				break;
+			case 'thunderstorm':
+				moveType = 'Electric';
 				break;
 			}
 		}
