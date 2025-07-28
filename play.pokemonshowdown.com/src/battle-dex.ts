@@ -869,7 +869,7 @@ export const Dex = new class implements ModdedDex {
 		}
 
 		if (species.tags.includes("Uranium")) {
-			return `image-rendering:pixelated;background:transparent url(https://play.pokeathlon.com/sprites/fangame-sprites/uranium/iconsprites/${id}.png) no-repeat scroll ${fainted}`;
+			return `image-rendering:pixelated;background:transparent;background-image:url(https://play.pokeathlon.com/sprites/fangame-sprites/uranium/iconsprites/${id}.gif);background-repeat:no-repeat;background-position:4px -1px;background-size:32px;${fainted}`;
 		}
 
 		if (species.tags.includes("Infinity")) {
