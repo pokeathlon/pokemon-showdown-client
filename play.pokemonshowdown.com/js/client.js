@@ -2960,7 +2960,7 @@ function toId() {
 			$button.addClass('button disabled');
 		},
 		report: function () {
-			app.joinRoom('view-help-request-report-user-' + this.userid);
+			app.send('/report ' + this.userid);
 		},
 		toggleIgnoreUser: function () {
 			var buf = "User '" + this.name + "'";
