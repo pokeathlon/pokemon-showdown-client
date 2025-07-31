@@ -2339,7 +2339,6 @@ export class BattleTooltips {
 				}
 			}
 		}
-		if (pokemon.ability === 'Strange Form') console.log(pokemon.details);
 
 		// Terrain
 		if ((this.battle.hasPseudoWeather('Electric Terrain') && moveType === 'Electric') ||

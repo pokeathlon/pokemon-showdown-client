@@ -38918,6 +38918,291 @@ export const BattleMoveAnims: AnimTable = {
 			defender.anim({ time: 150 }, 'swing');
 		},
 	},
+	throwingknives: {
+		anim(scene, [attacker, defender]) {
+			scene.showEffect('greenmetal2', {
+				x: attacker.x,
+				y: attacker.y,
+				z: attacker.z,
+				scale: 0.7,
+				opacity: 0.6,
+			}, {
+				x: attacker.x,
+				y: attacker.y,
+				z: attacker.z,
+				opacity: 0.6,
+				time: 450,
+			}, 'linear', 'fade');
+			for (let i = 0; i < 3; i++) {
+				let mult = 1;
+				if (i === 1) { mult = 5 }
+				else if (i === 2) { mult = 3 }
+				scene.showEffect('shine', {
+					x: attacker.x + i * 10,
+					y: attacker.y,
+					z: attacker.z,
+					scale: 0.3,
+					opacity: 0.6,
+				}, {
+					x: attacker.x + i * 10,
+					y: attacker.y + 15 + mult * 5,
+					z: attacker.z,
+					opacity: 0.4,
+					time: 300,
+				}, 'linear', 'fade');
+			}
+			scene.showEffect('greenmetal2', {
+				x: attacker.x,
+				y: attacker.y,
+				z: attacker.z,
+				scale: 0.7,
+				opacity: 0.6,
+				time: 450,
+			}, {
+				x: defender.behindx(50),
+				y: defender.behindy(-50),
+				z: defender.z,
+				opacity: 0.6,
+				time: 650,
+			}, 'linear', 'explode');
+			scene.showEffect('rightslash', {
+				x: defender.x,
+				y: defender.y,
+				z: defender.z,
+				scale: 0.5,
+				opacity: 1,
+				time: 700,
+			}, {
+				scale: 1,
+				opacity: 0,
+				time: 1000,
+			}, 'linear', 'fade');
+		},
+	},
+	pumpup: {
+		anim(scene, [attacker, defender]) {
+			defender.anim({
+				xscale: 0.6,
+				yscale: 1.2,
+				time: 200,
+			});
+			defender.delay(200);
+			defender.anim({
+				xscale: 1,
+				yscale: 1,
+				time: 150,
+			});
+
+			let xf = [1, -1, 1, -1];
+			let yf = [1, -1, -1, 1];
+
+			for (let i = 0; i < 4; i++) {
+				scene.showEffect('waterwisp', {
+					x: attacker.x,
+					y: attacker.y,
+					z: attacker.z,
+					scale: 0.2,
+					opacity: 0.7,
+					time: 150
+				}, {
+					x: attacker.x + 30 * xf[i],
+					y: attacker.y + 15,
+					z: attacker.z + 17 * yf[i],
+					scale: 0.5,
+					opacity: 0,
+					time: 450,
+				}, 'ballistic', 'fade');
+			}
+		},
+	},
+	shockbombs: {
+		anim(scene, [attacker, defender]) {
+			scene.showEffect('electroball', {
+				x: attacker.x,
+				y: attacker.y,
+				z: attacker.z,
+				scale: 0.6,
+				opacity: 0.4,
+			}, {
+				x: defender.x,
+				y: defender.y,
+				z: defender.z,
+				scale: 0.6,
+				opacity: 1,
+				time: 600,
+			}, 'ballistic', 'explode');
+		},
+	},
+	solarflare: {
+		anim(scene, [attacker, defender]) {
+			scene.backgroundEffect(`url('https://${Config.routes.psmain}/fx/weather-sunnyday.jpg')`, 1500, 0.5);
+			scene.showEffect('moon', {
+				x: attacker.x,
+				y: attacker.y,
+				z: attacker.z,
+				scale: 0.2,
+				opacity: 0.8,
+			}, {
+				scale: 1,
+				time: 500,
+			}, 'linear', 'explode');
+
+			let xf = [1, -1, 1, -1];
+			let yf = [1, -1, -1, 1];
+			let xf2 = [1, 0, -1, 0];
+			let yf2 = [0, 1, 0, -1];
+
+			scene.showEffect('electroball', {
+				x: attacker.x,
+				y: attacker.y,
+				z: attacker.z,
+				scale: 1,
+				opacity: 0.4,
+				time: 500,
+			}, {
+				scale: 8,
+				opacity: 0.1,
+				time: 1100,
+			}, 'linear', 'fade');
+			if (attacker.sp.shiny)
+			{
+				for (let i = 0; i < 4; i++) {
+					scene.showEffect('iceball', {
+						x: attacker.x,
+						y: attacker.y,
+						z: attacker.behind(-5),
+						scale: 0.5,
+						opacity: 1,
+						time: 500,
+					}, {
+						x: defender.x + 240 * xf[i],
+						y: defender.y,
+						z: defender.z + 137 * yf[i],
+						opacity: 0,
+						time: 1100,
+					}, 'decel');
+					scene.showEffect('mistball', {
+						x: attacker.x,
+						y: attacker.y,
+						z: attacker.behind(-5),
+						scale: 0.5,
+						opacity: 1,
+						time: 500,
+					}, {
+						x: defender.x + 339 * xf2[i],
+						y: defender.y + 10,
+						z: defender.z + 194 * yf2[i],
+						scale: 1,
+						opacity: 0,
+						time: 1100,
+					}, 'decel');
+				}
+			}
+			else
+			{
+				for (let i = 0; i < 4; i++) {
+					scene.showEffect('electroball', {
+						x: attacker.x,
+						y: attacker.y,
+						z: attacker.behind(-5),
+						scale: 0.5,
+						opacity: 1,
+						time: 500,
+					}, {
+						x: defender.x + 240 * xf[i],
+						y: defender.y,
+						z: defender.z + 137 * yf[i],
+						opacity: 0,
+						time: 1100,
+					}, 'decel');
+					scene.showEffect('iceball', {
+						x: attacker.x,
+						y: attacker.y,
+						z: attacker.behind(-5),
+						scale: 0.5,
+						opacity: 1,
+						time: 500,
+					}, {
+						x: defender.x + 339 * xf2[i],
+						y: defender.y + 10,
+						z: defender.z + 194 * yf2[i],
+						scale: 1,
+						opacity: 0,
+						time: 1100,
+					}, 'decel', '', { filter: 'hue-rotate(30deg) brightness(0.75) saturation(1.5)' });
+				}
+			}
+			defender.delay(680);
+			defender.anim({
+				z: defender.behind(20),
+				time: 100,
+			}, 'swing');
+				defender.anim({
+				time: 300,
+			}, 'swing');
+		},
+	},
+	severedsidearm: {
+		anim(scene, [attacker, defender]) {
+			scene.showEffect('rightslash', {
+				x: attacker.x,
+				y: attacker.y,
+				z: attacker.z,
+				scale: 1,
+				opacity: 0.5,
+			}, {
+				opacity: 1,
+				time: 300,
+			}, 'linear', 'explode');
+			scene.showEffect('leftslash', {
+				x: attacker.x,
+				y: attacker.y,
+				z: attacker.z,
+				scale: 1,
+				opacity: 0.5,
+			}, {
+				opacity: 1,
+				time: 300,
+			}, 'linear', 'explode');
+			scene.showEffect('iceball', {
+				x: attacker.x,
+				y: attacker.y,
+				z: attacker.z,
+				scale: 1,
+				opacity: 1,
+			}, {
+				opacity: 0.5,
+				time: 300,
+			}, 'linear', 'explode');
+
+			for (let i = 0; i < 6; i++) {
+				scene.showEffect('electroball', {
+					x: attacker.x,
+					y: attacker.y,
+					z: attacker.z,
+					scale: 0.3,
+					opacity: 1,
+					time: 500,
+				}, {
+					x: defender.x,
+					y: defender.y,
+					z: defender.z,
+					scale: 0.6,
+					opacity: 0.2,
+					time: 650,
+				}, 'accel', 'explode');
+			}
+
+			defender.delay(650);
+			defender.anim({
+				z: defender.behind(10),
+				time: 200,
+			}, 'swing');
+			defender.anim({
+				time: 300,
+			}, 'swing');
+		},
+	},
 };
 
 // placeholder animations
