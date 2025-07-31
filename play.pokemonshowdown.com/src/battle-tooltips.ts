@@ -2197,6 +2197,17 @@ export class BattleTooltips {
 		}
 		if (!value.value) return value;
 
+		if (move.id === 'lucky7s') {
+			let sevens = 0;
+				sevens += (pokemon.maxhp.toString().match(/7/g) || []).length;
+				sevens += (modifiedStats.atk.toString().match(/7/g) || []).length;
+				sevens += (modifiedStats.def.toString().match(/7/g) || []).length;
+				sevens += (modifiedStats.spa.toString().match(/7/g) || []).length;
+				sevens += (modifiedStats.spd.toString().match(/7/g) || []).length;
+				sevens += (modifiedStats.spe.toString().match(/7/g) || []).length;
+			value.set(move.basePower + sevens*5)
+		}
+
 		// Other ability boosts
 		if (pokemon.status === 'brn' && move.category === 'Special') {
 			value.abilityModify(1.5, "Flare Boost");
@@ -2328,6 +2339,7 @@ export class BattleTooltips {
 				}
 			}
 		}
+		if (pokemon.ability === 'Strange Form') console.log(pokemon.details);
 
 		// Terrain
 		if ((this.battle.hasPseudoWeather('Electric Terrain') && moveType === 'Electric') ||
