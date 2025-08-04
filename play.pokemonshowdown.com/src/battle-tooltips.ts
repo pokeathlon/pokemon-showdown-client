@@ -2300,6 +2300,9 @@ export class BattleTooltips {
 		if (move.flags['wind']) {
 			value.abilityModify(1.2, "Windy Spirit");
 		}
+		if (move.flags['charge']) {
+			value.abilityModify(1.5, "Hidden Ambush");
+		}
 
 		if (move.category !== 'Status') {
 			let auraBoosted = '';

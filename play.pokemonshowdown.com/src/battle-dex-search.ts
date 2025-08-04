@@ -1776,6 +1776,9 @@ class BattleMoveSearch extends BattleTypedSearch<'move'> {
 		if (move.flags['bullet'] && abilityid === 'cannoneer') {
 			return true;
 		}
+		if (move.flags['charge'] && abilityid === 'hiddenambush') {
+			return true;
+		}
 		return !BattleMoveSearch.BAD_STRONG_MOVES.includes(id);
 	}
 	static readonly GOOD_STATUS_MOVES = [
