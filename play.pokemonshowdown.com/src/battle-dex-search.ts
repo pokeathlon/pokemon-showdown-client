@@ -1731,7 +1731,7 @@ class BattleMoveSearch extends BattleTypedSearch<'move'> {
 
 		// PoA Changes
 		case 'lunarcannon':
-			return ['noctem', 'shadowdance'].includes(abilityid) || itemid === 'powerherb';
+			return ['noctem', 'shadowdance', 'clairvoyance'].includes(abilityid) || itemid === 'powerherb';
 		case 'wildfire':
 			return !moves.includes('willowisp');
 		case 'iceslash':
@@ -1765,7 +1765,7 @@ class BattleMoveSearch extends BattleTypedSearch<'move'> {
 		if (id === 'skydrop') return true;
 		// strong moves
 		if (move.flags['charge']) {
-			return itemid === 'powerherb';
+			return (itemid === 'powerherb' || abilityid === 'clairvoyance');
 		}
 		if (move.flags['recharge']) {
 			return itemid === 'vigorherb';
