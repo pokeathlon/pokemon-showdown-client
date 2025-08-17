@@ -452,6 +452,10 @@ License: GPLv2
 	background: #594276 url(../fx/weather-fallout.png) no-repeat scroll left top;
 	color: #5a365b;
 }
+.stickyterrainweather {
+	background: #82448a url(../fx/weather-stickyterrain.png) no-repeat scroll left top;
+	color: #6c2d6e;
+}
 .snowscapeweather,
 .hailweather {
 	background: #AADDEE url(../fx/weather-hail.png) no-repeat scroll left top;
