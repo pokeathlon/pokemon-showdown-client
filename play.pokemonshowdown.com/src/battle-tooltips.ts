@@ -2725,7 +2725,7 @@ export class BattleTooltips {
 		}
 
 		// Rejuv Crests (not locked to rejuv mod)
-		let item = this.battle.dex.items.get(value.itemName);
+		// let item = this.battle.dex.items.get(value.itemName);
 		if (item.id === 'claydolcrest' && pokemon.name === 'Claydol') {
 			if ((move.id).includes('beam')) {
 				value.itemModify(1.5, 'Claydol Crest')
