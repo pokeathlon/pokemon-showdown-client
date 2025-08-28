@@ -685,11 +685,44 @@
 					let fieldMod = '';
 					if (this.battle.dex.modid === 'gen9rejuvenation') { // Rejuv buttons
 						// Terrain masks
-						if (move.id === 'bodyslam' ) {
-							fieldMod = ' mask-fieldDown';
-						} else if (move.id === 'solarbeam' ) {
-							fieldMod = ' mask-fieldUp';
+						if (this.battle.hasPseudoWeather('Volcanic Field')) {
+							if (move.type === 'Fire' || ['clearsmog', 'smog', 'rockslide', 'smackdown', 
+								'thousandarrows', 'infernalparade', 'continentalcrush', 'sandtomb', 'defog', 
+								'gust', 'hurricane', 'razorwind', 'supersonicskystrike', 'tailwind', 'twister', 'whirlwind',
+								'hydrovortex', 'muddywater', 'oceanicoperetta','sparklingaria','surf','waterpledge',
+								'watersport','waterspout','sludgewave', 'smokescreen', 'willowisp', 'ragingfury'].includes(move.id)) {
+								fieldMod = 'mask-fieldUp';
+							}
+							if (['Grass', 'Ice'].includes(move.type)) {
+								fieldMod = 'mask-fieldDown';
+							}
 						}
+						if (this.battle.hasPseudoWeather('Corrosive Mist Field')) {
+							if (move.type === 'Fire' || pokemon.baseAbility.id === 'corrosion' || dex.move.category === 'Special' ||
+								['gravity', 'seedflare', 'defog', 'gust', 'hurricane', 'razorwind', 'supersonicskystrike', 
+								'tailwind', 'twister', 'whirlwind', 'eruption', 'explosion', 'firepledge', 'flameburst', 
+								'heatwave', 'incinerate','infernooverdrive','lavaplume','mindblown','searingshot','self-destruct',
+								'acidspray','appleacid','bubble','bubblebeam','clearsmog','smog','sparklingaria','seedflare',
+								'gust', 'hurricane', 'razorwind', 'supersonicskystrike', 'twister', 'energyball', 'acidarmor',
+								'smokescreen', 'toxic'].includes(move.id)) {
+								fieldMod = 'mask-fieldUp';
+							}
+							if (['floralhealing', 'lifedew'].includes(move.id)) {
+								fieldMod = 'mask-fieldDown';
+							}
+						}
+						if (this.battle.hasPseudoWeather('Icy Field')) {
+							if (['Ice', 'Rock'].includes(move.type) || (dex.move.category === 'Physical' && dex.move.flags.contact && dex.move.priority > 0) ||
+								['bittermalice','eruption','firepledge','flameburst','heatwave','incinerate','infernooverdrive',
+								'lavaplume','magmadrift','mindblown','ragingfury','searingshot', 'bulldoze', 'earthquake', 
+								'fissure', 'magnitude', 'tectonicrage', 'defensecurl', 'lunge', 'rollout', 'steamroller'].includes(move.id)) {
+								fieldMod = 'mask-fieldUp';
+							}
+							if (move.type === 'Fire' || ['scald', 'steameruption'].includes(move.id)) {
+								fieldMod = 'mask-fieldDown';
+							}
+						}
+
 						// Type button links
 						const bgBase = `url('https://play.pokeathlon.com/sprites/fangame-sprites/rejuvenation/misc/button${moveType}.png')`;
 						const bgHover = `url('https://play.pokeathlon.com/sprites/fangame-sprites/rejuvenation/misc//button${moveType}active.png')`;
