@@ -2303,6 +2303,9 @@ export class BattleTooltips {
 		if (move.flags['charge']) {
 			value.abilityModify(1.5, "Hidden Ambush");
 		}
+		if (move.category === 'Physical') {
+			if (value.tryAbility("Strange Anatomy")) value.set(Math.max(move.basePower - (5 * pokemon.strangeAnatomyTurns), 0), `${5 * pokemon.strangeAnatomyTurns} BP lost from Strange Anatomy`);
+		}
 
 		if (move.category !== 'Status') {
 			let auraBoosted = '';
