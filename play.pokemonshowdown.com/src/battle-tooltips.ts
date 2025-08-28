@@ -2294,7 +2294,7 @@ export class BattleTooltips {
 		} else if ([4, 5, 6, 7].includes(curMonth)) {
 			value.abilityModify(0.7, "Winter Joy");
 		}
-		if (move.priority > 0) {
+		if (move.priority > 0 || (move.id === 'grassyglide' && (this.battle.hasPseudoWeather('Grassy Terrain')))) {
 			value.abilityModify(1.5, 'Acceleration');
 		}
 		if (move.flags['wind']) {
