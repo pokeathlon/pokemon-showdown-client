@@ -1337,7 +1337,7 @@
 				buf += '<span class="detailcell"><label>Gender</label>' + GenderChart[set.gender || species.gender || 'N'] + '</span>';
 				if (isLetsGo) {
 					buf += '<span class="detailcell"><label>Happiness</label>' + (typeof set.happiness === 'number' ? set.happiness : 70) + '</span>';
-				} else if (this.curTeam.gen < 8 || isNatDex || (this.curTeam.format in window.Formats && ['gen9mariomon', 'gen9pokeathlon', 'gen9chaos'].includes(window.Formats[this.curTeam.format].mod))) {
+				} else if (this.curTeam.gen < 8 || isNatDex || (this.curTeam.format in window.Formats && ['gen9mariomon', 'gen9pokeathlon', 'gen9chaos', 'gen9chaosfusion'].includes(window.Formats[this.curTeam.format].mod))) {
 					buf += '<span class="detailcell"><label>Happiness</label>' + (typeof set.happiness === 'number' ? set.happiness : 255) + '</span>';
 				}
 				buf += '<span class="detailcell"><label>Shiny</label>' + (set.shiny ? 'Yes' : 'No') + '</span>';
@@ -2950,7 +2950,7 @@
 				if (isLetsGo) {
 					buf += '<div class="formrow"><label class="formlabel">Happiness:</label><div><input type="number" name="happiness" value="70" class="textbox inputform numform" /></div></div>';
 				} else {
-					if (this.curTeam.gen < 8 || isNatDex || (this.curTeam.format in window.Formats && ['gen9mariomon', 'gen9pokeathlon', 'gen9chaos'].includes(window.Formats[this.curTeam.format].mod))) buf += '<div class="formrow"><label class="formlabel">Happiness:</label><div><input type="number" min="0" max="255" step="1" name="happiness" value="' + (typeof set.happiness === 'number' ? set.happiness : 255) + '" class="textbox inputform numform" /></div></div>';
+					if (this.curTeam.gen < 8 || isNatDex || (this.curTeam.format in window.Formats && ['gen9mariomon', 'gen9pokeathlon', 'gen9chaos', 'gen9chaosfusion'].includes(window.Formats[this.curTeam.format].mod))) buf += '<div class="formrow"><label class="formlabel">Happiness:</label><div><input type="number" min="0" max="255" step="1" name="happiness" value="' + (typeof set.happiness === 'number' ? set.happiness : 255) + '" class="textbox inputform numform" /></div></div>';
 				}
 
 				buf += '<div class="formrow"><label class="formlabel">Shiny:</label><div>';
@@ -2985,7 +2985,7 @@
 				buf += '</select></div></div>';
 			}
 
-			if (!isLetsGo && (this.curTeam.gen === 7 || isNatDex || (isBDSP && species.baseSpecies === 'Unown') || (this.curTeam.format in window.Formats && ['gen9pokeathlon', 'gen9chaos'].includes(window.Formats[this.curTeam.format].mod)))) {
+			if (!isLetsGo && (this.curTeam.gen === 7 || isNatDex || (isBDSP && species.baseSpecies === 'Unown') || (this.curTeam.format in window.Formats && ['gen9pokeathlon', 'gen9chaos', 'gen9chaosfusion'].includes(window.Formats[this.curTeam.format].mod)))) {
 				buf += '<div class="formrow"><label class="formlabel" title="Hidden Power Type">Hidden Power:</label><div><select name="hptype" class="button">';
 				buf += '<option value=""' + (!set.hpType ? ' selected="selected"' : '') + '>(automatic type)</option>'; // unset
 				var types = Dex.types.all();
