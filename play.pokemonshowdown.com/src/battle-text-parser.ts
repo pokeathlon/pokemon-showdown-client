@@ -153,7 +153,7 @@ export class BattleTextParser {
 				kwArgs.item = arg3;
 			} else if (id === 'magnitude') {
 				kwArgs.number = arg3;
-			} else if (id === 'skillswap' || id === 'mummy' || id === 'lingeringaroma' || id === 'wanderingspirit') {
+			} else if (id === 'skillswap' || id === 'mummy' || id === 'lingeringaroma' || id === 'wanderingspirit' || id === 'strangeanatomy') {
 				kwArgs.ability = arg3;
 				kwArgs.ability2 = arg4;
 			} else if ([
@@ -897,9 +897,9 @@ export class BattleTextParser {
 				return line1 + template.replace('[POKEMON]', this.pokemon(kwArgs.of)).replace('[SOURCE]', this.pokemon(pokemon));
 			}
 
-			if ((id === 'mummy' || id === 'lingeringaroma') && kwArgs.ability) {
+			if ((id === 'mummy' || id === 'lingeringaroma' || id === 'strangeanatomy') && kwArgs.ability) {
 				line1 += this.ability(kwArgs.ability, target);
-				line1 += this.ability(id === 'mummy' ? 'Mummy' : 'Lingering Aroma', target);
+			line1 += this.ability(id === 'mummy' ? 'Mummy' : id === 'lingeringaroma' ? 'Lingering Aroma' : 'Strange Anatomy', target);
 				const template = this.template('changeAbility', id);
 				return line1 + template.replace('[TARGET]', this.pokemon(target));
 			}

@@ -111,6 +111,7 @@ export class Pokemon implements PokemonDetails, PokemonHealth {
 	moveTrack: [string, number][] = [];
 	statusData = { sleepTurns: 0, toxicTurns: 0 };
 	timesAttacked = 0;
+	strangeAnatomyTurns = 0;
 
 	sprite: PokemonSprite;
 
@@ -939,6 +940,7 @@ export class Side {
 			this.battle.log(['switchout', pokemon.ident], { from: effect.id });
 		}
 		pokemon.statusData.toxicTurns = 0;
+		pokemon.strangeAnatomyTurns = 0;
 		if (this.battle.gen === 5) pokemon.statusData.sleepTurns = 0;
 		this.lastPokemon = pokemon;
 		this.active[slot] = null;
@@ -1504,6 +1506,7 @@ export class Battle {
 		for (const poke of [...this.nearSide.active, ...this.farSide.active]) {
 			if (poke) {
 				if (poke.status === 'tox') poke.statusData.toxicTurns++;
+				if (poke.ability === 'Strange Anatomy') poke.strangeAnatomyTurns++;
 				poke.clearTurnstatuses();
 			}
 		}
@@ -3014,6 +3017,7 @@ export class Battle {
 					this.activateAbility(poke, pokeability, true);
 					this.activateAbility(target, targetability, true);
 				}
+				if (poke.strangeAnatomyTurns > 0) poke.strangeAnatomyTurns = 0;
 				break;
 
 			// ability activations
@@ -3036,6 +3040,7 @@ export class Battle {
 				break;
 			case 'lingeringaroma':
 			case 'mummy':
+			case 'strangeanatomy':
 				if (!kwArgs.ability) break; // if Mummy activated but failed, no ability will have been sent
 				let ability = Dex.abilities.get(kwArgs.ability);
 				this.activateAbility(target, ability.name);
