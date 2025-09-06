@@ -1702,7 +1702,7 @@ export class Battle {
 			if (args[0] === '-heal' && nextArgs[0] === '-heal' && kwArgs.from && kwArgs.from === nextKwargs.from) {
 				kwArgs.then = '.';
 			}
-			if (args[0] === '-ability' && (args[2] === 'Intimidate' || args[3] === 'boost')) {
+			if (args[0] === '-ability' && (args[2] === 'Intimidate' || args[4] === 'boost')) {
 				kwArgs.then = '.';
 			}
 			if (args[0] === '-unboost' && nextArgs[0] === '-unboost') {
@@ -2171,7 +2171,7 @@ export class Battle {
 			let poke = this.getPokemon(args[1])!;
 			let effect = Dex.getEffect(kwArgs.from);
 			let ofpoke = this.getPokemon(kwArgs.of) || poke;
-			if (poke) poke.status = args[2] as Dex.StatusName;
+			poke.status = args[2] as Dex.StatusName;
 			this.activateAbility(ofpoke || poke, effect);
 			if (effect.effectType === 'Item') {
 				ofpoke.item = effect.name;
@@ -2421,31 +2421,20 @@ export class Battle {
 		case '-ability': {
 			let poke = this.getPokemon(args[1])!;
 			let ability = Dex.abilities.get(args[2]);
+			let oldAbility = Dex.abilities.get(args[3]);
 			let effect = Dex.getEffect(kwArgs.from);
 			let ofpoke = this.getPokemon(kwArgs.of);
 			poke.rememberAbility(ability.name, effect.id && !kwArgs.fail);
 
 			if (kwArgs.silent) {
 				// do nothing
+			} else if (oldAbility.id) {
+				this.activateAbility(poke, oldAbility.name);
+				this.scene.wait(500);
+				this.activateAbility(poke, ability.name, true);
+				ofpoke?.rememberAbility(ability.name);
 			} else if (effect.id) {
 				switch (effect.id) {
-				case 'trace':
-					this.activateAbility(poke, "Trace");
-					this.scene.wait(500);
-					this.activateAbility(poke, ability.name, true);
-					ofpoke!.rememberAbility(ability.name);
-					break;
-				case 'powerofalchemy':
-				case 'receiver':
-					this.activateAbility(poke, effect.name);
-					this.scene.wait(500);
-					this.activateAbility(poke, ability.name, true);
-					ofpoke!.rememberAbility(ability.name);
-					break;
-				case 'roleplay':
-					this.activateAbility(poke, ability.name, true);
-					ofpoke!.rememberAbility(ability.name);
-					break;
 				case 'desolateland':
 				case 'primordialsea':
 				case 'deltastream':
@@ -2485,12 +2474,19 @@ export class Battle {
 
 			let details = this.parseDetails(poke.name, args[1], args[2]);
 
-			let newSpeciesForme = details.speciesForme;
-			poke.level = details.level;
-			poke.fusion = details.fusion;
-			poke.speciesForme = newSpeciesForme;
+			let newSpeciesForme = args[2];
 			poke.details = args[2];
 
+			poke.fusion = details.fusion;
+			
+			let commaIndex = newSpeciesForme.indexOf(',');
+			if (commaIndex !== -1) {
+				let level = newSpeciesForme.substr(commaIndex + 1).trim();
+				if (level.startsWith('L')) {
+					poke.level = parseInt(level.substr(1), 10);
+				}
+				newSpeciesForme = args[2].substr(0, commaIndex);
+			}
 			let species = this.dex.species.get(newSpeciesForme);
 			if (nextArgs) {
 				if (nextArgs[0] === '-mega') {
@@ -2501,6 +2497,10 @@ export class Battle {
 				}
 			}
 
+			poke.speciesForme = newSpeciesForme;
+			poke.ability = poke.baseAbility = (species.abilities ? species.abilities['0'] : '');
+
+			poke.details = args[2];
 			poke.searchid = args[1].substr(0, 2) + args[1].substr(args[1].indexOf(':')) + '|' + args[2];
 
 			this.scene.animTransform(poke, true, true);
@@ -2849,7 +2849,7 @@ export class Battle {
 					break;
 				default:
 					if (effect.effectType === 'Move') {
-						if (effect.name === 'Doom Desire' || effect.name === 'Spud Mortar') {
+						if (effect.name === 'Doom Desire') {
 							this.scene.runOtherAnim('doomdesirehit' as ID, [poke]);
 						}
 						if (effect.name === 'Future Sight') {
