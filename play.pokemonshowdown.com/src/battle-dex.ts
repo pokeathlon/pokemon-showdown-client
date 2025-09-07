@@ -648,7 +648,18 @@ export const Dex = new class implements ModdedDex {
 		for (var fangame of ["Infinite Fusion", "Pokeathlon", "Insurgence", "Uranium", "Infinity", "Mariomon"]) {
 			if (species.tags.includes(fangame)) {
 				if (species.eggGroups.includes("Digimon")) spriteData.url = 'https://play.pokeathlon.com/sprites/fangame-sprites/infinity/digimon/' + (spriteData.isFrontSprite ? 'front' : 'back') + (spriteData.shiny ? '-shiny': '') + '/' + species.id + '.png';
-				else spriteData.url = 'https://play.pokeathlon.com/sprites/fangame-sprites/' + toID(fangame) + '/' + (!["Infinite Fusion"].includes(fangame) ? (spriteData.isFrontSprite ? 'front' : 'back') + (spriteData.shiny ? '-shiny': '') + '/' : '') + species.id + (["Pokeathlon", "Uranium"].includes(fangame) ? '.gif' : '.png');
+				else {
+					let genderSuffix = '';
+					let spriteBase = 'https://play.pokeathlon.com/sprites/fangame-sprites/' + toID(fangame) + '/' + (!["Infinite Fusion"].includes(fangame) ? (spriteData.isFrontSprite ? 'front' : 'back') + (spriteData.shiny ? '-shiny': '') + '/' : '') + species.id;
+					let spriteExt = (["Pokeathlon", "Uranium"].includes(fangame) ? '.gif' : '.png');
+					if (options.gender === 'F') {
+						let femaleSpriteUrl = spriteBase + '-f' + spriteExt;
+						if (window.FangameSpriteExists?.[femaleSpriteUrl]) {
+							genderSuffix = '-f';
+						}
+					}
+					spriteData.url = spriteBase + genderSuffix + spriteExt;
+				}
 				spriteData.pixelated = true;
 				spriteData.gen = 5;
 				if (fangame === "Mariomon") {
