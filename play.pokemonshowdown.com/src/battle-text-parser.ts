@@ -207,6 +207,13 @@ export class BattleTextParser {
 			if (args[1] === 'Snow') args[1] = 'Snowscape';
 			break;
 		}
+		case '-ability': {
+			if (args[3] && (args[3].startsWith('p1') || args[3].startsWith('p2') || args[3] === 'boost')) {
+				args[4] = args[3];
+				args[3] = '';
+			}
+			break;
+		}
 
 		case '-nothing':
 			// OLD: |-nothing
@@ -663,12 +670,8 @@ export class BattleTextParser {
 		}
 
 		case '-ability': {
-			let [, pokemon, ability, oldAbility, arg4] = args;
+			let [, pokemon, ability, oldAbility] = args;
 			let line1 = '';
-			if (oldAbility && (oldAbility.startsWith('p1') || oldAbility.startsWith('p2') || oldAbility === 'boost')) {
-				arg4 = oldAbility;
-				oldAbility = '';
-			}
 			if (oldAbility) line1 += this.ability(oldAbility, pokemon);
 			line1 += this.ability(ability, pokemon);
 			if (kwArgs.fail) {
