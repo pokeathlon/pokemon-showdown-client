@@ -1774,6 +1774,9 @@ export class BattleTooltips {
 			if (isSound && value.abilityModify(0, 'Liquid Voice')) {
 				moveType = 'Water';
 			}
+			if (isSound && value.abilityModify(0, 'Soul Choir')) {
+				moveType = 'Ghost';
+			}
 		}
 
 		if (move.id === 'photongeyser' || move.id === 'lightthatburnsthesky' ||
