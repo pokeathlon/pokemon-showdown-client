@@ -2203,11 +2203,11 @@ export class BattleTooltips {
 		if (move.id === 'lucky7s') {
 			let sevens = 0;
 				sevens += (pokemon.maxhp.toString().match(/7/g) || []).length;
-				sevens += (modifiedStats.atk.toString().match(/7/g) || []).length;
-				sevens += (modifiedStats.def.toString().match(/7/g) || []).length;
-				sevens += (modifiedStats.spa.toString().match(/7/g) || []).length;
-				sevens += (modifiedStats.spd.toString().match(/7/g) || []).length;
-				sevens += (modifiedStats.spe.toString().match(/7/g) || []).length;
+				sevens += (serverPokemon.stats['atk'].toString().match(/7/g) || []).length;
+				sevens += (serverPokemon.stats['def'].toString().match(/7/g) || []).length;
+				sevens += (serverPokemon.stats['spa'].toString().match(/7/g) || []).length;
+				sevens += (serverPokemon.stats['spd'].toString().match(/7/g) || []).length;
+				sevens += (serverPokemon.stats['spe'].toString().match(/7/g) || []).length;
 			value.set(move.basePower + sevens*5)
 		}
 
