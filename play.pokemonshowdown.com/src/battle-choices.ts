@@ -522,6 +522,7 @@ export class BattleChoiceBuilder {
 			(choice.mega ? ' mega' : '') +
 			(choice.megax ? ' megax' : '') +
 			(choice.megay ? ' megay' : '') +
+			(choice.ultra ? ' ultra' : '') +
 			(choice.z ? ' zmove' : '') +
 			(choice.tera ? ' terastallize' : '');
 	}

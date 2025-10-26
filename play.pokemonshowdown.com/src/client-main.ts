@@ -18,6 +18,7 @@ import { Dex, toID, type ID } from './battle-dex';
 import { BattleTextParser, type Args } from './battle-text-parser';
 import type { BattleRoom } from './panel-battle';
 import { Teams } from './battle-teams';
+import type preact from '../js/lib/preact';
 
 declare const BattleTextAFD: any;
 declare const BattleTextNotAFD: any;
@@ -425,6 +426,13 @@ class PSTeams extends PSStreamModel<'team' | 'format'> {
 		this.list.splice(teamIndex, 0, team);
 		if (this.byKey[team.key]) team.key = this.getKey(team.name);
 		this.byKey[team.key] = team;
+	}
+	spliceIn(index: number, teams: Team[]) {
+		for (const team of teams) {
+			team.key ||= this.getKey(team.name);
+			this.byKey[team.key] = team;
+		}
+		this.list.splice(index, 0, ...teams);
 	}
 	unpackOldBuffer(buffer: string) {
 		PS.alert(`Your team storage format is too old for PS. You'll need to upgrade it at https://${Config.routes.client}/recoverteams.html`);
@@ -1618,6 +1626,14 @@ export class PSRoom extends PSStreamModel<Args | null> implements RoomOptions {
 				this.add('||/showbattles - Receive links to new battles in Lobby.');
 				this.add('||/hidebattles - Ignore links to new battles in Lobby.');
 				return;
+			case 'ffto':
+			case 'fastforwardto':
+				this.add('||/ffto [turn] - Skip to turn [turn] in the current battle.');
+				this.add('||/ffto +[turn] - Skip forward [turn] turns.');
+				this.add('||/ffto -[turn] - Skip backward [turn] turns.');
+				this.add('||/ffto 0 - Skip to the start of the battle.');
+				this.add('||/ffto end - Skip to the end of the battle.');
+				return;
 			case 'unpackhidden':
 			case 'packhidden':
 				this.add('||/unpackhidden - Suppress hiding locked or banned users\' chat messages after the fact.');
@@ -1687,7 +1703,7 @@ export class PSRoom extends PSStreamModel<Args | null> implements RoomOptions {
 		if (cmdResult === true) return line;
 		return cmdResult || null;
 	}
-	send(msg: string | null, element?: HTMLElement) {
+	send(msg: string | null, element?: HTMLElement | null) {
 		if (!msg) return;
 		msg = this.handleSend(msg, element);
 		if (!msg) return;
@@ -2345,21 +2361,29 @@ export const PS = new class extends PSModel {
 			parentElem: opts.parentElem,
 		});
 	}
-	confirm(message: string, opts: { okButton?: string, cancelButton?: string } = {}) {
+	confirm(message: string, opts: {
+		okButton?: string, cancelButton?: string,
+		otherButtons?: preact.ComponentChildren, parentElem?: HTMLElement,
+	} = {}) {
 		opts.cancelButton ??= 'Cancel';
 		return new Promise(resolve => {
 			this.join(`popup-${this.popups.length}` as RoomID, {
-				args: { message, okValue: true, cancelValue: false, callback: resolve, ...opts },
+				args: { message, okValue: true, cancelValue: false, callback: resolve, ...opts, parentElem: null },
+				parentElem: opts.parentElem,
 			});
 		});
 	}
-	prompt(message: string, defaultValue = '', opts: {
-		okButton?: string, cancelButton?: string, type?: 'text' | 'password' | 'number', parentElem?: HTMLElement,
+	prompt(message: string, opts: {
+		defaultValue?: string, okButton?: string, cancelButton?: string, type?: 'text' | 'password' | 'number' | 'numeric',
+		otherButtons?: preact.ComponentChildren, parentElem?: HTMLElement | null,
 	} = {}): Promise<string | null> {
 		opts.cancelButton ??= 'Cancel';
 		return new Promise(resolve => {
 			this.join(`popup-${this.popups.length}` as RoomID, {
-				args: { message, value: defaultValue, okValue: true, cancelValue: false, callback: resolve, ...opts, parentElem: null },
+				args: {
+					message, value: opts.defaultValue || '',
+					okValue: true, cancelValue: false, callback: resolve, ...opts, parentElem: null,
+				},
 				parentElem: opts.parentElem,
 			});
 		});

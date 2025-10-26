@@ -281,6 +281,9 @@ export const Dex = new class implements ModdedDex {
 		if (dex.gen === 8 && formatid.includes('bdsp')) {
 			dex = Dex.mod('gen8bdsp' as ID);
 		}
+		if (dex.gen === 9 && formatid.includes('legends')) {
+			dex = Dex.mod('gen9legendsou' as ID);
+		}
 		return dex;
 	}
 
@@ -883,7 +886,7 @@ export const Dex = new class implements ModdedDex {
 
 		let top = Math.floor(num / 12) * 30;
 		let left = (num % 12) * 40;
-		return `image-rendering:pixelated;${fusion.length ? 'animation: rainbowshadow ' + ((Math.random() * 2) + 2) + 's infinite;' : ''}background:transparent url(${Dex.resourcePrefix}sprites/pokemonicons-sheet.png?v19) no-repeat scroll -${left}px -${top}px${fainted}`;
+		return `image-rendering:pixelated;${fusion.length ? 'animation: rainbowshadow ' + ((Math.random() * 2) + 2) + 's infinite;' : ''}background:transparent url(${Dex.resourcePrefix}sprites/pokemonicons-sheet.png?v20) no-repeat scroll -${left}px -${top}px${fainted}`;
 	}
 
 	getTeambuilderSpriteData(pokemon: any, dex: ModdedDex = Dex): TeambuilderSpriteData {

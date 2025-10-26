@@ -438,8 +438,20 @@ export class ChatRoom extends PSRoom {
 			this.battle.pause();
 			this.update(null);
 		},
-		'ffto,fastfowardto'(target) {
+		'ffto,fastfowardto'(target, cmd, parentElem) {
 			if (!this.battle) return this.add('|error|You are not in a battle');
+			if (!target) {
+				PS.prompt("Turn number?", {
+					defaultValue: `${this.battle.turn}`,
+					type: 'numeric',
+					okButton: 'Go',
+					parentElem,
+				}).then(turnNum => {
+					if (turnNum?.trim()) this.send(`/ffto ${turnNum}`, parentElem);
+				});
+				return;
+			}
+
 			let turnNum = Number(target);
 			if (target.startsWith('+') || turnNum < 0) {
 				turnNum += this.battle.turn;
@@ -448,7 +460,7 @@ export class ChatRoom extends PSRoom {
 				turnNum = Infinity;
 			}
 			if (isNaN(turnNum)) {
-				this.receiveLine([`error`, `/ffto - Invalid turn number: ${target}`]);
+				this.errorReply(`Invalid turn number: ${target}`);
 				return;
 			}
 			this.battle.seekTurn(turnNum);
@@ -1185,7 +1197,10 @@ class ChatPanel extends PSRoomPanel<ChatRoom> {
 		</div> : null;
 
 		return <PSPanelWrapper room={room} focusClick fullSize>
-			<ChatLog class="chat-log" room={this.props.room} left={tinyLayout ? 0 : 146} top={room.tour?.info.isActive ? 30 : 0}>
+			<ChatLog
+				class={`chat-log${tinyLayout ? '' : ' hasuserlist'}`} room={this.props.room}
+				left={tinyLayout ? 0 : 146} top={room.tour?.info.isActive ? 30 : 0}
+			>
 				{challengeTo}{challengeFrom}{PS.isOffline && <p class="buttonbar">
 					<button class="button" data-cmd="/reconnect">
 						<i class="fa fa-plug" aria-hidden></i> <strong>Reconnect</strong>
