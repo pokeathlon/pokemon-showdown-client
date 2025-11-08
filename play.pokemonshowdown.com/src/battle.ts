@@ -1051,6 +1051,7 @@ export interface ServerPokemon extends PokemonDetails, PokemonHealth {
 	teraType: string;
 	/** falsy if the pokemon is not terastallized, otherwise it is the Tera Type of the Pokemon */
 	terastallized: string;
+	ability2?: string;
 }
 
 export class Battle {

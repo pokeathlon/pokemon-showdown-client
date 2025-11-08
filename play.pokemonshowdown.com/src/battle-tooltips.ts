@@ -967,7 +967,7 @@ export class BattleTooltips {
 			text += abilityText;
 			if (abilityText && itemText) {
 				// ability/item on one line for your own switch tooltips, two lines everywhere else
-				text += (!isActive && serverPokemon ? ' / ' : '</p><p>');
+				text += '</p><p>';
 			}
 			text += itemText;
 			text += '</p>';
@@ -2613,8 +2613,8 @@ export class BattleTooltips {
 
 		if (pokemon.fusion) {
 
-			const fusionSpecies = Dex.mod('gen9infinitefusion').species.get(pokemon.fusion);
-			const species = Dex.mod('gen9infinitefusion').species.get(pokemon.speciesForme);
+			const fusionSpecies = Dex.mod('gen9infinitefusion' as ID).species.get(pokemon.fusion);
+			const species = Dex.mod('gen9infinitefusion' as ID).species.get(pokemon.speciesForme);
 
 			let speciesTypes = species.types;
 			let fusionTypes = fusionSpecies.types;
@@ -2652,8 +2652,8 @@ export class BattleTooltips {
 		return ally.effectiveAbility(serverPokemon);
 	}
 	getPokemonAbilityData(clientPokemon: Pokemon | null, serverPokemon: ServerPokemon | null | undefined) {
-		const abilityData: { ability: string, baseAbility: string, possibilities: string[] } = {
-			ability: '', baseAbility: '', possibilities: [],
+		const abilityData: { ability: string, baseAbility: string, possibilities: string[], ability2: string} = {
+			ability: '', baseAbility: '', possibilities: [], ability2: '',
 		};
 		let dex = this.battle.dex;
 		if (clientPokemon) {
@@ -2686,6 +2686,7 @@ export class BattleTooltips {
 			if (!abilityData.baseAbility && serverPokemon.baseAbility) {
 				abilityData.baseAbility = serverPokemon.baseAbility;
 			}
+			if (!abilityData.ability2 && serverPokemon.ability2) abilityData.ability2 = serverPokemon.ability2;
 		}
 		return abilityData;
 	}
@@ -2700,13 +2701,21 @@ export class BattleTooltips {
 		if (!isActive) {
 			// for switch tooltips, only show the original ability
 			const ability = abilityData.baseAbility || abilityData.ability;
-			if (ability) text = '<small>Ability:</small> ' + this.battle.dex.abilities.get(ability).name;
+			if (ability) {
+				if (abilityData.ability2) {
+					text = '<small>Abilities:</small> ' + this.battle.dex.abilities.get(ability).name + ' / ' + this.battle.dex.abilities.get(abilityData.ability2).name;
+				} else text = '<small>Ability:</small> ' + this.battle.dex.abilities.get(ability).name;
+			}
 		} else {
 			if (abilityData.ability) {
-				const abilityName = this.battle.dex.abilities.get(abilityData.ability).name;
-				text = '<small>Ability:</small> ' + abilityName;
-				const baseAbilityName = this.battle.dex.abilities.get(abilityData.baseAbility).name;
-				if (baseAbilityName && baseAbilityName !== abilityName) text += ' (base: ' + baseAbilityName + ')';
+				if (abilityData.ability2) {
+					text = '<small>Abilities:</small> ' + this.battle.dex.abilities.get(abilityData.ability).name + ' / ' + this.battle.dex.abilities.get(abilityData.ability2).name;
+				} else {
+					const abilityName = this.battle.dex.abilities.get(abilityData.ability).name;
+					text = '<small>Ability:</small> ' + abilityName;
+					const baseAbilityName = this.battle.dex.abilities.get(abilityData.baseAbility).name;
+					if (baseAbilityName && baseAbilityName !== abilityName) text += ' (base: ' + baseAbilityName + ')';
+				}
 			}
 		}
 		const tier = this.battle.tier;

@@ -40,6 +40,9 @@ export declare namespace Teams {
 		gigantamax?: boolean;
 		/** Defaults to the primary type */
 		teraType?: string;
+		fusion?: string;
+		altsprite?: string;
+		ability2?: string;
 	}
 	export interface PokemonSet extends Partial<FullPokemonSet> {
 		/** Defaults to species name (not including forme), like in games */

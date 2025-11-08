@@ -126,7 +126,7 @@ function requireNoCache(pathSpec) {
 				name = (compoundTable.get(baseid) || species.baseSpecies) + ' ' + species.forme;
 			}
 		}
-		if (name.endsWith(' Mega-X') || name.endsWith(' Mega-Y') || name.endsWith('-Mega-M') || name.endsWith('-Mega-F')) {
+		if (name.endsWith(' Mega-X') || name.endsWith(' Mega-Y') || name.endsWith('-Mega-M') || name.endsWith('-Mega-F') || name.endsWith('-Mega-I')) {
 			index.push('mega' + toID(name.slice(0, -7) + name.slice(-1)) + ' ' + type + ' ' + id + ' 0');
 			index.push('m' + toID(name.slice(0, -7) + name.slice(-1)) + ' ' + type + ' ' + id + ' 0');
 			index.push('mega' + toID(name.slice(-1)) + ' ' + type + ' ' + id + ' ' + toID(name.slice(0, -7)).length);
