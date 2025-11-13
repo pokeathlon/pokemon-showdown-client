@@ -684,6 +684,7 @@
 					var tooltipArgs = 'move|' + moveData.move + '|' + pos;
 					let fieldMod = '';
 					if (this.battle.dex.modid === 'gen9rejuvenation') { // Rejuv buttons
+						let ability = pokemon.baseAbility.id
 						// Terrain masks
 						if (this.battle.hasPseudoWeather('Volcanic Field')) {
 							if (move.type === 'Fire' || ['clearsmog', 'smog', 'rockslide', 'smackdown', 
@@ -698,7 +699,7 @@
 							}
 						}
 						if (this.battle.hasPseudoWeather('Corrosive Mist Field')) {
-							if (move.type === 'Fire' || pokemon.baseAbility.id === 'corrosion' || dex.move.category === 'Special' ||
+							if (move.type === 'Fire' || ability === 'corrosion' || dex.move.category === 'Special' ||
 								['gravity', 'seedflare', 'defog', 'gust', 'hurricane', 'razorwind', 'supersonicskystrike', 
 								'tailwind', 'twister', 'whirlwind', 'eruption', 'explosion', 'firepledge', 'flameburst', 
 								'heatwave', 'incinerate','infernooverdrive','lavaplume','mindblown','searingshot','self-destruct',
@@ -712,13 +713,91 @@
 							}
 						}
 						if (this.battle.hasPseudoWeather('Icy Field')) {
-							if (['Ice', 'Rock'].includes(move.type) || (dex.move.category === 'Physical' && dex.move.flags.contact && dex.move.priority > 0) ||
+							if (['Ice', 'Rock'].includes(move.type) || (move.category === 'Physical' && move.flags.contact && move.priority > 0) ||
 								['bittermalice','eruption','firepledge','flameburst','heatwave','incinerate','infernooverdrive',
 								'lavaplume','magmadrift','mindblown','ragingfury','searingshot', 'bulldoze', 'earthquake', 
 								'fissure', 'magnitude', 'tectonicrage', 'defensecurl', 'lunge', 'rollout', 'steamroller'].includes(move.id)) {
 								fieldMod = 'mask-fieldUp';
 							}
 							if (move.type === 'Fire' || ['scald', 'steameruption'].includes(move.id)) {
+								fieldMod = 'mask-fieldDown';
+							}
+						}
+						if (this.battle.hasPseudoWeather('Water Surface Field')) {
+							if (['Water', 'Electric'].includes(move.type) || (ability === 'watercompaction' && move.id === 'shoreup') || (ability === 'propellertail' && move.priority > 0) ||
+								['dive', 'hydrovortex', 'muddywater', 'octazooka', 'originpulse', 'surf', 'whirlpool', 'sludgewave', 'anchorshot', 'dive', 'gravapple', 'gravity', 'aciddownpour',
+								'blizzard', 'glaciate', 'subzeroslammer', 'splash', 'wavecrash', 'lifedew', 'aciddownpour','dive', 'gravapple', 'gravity', 'aciddownpour', 'blizzard', 'glaciate', 'subzeroslammer' ].includes(move.id)) {
+								fieldMod = 'mask-fieldUp';
+							}
+							if (['Fire', 'Ground'].includes(move.type) || ['spikes', 'toxicspikes'].includes(move.id)) {
+								fieldMod = 'mask-fieldDown';
+							}
+						}
+						if (this.battle.hasPseudoWeather('Underwater Field')) {
+							if (['Water', 'Electric', 'Ground'].includes(move.type) || (ability === 'propellertail' && move.priority > 0) ||
+								['anchorshot', 'dragondarts', 'waterpulse', 'bounce', 'fly', 'dive', 'skydrop', 'aciddownpour', 'wavecrash'].includes(move.id)) {
+								fieldMod = 'mask-fieldUp';
+							}
+							if (['Fire', 'Ground'].includes(move.type) || (move.type != 'Water' && !pokemon.types.includes('Water') && move.category === 'Physical' && !['swiftswim', 'steelworker'].includes(ability)) || move.id === 'tarshot') {
+								fieldMod = 'mask-fieldDown';
+							}
+						}
+						if (this.battle.hasPseudoWeather('Murkwater Surface Field')) {
+							if (['Water', 'Poison', 'Electric'].includes(move.type) || (ability === 'watercompaction' && move.id === 'shoreup') ||
+								['whirlpool', 'blizzard', 'glaciate', 'subzeroslammer', 'mudbarrage', 'mudbomb', 'mudshot', 'mudslap', 'thuosandwaves',
+								'acidarmor', 'lifedew', 'tarshot', 'mudbarrage', 'mudbomb', 'mudshot', 'mudslap', 'thuosandwaves', 'appleacid', 'smackdown',
+								'whirlpool', 'purify'
+								].includes(move.id)) {
+								fieldMod = 'mask-fieldUp';
+							}
+							if (move.type === 'Ground' || ['spikes', 'toxicpikes'].includes(move.id)) {
+								fieldMod = 'mask-fieldDown';
+							}
+						}
+						if (this.battle.hasPseudoWeather('Dragons Den Field')) {
+							if (['Dragon', 'Fire', 'Rock'].includes(move.type) ||
+								['thousandarrows', 'smackdown', 'dragonascent', 'mistball', 'lusterpurge', 'rockclimb', 'strength', 'diamondstorm', 'matrixshot', 'powergem',
+								'earthpower', 'lavaplume', 'magmastorm', 'magmadrift', 'shelltrap', 'megakick', 'stompingtantrum', 'mistball', 'rockclimb', 'strength', 'earthquake',
+								'dragondance', 'bounce', 'fly', 'dragonrush', 'coil', 'nobleroar', 'stealthrock'
+								].includes(move.id)) {
+								fieldMod = 'mask-fieldUp';
+							}
+							if (move.type === 'Water') {
+								fieldMod = 'mask-fieldDown';
+							}
+						}
+						if (this.battle.hasPseudoWeather('Frozen Dimensional Field')) {
+							if (['Dark', 'Ice'].includes(move.type) ||
+								['fierywrath', 'freezingglare', 'lashout', 'outrage', 'ragingfury', 'rage', 'roaroftime', 'stompingtantrum', 'thrash', 'darkpulse', 'hydropump', 'muddywater', 'nightslash', 'surf', 'waterpulse', 'hyperspacehole', 'hyperspacefury',
+								'eruption', 'firepledge', 'flameburst', 'heatwave', 'incinerate', 'infernooverdrive', 'lavaplume', 'mindblown', 'ragingfury', 'searingshot', 'purify',
+								'darkpulse', 'hydropump', 'muddywater', 'nightslash', 'surf', 'waterpulse', 'darkvoid', 'dragonrage', 'rage', 'snarl', 'eruption', 'firepledge', 'flameburst', 'heatwave', 'incinerate', 'infernooverdrive', 'lavaplume', 'mindblown', 'ragingfury', 'searingshot'
+								].includes(move.id)) {
+								fieldMod = 'mask-fieldUp';
+							}
+							if (['electricterrain', 'grassyterrain', 'gravity', 'magicroom', 'mistyterrain', 'psychicterrain', 'trickroom', 'wonderroom', 'courtchange', 'teatime'].includes(move.id)) {
+								fieldMod = 'mask-fieldDown';
+							}
+						}
+						if (this.battle.hasPseudoWeather('Sky Field Field')) {
+							if (['Flying'].includes(move.type) || (ability === 'longreach') ||
+								['dive', 'twister', 'aeroblast', 'bleakwindstorm', 'dragonascent', 'dragondarts','esperwing', 'fairywind', 'flyingpress', 'gravapple', 'icywind', 'ominouswind', 'dive', 'twister',
+								'razorwind', 'silverwind', 'skyuppercut', 'steelwing', 'thunder', 'thunderbolt', 'thundershock', 'sandsearstorm', 'springtidestorm', 'windboltstorm', 'gravapple', 'gravity', 'ingrain', 'smackdown', 'thousandarrows',
+								'bounce', 'fly', 'razorwind', 'skyattack', 'hurricane', 'thunder'
+								].includes(move.id)) {
+								fieldMod = 'mask-fieldUp';
+							}
+							if (['spikes', 'toxicspikes', 'bulldoze', 'dig', 'earthquake', 'magnitude', 'rototiller', 'stickyweb'].includes(move.id)) {
+								fieldMod = 'mask-fieldDown';
+							}
+						}
+						if (this.battle.hasPseudoWeather('Infernal Field')) {
+							if (['Dark', 'Fire', 'Ground', 'Rock', 'Steel'].includes(move.type) ||
+								['blastburn', 'infernalparade', 'inferno', 'infernooverdrive', 'precipiceblades', 'ragingfury', 'punishment', 'smog', 'dreameater', 'glaciate', 'judgement', 'originpulse', 'purify',
+								'darkvoid', 'inferno', 'willowisp', 'nastyplot', 'stealthrock', 'aurasphere', 'frustration', 'spiritbreak', 'glaciate', 'judgement', 'originpulse', 'purify'
+								].includes(move.id)) {
+								fieldMod = 'mask-fieldUp';
+							}
+							if (['Fairy', 'Water'].includes(move.type) && move.id != 'spiritbreak') {
 								fieldMod = 'mask-fieldDown';
 							}
 						}
