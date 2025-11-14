@@ -671,6 +671,12 @@
 				var activePos = this.battle.mySide.n > 1 ? pos + this.battle.pokemonControlled : pos;
 				var typeValueTracker = new ModifiableValue(this.battle, this.battle.nearSide.active[activePos], this.battle.myPokemon[pos]);
 				var currentlyDynamaxed = (!canDynamax && maxMoves);
+				var nearActive = this.battle.nearSide.active;
+				var pokemon = nearActive[0];
+				console.log(pokemon)
+				console.log(this.pokemon)
+				console.log(this.battle.myPokemon[pos])
+				let ability = curActive.ability
 				for (var i = 0; i < curActive.moves.length; i++) {
 					var moveData = curActive.moves[i];
 					var move = this.battle.dex.moves.get(moveData.move);
@@ -684,7 +690,6 @@
 					var tooltipArgs = 'move|' + moveData.move + '|' + pos;
 					let fieldMod = '';
 					if (this.battle.dex.modid === 'gen9rejuvenation') { // Rejuv buttons
-						let ability = pokemon.baseAbility.id
 						// Terrain masks
 						if (this.battle.hasPseudoWeather('Volcanic Field')) {
 							if (move.type === 'Fire' || ['clearsmog', 'smog', 'rockslide', 'smackdown', 
