@@ -801,6 +801,110 @@
 								fieldMod = 'mask-fieldDown';
 							}
 						}
+						if (this.battle.hasPseudoWeather('Dark Crystal Cavern Field')) {
+							if (['prismaticlaser', 'blackholeeclipse', 'darkpulse', 'nightdaze', 'nightslash', 'menacingmoonrazemaelstrom', 'shadowball', 'shadowbone', 'shadowclaw', 'shadowforce', 'shadowpunch', 'shadowsneak', 'lightthatburnsthesky',
+								'darkvoid', 'flash'
+								].includes(move.id)) {
+								fieldMod = 'mask-fieldUp';
+							}
+							if (['solarblade', 'solarbeam'].includes(move.id)) {
+								fieldMod = 'mask-fieldDown';
+							}
+						}
+						if (this.battle.hasPseudoWeather('Rainbow Field')) {
+							if ((move.type === 'Normal' && move.category === 'Special') ||
+								['aurorabeam', 'dazzlinggleam', 'dragonpulse', 'firepledge', 'fleurcannon', 'grasspledge', 'heartstamp', 'hiddenpower', 'judgement', 'mirrorbeam', 'mistball', 'moonblast', 'mysticalfire',
+								'oceanicoperetta', 'prismaticlaser', 'relicsong', 'sacredfire', 'secretpower', 'silverwind', 'solarbeam', 'solarblade', 'sparklingaria', 'triattack', 'twinkletackle', 'waterpledge',
+								'weatherball', 'zenheadbutt', 'lightthatburnsthesky', 'sonicboom', 'cosmicpower', 'lifedew', 'meditate'
+								].includes(move.id)) {
+								fieldMod = 'mask-fieldUp';
+							}
+							if (['darkpulse', 'neverendingnightmare', 'nightdaze', 'shadowball', 'nightmare'].includes(move.id)) {
+								fieldMod = 'mask-fieldDown';
+							}
+						}
+						if (this.battle.hasPseudoWeather('Crystal Cavern Field')) {
+							if ((['Rock', 'Dragon'].includes(move.type)) ||
+								['judgement', 'multiattack', 'prismaticlaser', 'rockclimb', 'strength', 'ancientpower', 'diamondstorm', 'lusterpurge', 'powergem', 'rocksmash', 'rocktomb',
+								'aurorabeam', 'dazzlinggleam', 'doomdesire', 'flashcannon', 'menacingmoonrazemaelstrom', 'mirrorbeam', 'mirrorshot', 'moongeistbeam', 'photongeyser', 'signalbeam', 'technoblast',
+								'bulldoze', 'earthquake', 'fissure', 'magnitude', 'judgement', 'multiattack', 'prismaticlaser', 'rockclimb', 'strength', 'rockpolish', 'stealthrock',
+								'darkpulse', 'darkvoide', 'lightthatburnsthesky', 'nightdaze', 'bulldoze', 'earthquake', 'fissure', 'magnitude', 'tectonicrage'
+								].includes(move.id)) {
+								fieldMod = 'mask-fieldUp';
+							}
+						}
+						if (this.battle.hasPseudoWeather('Blessed Field')) {
+							if ((['Normal', 'Fairy'].includes(move.type) && move.category === 'Special') || (['Dragon', 'Psychic'].includes(move.type)) ||
+								['aeroblast', 'behemothblade', 'behemothbash', 'crushgrip', 'diamondstorm', 'dragonascent','doomdesire', 'dynamaxcannon', 'eternabeam', 'fleurcannon', 'genesissupernova', 'hyperspacehole',
+								'landswrath', 'lusterpurge', 'menacingmoonrazemaelstrom', 'mistball', 'moongeistbeam', 'multipulse','originpulse', 'precipiceblades', 'prismaticlaser', 'psychoboost', 'psystrike', 'relicsong',
+								'roaroftime', 'searingsunrazesmash', 'secretsword', 'spacialrend', 'sunsteelstrike', 'extremespeed', 'judgemenet', 'sacredfire', 'mysticalfire', 'magicalleaf', 'ancientpower', 'sacredsword', 'return',
+								'ominouswind', 'phantomforce', 'shadowforce', 'spectralscream', 'lightthatburnsthesky', 'cosmicpower', 'lifedew', 'miracleeye', 'curse'
+								].includes(move.id)) {
+								fieldMod = 'mask-fieldUp';
+							}
+							if ((move.type === 'Dark' && move.category === 'Special') || move.type === 'Ghost') {
+								fieldMod = 'mask-fieldDown';
+							}
+						}
+						if (this.battle.hasPseudoWeather('Fairy Tale Field')) {
+							if ((ability === 'queenlymajesty') || (['Dragon', 'Steel', 'Fairy', 'Fire'].includes(move.type)) ||
+								['drainingkiss', 'mistball', 'airslash', 'aquacutter', 'behemothblade', 'ceaselessedge', 'leafblade', 'nightslash', 'psychocut', 'razorshell', 'smartstrike', 'solarblade', 
+								'stoneaxe', 'ancientpower', 'behemothbash', 'fleurcannon', 'magiicalleaf', 'menacingmoonrazemaelstrom', 'moongeistbeam', 'mysticalfire', 'oceanicoperetta', 'relicsong', 'sparklingaria',
+								'acidarmor', 'craftyshield', 'flowershield', 'cut', 'sacredsword', 'secretsword', 'slash', 'miracleeye', 'nobleroar', 'strangestream', 'swordsdance', 'healingwish', 'kingsshield', 'sweetkiss', 'forestscurse'
+								].includes(move.id)) {
+								fieldMod = 'mask-fieldUp';
+							}
+						}
+						if (this.battle.hasPseudoWeather('Starlight Arena Field')) {
+							if ((['Dark', 'Psychic', 'Fairy'].includes(move.type)) ||
+								['doomdesire', 'blackholeeclypse', 'cometpunch', 'dracometeor', 'hyperspacefury', 'hyperspacehole', 'lightthatburnsthesky', 'menacingmoonrazemaelstrom', 'meteorassault', 'meteormash', 'moongeistbeam', 'spacialrend', 'searingsunrazesmash', 'sunsteelstrike', 'swift',
+								'aurorabeam', 'dazzlinggleam', 'flashcannon', 'lusterpurge', 'mirrorbeam', 'mirrorshot', 'moonblast', 'nightdaze', 'nightslash', 'photongeyser', 'prismaticlaser', 'signalbeam', 'technoblast', 'solarbeam', 'solarblade', 'cosmicpower', 'flash', 'geomancy', 'meteorbeam', 'healingwish', 'lunardance'
+								].includes(move.id)) {
+								fieldMod = 'mask-fieldUp';
+							}
+						}
+						if (this.battle.hasPseudoWeather('New World Field')) {
+							if (['Dark'].includes(move.type) ||
+								['ancientpower', 'blackholeeclipse', 'cometpunch', 'dracometeor', 'futuresight', 'hyperspacefury', 'hyperspacehole', 'lightthatburnsthesky', 'meteormash', 'moonblast', 'spacialrend', 'swift', 'vacuumwave', 'doomdesire',
+								'aeroblast', 'aurorabeam', 'blueflare', 'boltstrike', 'continentalcrush', 'coreenforcer', 'crushgrip', 'dazzlinggleam', 'diamondstorm', 'dragonascent', 'earthpower', 'eruption', 'flashcannon', 'fleurcannon', 'freezeshock', 'fusionbolt', 'fusionflare', 'genesissupernova', 'iceburn', 'judgment', 
+								'landswrath', 'lusterpurge', 'magmastorm', 'menacingmoonrazemaelstrom', 'mindblown', 'mirrorbeam', 'mirrorshot', 'mistball', 'moongeistbeam', 'multiattack', 'oblivionwing', 'originpulse', 'photongeyser', 'plasmafists', 'powergem', 'precipiceblades', 'prismaticlaser', 'psychoboost', 'psystrike', 
+								'relicsong', 'roaroftime', 'sacredfire', 'sacredsword', 'searingshot', 'searingsunrazesmash', 'secretsword', 'seedflare', 'shadowforce', 'signalbeam', 'soulstealing7starstrike', 'spectralthief', 'steameruption', 'sunsteelstrike', 'technoblast', 'thousandarrows', 'thousandwaves', 'vcreate',
+								'cosmicpower', 'darkvoid', 'flash', 'lunardance', 'meteorbeam', 'doomdesire', 'geomancy', 'gravity'
+								].includes(move.id)) {
+								fieldMod = 'mask-fieldUp';
+							}
+							if (['bulldoze', 'magnitude', 'earthquake', 'fissure'].includes(move.id)) {
+								fieldMod = 'mask-fieldDown';
+							}
+						}
+						if (this.battle.hasPseudoWeather('Dimensional Field')) {
+							if (['Dark', 'Shadow', 'Ghost'].includes(move.type) ||
+								['dynamaxcannon', 'eternabeam', 'hyperspacefury', 'hyperspacehole', 'roaroftime', 'shadowforce', 'spacialrend', 'fierywrath', 'freezingglare', 'lashout', 'outrage', 'ragingfury', 'stompingtantrum', 'thrash',
+								'darkpulse', 'nightdaze', 'darkvoid', 'dragonrage', 'embargo', 'quash', 'rage', 'healblock', 'obstruct', 'freezeshock', 'glaciate', 'iceburn', 'seedflare', 'blizzard', 'coldtruth', 'sheercold', 'precipiceblades', 'purify', 'seedflare'
+								].includes(move.id)) {
+								fieldMod = 'mask-fieldUp';
+							}
+							if (move.type === 'Fairy' || (['bounce', 'dig', 'fly', 'luckychant','teatime'].includes(move.id))) {
+								fieldMod = 'mask-fieldDown';
+							}
+						}
+						if (this.battle.hasPseudoWeather('Haunted Field')) {
+							if (['Ghost'].includes(move.type) ||
+								['firespin', 'flameburst', 'flamecharge', 'inferno', 'astonish', 'boneclub', 'bonerush', 'bonemerang', 'shadowbone', 'judgement', 'originpulse', 'purify', 'sacredfire', 'dazzlinggleam',
+								'bittermalice', 'scaryface', 'hypnosis', 'willowisp', 'lick', 'magicpowder', 'nightshade', 'ominouswind', 'nightmare', 'spite', 'phantomforce', 'shadowforce', 'firespin', 'flameburst', 'flamecharge', 'inferno',
+								'judgement', 'originpulse', 'purify', 'sacredfire', 'dazzlinggleam', 'flash'
+								].includes(move.id)) {
+								fieldMod = 'mask-fieldUp';
+							}
+						}
+						if (this.battle.hasPseudoWeather('Bewitched Woods Field')) {
+							if (['Fairy', 'Grass', 'Dark'].includes(move.type) ||
+								['aurorabeam', 'bubblebeam', 'chargebeam', 'flashcannon', 'hyperbeam', 'icebeam', 'magicalleaf', 'mirrorbeam', 'psybeam', 'signalbeam', 'hex', 'mysticalfire', 'spiritbreak', 'darkpulse', 'moonblast', 'nightdaze',
+								'grasswhistle', 'poisonpowder', 'sleeppowder', 'stunspore', 'magicpowder', 'strengthsap', 'forestscurse', 'purify'
+								].includes(move.id)) {
+								fieldMod = 'mask-fieldUp';
+							}
+						}
 
 						// Type button links
 						const bgBase = `url('https://play.pokeathlon.com/sprites/fangame-sprites/rejuvenation/misc/button${moveType}.png')`;
