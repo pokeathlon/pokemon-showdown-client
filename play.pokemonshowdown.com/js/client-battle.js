@@ -905,6 +905,127 @@
 								fieldMod = 'mask-fieldUp';
 							}
 						}
+						if (this.battle.hasPseudoWeather('Chess Board Field')) {
+							if ((ability === 'queenlymajesty') ||
+								['ancientpower', 'continentalcrush', 'psychic', 'rockthrow', 'secretpower', 'shatteredpsyche', 'strength', 'barrage', 'defeatist', 'klutz', 'oblivious', 'simple', 'unaware', 'fakeout', 'feint', 'feintattack', 'firstimpression', 'shadowsneak', 'smartstrike', 'suckerpunch',
+								'outrage', 'thrash', 'stompingtantrum', 'calmmind', 'falsesurrender', 'nastyplot', 'noretreat', 'obstruct'
+								].includes(move.id)) {
+								fieldMod = 'mask-fieldUp';
+							}
+						}
+						if (this.battle.hasPseudoWeather('Big Top Arena Field')) {
+							if (['guts', 'hugepower', 'purepower', 'sheerforce'].includes(ability) ||
+								['blazekick', 'bodyslam', 'bounce', 'brutalswing', 'bulldoze', 'continentalcrush', 'crabhammer', 'doubleironbash', 'dragonhammer', 'dragonrush', 'dualchop', 'earthquake', 
+								'gigaimpact', 'gravapple', 'headlongrush', 'heatcrash', 'heavyslam', 'highhorsepower', 'icehammer', 'iciclecrash', 'irontail', 'magnitude', 'meteormash', 'pound', 'skydrop', 'slam', 'smackdown', 'stomp', 
+								'stompingtantrum', 'strength', 'woodhammer', 'payday', 'acrobatics', 'fly', 'firelash', 'powerwhip', 'vinewhip', 'fierydance', 'petaldance', 'revelationdance',
+								'firstimpression', 'drumbeating', 'aquabatics', 'bellydrum', 'clangoroussoul', 'dragondance', 'featherdance', 'swordsdance', 'quiverdance', 'victorydance', 'sing', 'spotlight'
+								].includes(move.id)) {
+								fieldMod = 'mask-fieldUp';
+							}
+						}
+						if (this.battle.hasPseudoWeather('Factory Field')) {
+							if (move.type === 'Electric' ||
+								['doubleironbash', 'flashcannon', 'geargrind', 'gyroball', 'magnetbomb', 'steamroller', 'superumdsequence', 'technoblast', 'autotomize', 'irondefense', 'metalsound', 'shiftgear', 'gearup', 'steelbeam',
+								'bulldoze', 'fissure', 'earthquake', 'explosion', 'magnitude', 'selfdestruct', 'superumdmove', 'tectonicrage', 'lightthatburnsthesky', 'aurawheel', 'discharge', 'gigavolthavoc', 'overdrive'
+								].includes(move.id)) {
+								fieldMod = 'mask-fieldUp';
+							}
+						}
+						if (this.battle.hasPseudoWeather('Factory Field')) {
+							if (move.type === 'Electric' ||
+								['geargrind', 'gyroball', 'hydrovortex', 'magnetbomb', 'muddywater', 'surf', 'flashcannon', 'superumdmove', 'dazzlinggleam', 'darkpulse', 'nightdaze', 'nightslash', 'phantomforce', 'shadowball', 'shadowbone', 'shadowclaw', 'shadowforce', 'shadowpunch', 'shadowsneak', 'aurawheel', 'chargebeam', 'discharge', 'gigavolthavoc', 'iondeluge', 'overdrive', 'paraboliccharge', 'superumdmove', 'wildcharge',
+								'lightthatburnsthesky', 'steelbeam', 'flashcannon', 'metalsound', 'zapcannon'
+								].includes(move.id)) {
+								fieldMod = 'mask-fieldUp';
+							}
+						}
+						if (this.battle.hasPseudoWeather('Glitch Field')) {
+							if (['Psychic', 'Dragon'].includes(move.type) ||
+								['blizzard', 'metronome', 'rage', 'explosion', 'selfdestruct', 'hyperbeam', 'gigaimpact'
+								].includes(move.id)) {
+								fieldMod = 'mask-fieldUp';
+							}
+							if (['roar', 'whirlwind'].includes(move.id)) {
+								fieldMod = 'mask-fieldDown';
+							}
+						}
+						if (this.battle.hasPseudoWeather('Mirror Arena Field')) {
+							if (['aurorabeam', 'signalbeam', 'flashcannon', 'lusterpurge', 'doomdesire', 'dazzlinggleam', 'technoblast', 'prismaticlaser', 'photongeyser', 'mirrorshot', 'flash', 'doubleteam', 'mirrorcoat', 'mirrormove',
+								'earthquake', 'bulldoze', 'boomburst', 'hypervoice', 'magnitude', 'tectonicrage', 'reflect', 'lightscreen', 'auroraveil'
+								].includes(move.id)) {
+								fieldMod = 'mask-fieldUp';
+							}
+						}
+						if (this.battle.hasPseudoWeather('Flower Garden Field')) {
+							if (['Grass', 'Fire', 'Bug'].includes(move.type) ||
+								['fleurcannon', 'petalblizzard', 'petaldance', 'bloomdoom', 'flowershield', 'grassyterrain', 'growth', 'ingrain', 'raindance', 'rototiller', 'sunnyday', 'watersport',
+								'cut', 'xscissor', 'eruption', 'firepledge', 'flameburst', 'heatwave', 'infernooverdrive', 'lavaplume', 'mindblown', 'searingshot', 'aciddownpour', 'rototiller', 'flowershield',
+								'poiwonpowder', 'sleeppowder', 'stunspore', 'powder'
+								].includes(move.id)) {
+								fieldMod = 'mask-fieldUp';
+							}
+						}
+						if (this.battle.hasPseudoWeather('Corrupted Cave Field')) {
+							if (['Poison', 'Grass', 'Rock'].includes(move.type) || ability === 'corrosion' ||
+								['seedflare', 'solarbeam', 'solarblade', 'blastburn', 'eruption', 'heatwave', 'infernooverdrive', 'lavaplume', 'appleacid', 'diamondstorm', 'rockslide', 'rocktomb', 'smackdown', 'stoneedge', 'gunkshot', 'sludgewave',
+								'tarshot', 'toxicthread', 'stealthrock', 'purify'
+								].includes(move.id)) {
+								fieldMod = 'mask-fieldUp';
+							}
+							if (move.type === 'Fairy' || (move.type === 'Flying' && !move.flags.contact)) {
+								fieldMod = 'mask-fieldDown';
+							}
+						}
+						if (this.battle.hasPseudoWeather('Colosseum Field')) {
+							if (['beatup', 'fellstinger', 'payday', 'pursuit', 'reversal', 'beatup', 'fellstinger', 'payday', 'pursuit', 'reversal', 
+								'bonerush', 'boneclub', 'bonemerang', 'brutalswing', 'bulletpunch', 'clangingscales', 'electroweb', 'firstimpression', 'leafblade', 'meteorassault', 'meteormash', 
+								'nightslash', 'payback', 'punishment', 'psychocut', 'sacredsword', 'secretsword', 'smackdown', 'smartstrike', 'steamroller', 'submission', 'vinewhip',
+								'anchorshot', 'crabhammer', 'dragonhammer', 'drillpeck', 'drillrun', 'firelash', 'icehammer', 'iciclespear', 'powerwhip', 'shadowbone', 'spiritshackle', 'stormthrow', 'suckerpunch', 'throatchop', 'woodhammer',
+								'firstimpression', 'flatter', 'howl', 'noretreat', 'roar', 'swagger', 'swordsdance', 'spikyshield'
+								].includes(move.id)) {
+								fieldMod = 'mask-fieldUp';
+							}
+							if (['batonpass', 'encore', 'whirlwind'].includes(move.id) || (move.forceSwitch && move.category === 'Status')) {
+								fieldMod = 'mask-fieldDown';
+							}
+						}
+						if (this.battle.hasPseudoWeather('Concert Venue Field')) {
+							if (move.flags.sound ||
+								['acid', 'acidspray', 'circlethrow', 'dragontail', 'drumbeating', 'fakeout', 'firstimpression', 'rollout', 'rage', 'thrash', 'frustration', 'outrage', 'stompingtantrum',
+								'acidarmor', 'clangoroussoul', 'growl', 'metalsound', 'howl', 'roar', 'screech', 'sing', 'workup', 'magnitude', 'feverpitch', 'spitup', 'heatcrash', 'heavyslam', 'electroball', 'furycutter', 'trumpcard',
+								'grassknot', 'lowkick', 'reversal', 'flail', 'crushgrip', 'dragonenergy', 'eruption', 'waterspout', 'bloomdoom', 'hardpress', 'pikapapow', 'veeveevolley', 'wringout', 'return', 'frustration', 'gyroball', 'fling', 'naturalgift', 'partingshot',
+								'aquabatics', 'dragondance', 'drumbeating', 'featherdance', 'fierydance', 'firstimpression', 'petaldance', 'quiverdance', 'revelationdance', 'rollout', 'swagger', 'swordsdance', 'workup', 'focusenergy', 'followme', 'laserfocus', 'luckychant', 'spotlight',
+								'explosion', 'selfdestruct'
+								].includes(move.id)) {
+								fieldMod = 'mask-fieldUp';
+							}
+							if (['babydolleyes', 'embargo', 'playnice', 'quash', 'knockoff', 'quash', 'slackoff', 'throatchop', 'tickle', 'yawn', 'sheercold', 'coldtruth'].includes(move.id)) {
+								fieldMod = 'mask-fieldDown';
+							}
+						}
+						if (this.battle.hasPseudoWeather('Back Alley Field')) {
+							if (['Bug', 'Poison'].includes(move.type) || (move.type === 'Dark' && move.category === 'Physical') ||
+								['firstimpression', 'beatup', 'payday', 'shadowsneak', 'smog', 'spectralthief', 'steamroller', 'technoblast',
+								'aerialace', 'aircutter', 'airslash', 'aquacutter', 'behemothblade', 'ceaselessedge', 'crosspoison', 'cut', 'furycutter', 'hexingslash', 'leafblade', 'nightslash', 'psychocut', 'razorleaf', 'razorshell', 'sacredsword', 'slashandburn', 'solarblade', 'slash', 'stoneaxe', 'xscissor',
+								'branchpoke', 'drillpeck', 'drillrun', 'falsesurrender', 'fellstinger', 'furyattack', 'gildedarrow', 'gildedhelix', 'glaciallance', 'hornattack', 'hornleech', 'megahorn', 'needlearm', 'peck', 'pinmissile', 'pluck', 'poisonjab', 'poisonsting', 'quicksilverspear', 'twineedle', 'smartstrike',
+								'boomburst', 'echoedvoice', 'hypervoice', 'uproar', 'covet', 'thief', 'corrosivegas', 'faketears', 'nastyplot', 'poisongas', 'smog', 'smokescreen', 'snarl', 'switcheroo', 'trick', 'zconversion', 'pursuit', 'vileassault', 'leechseed', 'ingrain', 'aquaring', 'strengthsap'
+								].includes(move.id)) {
+								fieldMod = 'mask-fieldUp';
+							}
+							if (move.type === 'Fairy') {
+								fieldMod = 'mask-fieldDown';
+							}
+						}
+						if (this.battle.hasPseudoWeather('City Field')) {
+							if (['Bug', 'Poison', 'Steel'].includes(move.type) || (move.type === 'Normal' && move.category === 'Physical') ||
+								['firstimpression', 'beatup', 'payday', 'shadowsneak', 'smog', 'spectralthief', 'steamroller', 'technoblast', 'covet', 'pursuit', 'thief', 'autotomize', 'corrosivegas', 'poisongas', 'smog', 'shiftgear', 'smokescreen', 'workup', 'celebrate', 'conversion', 'happyhour', 'recycle'
+								].includes(move.id)) {
+								fieldMod = 'mask-fieldUp';
+							}
+							if (move.type === 'Fairy') {
+								fieldMod = 'mask-fieldDown';
+							}
+						}
 
 						// Type button links
 						const bgBase = `url('https://play.pokeathlon.com/sprites/fangame-sprites/rejuvenation/misc/button${moveType}.png')`;
