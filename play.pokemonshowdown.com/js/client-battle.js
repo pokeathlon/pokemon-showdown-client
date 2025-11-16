@@ -673,10 +673,7 @@
 				var currentlyDynamaxed = (!canDynamax && maxMoves);
 				var nearActive = this.battle.nearSide.active;
 				var pokemon = nearActive[0];
-				console.log(pokemon)
-				console.log(this.pokemon)
-				console.log(this.battle.myPokemon[pos])
-				let ability = curActive.ability
+				let ability = this.battle.myPokemon[pos].ability
 				for (var i = 0; i < curActive.moves.length; i++) {
 					var moveData = curActive.moves[i];
 					var move = this.battle.dex.moves.get(moveData.move);
