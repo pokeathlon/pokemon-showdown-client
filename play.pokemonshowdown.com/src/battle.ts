@@ -115,6 +115,9 @@ export class Pokemon implements PokemonDetails, PokemonHealth {
 
 	sprite: PokemonSprite;
 
+	innates?: string[];
+	baseInnates?: string[];
+
 	constructor(data: PokemonDetails, side: Side) {
 		this.side = side;
 		this.speciesForme = data.speciesForme;
@@ -131,6 +134,9 @@ export class Pokemon implements PokemonDetails, PokemonHealth {
 		this.searchid = data.searchid;
 
 		this.sprite = side.battle.scene.addPokemonSprite(this);
+
+		this.innates = data.innates;
+		this.baseInnates = data.baseInnates;
 	}
 
 	isActive() {
@@ -1016,6 +1022,8 @@ export interface PokemonDetails {
 	fusion: string;
 	altsprite: string;
 	searchid: string;
+	innates?: string[];
+	baseInnates?: string[];
 }
 export interface PokemonHealth {
 	hp: number;
@@ -1051,7 +1059,6 @@ export interface ServerPokemon extends PokemonDetails, PokemonHealth {
 	teraType: string;
 	/** falsy if the pokemon is not terastallized, otherwise it is the Tera Type of the Pokemon */
 	terastallized: string;
-	ability2?: string;
 }
 
 export class Battle {
@@ -2467,6 +2474,22 @@ export class Battle {
 			this.log(args, kwArgs);
 			break;
 		}
+		case '-displayabilities': {
+			let poke = this.getPokemon(args[1])!;
+
+			let activeAbilities = args[2].split(',');
+			if (activeAbilities[0] === '') activeAbilities = [];
+			let baseAbilities = args[3] ? args[3].split(',') : activeAbilities;
+			if (args[3] && baseAbilities[0] === '') baseAbilities = [];
+
+			poke.ability = activeAbilities[0] || '';
+			poke.innates = activeAbilities.slice(1);
+			poke.baseAbility = baseAbilities[0] || '';
+			poke.baseInnates = baseAbilities.slice(1);
+
+			this.log(args, kwArgs);
+			break;
+		}
 		case 'detailschange': {
 			let poke = this.getPokemon(args[1])!;
 			poke.removeVolatile('formechange' as ID);
@@ -2479,7 +2502,7 @@ export class Battle {
 			poke.details = args[2];
 
 			poke.fusion = details.fusion;
-			
+
 			let commaIndex = newSpeciesForme.indexOf(',');
 			if (commaIndex !== -1) {
 				let level = newSpeciesForme.substr(commaIndex + 1).trim();
@@ -3247,7 +3270,17 @@ export class Battle {
 		output.gender = '';
 		output.ident = (!isTeamPreview ? pokemonid : '');
 		output.searchid = (!isTeamPreview ? `${pokemonid}|${details}` : '');
+		output.innates = [];
+		output.baseInnates = [];
 		let splitDetails = details.split(', ');
+		if (splitDetails[splitDetails.length - 1].startsWith('innates: ')) {
+			output.innates = splitDetails[splitDetails.length - 1].slice(9).split('-');
+			splitDetails.pop();
+		}
+		if (splitDetails[splitDetails.length - 1].startsWith('baseInnates: ')) {
+			output.baseInnates = splitDetails[splitDetails.length - 1].slice(13).split('-');
+			splitDetails.pop();
+		}
 		if (splitDetails[splitDetails.length - 1].startsWith('alt: ')) {
 			output.altsprite = splitDetails[splitDetails.length - 1].charAt(5);
 			splitDetails.pop();

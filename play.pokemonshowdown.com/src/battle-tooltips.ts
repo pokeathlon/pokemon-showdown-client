@@ -24,6 +24,7 @@ export class ModifiableValue {
 	serverPokemon: ServerPokemon;
 	itemName: string;
 	abilityName: string;
+	abilityNames: string[];
 	weatherName: string;
 	isAccuracy = false;
 	constructor(battle: Battle, pokemon: Pokemon, serverPokemon: ServerPokemon) {
@@ -35,6 +36,18 @@ export class ModifiableValue {
 		this.itemName = this.battle.dex.items.get(serverPokemon.item).name;
 		const ability = serverPokemon.ability || pokemon?.ability || serverPokemon.baseAbility;
 		this.abilityName = this.battle.dex.abilities.get(ability).name;
+		this.abilityNames = [this.abilityName];
+		const isDoubleAbilityMod = battle.rules['Double Ability Mod'];
+		if (isDoubleAbilityMod) {
+			const activeInnates =
+				(pokemon?.innates || [])
+					.concat((serverPokemon as any)?.innates || []);
+			for (const innate of activeInnates) {
+				if (!(innate in this.abilityNames)) {
+					this.abilityNames.push(this.battle.dex.abilities.get(innate).name);
+				}
+			}
+		}
 		this.weatherName = this.battle.dex.moves.get(battle.weather).exists ?
 			this.battle.dex.moves.get(battle.weather).name : this.battle.dex.abilities.get(battle.weather).name;
 	}
@@ -846,7 +859,7 @@ export class BattleTooltips {
 		}
 
 		let fuseBuf = pokemon.fusion ? ` <small><b>Fusion: </b>${pokemon.fusion}</small><br />`: ``;
-		
+
 		let fusionData = Dex.getFusionData(pokemon);
 		let FangameCredit = Dex.getFangameCredit(pokemon);
 		if (clientPokemon?.volatiles.formechange && clientPokemon.volatiles.transform) {
@@ -2652,15 +2665,19 @@ export class BattleTooltips {
 		return ally.effectiveAbility(serverPokemon);
 	}
 	getPokemonAbilityData(clientPokemon: Pokemon | null, serverPokemon: ServerPokemon | null | undefined) {
-		const abilityData: { ability: string, baseAbility: string, possibilities: string[], ability2: string} = {
-			ability: '', baseAbility: '', possibilities: [], ability2: '',
+		const abilityData: {
+			ability: string, baseAbility: string, possibilities: string[], abilities: string[], baseAbilities: string[],
+		} = {
+			ability: '', baseAbility: '', possibilities: [], abilities: [], baseAbilities: [],
 		};
 		let dex = this.battle.dex;
 		if (clientPokemon) {
 			if (clientPokemon.ability) {
 				abilityData.ability = clientPokemon.ability || clientPokemon.baseAbility;
+				abilityData.abilities = [abilityData.ability, ...(clientPokemon.innates || [])];
 				if (clientPokemon.baseAbility) {
 					abilityData.baseAbility = clientPokemon.baseAbility;
+					abilityData.baseAbilities = [clientPokemon.baseAbility, ...(clientPokemon.baseInnates || [])];
 				}
 			} else {
 				const speciesForme = clientPokemon.getSpeciesForme() || serverPokemon?.speciesForme || '';
@@ -2686,8 +2703,12 @@ export class BattleTooltips {
 			if (!abilityData.baseAbility && serverPokemon.baseAbility) {
 				abilityData.baseAbility = serverPokemon.baseAbility;
 			}
-			if (!abilityData.ability2 && serverPokemon.ability2) abilityData.ability2 = serverPokemon.ability2;
+			if (abilityData.abilities.length === 0)
+				abilityData.abilities = [abilityData.ability, ...((serverPokemon as any)?.innates || [])];
+			if (abilityData.baseAbilities.length === 0)
+				abilityData.abilities = [abilityData.baseAbility, ...((serverPokemon as any)?.baseInnates || [])];
 		}
+		if (abilityData.abilities.length === 0) abilityData.abilities = [abilityData.ability];
 		return abilityData;
 	}
 	getPokemonAbilityText(
@@ -2702,19 +2723,22 @@ export class BattleTooltips {
 			// for switch tooltips, only show the original ability
 			const ability = abilityData.baseAbility || abilityData.ability;
 			if (ability) {
-				if (abilityData.ability2) {
-					text = '<small>Abilities:</small> ' + this.battle.dex.abilities.get(ability).name + ' / ' + this.battle.dex.abilities.get(abilityData.ability2).name;
+				if (abilityData.abilities.length > 1) {
+					text = '<small>Abilities:</small> ' + abilityData.abilities.map(ability => this.battle.dex.abilities.get(ability).name).join(' / ');
 				} else text = '<small>Ability:</small> ' + this.battle.dex.abilities.get(ability).name;
 			}
 		} else {
 			if (abilityData.ability) {
-				if (abilityData.ability2) {
-					text = '<small>Abilities:</small> ' + this.battle.dex.abilities.get(abilityData.ability).name + ' / ' + this.battle.dex.abilities.get(abilityData.ability2).name;
-				} else {
-					const abilityName = this.battle.dex.abilities.get(abilityData.ability).name;
-					text = '<small>Ability:</small> ' + abilityName;
-					const baseAbilityName = this.battle.dex.abilities.get(abilityData.baseAbility).name;
-					if (baseAbilityName && baseAbilityName !== abilityName) text += ' (base: ' + baseAbilityName + ')';
+				const isPlural = abilityData.abilities.length > 1;
+				const beginningText = isPlural ? '<small>Abilities:</small> ' : '<small>Ability:</small> ';
+				const abilitiesText = abilityData.abilities.map(ability => this.battle.dex.abilities.get(ability).name).join(' / ');
+				text = beginningText + abilitiesText;
+				if (abilityData.baseAbility) {
+					const hasMultipleBaseAbilities = abilityData.baseAbilities.length > 1;
+					const baseAbilitiesText = hasMultipleBaseAbilities ?
+						abilityData.baseAbilities.map(ability => this.battle.dex.abilities.get(ability).name).join(' / ') :
+						this.battle.dex.abilities.get(abilityData.baseAbility).name;
+					if (abilitiesText !== baseAbilitiesText) text += ' (base: ' + baseAbilitiesText + ')';
 				}
 			}
 		}
