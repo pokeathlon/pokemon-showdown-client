@@ -1262,7 +1262,7 @@ export const SplitNames: { [key: string]: string[] } = {
 	// POA
 	ashenash: ["Ashe", "nash"],
 	alphbit: ["Alph", "bit"],
-	anneliark: ["Anneli", "lark"],
+	anneliark: ["Anneli", "liark"],
 	arcaspark: ["Arca", "spark"],
 	aviotion: ["Avio", "tion"],
 	bahamist: ["Baha", "mist"],
@@ -1358,6 +1358,8 @@ export const SplitNames: { [key: string]: string[] } = {
 	rakura: ["Raku", "kura"],
 	regimyo: ["Regi", "myo"],
 	reneguana: ["Rene", "guana"],
+	rotomhisui: ["Roto", " Hisui"],
+	rotomhisuiarmored: ["Roto", " Hisui-Armored"],
 	saturoceras: ["Saturo", "ceras"],
 	sauphozoa: ["Saupho", "zoa"],
 	scaleslash: ["Scale", "slash"],
