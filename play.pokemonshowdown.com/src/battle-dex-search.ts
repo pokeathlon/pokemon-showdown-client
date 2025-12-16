@@ -1983,9 +1983,11 @@ class BattleMoveSearch extends BattleTypedSearch<'move'> {
 				const bonusType = this.dex.types.get(fusionTypes[fusionTypes.length - 1]);
 				if (bonusType.exists) typesSet.add(bonusType.name);
 				if (fusionTypes.length === 2 && typesSet.size === 1) typesSet.add(fusionTypes[0]);
+				
+				let tutorMoves = (this.dex.modid.includes('pokeathlon') || this.dex.modid.includes("chaos"))? { ...fusionMoves, ...PoAfusionMoves } : fusionMoves;
 
-				for (let id in fusionMoves) {
-					let data = fusionMoves[id];
+				for (let id in tutorMoves) {
+					let data = tutorMoves[id];
 					for (let possibleSource of data) {
 						let canLearn = true;
 						if ("fusion" in possibleSource) {
@@ -2085,8 +2087,10 @@ class BattleMoveSearch extends BattleTypedSearch<'move'> {
 				if (bonusType.exists) typesSet.add(bonusType.name);
 				if (fusionTypes.length === 2 && typesSet.size === 1) typesSet.add(fusionTypes[0]);
 
-				for (let id in fusionMoves) {
-					let data = fusionMoves[id];
+				let tutorMoves = (this.dex.modid.includes('pokeathlon') || this.dex.modid.includes("chaos"))? { ...fusionMoves, ...PoAfusionMoves } : fusionMoves;
+
+				for (let id in tutorMoves) {
+					let data = tutorMoves[id];
 					for (let possibleSource of data) {
 						let canLearn = true;
 						if ("fusion" in possibleSource) {
@@ -2372,4 +2376,39 @@ const fusionMoves: {[key: string]: {[key: string]: string[]}[]} = {
 	"sunsteelstrike": [{"fusion": ["charizard", "volcarona", "flareon", "ninetales", "entei", "hooh", "rapidash"], "type": ["Steel"]}],
 	"doubleironbash": [{"type": ["Steel"], "learns": ["doubleslap"]}],
 	"steameruption": [{"type": ["Water"], "learns": ["eruption"]}],
+};
+const PoAfusionMoves: {[key: string]: {[key: string]: string[]}[]} = { //Preexisting IF keys are overridden, so need to readd here
+	"zapcannon": [{"fusion": ["silretro"], "learns": ["inferno"]}],
+	"retroblast": [{"learns": ["thunderbolt"], "type": ["Rock"]}],
+	"superheatedcrash": [{"learns": ["flareblitz", "heatcrash"], "type": ["Water"]}],
+	"stoneaxe": [{"fusion": ["kleavordelta"], "type": ["Rock"]}],
+	"floatyfall": [{"fusion": ["tofagrif"], "learns": ["gravity"]}],
+	"thunderouskick": [{"fusion": ["sekrilon"], "learns": ["thunder"]}],
+	"heatcrash": [{"fusion": ["omecha"], "type": ["Fire"]}],
+	"syrupbomb": [{"fusion": ["mochimechi"], "type": ["Grass"]}],
+	"shadowpunch": [{"fusion": ["hoppyre"], "type": ["Fighting"]}],
+	"saltcure": [{"fusion": ["mosster"], "learns": ["smellingsalts"]}],
+	"pyropounce": [{"learns": ["bounce"], "type": ["Fire"]}],
+	"riftjump": [{"learns": ["bounce"], "type": ["Electric"]}],
+	"purify": [{"fusion": ["pestri"]}],
+	"mistyexplosion": [{"fusion": ["furumo"]}],
+	"heatwave": [{"fusion": ["snowiibay"]}],
+	"mindwipe": [{"learns": ["haze"], "type": ["Psychic"]}],
+	"surgingstrikes": [{"fusion": ["crayzigater"]}],
+	"infernalparade": [{"fusion": ["calobera"], "type": ["Fire"]}],
+	"accelerock": [{"fusion": ["crenibex"]}],
+	"chillyreception": [{"fusion": ["heracrosssubarctic"], "learns": ["yawn"]}],
+	"luminacrash": [{"fusion": ["anneliark"]}],
+	"esperwing": [{"fusion": ["twinova"]}],
+	"strengthsap": [{"fusion": ["sweepdol", "oddish", "gloom", "vileplume", "bellossom", "hoppip", "skiploom", "jumpluff", "bellsprout", "weepinbell", "victreebel", "paras", "parasect", "drifblim", "breloom"]}],
+	"ruination": [{"fusion": ["catastropede"]}],
+	"clangoroussoul": [{"fusion": ["hydroupa"]}],
+	"earthpower": [{"fusion": ["magnegauss"]}],
+	"spudmortar": [{"learns": ["energyball"], "type": ["Electric", "Ground"]}],
+	"phantasmalgust": [{"learns": ["hurricane"], "type": ["Ghost"]}],
+	"venomousroar": [{"learns": ["roar"], "type": ["Poison"]}],
+	"severingwind": [{"learns": ["slash"], "type": ["Flying"]}],
+	"healorder": [{"fusion": ["nestitan", "beedrill"], "type": ["Bug"]}],
+	"topsyturvy": [{"fusion": ["pandiz", "hitmontop", "wobbuffet"]}],
+	"pixietrick": [{"type": ["Dark", "Fairy"]}],
 };
