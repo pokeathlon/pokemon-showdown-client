@@ -2411,4 +2411,5 @@ const PoAfusionMoves: {[key: string]: {[key: string]: string[]}[]} = { //Preexis
 	"healorder": [{"fusion": ["nestitan", "beedrill"], "type": ["Bug"]}],
 	"topsyturvy": [{"fusion": ["pandiz", "hitmontop", "wobbuffet"]}],
 	"pixietrick": [{"type": ["Dark", "Fairy"]}],
+	"magmastorm": [{"fusion": ["saturoceras", "magcargo", "typhlosion", "magmortar", "magmar", "entei", "groudon"]}, {"learns": ["eruption"]}],
 };
