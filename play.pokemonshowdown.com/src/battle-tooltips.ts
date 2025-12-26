@@ -1802,6 +1802,11 @@ export class BattleTooltips {
 		}
 		if (move.flags.bite && value.abilityModify(0, 'Spectral Jaws')) category = 'Special';
 
+		if (this.battle.rules['Physical Special Split Mod']) {
+			const special  = ['Fire', 'Water', 'Grass', 'Electric', 'Psychic', 'Ice', 'Dragon', 'Dark', 'Fairy', 'Nuclear', 'Cosmic'];
+			special.includes(moveType)? category = 'Special' : category = 'Physical'
+		}
+		
 		// SSB
 		if (this.battle.tier.includes('Super Staff Bros')) {
 			if (allowTypeOverride && category !== "Status" && !move.isZ && !move.id.startsWith('hiddenpower')) {
