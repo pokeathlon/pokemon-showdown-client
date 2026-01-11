@@ -2083,6 +2083,7 @@ export class PokemonSprite extends Sprite {
 		itemremoved: null,
 		// partial trapping
 		bind: ['Bind', 'bad'],
+		greatbind: ['Great Bind', 'bad'],
 		clamp: ['Clamp', 'bad'],
 		firespin: ['Fire Spin', 'bad'],
 		infestation: ['Infestation', 'bad'],
