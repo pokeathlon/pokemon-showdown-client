@@ -595,7 +595,7 @@ export class BattleScene implements BattleSceneStub {
 			bg = 'fx/bg-npa.png';
 			this.setBgm(-101);
 		} else {
-			if (this.battle.dex.modid === 'gen9mariomon') {
+			if (['gen9mariomon', 'gen9mariomondev'].includes(this.battle.dex.modid)) {
 				const marioBGs = Object.keys(BattleBackdropsMario);
 				bg = marioBGs[this.numericId % marioBGs.length];
 
