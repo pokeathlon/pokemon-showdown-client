@@ -3339,9 +3339,140 @@ export class BattleTooltips {
 					value.modify(1.3)
 				}
 			}
-		}
-
+			if (this.battle.hasPseudoWeather('Swamp Field')) {
+				if (['Bug', 'Water', 'Grass'].includes(move.type)) {
+					value.modify(1.3);
+				};
+				if (move.type === 'Fire') {
+					value.modify(0.8);
+				};
+				if (['smackdown', 'thousandarrows', 'brine', 'gunkshot', 'hydrovortex', 'mudbarrage', 'mudbomb', 'mudshot', 'mudslap', 'muddywater', 'savagespinout', 'sludgewave'].includes(move.id)) {
+					value.modify(1.5);
+				};
+				if (['bulldoze', 'earthquake', 'magnitude'].includes(move.id)) {
+					value.modify(0.25);
+				}
+			}
+			if (this.battle.hasPseudoWeather('Corrosive Field')) {
+				if (pokemon.ability === 'corrosion') {
+					value.modify(1.5);
+				};
+				if (['acid', 'acidspray', 'grassknot', 'snaptrap'].includes(move.id)) {
+					value.modify(2);
+				};
+				if (['appleacid', 'mudbomb', 'mudslap', 'mudshot', 'muddywater', 'smackdown', 'thousandarrows', 'whirlpool'].includes(move.id)) {
+					value.modify(1.5);
+				};
+				if (['seedflare'].includes(move.id)) {
+					value.modify(1.3);
+				};
+			}
+			if (this.battle.hasPseudoWeather('Desert Field')) {
+				if (move.type === 'Water' && !['scald', 'steameruption'].includes(move.id) && pokemon.isGrounded()) {
+					value.modify(0.5);
+				};
+				if (['burnup', 'dig', 'needlearm', 'heatwave', 'pinmissile', 'sandtomb', 'sandsearstorm', 'scald', 'scorchingsands', 'searingsunrazesmash', 'solarbeam', 'solarblade', 'steameruption', 'thousandwaves', 'bonemerang', 'boneclub', 'bonerush', 'shadowbone'].includes(move.id)) {
+					value.modify(1.5);
+				};
+			}
+			if (this.battle.hasPseudoWeather('Rocky Field')) {
+				if (move.type === 'Rock') {
+					value.modify(1.5);
+				};
+				if (move.id === 'rocksmah') {
+					value.modify(2);
+				};
+				if (['accelerock', 'bulldoze', 'earthquake', 'magnitude', 'rockclimb', 'strength'].includes(move.id)) {
+					value.modify(1.5);
+				}
+			}
+			if (this.battle.hasPseudoWeather('Forest Field')) {
+				if (move.type === 'Grass') {
+					value.modify(1.5);
+				};
+				if (move.type === 'Bug' && move.category === 'Special') {
+					value.modify(1.5);
+				};
+				if (move.id === 'cut') {
+					value.modify(2);
+				};
+				if (['aircutter', 'attackorder', 'electroweb', 'gravapple', 'airslash', 'breakingswipe', 'furycutter', 'galestrike', 'psychocut', 'slash'].includes(move.id)) {
+					value.modify(1.5);
+				};
+				if (['surf', 'muddywater'].includes(move.id)) {
+					value.modify(0.5);
+				};
+			}
+			if (this.battle.hasPseudoWeather('Volcanic Top Field')) {
+				if (move.type === 'Fire') {
+					value.modify(1.2);
+				};
+				if (move.type === 'Flying') {
+					value.modify(1.3);
+				};
+				if (move.type === 'Ice') {
+					value.modify(0.5);
+				};
+				if (move.type === 'Water' && !['scald', 'steameruption'].includes(move.id)) {
+					value.modify(0.9);
+				};
+				if (['clearsmog', 'thunder', 'infernalparade', 'scald', 'steameruption', 'gust', 'icywind', 'ominouswind', 'precipiceblades', 'razorwind', 'silverwind', 'smog', 'twister'].includes(move.id)) {
+					value.modify(1.5);
+				};
+				if (['eruption', 'heatwave', 'lavaplume', 'magmadrift', 'magmastorm', 'bounce', 'fly', 'blizzard', 'glaciate', 'subzeroslammer'].includes(move.id)) {
+					value.modify(1.3);
+				};
+				if (['hydropump', 'hydrovortex', 'muddywater', 'oceanicoperetta', 'sparklingaria', 'surf', 'waterpledge', 'waterspout', 'watersport'].includes(move.id)) {
+					value.modify(0.625);
+				};
+			}
+			if (this.battle.hasPseudoWeather('Wasteland Field')) {
+				if (move.id === 'spitup') {
+					value.modify(2);
+				};
+				if (['mudbomb', 'mudshot', 'mudslap', 'powerwhip', 'vinewhip'].includes(move.id)) {
+					value.modify(1.5);
+				};
+				if (['gunkshot', 'octazooka', 'sludge', 'sludgebomb', 'sludgewave'].includes(move.id)) {
+					value.modify(1.2);
+				};
+				if (['bulldoze', 'earthquake', 'magnitude'].includes(move.id)) {
+					value.modify(0.25);
+				};
+			}
+			if (this.battle.hasPseudoWeather('Beach Field')) {
+				if (['mudbomb', 'mudshot', 'mudslap', 'sandtomb'].includes(move.id)) {
+					value.modify(2);
+				};
+				if (['strength', 'brine', 'clangoroussoulblaze', 'crabhammer', 'hiddenpower', 'landswrath', 'muddywater', 'razorshell', 'sandsearstorm', 'scorchingsands', 'shellsidearm', 'shelltrap', 'smellingsalts', 'surf', 'thousandwaves', 'wavecrash'].includes(move.id)) {
+					value.modify(1.5); 
+				};
+				if (['aurasphere', 'focusblast', 'focuspunch', 'storedpower', 'zenehadbutt'].includes(move.id)) {
+					value.modify(1.3);
+				};
+				if (move.id === 'psychic') {
+					value.modify(1.2);
+				}
+			}
+			if (this.battle.hasPseudoWeather('Cave Field')) {
+				if (move.type === 'Rock') {
+					value.modify(1.5);
+				};
+				if (move.flags.sound) {
+					value.modify(1.5);
+				};
+				if (move.type === 'Flying' && !move.flags.contact) {
+					value.modify(0.5);
+				};
+				if (move.id === 'rocktomb') {
+					value.modify(1.5);
+				};
+				if (['diamondstorm', 'powergem', 'aciddownpour', 'sludgewave', 'blizzard', 'subzeroslammer', 'devastatingdrake', 'dracometeor'].includes(move.id) ) {
+					value.modify(1.3);
+				}
+			}
 		return value;
+		}
 	}
 
 	static incenseTypes: { [itemName: string]: Dex.TypeName } = {
@@ -3471,8 +3602,8 @@ export class BattleTooltips {
 
 		if (pokemon.fusion) {
 
-			const fusionSpecies = Dex.mod('gen9infinitefusion').species.get(pokemon.fusion);
-			const species = Dex.mod('gen9infinitefusion').species.get(pokemon.speciesForme);
+			const fusionSpecies = Dex.mod('gen9infinitefusion' as ID).species.get(pokemon.fusion);
+			const species = Dex.mod('gen9infinitefusion' as ID).species.get(pokemon.speciesForme);
 
 			let speciesTypes = species.types;
 			let fusionTypes = fusionSpecies.types;
