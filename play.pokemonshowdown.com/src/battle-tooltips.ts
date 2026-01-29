@@ -3199,6 +3199,146 @@ export class BattleTooltips {
 					value.modify(1.2);
 				}
 			}
+			if (this.battle.hasPseudoWeather('Chess Board Field')) {
+				if (['ancientpower', 'continentalcrush', 'psychic', 'rockthrow', 'barrage', 'secretpower', 'shatteredpsyche', 'strength', 'fakeout', 'feint', 'feintattack', 'firstimpression', 'shadowsneak', 'smartstrike', 'suckerpunch'].includes(move.id)) {
+					value.modify(1.5);
+				};
+				if (['gorillatactics', 'reckless'].includes(pokemon.ability)) {
+					value.modify(1.2);
+				};
+				if (pokemon.ability === 'queenlymajesty') {
+					value.modify(1.5);
+				};
+			}
+			if (this.battle.hasPseudoWeather('Big Top Arena Field')) {
+				if (['acrobatics', 'fly', 'firelash', 'powerwhip', 'vinewhip', 'fierydance', 'petaldance', 'revelationdance', 'firstimpression', 'drumbeating'].includes(move.id) || move.flags.sound) {
+					value.modify(1.5);
+				};
+				if (move.id === 'payday') {
+					value.modify(2);
+				}
+			}
+			if (this.battle.hasPseudoWeather('Factory Field')) {
+				if (['doubleironbash', 'flashcannon', 'geargrind', 'gyroball', 'magnetbomb'].includes(move.id)) {
+					value.modify(2);
+				};
+				if (['steamroller', 'superumdsequence', 'technoblast'].includes(move.id)) {
+					value.modify(1.5);
+				};
+				if (move.type === 'Electric') {
+					value.modify(1.2);
+				};
+			}
+			if (this.battle.hasPseudoWeather('Short-Circuit Field')) {
+				if (move.id === 'steelbeam') {
+					value.modify(10/6);
+				}
+				if (['geargrind', 'superumdmove', 'dazzlinggleam', 'gyroball', 'hydrovortex', 'magnetbomb', 'muddywater', 'surf', 'flashcannon'].includes(move.id)) {
+					value.modify(1.5)
+				}
+				if (['aurawheel', 'chargebeam', 'discharge', 'gigavolthavoc', 'iondeluge', 'overdrive', 'paraboliccharge', 'superumdmove', 'wildcharge', 'darkpulse', 'nightdaze', 'nightslash', 'phantomforce', 'shadowball', 'shadowbone', 'shadowclaw', 'shadowforce', 'shadowpunch', 'shadowsneak'].includes(move.id)) {
+					value.modify(1.3)
+				}
+				if (move.id === 'lightthatburnsthesky') {
+					value.modify(0.5);
+				}
+			}
+			if (this.battle.hasPseudoWeather('Glitch Field')) {
+				if (move.type === 'Psychic') {
+					value.modify(1.2);
+				}
+			}
+			if (this.battle.hasPseudoWeather('Mirror Arena Field')) {
+				if (move.id === 'mirrorshot') {
+					value.modify(2);
+				};
+				if (['aurorabeam', 'signalbeam', 'flashcannon', 'lusterpurge', 'doomdesire', 'dazzlinggleam', 'technoblast', 'prismaticlaser', 'photongeyser'].includes(move.id)) {
+					value.modify(1.5);
+				}
+			}
+			if (this.battle.hasPseudoWeather('Corrupted Cave Field')) {
+				if (move.type === 'Poison') {
+					value.modify(1.5);
+				}
+				if (['Grass', 'Rock'].includes(move.type)) {
+					value.modify(1.2);
+				}
+				if (move.type === 'Fairy') {
+					value.modify(0.5);
+				}
+				if (move.type === 'Flying' && !move.flags.contact) {
+					value.modify(0.5);
+				}
+				if (pokemon.ability === 'corrosion') {
+					value.modify(1.5);
+				}
+				if (['applceacid', 'seedflare'].includes(move.id)) {
+					value.modify(1.5);
+				}
+				if (['seedflare', 'solarbeam', 'solarblade', 'blastburn', 'eruption', 'heatwave', 'infernooverdrive', 'lavaplume'].includes(move.id)) {
+					value.modify(1.3);
+				}
+			}
+			if (this.battle.hasPseudoWeather('Colosseum Field')) {
+				if (pokemon.ability === 'skilllink' && move.multihit && Array.isArray(move.multihit) && move.multihit.length) {
+					value.modify(1.2);
+				}
+				if (['beatup', 'fellstinger', 'payday', 'pursuit', 'reversal'].includes(move.id)) {
+					value.modify(2);
+				};
+				if (['bonerush', 'boneclub', 'bonemerang', 'brutalswing', 'bulletpunch', 'clangingscales', 'electroweb', 'firstimpression', 'leafblade', 'meteorassault', 'meteormash', 'nightslash', 'payback', 'punishment', 'psychocut', 'sacredsword', 'secretsword', 'smackdown', 'smartstrike', 'steamroller', 'submission', 'vinewhip'].includes(move.id)) {
+					value.modify(1.5);
+				};
+				if (['anchorshot', 'crabhammer', 'dragonhammer', 'drillpeck', 'drillrun', 'firelash', 'icehammer', 'iciclespear', 'powerwhip', 'shadowbone', 'spiritshackle', 'stormthrow', 'suckerpunch', 'throatchop', 'woodhammer'].includes(move.id)) {
+					value.modify(1.2);
+				}
+			}
+			if (this.battle.hasPseudoWeather('Concert Venue Field')) {
+				if (move.flags.sound) {
+					value.modify(1.5);
+				};
+				if (['acid', 'acidspray', 'circlethrow', 'dragontail', 'drumbeating', 'fakeout', 'firstimpression', 'rollout'].includes(move.id)) {
+					value.modify(1.5);
+				}
+			}
+			if (this.battle.hasPseudoWeather('Back Alley Field')) {
+				if (move.type === 'Dark' && move.category === 'Physical') {
+					value.modify(1.5);
+				};
+				if (['Bug', 'Poison'].includes(move.type)) {
+					value.modify(1.3);
+				};
+				if (move.type === 'Fairy') {
+					value.modify(0.5);
+				};
+				if (['aerialace', 'aircutter', 'airslash', 'aquacutter', 'behemothblade', 'ceaselessedge', 'crosspoison', 'cut', 'furycutter', 'hexingslash', 
+					'leafblade', 'nightslash', 'psychocut', 'razorleaf', 'razorshell', 'sacredsword', 'slashandburn', 'solarblade', 'slash', 'stoneaxe', 'xscissor', 
+					'branchpoke', 'drillpeck', 'drillrun', 'falsesurrender', 'fellstinger', 'furyattack', 'gildedarrow', 'gildedhelix', 'glaciallance', 'hornattack', 
+					'hornleech', 'megahorn', 'needlearm', 'peck', 'pinmissile', 'pluck', 'poisonjab', 'poisonsting', 'quicksilverspear', 'twineedle', 'smartstrike', 
+					'firstimpression', 'beatup', 'payday', 'shadowsneak', 'smog', 'spectralthief', 'steamroller', 'technoblast'].includes(move.id)) {
+					value.modify(1.5);
+				};
+				if (['boomburst', 'echoedvoice', 'hypervoice', 'uproar'].includes(move.id)) {
+					value.modify(1.3);
+				}
+			}
+			if (this.battle.hasPseudoWeather('City Field')) {
+				if (move.type === 'Normal' && move.category === 'Physical') {
+					value.modify(1.5);
+				};
+				if (['Bug', 'Poison', 'Steel'].includes(move.type)) {
+					value.modify(1.3);
+				};
+				if (move.type === 'Fairy') {
+					value.modify(0.7);
+				};
+				if (['firstimpression', 'beatup', 'payday', 'shadowsneak', 'smog', 'spectralthief', 'steamroller', 'technoblast'].includes(move.id)) {
+					value.modify(1.5);
+				};
+				if (['covet', 'pursuit', 'thief'].includes(move.id)) {
+					value.modify(1.3)
+				}
+			}
 		}
 
 		return value;
