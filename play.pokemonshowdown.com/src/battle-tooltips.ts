@@ -3040,6 +3040,165 @@ export class BattleTooltips {
 					value.modify(0.5)
 				}
 			}
+			if (this.battle.hasPseudoWeather('Dark Crystal Cavern Field')) {
+				if (['prismaticlaser'].includes(move.id)) {
+					value.modify(2)
+				}
+				if (['blackholeeclipse','darkpulse', 'nightdaze', 'nightslash', 'menacingmoonrazemaelstrom', 'shadowball', 'shadowbone', 'shadowclaw', 'shadowforce', 'shadowpunch', 'shadowsneak'].includes(move.id)) {
+					value.modify(1.5, 'Terrain Boost')
+				}
+				if (move.id === 'lightthatburnsthesky') {
+					value.modify(0.5)
+				}
+			}
+			if (this.battle.hasPseudoWeather('Rainbow Field')) {
+				if (move.type === 'Normal' && move.category === 'Special') {
+					value.modify(1.5)
+				}
+				if (['aurorabeam', 'dazzlinggleam', 'dragonpulse', 'firepledge', 'fleurcannon', 'grasspledge',
+					'heartstamp', 'hiddenpower', 'judgement', 'mirrorbeam', 'mistball', 'moonblast', 'mysticalfire',
+					'oceanicoperetta', 'prismaticlaser', 'relicsong', 'sacredfire', 'secretpower', 'silverwind',
+					'solarbeam', 'solarblade', 'sparklingaria', 'triattack', 'twinkletackle', 'waterpledge',
+					'weatherball', 'zenheadbutt'].includes(move.id)) {
+					value.modify(1.5, 'Terrain Boost')
+				}
+				if (move.id === 'lightthatburnsthesky') {
+					value.modify(1.5)
+				}
+				if (['darkpulse', 'neverendingnightmare', 'nightdaze', 'shadowball'].includes(move.id)) {
+					value.modify(0.5, 'Terrain Boost')
+				}
+			}
+			if (this.battle.hasPseudoWeather('Crystal Cavern Field')) {
+				if (['Rock', 'Dragon'].includes(move.type)) {
+					value.modify(1.5)
+				}
+				if (['judgement', 'multiattack', 'prismaticlaser', 'rockclimb', 'strength', 'ancientpower', 'diamondstorm', 'lusterpurge', 'powergem', 'rocksmash', 'rocktomb'].includes(move.id)) {
+					value.modify(1.5, 'Terrain Boost')
+				}
+				if (['aurorabeam', 'dazzlinggleam', 'doomdesire', 'flashcannon', 'menacingmoonrazemaelstrom', 'mirrorbeam', 'mirrorshot', 'moongeistbeam', 'photongeyser', 'signalbeam', 'technoblast'].includes(move.id)) {
+					value.modify(1.3)
+				}
+			}
+			if (this.battle.hasPseudoWeather('Blessed Field')) {
+				if (['Normal', 'Fairy'].includes(move.type) && move.category === 'Special') {
+					value.modify(1.5)
+				}
+				if (['Dragon', 'Psychic'].includes(move.type)) {
+					value.modify(1.2)
+				}
+				if ((move.type === 'Dark' && move.category === 'Special') || move.type === 'Ghost') {
+					value.modify(0.5)
+				}
+				if (['extremespeed', 'judgement', 'sacredfire', 'mysticalfire', 'magicalleaf', 'ancientpower', 'sacredsword', 'return'].includes(move.id)) {
+					value.modify(1.5, 'Terrain Boost')
+				}
+				if (['aeroblast', 'behemothblade', 'behemothbash', 'crushgrip', 'diamondstorm', 'dragonascent',
+					'doomdesire', 'dynamaxcannon', 'eternabeam', 'fleurcannon', 'genesissupernova', 'hyperspacehole',
+					'landswrath', 'lusterpurge', 'menacingmoonrazemaelstrom', 'mistball', 'moongeistbeam', 'multipulse',
+					'originpulse', 'precipiceblades', 'prismaticlaser', 'psychoboost', 'psystrike', 'relicsong',
+					'roaroftime', 'searingsunrazesmash', 'secretsword', 'spacialrend', 'sunsteelstrike', 'ominouswind', 
+					'phantomforce', 'shadowforce', 'spectralscream', 'lightthatburnsthesky'].includes(move.id)) {
+					value.modify(1.3)
+				}
+			}
+			if (this.battle.hasPseudoWeather('Fairy Tale Field')) {
+				if (pokemon.ability === 'queenlymajesty' || ['Dragon', 'Steel', 'Fairy'].includes(move.type) || 
+					['airslash', 'aquacutter', 'behemothblade', 'ceaselessedge', 'leafblade', 'nightslash', 'psychocut', 
+					'razorshell', 'smartstrike', 'solarblade', 'stoneaxe', 'ancientpower', 'behemothbash', 'fleurcannon', 
+					'magiicalleaf', 'menacingmoonrazemaelstrom', 'moongeistbeam', 'mysticalfire', 'oceanicoperetta', 'relicsong', 
+					'sparklingaria'].includes(move.id)) {
+					value.modify(1.5)
+				}
+				if (['drainingkiss', 'mistball'].includes(move.id)) {
+					value.modify(2.0)
+				}
+			}
+			if (this.battle.hasPseudoWeather('Starlight Arena Field')) {
+				if (['Dark', 'Psychic'].includes(move.type) || 
+					['aurorabeam', 'dazzlinggleam', 'flashcannon', 'lusterpurge', 
+					'mirrorbeam', 'mirrorshot', 'moonblast', 'nightdaze', 'nightslash', 
+					'photongeyser', 'prismaticlaser', 'signalbeam', 'technoblast', 'solarbeam'].includes(move.id)) {
+					value.modify(1.5)
+				}
+				if (move.type === 'Fairy') {
+					value.modify(1.3)
+				}
+				if (move.id === 'doomdesire') {
+					value.modify(4)
+				}
+				if (['blackholeeclypse', 'cometpunch', 'dracometeor', 'hyperspacefury', 'hyperspacehole', 'lightthatburnsthesky', 'menacingmoonrazemaelstrom', 'meteorassault', 'meteormash', 'moongeistbeam', 'spacialrend', 'searingsunrazesmash', 'sunsteelstrike', 'swift'].includes(move.id)) {
+					value.modify(2)
+				}
+			}
+			if (this.battle.hasPseudoWeather('New World Field')) {
+				if (move.type === 'Dark') {
+					value.modify(1.5)
+				}
+				if (['ancientpower', 'blackholeeclipse', 'cometpunch', 'dracometeor', 'futuresight', 'hyperspacefury', 'hyperspacehole', 'lightthatburnsthesky', 'meteormash', 'moonblast', 'spacialrend', 'swift', 'vacuumwave'].includes(move.id)) {
+					value.modify(2);
+				}
+				if (['aeroblast', 'aurorabeam', 'blueflare', 'boltstrike', 'continentalcrush', 'coreenforcer', 'crushgrip', 'dazzlinggleam', 'diamondstorm', 'dragonascent', 'earthpower', 'eruption', 'flashcannon', 'fleurcannon', 'freezeshock', 'fusionbolt', 'fusionflare', 'genesissupernova', 'iceburn', 'judgment', 'landswrath', 'lusterpurge', 'magmastorm', 'menacingmoonrazemaelstrom', 'mindblown', 'mirrorbeam', 'mirrorshot', 'mistball', 'moongeistbeam', 'multiattack', 'oblivionwing', 'originpulse', 'photongeyser', 'plasmafists', 'powergem', 'precipiceblades', 'prismaticlaser', 'psychoboost', 'psystrike', 'relicsong', 'roaroftime', 'sacredfire', 'sacredsword', 'searingshot', 'searingsunrazesmash', 'secretsword', 'seedflare', 'shadowforce', 'signalbeam', 'soulstealing7starstrike', 'spectralthief', 'steameruption', 'sunsteelstrike', 'technoblast', 'thousandarrows', 'thousandwaves', 'vcreate'].includes(move.id)) {
+					value.modify(1.5)
+				}
+				if (['bulldoze', 'magnitude', 'earthquake'].includes(move.id)) {
+					value.modify(0.25);
+				}
+				if (move.id === 'doomdesire') {
+					value.modify(4)
+				}
+			}
+			if (this.battle.hasPseudoWeather('Dimensional Field')) {
+				if (['Dark','Shadow'].includes(move.type)) {
+					value.modify(1.5)
+				}
+				if (move.type === 'Ghost') {
+					value.modify(1.2)
+				}
+				if (move.type === 'Fairy') {
+					value.modify(0.5)
+				}
+				if (['dynamaxcannon', 'eternabeam', 'hyperspacefury', 'hyperspacehole', 'roaroftime', 'shadowforce', 'spacialrend', 'fierywrath', 'freezingglare', 'lashout', 'outrage', 'ragingfury', 'stompingtantrum', 'thrash'].includes(move.id)) {
+					value.modify(1.5)
+				}
+				if (['darkpulse', 'nightdaze'].includes(move.id)) {
+					value.modify(1.2);
+				};
+				if (['freezeshock', 'glaciate', 'iceburn', 'seedflare', 'blizzard', 'coldtruth', 'sheercold'].includes(move.id)) {
+					value.modify(1.3)
+				}
+			}
+			if (this.battle.hasPseudoWeather('Haunted Field')) {
+				if (move.type === 'Ghost') {
+					value.modify(1.5)
+				}
+				if (['firespin', 'flameburst', 'flamecharge', 'inferno', 'astonish', 'boneclub', 'bonerush', 'bonemerang'].includes(move.id)) {
+					value.modify(1.5)
+				}
+				if (move.id === 'shadowbone') {
+					value.modify(1.2);
+				};
+				if (['judgement', 'originpulse', 'purify', 'sacredfire', 'dazzlinggleam'].includes(move.id)) {
+					value.modify(1.3)
+				}
+			}
+			if (this.battle.hasPseudoWeather('Bewitched Woods Field')) {
+				if (['Fairy', 'Grass'].includes(move.type)) {
+					value.modify(1.5)
+				}
+				if (move.type === 'Dark') {
+					value.modify(1.3)
+				}
+				if (['hex', 'mysticalfire', 'spiritbreak'].includes(move.id)) {
+					value.modify(1.5);
+				};
+				if (['aurorabeam', 'bubblebeam', 'chargebeam', 'flashcannon', 'hyperbeam', 'icebeam', 'magicalleaf', 'mirrorbeam', 'psybeam', 'signalbeam'].includes(move.id)) {
+					value.modify(1.4);
+				};
+				if (['darkpulse', 'moonblast', 'nightdaze'].includes(move.id)) {
+					value.modify(1.2);
+				}
+			}
 		}
 
 		return value;
