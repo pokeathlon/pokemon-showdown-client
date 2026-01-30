@@ -3471,6 +3471,66 @@ export class BattleTooltips {
 					value.modify(1.3);
 				}
 			}
+			if (this.battle.hasPseudoWeather('Mountain Field')) {
+				if (move.type === 'Rock') {
+					value.modify(1.5);
+				};
+				if (move.type === 'Flying') {
+					value.modify(1.5);
+				};
+				if (pokemon.ability === 'longreach') {
+					value.modify(1.5);
+				};
+				if (['hypervoice','circlethrow', 'stormthrow','avalanche', 'thunder', 'eruption', 'vitalthrow', 'fairywind', 'icywind', 'mountaingale', 'ominouswind', 'razorwind', 'silverwind', 'twister'].includes(move.id)) {
+					value.modify(1.5);
+				};
+				if (['bounce', 'fly', 'blizzard', 'glaciate', 'mountaingale', 'subzeroslammer', 'eruption', 'infernooverdrive', 'lavaplume', 'magmadrift'].includes(move.id)) {
+					value.modify(1.3);
+				}
+			}
+			if (this.battle.hasPseudoWeather('Snowy Mountain Field')) {
+				if (['Rock', 'Ice', 'Flying'].includes(move.type)) {
+					value.modify(1.5);
+				};
+				if (move.type === 'Fire') {
+					value.modify(0.5);
+				};
+				if (pokemon.ability === 'longreach') {
+					value.modify(1.5);
+				};
+				if (move.id === 'icywind') {
+					value.modify(2);
+				};
+				if (['fairywind', 'avalanche', 'bittermalice', 'glaciate', 'powdersnow', 'circlethrow', 'stormthrow', 'vitalthrow', 'hypervoice', 'mountaingale', 'ominouswind', 'razorwind', 'silverwind', 'twister'].includes(move.id)) {
+					value.modify(1.5);
+				};
+				if (['scald', 'steameruption'].includes(move.id)) {
+					value.modify(0.5);
+				};
+				if (['firepledge', 'flameburst', 'heatwave', 'incinerate', 'infernooverdrive', 'lavaplume', 'mindblown', 'ragingfury', 'searingshot', 'bounce', 'fly', 'eruption', 'magmadrift'].includes(move.id)) {
+					value.modify(1.3);
+				};
+			}
+			if (this.battle.hasPseudoWeather('Deep Earth Field')) {
+				if (move.type === 'Rock') {
+					value.modify(1.3);
+				};
+				if (move.type === 'Psychic') {
+					value.modify(1.3);
+				};
+				if (move.priority < 0) {
+					value.modify(1.3);
+				};
+				if (move.priority > 0) {
+					value.modify(0.7);
+				};
+				if (['landswrath', 'precipiceblades', 'tectonicrage', 'smackdown', 'magnetbomb', 'coreenforcer', 'crushgrip'].includes(move.id)) {
+					value.modify(2);
+				};
+				if (['ancientpower', 'bodypress', 'lowkick','spacialrend' , 'thousandarrows', 'thousandwaves', 'grassknot', 'crabhammer', 'hammerarm', 'icehammer', 'circlethrow', 'stormthrow', 'vitalthrow', 'bodyslam', 'dragonrush', 'fling', 'gravapple', 'heatcrash', 'heavyslam', 'iciclecrash', 'steamroller', 'stomp'].includes(move.id)) {
+					value.modify(1.5);
+				};
+			}
 		return value;
 		}
 	}
