@@ -1176,11 +1176,11 @@ export class BattleTooltips {
 			}
 		}
 
-		if (item === 'goombaboots' && (speciesName === 'Goomba' || speciesName === 'Goomba Stack' || fusionSpecies === 'Goomba' || fusionSpecies === 'Goomba Stack')) {
+		if (item === 'goombaboots' && (speciesName === 'Goomba' || speciesName === 'Goomba Stack' || fusionSpecies === 'Goomba' || fusionSpecies === 'Goomba Stack' || (this.battle.dex.modid === 'gen9mariomondev' && ( speciesName === "Strollin' Stu" || fusionSpecies === "Strollin' Stu")))) {
 			stats.spe *= 2;
 		}
 
-		if (item === 'sturdyshell' && (['Koopa Troopa', 'Paratroopa', 'Dry Bones'].includes(speciesName) || ['Koopa Troopa', 'Paratroopa', 'Dry Bones'].includes(fusionSpecies))) {
+		if (item === 'sturdyshell' && (['Koopa Troopa', 'Paratroopa', 'Dry Bones'].includes(speciesName) || ['Koopa Troopa', 'Paratroopa', 'Dry Bones'].includes(fusionSpecies) || (this.battle.dex.modid === 'gen9mariomondev' && ( speciesName === "Hammer Bro" || fusionSpecies === "Hammer Bro")))) {
 			stats.def *= 2;
 		}
 
