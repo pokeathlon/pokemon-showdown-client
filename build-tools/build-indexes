@@ -275,7 +275,7 @@ process.stdout.write("Building `data/teambuilder-tables.js`... ");
 	const NFE = GENS.map(num => num + 0.3);
 	const LC = GENS.map(num => num + 0.7);
 	const NATDEX = [9.1, 8.1];
-	const OTHER = [9.9, 9.82, 9.83, -9.83, 9.84, -9.84, -9.82, 9.822, -9.822, 9.85, -9.85, 9.855, -9.855, 9.87, -9.87, 9.886, -9.887, 9.887, 9.888, -9.888, 9.889, 6.877, -6.877, 9.81, -9.81, 9.83, -9.83, 7.811, -7.811, 7.812, -7.812, 6.833, -6.833, 6.844, -6.844];
+	const OTHER = [9.9, 9.82, 9.83, -9.83, 9.84, -9.84, -9.82, 9.822, -9.822, 9.823, -9.823, 9.85, -9.85, 9.855, -9.855, 9.87, -9.87, 9.886, -9.887, 9.887, 9.888, -9.888, 9.889, 6.877, -6.877, 9.81, -9.81, 9.83, -9.83, 7.811, -7.811, 7.812, -7.812, 6.833, -6.833, 6.844, -6.844];
 
 	// process.stdout.write("\n  ");
 	for (const genIdent of [...GENS, ...DOUBLES, ...VGC, ...NFE, ...OTHER, ...NATDEX, ...LC]) {
@@ -291,6 +291,7 @@ process.stdout.write("Building `data/teambuilder-tables.js`... ");
 		const isFusionsHoenn = ('' + genIdent).endsWith('.812');
 		const isNatDexPOA = ('' + genIdent).endsWith('.82');
 		const isPOA = ('' + genIdent).endsWith('.822');
+		const isPOAVGC = ('' + genIdent).endsWith('.823');
 		const isNatDexChaos = ('' + genIdent).endsWith('.85');
 		const isChaosFusions = ('' + genIdent).endsWith('.855');
 		const isNatDexInsg = ('' + genIdent).endsWith('.83');
@@ -309,7 +310,7 @@ process.stdout.write("Building `data/teambuilder-tables.js`... ");
 			let genStr = 'gen' + genNum;
 			if (isNatDexFusions || isFusions) genStr += 'infinitefusion';
 			if (isFusionsHoenn) genStr += 'infinitefusionhoenn';
-			if (isNatDexPOA || isPOA) genStr += 'pokeathlon';
+			if (isNatDexPOA || isPOA || isPOAVGC) genStr += 'pokeathlon';
 			if (isNatDexChaos) genStr += 'chaos';
 			if (isChaosFusions) genStr += 'chaosfusion';
 			if (isNatDexInsg || isInsg) genStr += 'insurgence';
@@ -404,6 +405,14 @@ process.stdout.write("Building `data/teambuilder-tables.js`... ");
 						species.nfe ? (species.prevo ? 'NFE' : 'LC') : 'Regular';
 				}
 				if (isMariomonVGC || isMariomonDevVGC) {
+					if (species.isNonstandard) return 'Illegal';
+					if (baseSpecies.tags.includes('Mythical')) return 'Mythical';
+					if (baseSpecies.tags.includes('Restricted Legendary')) return 'Restricted Legendary';
+					if (species.tier === 'NFE') return 'NFE';
+					if (species.tier === 'LC') return 'LC';
+					return 'Regular';
+				}
+				if (isPOAVGC) {
 					if (species.isNonstandard) return 'Illegal';
 					if (baseSpecies.tags.includes('Mythical')) return 'Mythical';
 					if (baseSpecies.tags.includes('Restricted Legendary')) return 'Restricted Legendary';
@@ -528,7 +537,7 @@ process.stdout.write("Building `data/teambuilder-tables.js`... ");
 			BattleTeambuilderTable[gen + 'lc'].tiers = tiers;
 			BattleTeambuilderTable[gen + 'lc'].overrideTier = overrideTier;
 			BattleTeambuilderTable[gen + 'lc'].formatSlices = formatSlices;
-		} else if (isVGC || isMariomonVGC || isMariomonDevVGC) {
+		} else if (isVGC || isMariomonVGC || isMariomonDevVGC || isPOAVGC) {
 			BattleTeambuilderTable[gen + 'vgc'] = {};
 			BattleTeambuilderTable[gen + 'vgc'].tiers = tiers;
 			BattleTeambuilderTable[gen + 'vgc'].overrideTier = overrideTier
@@ -584,7 +593,7 @@ process.stdout.write("Building `data/teambuilder-tables.js`... ");
 		}
 
 		const tierOrder = (() => {
-			if (isVGC || isGen9BH || isMariomonVGC || isMariomonDevVGC) {
+			if (isVGC || isGen9BH || isMariomonVGC || isMariomonDevVGC || isPOAVGC) {
 				return ["Mythical", "Restricted Legendary", "Regular", "NFE", "LC"];
 			}
 			if (isDoubles && genNum > 4) {

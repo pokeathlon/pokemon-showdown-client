@@ -621,6 +621,7 @@ abstract class BattleTypedSearch<T extends SearchType> {
 						if (info.banlist.includes('DUber')) format = 'doublesou' as ID;
 						if (info.ruleset.includes('Flat Rules')) format = 'mariomonvgc' as ID;
 						if (info.ruleset.includes('Flat Rules') && info.mod === 'gen9mariomondev') format = 'mariomondevvgc' as ID;
+						if (info.ruleset.includes('Flat Rules') && info.mod === 'gen9pokeathlon') format = 'pokeathlonvgc' as ID;
 						this.table = info.mod + (info.mod.includes('pokeathlon') && (info.ruleTable.includes('standardnatdex') || info.ruleTable.includes('natdexmod'))  ? 'natdex' : '') + 'doubles';
 					} else {
 						format = 'ag' as ID;
@@ -1078,6 +1079,9 @@ class BattlePokemonSearch extends BattleTypedSearch<'pokemon'> {
 			isVGCOrBS = true;
 		} else if (format === 'mariomondevvgc') {
 			table = table['gen9mariomondevvgc'];
+			isVGCOrBS = true;
+		} else if (format === 'pokeathlonvgc') {
+			table = table['gen9pokeathlonvgc'];
 			isVGCOrBS = true;
 		} else if (this.table) {
 			table = table[this.table];
