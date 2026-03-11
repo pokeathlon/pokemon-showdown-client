@@ -2048,6 +2048,7 @@ export class PokemonSprite extends Sprite {
 		syrupbomb: ['Syrupy', 'bad'],
 		doomdesire: null,
 		futuresight: null,
+		chitinsnare: null,
 		mimic: ['Mimic', 'good'],
 		watersport: ['Water Sport', 'good'],
 		mudsport: ['Mud Sport', 'good'],
