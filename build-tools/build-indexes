@@ -329,6 +329,7 @@ process.stdout.write("Building `data/teambuilder-tables.js`... ");
 		const ndDoublesBans = {};
 		const thirtyfivePokes = {};
 		const monotypeBans = {};
+		const metagameBans = {};
 		const gen5zuBans = {};
 		const gen4puBans = {};
 		for (const id of pokemon) {
