@@ -886,7 +886,7 @@ export const Dex = new class implements ModdedDex {
 
 		let top = Math.floor(num / 12) * 30;
 		let left = (num % 12) * 40;
-		return `image-rendering:pixelated;${fusion.length ? 'animation: rainbowshadow ' + ((Math.random() * 2) + 2) + 's infinite;' : ''}background:transparent url(${Dex.resourcePrefix}sprites/pokemonicons-sheet.png?v20) no-repeat scroll -${left}px -${top}px${fainted}`;
+		return `image-rendering:pixelated;${fusion.length ? 'animation: rainbowshadow ' + ((Math.random() * 2) + 2) + 's infinite;' : ''}background:transparent url(${Dex.resourcePrefix}sprites/pokemonicons-sheet.png?v21) no-repeat scroll -${left}px -${top}px${fainted}`;
 	}
 
 	getTeambuilderSpriteData(pokemon: any, dex: ModdedDex = Dex): TeambuilderSpriteData {
@@ -921,11 +921,12 @@ export const Dex = new class implements ModdedDex {
 		if (pokemon.shiny) spriteData.shiny = true;
 		if (Dex.prefs('nopastgens')) gen = 9;
 		if (Dex.prefs('bwgfx') && gen > 5) gen = 5;
+		// TODO: refactor after we get home sprites for Z-A Megas and Eternal Floette
 		let homeExists = (!species.isNonstandard || !['CAP', 'Custom'].includes(species.isNonstandard) ||
 			species.id === "xerneasneutral") && ![
 			"floetteeternal", "pichuspikyeared", "pikachubelle", "pikachucosplay", "pikachulibre", "pikachuphd", "pikachupopstar", "pikachurockstar",
-		].includes(species.id);
-		if ((gen >= 8 || dex.modid === 'gen7letsgo') && homeExists) {
+		].includes(species.id) && !(species.isMega && species.gen === 9);
+		if (gen >= 8 && homeExists) {
 			spriteData.spriteDir = 'sprites/home-centered';
 			spriteData.x = 8;
 			spriteData.y = 10;
