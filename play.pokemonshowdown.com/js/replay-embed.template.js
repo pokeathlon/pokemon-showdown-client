@@ -88,6 +88,7 @@ var Replays = {
 		});
 
 		this.$('.replay-controls-2').html('<div class="chooser leftchooser speedchooser"> <em>Speed:</em> <div><button value="hyperfast">Hyperfast</button><button value="fast">Fast</button><button value="normal" class="sel">Normal</button><button value="slow">Slow</button><button value="reallyslow">Really Slow</button></div> </div> <div class="chooser soundchooser" style="display:none"> <em>Music:</em> <div><button class="sel" value="on">On</button><button value="off">Off</button></div> </div>');
+		this.$('.replay-controls-3').html('<div class="replay-controls-3"><button onclick="location.href=\'https://replay.pokeathlon.com\'" type="button"><i class="fa fa-undo"></i> Return to all replays...</button></div>');
 
 		// this works around a WebKit/Blink bug relating to float layout
 		var rc2 = this.$('.replay-controls-2')[0];
