@@ -446,16 +446,11 @@ export class Pokemon implements PokemonDetails, PokemonHealth {
 		this.statusData.toxicTurns = 0;
 		if (this.side.battle.gen === 5) this.statusData.sleepTurns = 0;
 	}
-	/**
-	 * copyAll = false means Baton Pass,
-	 * copyAll = true means Illusion breaking
-	 * copyAll = 'shedtail' means Shed Tail
-	 */
-	copyVolatileFrom(pokemon: Pokemon, copySource?: | 'shedtail' | boolean) {
+	copyVolatileFrom(pokemon: Pokemon, copySource: 'batonpass' | 'shedtail' | 'illusion') {
 		this.boosts = pokemon.boosts;
 		this.volatiles = pokemon.volatiles;
 		// this.lastMove = pokemon.lastMove; // I think
-		if (!copySource) {
+		if (copySource === 'batonpass') {
 			const volatilesToRemove = [
 				'airballoon', 'attract', 'autotomize', 'disable', 'encore', 'foresight', 'gmaxchistrike', 'imprison', 'laserfocus', 'mimic', 'miracleeye', 'nightmare', 'saltcure', 'smackdown', 'stockpile1', 'stockpile2', 'stockpile3', 'syrupbomb', 'torment', 'typeadd', 'typechange', 'yawn',
 			];
@@ -467,13 +462,8 @@ export class Pokemon implements PokemonDetails, PokemonHealth {
 				delete this.volatiles[volatile];
 			}
 		}
-		if (copySource === 'shedtail') {
-			for (let i in this.volatiles) {
-				if (i === 'substitute') continue;
-				delete this.volatiles[i];
-			}
-			this.boosts = {};
-		}
+		// Shed Tail doesn't need special handling because the source already has
+		// its volatiles except Substitute cleared in switchOut.
 		delete this.volatiles['transform'];
 		delete this.volatiles['formechange'];
 
@@ -626,7 +616,7 @@ export class Pokemon implements PokemonDetails, PokemonHealth {
 		return Pokemon.getFormattedRange(range, precision, '\u2013');
 	}
 	destroy() {
-		if (this.sprite) this.sprite.destroy();
+		this.sprite?.destroy();
 		this.sprite = null!;
 		this.side = null!;
 	}
@@ -655,6 +645,7 @@ export class Side {
 	active = [null] as (Pokemon | null)[];
 	lastPokemon = null as Pokemon | null;
 	pokemon = [] as Pokemon[];
+	openTeamSheet = false;
 
 	sideConditions: {
 		[id: string]: [effectName: string, levels: number, minDuration: number, maxDuration: number],
@@ -744,6 +735,12 @@ export class Side {
 			break;
 		case 'luckychant':
 			this.sideConditions[condition] = [effect.name, 1, 5, 0];
+			break;
+		case 'futuresight':
+			this.sideConditions[condition] = ['Future Sight', 1, 3, 0];
+			break;
+		case 'doomdesire':
+			this.sideConditions[condition] = ['Doom Desire', 1, 3, 0];
 			break;
 		case 'stealthrock':
 		case 'spikes':
@@ -876,9 +873,9 @@ export class Side {
 		this.battle.lastMove = 'switch-in';
 		const effect = Dex.getEffect(kwArgs.from);
 		if (['batonpass', 'zbatonpass', 'shedtail'].includes(effect.id)) {
-			pokemon.copyVolatileFrom(this.lastPokemon!, effect.id === 'shedtail' ? 'shedtail' : false);
+			pokemon.copyVolatileFrom(this.lastPokemon!, effect.id === 'shedtail' ? 'shedtail' : 'batonpass');
 		} else if (this.battle.tier.includes(`Relay Race`) && !effect.id) {
-			if (this.lastPokemon && !this.lastPokemon.fainted) pokemon.copyVolatileFrom(this.lastPokemon, false);
+			if (this.lastPokemon && !this.lastPokemon.fainted) pokemon.copyVolatileFrom(this.lastPokemon, 'batonpass');
 		}
 
 		this.battle.scene.animSummon(pokemon, slot);
@@ -910,7 +907,7 @@ export class Side {
 			pokemon.maxhp = oldpokemon.maxhp;
 			pokemon.hpcolor = oldpokemon.hpcolor;
 			pokemon.status = oldpokemon.status;
-			pokemon.copyVolatileFrom(oldpokemon, true);
+			pokemon.copyVolatileFrom(oldpokemon, 'illusion');
 			pokemon.statusData = { ...oldpokemon.statusData };
 			if (oldpokemon.terastallized) {
 				pokemon.terastallized = oldpokemon.terastallized;
@@ -934,9 +931,13 @@ export class Side {
 	}
 	switchOut(pokemon: Pokemon, kwArgs: KWArgs, slot = pokemon.slot) {
 		const effect = Dex.getEffect(kwArgs.from);
-		if (!['batonpass', 'zbatonpass', 'shedtail'].includes(effect.id) &&
+		if (!['batonpass', 'zbatonpass'].includes(effect.id) &&
 			!(this.battle.tier.includes(`Relay Race`) && !effect.id)) {
 			pokemon.clearVolatile();
+			if (effect.id === 'shedtail') {
+				pokemon.volatiles = { substitute: ['substitute' as ID] };
+				pokemon.sprite?.animSub(true);
+			}
 		} else {
 			pokemon.removeVolatile('transform' as ID);
 			pokemon.removeVolatile('formechange' as ID);
@@ -1539,11 +1540,13 @@ export class Battle {
 		if (!fromeffect.id || callerMoveForPressure || fromeffect.id === 'pursuit') {
 			let moveName = move.name;
 			if (!callerMoveForPressure) {
-				if (move.isZ) {
+				const previousLine = this.stepQueue[this.currentStep - 1];
+				const zPower = previousLine.startsWith('|-zpower');
+				if (move.isZ && zPower) {
 					pokemon.item = move.isZ;
 					let item = Dex.items.get(move.isZ);
 					if (item.zMoveFrom) moveName = item.zMoveFrom;
-				} else if (move.name.startsWith('Z-')) {
+				} else if (move.name.startsWith('Z-') && zPower) {
 					moveName = moveName.slice(2);
 					move = Dex.moves.get(moveName);
 					if (window.BattleItems) {
@@ -2512,9 +2515,16 @@ export class Battle {
 				newSpeciesForme = args[2].substr(0, commaIndex);
 			}
 			let species = this.dex.species.get(newSpeciesForme);
+
 			if (nextArgs) {
+				// Handle abilities in Mix and Mega
 				if (nextArgs[0] === '-mega') {
-					species = this.dex.species.get(this.dex.items.get(nextArgs[3]).megaStone);
+					const item = this.dex.items.get(nextArgs[3]);
+					if (item.megaStone) {
+						let index = Object.values(item.megaStone).indexOf(species.name);
+						if (index < 0) index = 0;
+						species = this.dex.species.get(Object.values(item.megaStone)[index]);
+					}
 				} else if (nextArgs[0] === '-primal' && nextArgs.length > 2) {
 					if (nextArgs[2] === 'Red Orb') species = this.dex.species.get('Groudon-Primal');
 					if (nextArgs[2] === 'Blue Orb') species = this.dex.species.get('Kyogre-Primal');
@@ -2771,8 +2781,17 @@ export class Battle {
 			case 'reflect':
 				this.scene.resultAnim(poke, 'Reflect', 'good');
 				break;
+			case 'futuresight':
+				poke.side.addSideCondition(effect, false);
+				this.scene.updateWeather();
+				break;
+			case 'doomdesire':
+				poke.side.addSideCondition(effect, false);
+				this.scene.updateWeather();
+				break;
 			}
-			if (!(effect.id === 'typechange' && poke.terastallized)) {
+			if (!(effect.id === 'typechange' && poke.terastallized) &&
+				effect.id !== 'futuresight' && effect.id !== 'doomdesire') {
 				poke.addVolatile(effect.id);
 			}
 			this.scene.updateStatbar(poke);
@@ -2875,9 +2894,13 @@ export class Battle {
 					if (effect.effectType === 'Move') {
 						if (effect.name === 'Doom Desire') {
 							this.scene.runOtherAnim('doomdesirehit' as ID, [poke]);
+							poke.side.foe.removeSideCondition('Doom Desire');
+							this.scene.updateWeather();
 						}
 						if (effect.name === 'Future Sight') {
 							this.scene.runOtherAnim('futuresighthit' as ID, [poke]);
+							poke.side.foe.removeSideCondition('Future Sight');
+							this.scene.updateWeather();
 						}
 					}
 				}
@@ -3107,6 +3130,8 @@ export class Battle {
 			case 'lightscreen':
 			case 'safeguard':
 			case 'mist':
+			case 'futuresight':
+			case 'doomdesire':
 			case 'gmaxwildfire':
 			case 'gmaxvolcalith':
 			case 'gmaxvinelash':
@@ -3723,6 +3748,7 @@ export class Battle {
 			const team = Teams.unpack(args[2]);
 			if (!team.length) return;
 			const side = this.getSide(args[1]);
+			side.openTeamSheet = true;
 			side.clearPokemon();
 			for (const set of team) {
 				const details = set.species + (!set.level || set.level === 100 ? '' : `, L${set.level}`) +
