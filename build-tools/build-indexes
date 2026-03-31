@@ -1427,4 +1427,21 @@ process.stdout.write("Building fusion data...");
 	fs.writeFileSync('play.pokemonshowdown.com/data/fangame-credits.js', buf);
 }
 
+/*********************************************************
+ * Build afd-credits.js
+ *********************************************************/
+
+{
+	let FangameCredit = {};
+	let rawCredit = 
+		fs.readFileSync('play.pokemonshowdown.com/sprites/fangame-sprites/mariomon/afd-creators.csv').toString();
+
+	for (let line of rawCredit.split('\n')) {
+		const parts = line.split(';');
+		FangameCredit[parts[0]] = [parts[1], parts[2]];
+	}
+	const buf = `exports.AFDCredit = JSON.parse('${JSON.stringify(FangameCredit).replace(/['\\]/g, "\\$&")}');\n\n`;
+	fs.writeFileSync('play.pokemonshowdown.com/data/afd-credits.js', buf);
+}
+
 console.log("DONE");

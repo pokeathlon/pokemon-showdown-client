@@ -650,7 +650,11 @@ export const Dex = new class implements ModdedDex {
 
 		for (var fangame of ["Infinite Fusion", "Pokeathlon", "Insurgence", "Uranium", "Infinity", "Mariomon"]) {
 			if (species.tags.includes(fangame)) {
-				if (species.eggGroups.includes("Digimon")) spriteData.url = 'https://play.pokeathlon.com/sprites/fangame-sprites/infinity/digimon/' + (spriteData.isFrontSprite ? 'front' : 'back') + (spriteData.shiny ? '-shiny': '') + '/' + species.id + '.png';
+				if (species.eggGroups.includes("Digimon")) spriteData.url = 'https://play.pokeathlon.com/sprites/fangame-sprites/infinity/digimon/' + (spriteData.isFrontSprite ? 'front' : 'back') + (spriteData.shiny ? '-shiny' : '') + '/' + species.id + '.png';
+				else if (species.eggGroups.includes("Mariomon") && (Dex.afdMode || options.afd)) {
+					spriteData.url = 'https://play.pokeathlon.com/sprites/fangame-sprites/mariomon/afd-front' + (spriteData.shiny ? '-shiny' : '') + '/' + species.id + '.gif';
+					if (!spriteData.isFrontSprite) spriteData.flip = true;
+				}
 				else spriteData.url = 'https://play.pokeathlon.com/sprites/fangame-sprites/' + toID(fangame) + '/' + (!["Infinite Fusion"].includes(fangame) ? (spriteData.isFrontSprite ? 'front' : 'back') + (spriteData.shiny ? '-shiny': '') + '/' : '') + species.id + (["Pokeathlon", "Uranium"].includes(fangame) ? '.gif' : '.png');
 				spriteData.pixelated = true;
 				spriteData.gen = 5;
@@ -1096,7 +1100,9 @@ export const Dex = new class implements ModdedDex {
 
 		const dex = Dex.mod('gen9chaos' as ID);
 		const species = dex.species.get((pokemon.speciesForme || pokemon.species));
-		if (species.tags.includes("Pokeathlon") || species.tags.includes("Insurgence") || species.tags.includes("Uranium") || species.tags.includes("Infinity") || species.tags.includes("Mariomon")) {
+		if (species.tags.includes("Mariomon") && (Dex.afdMode)) {
+			if (window.AFDCredit && species.id in window.AFDCredit) return window.AFDCredit[species.id];
+		} else if (species.tags.includes("Pokeathlon") || species.tags.includes("Insurgence") || species.tags.includes("Uranium") || species.tags.includes("Infinity") || species.tags.includes("Mariomon")) {
 			if (window.FangameCredit && species.id in window.FangameCredit) return window.FangameCredit[species.id];
 		}
 		return false;
