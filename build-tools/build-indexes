@@ -89,7 +89,7 @@ function requireNoCache(pathSpec) {
 	index = index.concat(Object.keys(Dex.data.Items).map(x => x + ' item'));
 	index = index.concat(Object.keys(Dex.data.Abilities).map(x => x + ' ability'));
 	index = index.concat(Object.keys(Dex.data.TypeChart).map(x => toID(x) + ' type'));
-	index = index.concat(['physical', 'special', 'status'].map(x => toID(x) + ' category'));
+	index = index.concat(['physical', 'special', 'status', 'bite', 'bullet', 'charge', 'contact', 'dance', 'heal', 'powder', 'pulse', 'punch', 'recharge', 'slicing', 'sound', 'wind'].map(x => toID(x) + ' category'));
 	index = index.concat(['pokeathlon', 'insurgence', 'uranium', 'mysterygift', 'poa', 'infinity', 'digimon', 'mariomon'].map(x => toID(x) + ' egggroup'));
 	index = index.concat(['ou', 'uu', 'ru', 'nu', 'pu', 'zu', 'lc', 'nfe', 'uber', 'uubl', 'rubl', 'nubl', 'publ', 'zubl', 'cap', 'caplc', 'capnfe'].map(x => toID(x) + ' tier'));
 
@@ -1425,6 +1425,23 @@ process.stdout.write("Building fusion data...");
 	}
 	const buf = `exports.FangameCredit = JSON.parse('${JSON.stringify(FangameCredit).replace(/['\\]/g, "\\$&")}');\n\n`;
 	fs.writeFileSync('play.pokemonshowdown.com/data/fangame-credits.js', buf);
+}
+
+/*********************************************************
+ * Build afd-credits.js
+ *********************************************************/
+
+{
+	let FangameCredit = {};
+	let rawCredit = 
+		fs.readFileSync('play.pokemonshowdown.com/sprites/fangame-sprites/mariomon/afd-creators.csv').toString();
+
+	for (let line of rawCredit.split('\n')) {
+		const parts = line.split(';');
+		FangameCredit[parts[0]] = [parts[1], parts[2]];
+	}
+	const buf = `exports.AFDCredit = JSON.parse('${JSON.stringify(FangameCredit).replace(/['\\]/g, "\\$&")}');\n\n`;
+	fs.writeFileSync('play.pokemonshowdown.com/data/afd-credits.js', buf);
 }
 
 console.log("DONE");

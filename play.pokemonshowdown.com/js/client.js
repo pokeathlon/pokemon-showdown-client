@@ -774,7 +774,7 @@ function toId() {
 					mode = Dex.prefs('afd');
 				} else {
 					// uncomment on April Fools' Day
-					// mode = true;
+					mode = true;
 				}
 			}
 
@@ -1088,13 +1088,15 @@ function toId() {
 					this.renameRoom(roomid, parts[0], parts[1]);
 				} else if (data === 'nonexistent' && Config.server.id && roomid.slice(0, 7) === 'battle-' && errormessage) {
 					var replayid = roomid.slice(7);
-					if (Config.server.id !== 'showdown') replayid = Config.server.id + '-' + replayid;
-					var replayLink = 'https://' + Config.routes.replays + '/' + replayid;
+					// if (Config.server.id !== 'showdown') replayid = Config.server.id + '-' + replayid;
+					var replayLink = 'https://sim.pokeathlon.com/replays/' + replayid;
+					var self = this;
 					$.ajax(replayLink + '.json', { dataType: 'json' }).done(function (replay) {
 						if (replay) {
 							var title = replay.players[0] + ' vs. ' + replay.players[1];
 							app.receive('>battle-' + replayid + '\n|init|battle\n|title|' + title + '\n' + replay.log);
-							app.receive('>battle-' + replayid + '\n|expire|<a href=' + replayLink + ' target="_blank" class="no-panel-intercept">Open replay in new tab</a>');
+							app.receive('>battle-' + replayid + '\n|expire|This is a replay uploaded on ' + new Date(replay.uploadtime * 1000).toDateString() + '.');
+							self.rooms[roomid].battle.reset();
 						} else {
 							errormessage += '\n\nResponse received, but no data.';
 							app.addPopupMessage(errormessage);
