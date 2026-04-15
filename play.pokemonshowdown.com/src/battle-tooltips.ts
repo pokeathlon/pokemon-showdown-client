@@ -1058,7 +1058,7 @@ export class BattleTooltips {
 			weatherbuf = weatherbuf.slice(6);
 		}
 		buf = `<p>${weatherbuf}</p>` + buf;
-		if (['gen9mariomon', 'gen9mariomondev'].includes(this.battle.dex.modid)) {
+		if (this.battle.dex.modid === 'gen9mariomon') {
 			buf += `<p style="border-top:1px solid #888888;">Background by <b>${window.BattleBackdropsMario[scene.backdropImage]}</b></p>`;
 			if (scene.bgm) buf += `<p>\u266b <i>${window.BattleMusicMario[scene.bgm.url].title}</i> - <b>${window.BattleMusicMario[scene.bgm.url].composer}</b> \u266b</p>`;
 		}
@@ -1186,11 +1186,11 @@ export class BattleTooltips {
 			}
 		}
 
-		if (item === 'goombaboots' && (speciesName === 'Goomba' || speciesName === 'Goomba Stack' || fusionSpecies === 'Goomba' || fusionSpecies === 'Goomba Stack' || (this.battle.dex.modid === 'gen9mariomondev' && ( speciesName === "Strollin' Stu" || fusionSpecies === "Strollin' Stu")))) {
+		if (item === 'goombaboots' && (['Goomba', 'Goomba Stack'].includes(speciesName) || ['Goomba', "Goomba Stack"].includes(fusionSpecies))) {
 			stats.spe *= 2;
 		}
 
-		if (item === 'sturdyshell' && (['Koopa Troopa', 'Paratroopa', 'Dry Bones'].includes(speciesName) || ['Koopa Troopa', 'Paratroopa', 'Dry Bones'].includes(fusionSpecies) || (this.battle.dex.modid === 'gen9mariomondev' && ( speciesName === "Hammer Bro" || fusionSpecies === "Hammer Bro")))) {
+		if (item === 'sturdyshell' && (['Koopa Troopa', 'Paratroopa', 'Dry Bones', 'Hammer Bro'].includes(speciesName) || ['Koopa Troopa', 'Paratroopa', 'Dry Bones', 'Hammer Bro'].includes(fusionSpecies))) {
 			stats.def *= 2;
 		}
 
