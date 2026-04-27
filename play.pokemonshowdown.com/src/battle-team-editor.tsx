@@ -13,7 +13,7 @@ import { Teams } from './battle-teams';
 import { DexSearch, type SearchRow, type SearchType } from "./battle-dex-search";
 import { PSSearchResults } from "./battle-searchresults";
 import { BattleNatures, BattleStatNames, type StatName } from "./battle-dex-data";
-import { BattleStatGuesser, BattleStatOptimizer } from "./battle-tooltips";
+import { BattleStatGuesser, BattleStatOptimizer, BattleTooltips } from "./battle-tooltips";
 import { PSModel } from "./client-core";
 import { Net } from "./client-connection";
 import { PSIcon } from "./panels";
@@ -116,7 +116,8 @@ export class TeamEditorState extends PSModel {
 		this.defaultLevel = 100;
 		if (
 			formatid.includes('vgc') || formatid.includes('bss') || formatid.includes('ultrasinnohclassic') ||
-			formatid.includes('battlespot') || formatid.includes('battlestadium') || formatid.includes('battlefestival')
+			formatid.includes('battlespot') || formatid.includes('battlestadium') || formatid.includes('battlefestival') ||
+			formatid.includes('letsgo') || formatid.includes('champions')
 		) {
 			this.defaultLevel = 50;
 		}
@@ -713,20 +714,8 @@ export class TeamEditorState extends PSModel {
 		return 1;
 	}
 	getWeakness(types: readonly Dex.TypeName[], abilityid: ID, attackType: Dex.TypeName): number {
-		if (attackType === 'Ground' && abilityid === 'levitate') return 0;
-		if (attackType === 'Water' && abilityid === 'dryskin') return 0;
-		if (attackType === 'Fire' && abilityid === 'flashfire') return 0;
-		if (attackType === 'Electric' && abilityid === 'lightningrod' && this.gen >= 5) return 0;
-		if (attackType === 'Grass' && abilityid === 'sapsipper') return 0;
-		if (attackType === 'Electric' && abilityid === 'motordrive') return 0;
-		if (attackType === 'Water' && abilityid === 'stormdrain' && this.gen >= 5) return 0;
-		if (attackType === 'Electric' && abilityid === 'voltabsorb') return 0;
-		if (attackType === 'Water' && abilityid === 'waterabsorb') return 0;
-		if (attackType === 'Ground' && abilityid === 'eartheater') return 0;
-		if (attackType === 'Fire' && abilityid === 'wellbakedbody') return 0;
-
-		if (attackType === 'Fire' && abilityid === 'primordialsea') return 0;
-		if (attackType === 'Water' && abilityid === 'desolateland') return 0;
+		const abilityFactor = BattleTooltips.getTypeAbilityWeakness(attackType, abilityid, this.dex);
+		if (abilityFactor === 0) return 0;
 
 		if (abilityid === 'wonderguard') {
 			for (const type of types) {
@@ -734,15 +723,7 @@ export class TeamEditorState extends PSModel {
 			}
 		}
 
-		let factor = 1;
-		if ((attackType === 'Fire' || attackType === 'Ice') && abilityid === 'thickfat') factor *= 0.5;
-		if (attackType === 'Fire' && abilityid === 'waterbubble') factor *= 0.5;
-		if (attackType === 'Fire' && abilityid === 'heatproof') factor *= 0.5;
-		if (attackType === 'Ghost' && abilityid === 'purifyingsalt') factor *= 0.5;
-		if (attackType === 'Fire' && abilityid === 'fluffy') factor *= 2;
-		if ((attackType === 'Electric' || attackType === 'Rock' || attackType === 'Ice') && abilityid === 'deltastream') {
-			factor *= 0.5;
-		}
+		let factor = abilityFactor;
 		for (const type of types) {
 			factor *= this.getTypeWeakness(type, attackType);
 		}
@@ -2469,11 +2450,11 @@ class StatForm extends preact.Component<{
 
 			const stat = editor.getStat(statID, set, ivs[statID]);
 			let ev: number | string = set.evs ? (set.evs[statID] || 0) : defaultEV;
-			let width = stat * 75 / 504;
-			if (statID === 'hp') width = stat * 75 / 704;
-			if (width > 75) width = 75;
-			let hue = Math.floor(stat * 180 / 714);
-			if (hue > 360) hue = 360;
+			const maxStat = statID === 'hp' ?
+				Math.floor(176 * editor.defaultLevel / 25) + 10 :
+				Math.floor(247 * editor.defaultLevel / 50) + 5;
+			const width = Math.min(stat * 75 / maxStat, 75);
+			const hue = Math.min(Math.floor(stat * 180 / maxStat), 360);
 			const statName = editor.gen === 1 && statID === 'spa' ? 'Spc' : BattleStatNames[statID];
 			if (evs && !ev && !set.evs && statID === 'hp') ev = 'EVs';
 			return <span class="statrow">
@@ -2733,11 +2714,12 @@ class StatForm extends preact.Component<{
 	plus: Dex.StatNameExceptHP | null = null;
 	minus: Dex.StatNameExceptHP | null = null;
 	renderStatbar(stat: number, statID: StatName) {
-		let width = stat * 180 / 504;
-		if (statID === 'hp') width = Math.floor(stat * 180 / 704);
-		if (width > 179) width = 179;
-		let hue = Math.floor(stat * 180 / 714);
-		if (hue > 360) hue = 360;
+		const { editor } = this.props;
+		const maxStat = statID === 'hp' ?
+			Math.floor(176 * editor.defaultLevel / 25) + 10 :
+			Math.floor(247 * editor.defaultLevel / 50) + 5;
+		const width = Math.min(stat * 180 / maxStat, 180);
+		const hue = Math.min(Math.floor(stat * 180 / maxStat), 360);
 		return <span
 			style={`width:${Math.floor(width)}px;background:hsl(${hue},85%,45%);border-color:hsl(${hue},85%,35%)`}
 		></span>;
