@@ -494,9 +494,9 @@ export class Pokemon implements PokemonDetails, PokemonHealth {
 			if (speciesTypes.length === 2 && speciesTypes.includes('Flying') && speciesTypes.includes('Normal')) speciesTypes = ['Flying'];
 			if (fusionTypes.length === 2 && fusionTypes.includes('Flying') && fusionTypes.includes('Normal')) fusionTypes = ['Flying'];
 
-			const typesSet = new Set([speciesTypes[0] as Dex.TypeName]);
+			const typesSet = new Set([speciesTypes[0]]);
 			const bonusType = fusionTypes[fusionTypes.length - 1];
-			typesSet.add(bonusType as Dex.TypeName);
+			typesSet.add(bonusType);
 			if (fusionTypes.length === 2 && typesSet.size === 1) typesSet.add(fusionTypes[0]);
 			return [Array.from(typesSet), ''];
 		}

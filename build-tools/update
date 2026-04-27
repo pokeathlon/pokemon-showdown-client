@@ -184,9 +184,9 @@ function addCachebuster(_, attr, url, urlQuery) {
 }
 
 // add hashes to js and css files and rewrite URLs
-let indexContents = fs.readFileSync('play.pokemonshowdown.com/testclient.html', {encoding: 'utf8'});
+let indexContents = fs.readFileSync('play.pokemonshowdown.com/testclient.html', { encoding: 'utf8' });
 indexContents = indexContents.replace(/\?\?/g, `?${Math.random()}`);
-let preactIndexContents = fs.readFileSync('play.pokemonshowdown.com/preactalpha.template.html', {encoding: 'utf8'});
+let preactIndexContents = fs.readFileSync('play.pokemonshowdown.com/preactalpha.template.html', { encoding: 'utf8' });
 preactIndexContents = preactIndexContents.replace(URL_REGEX, addCachebuster);
 let crossprotocolContents = fs.readFileSync('play.pokemonshowdown.com/crossprotocol.template.html', UTF8);
 crossprotocolContents = crossprotocolContents.replace(URL_REGEX, addCachebuster);
@@ -195,9 +195,9 @@ replayEmbedContents = replayEmbedContents.replace(/play\.pokemonshowdown\.com/g,
 
 // add news, only if it's actually likely to exist
 process.stdout.write("and news... ");
-let stdout = '';
-let newsid = 0;
-let news = '[failed to retrieve news]';
+const stdout = '';
+const newsid = 0;
+const news = '[failed to retrieve news]';
 
 indexContents = indexContents.replace(/<!-- newsid -->/g, newsid);
 indexContents = indexContents.replace(/<!-- news -->/g, news);

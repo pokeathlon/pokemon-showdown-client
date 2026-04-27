@@ -26,7 +26,7 @@ import {
 import type * as DexData from "./battle-dex-data";
 import type { Teams } from "./battle-teams";
 import { Config } from "./client-main";
-import {SplitNames} from './battle-split-names';
+import { SplitNames } from './battle-split-names';
 
 export declare namespace Dex {
 	/* eslint-disable @typescript-eslint/no-shadow */
@@ -637,7 +637,7 @@ export const Dex = new class implements ModdedDex {
 		let fusionData = this.getFusionData(pokemon_info);
 
 		if (pokemon_info?.volatiles.formechange && pokemon_info.volatiles.transform) {
-			fusionData = this.getFusionData({species: pokemon_info.volatiles.formechange[1], fusion: pokemon_info.volatiles.transform[5], altsprite: pokemon_info.volatiles.transform[6]});
+			fusionData = this.getFusionData({ species: pokemon_info.volatiles.formechange[1], fusion: pokemon_info.volatiles.transform[5], altsprite: pokemon_info.volatiles.transform[6] });
 		}
 
 		if (fusionData.extension !== '') {
@@ -648,14 +648,13 @@ export const Dex = new class implements ModdedDex {
 			return spriteData;
 		}
 
-		for (var fangame of ["Infinite Fusion", "Pokeathlon", "Insurgence", "Uranium", "Infinity", "Mariomon"]) {
+		for (let fangame of ["Infinite Fusion", "Pokeathlon", "Insurgence", "Uranium", "Infinity", "Mariomon"]) {
 			if (species.tags.includes(fangame)) {
 				if (species.eggGroups.includes("Digimon")) spriteData.url = 'https://play.pokeathlon.com/sprites/fangame-sprites/infinity/digimon/' + (spriteData.isFrontSprite ? 'front' : 'back') + (spriteData.shiny ? '-shiny' : '') + '/' + species.id + '.png';
 				else if (species.eggGroups.includes("Mariomon") && (Dex.afdMode || options.afd)) {
 					spriteData.url = 'https://play.pokeathlon.com/sprites/fangame-sprites/mariomon/afd-front' + (spriteData.shiny ? '-shiny' : '') + '/' + species.id + '.gif';
 					if (!spriteData.isFrontSprite) spriteData.flip = true;
-				}
-				else spriteData.url = 'https://play.pokeathlon.com/sprites/fangame-sprites/' + toID(fangame) + '/' + (!["Infinite Fusion"].includes(fangame) ? (spriteData.isFrontSprite ? 'front' : 'back') + (spriteData.shiny ? '-shiny': '') + '/' : '') + species.id + (["Pokeathlon", "Uranium"].includes(fangame) ? '.gif' : '.png');
+				} else spriteData.url = 'https://play.pokeathlon.com/sprites/fangame-sprites/' + toID(fangame) + '/' + (!["Infinite Fusion"].includes(fangame) ? (spriteData.isFrontSprite ? 'front' : 'back') + (spriteData.shiny ? '-shiny' : '') + '/' : '') + species.id + (["Pokeathlon", "Uranium"].includes(fangame) ? '.gif' : '.png');
 				spriteData.pixelated = true;
 				spriteData.gen = 5;
 				if (fangame === "Mariomon") {
@@ -845,7 +844,7 @@ export const Dex = new class implements ModdedDex {
 		}
 
 		let id = toID(pokemon);
-		
+
 		if (!pokemon || typeof pokemon === 'string') pokemon = null;
 		// @ts-expect-error safe, but too lazy to cast
 		if (pokemon?.speciesForme) id = toID(pokemon.speciesForme);
@@ -858,7 +857,7 @@ export const Dex = new class implements ModdedDex {
 		}
 		let num = this.getPokemonIconNum(id, pokemon?.gender === 'F', facingLeft);
 
-		let fusion = pokemon?.fusion ? toID(pokemon.fusion): '';
+		let fusion = pokemon?.fusion ? toID(pokemon.fusion) : '';
 		let species = Dex.species.get(id);
 
 		let fainted = ((pokemon as Pokemon | ServerPokemon)?.fainted ? `;opacity:.3;filter:grayscale(100%) brightness(.5)` : ``);
@@ -978,7 +977,7 @@ export const Dex = new class implements ModdedDex {
 			let url = 'https://play.pokeathlon.com/sprites/fusion-sprites/' + fusionData.extension + '.png';
 			return 'background-image:url(' + url + ');background-position:' + data.x + 'px ' + data.y + 'px;background-repeat:no-repeat;background-size:100px;image-rendering:pixelated';
 		}
-		for (var fangame of ["Infinite Fusion", "Pokeathlon", "Insurgence", "Uranium", "Infinity", "Mariomon"]) {
+		for (let fangame of ["Infinite Fusion", "Pokeathlon", "Insurgence", "Uranium", "Infinity", "Mariomon"]) {
 			if (Dex.species.get(pokemon.species).tags.includes(fangame)) {
 				let url = 'https://play.pokeathlon.com/sprites/fangame-sprites/' + toID(fangame) + (!["Infinite Fusion"].includes(fangame) ? '/front' + shiny : '') + '/' + toID(pokemon.species) + (["Pokeathlon", "Uranium"].includes(fangame) ? '.gif' : '.png');
 				if (Dex.species.get(pokemon.species).eggGroups.includes('Digimon')) url = 'https://play.pokeathlon.com/sprites/fangame-sprites/infinity/digimon/front' + shiny + '/' + toID(pokemon.species) + '.png';
@@ -1083,8 +1082,8 @@ export const Dex = new class implements ModdedDex {
 				if (head_num.toString() in FusionIndex && FusionIndex[head_num].includes(body_num.toString())) {
 					for (let sprite of FusionIndex[head_num]) {
 						if (alphabet.includes(sprite.slice(-1)) &&
-						sprite.slice(0, -1) === body_num.toString() &&
-						!fusionData.alts.includes(sprite.slice(-1))) fusionData.alts += sprite.slice(-1); 
+							sprite.slice(0, -1) === body_num.toString() &&
+							!fusionData.alts.includes(sprite.slice(-1))) fusionData.alts += sprite.slice(-1);
 					}
 					fusionData.extension = extension;
 					if (pokemon.altsprite && FusionIndex[head_num].includes(body_num.toString() + pokemon.altsprite)) fusionData.extension += pokemon.altsprite;

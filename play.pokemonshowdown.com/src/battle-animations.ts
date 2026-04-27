@@ -600,12 +600,11 @@ export class BattleScene implements BattleSceneStub {
 				bg = marioBGs[this.numericId % marioBGs.length];
 
 				const marioMusic = Object.keys(BattleMusicMario);
-				var bgm = marioMusic[this.numericId % marioMusic.length];
+				let bgm = marioMusic[this.numericId % marioMusic.length];
 				if (!this.bgm || (this.bgm && this.bgm.url != bgm)) this.message(`\u266b <i>${BattleMusicMario[bgm].title}</i> - <b>${BattleMusicMario[bgm].composer}</b> \u266b`);
 				this.bgm = BattleSound.loadBgm(bgm, BattleMusicMario[bgm].loopstart, BattleMusicMario[bgm].loopend, this.bgm);
-				
-			}
-			else if (gen <= 1) bg = 'fx/bg-gen1.png?';
+
+			} else if (gen <= 1) bg = 'fx/bg-gen1.png?';
 			else if (gen <= 2) bg = 'fx/bg-gen2.png?';
 			else if (gen <= 3) bg = `fx/${BattleBackdropsThree[this.numericId % BattleBackdropsThree.length]}?`;
 			else if (gen <= 4) bg = `fx/${BattleBackdropsFour[this.numericId % BattleBackdropsFour.length]}`;
@@ -1421,7 +1420,7 @@ export class BattleScene implements BattleSceneStub {
 					z: side.z,
 					scale: 0.6,
 				}, this);
-				this.$spritesFront[spriteIndex].append(spike1.$el!);
+				this.$spritesFront[spriteIndex].append(spike1.$el);
 				frostArray.push(spike1);
 			}
 			if (frostArray.length < 2 && frostLevels >= 2) {
@@ -1432,7 +1431,7 @@ export class BattleScene implements BattleSceneStub {
 					z: side.z,
 					scale: 0.6,
 				}, this);
-				this.$spritesFront[spriteIndex].append(spike2.$el!);
+				this.$spritesFront[spriteIndex].append(spike2.$el);
 				frostArray.push(spike2);
 			}
 			if (frostArray.length < 3 && frostLevels >= 3) {
@@ -1443,7 +1442,7 @@ export class BattleScene implements BattleSceneStub {
 					z: side.z,
 					scale: 0.6,
 				}, this);
-				this.$spritesFront[spriteIndex].append(spike3.$el!);
+				this.$spritesFront[spriteIndex].append(spike3.$el);
 				frostArray.push(spike3);
 			}
 			if (frostArray.length < 4 && frostLevels >= 4) {
@@ -1454,7 +1453,7 @@ export class BattleScene implements BattleSceneStub {
 					z: side.z,
 					scale: 0.6,
 				}, this);
-				this.$spritesFront[spriteIndex].append(spike4.$el!);
+				this.$spritesFront[spriteIndex].append(spike4.$el);
 				frostArray.push(spike4);
 			}
 			if (frostArray.length < 5 && frostLevels >= 5) {
@@ -1465,7 +1464,7 @@ export class BattleScene implements BattleSceneStub {
 					z: side.z,
 					scale: 0.6,
 				}, this);
-				this.$spritesFront[spriteIndex].append(spike5.$el!);
+				this.$spritesFront[spriteIndex].append(spike5.$el);
 				frostArray.push(spike5);
 			}
 			break;
@@ -1484,7 +1483,7 @@ export class BattleScene implements BattleSceneStub {
 					z: side.z,
 					scale: 0.2,
 				}, this);
-				this.$spritesFront[spriteIndex].append(spike1.$el!);
+				this.$spritesFront[spriteIndex].append(spike1.$el);
 				wireArray.push(spike1);
 			}
 			if (wireArray.length < 2 && wireLevels >= 2) {
@@ -1495,7 +1494,7 @@ export class BattleScene implements BattleSceneStub {
 					z: side.z,
 					scale: 0.2,
 				}, this);
-				this.$spritesFront[spriteIndex].append(spike2.$el!);
+				this.$spritesFront[spriteIndex].append(spike2.$el);
 				wireArray.push(spike2);
 			}
 			if (wireArray.length < 3 && wireLevels >= 3) {
@@ -1506,7 +1505,7 @@ export class BattleScene implements BattleSceneStub {
 					z: side.z,
 					scale: 0.2,
 				}, this);
-				this.$spritesFront[spriteIndex].append(spike3.$el!);
+				this.$spritesFront[spriteIndex].append(spike3.$el);
 				wireArray.push(spike3);
 			}
 			if (wireArray.length < 4 && wireLevels >= 4) {
@@ -1517,7 +1516,7 @@ export class BattleScene implements BattleSceneStub {
 					z: side.z,
 					scale: 0.2,
 				}, this);
-				this.$spritesFront[spriteIndex].append(spike4.$el!);
+				this.$spritesFront[spriteIndex].append(spike4.$el);
 				wireArray.push(spike4);
 			}
 			if (wireArray.length < 5 && wireLevels >= 5) {
@@ -1528,7 +1527,7 @@ export class BattleScene implements BattleSceneStub {
 					z: side.z,
 					scale: 0.2,
 				}, this);
-				this.$spritesFront[spriteIndex].append(spike5.$el!);
+				this.$spritesFront[spriteIndex].append(spike5.$el);
 				wireArray.push(spike5);
 			}
 			break;
@@ -1569,10 +1568,10 @@ export class BattleScene implements BattleSceneStub {
 				scale: 0.3,
 			}, this);
 
-			this.$spritesFront[spriteIndex].append(fire1.$el!);
-			this.$spritesFront[spriteIndex].append(fire2.$el!);
-			this.$spritesFront[spriteIndex].append(fire3.$el!);
-			this.$spritesFront[spriteIndex].append(fire4.$el!);
+			this.$spritesFront[spriteIndex].append(fire1.$el);
+			this.$spritesFront[spriteIndex].append(fire2.$el);
+			this.$spritesFront[spriteIndex].append(fire3.$el);
+			this.$spritesFront[spriteIndex].append(fire4.$el);
 			this.sideConditions[siden][id] = [fire1, fire2, fire3, fire4];
 			break;
 		}
@@ -3468,7 +3467,7 @@ const BattleBackdrops = [
 	'bg-orassea.jpg',
 	'bg-skypillar.jpg',
 ];
-const BattleBackdropsMario: {[k: string]: string} = {
+const BattleBackdropsMario: { [k: string]: string } = {
 	'fx/backdrops/bg-desert.png': 'anima_nel',
 	'fx/backdrops/bg-galaxy.png': 'anima_nel',
 	'fx/backdrops/bg-inside.png': 'anima_nel',
@@ -3478,7 +3477,7 @@ const BattleBackdropsMario: {[k: string]: string} = {
 	'fx/backdrops/bg-rainbow.png': 'anima_nel',
 	'fx/backdrops/bg-sonic.png': 'anima_nel',
 };
-const BattleMusicMario: {[k: string]: AnyObject} = {
+const BattleMusicMario: { [k: string]: AnyObject } = {
 	'fx/music/vs-alaina.mp3': {
 		title: 'vs. Developer (Kobe)',
 		composer: 'psy_commando',

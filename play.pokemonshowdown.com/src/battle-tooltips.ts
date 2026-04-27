@@ -858,17 +858,17 @@ export class BattleTooltips {
 			name += ` <small>(${BattleLog.escapeHTML(pokemon.speciesForme)})</small>`;
 		}
 
-		let fuseBuf = pokemon.fusion ? ` <small><b>Fusion: </b>${pokemon.fusion}</small><br />`: ``;
+		let fuseBuf = pokemon.fusion ? ` <small><b>Fusion: </b>${pokemon.fusion}</small><br />` : ``;
 
 		let fusionData = Dex.getFusionData(pokemon);
 		let FangameCredit = Dex.getFangameCredit(pokemon);
 		if (clientPokemon?.volatiles.formechange && clientPokemon.volatiles.transform) {
-			fusionData = Dex.getFusionData({species: clientPokemon.volatiles.formechange[1], fusion: clientPokemon.volatiles.transform[5]});
-			FangameCredit = Dex.getFangameCredit({species: clientPokemon.volatiles.formechange[1]});
+			fusionData = Dex.getFusionData({ species: clientPokemon.volatiles.formechange[1], fusion: clientPokemon.volatiles.transform[5] });
+			FangameCredit = Dex.getFangameCredit({ species: clientPokemon.volatiles.formechange[1] });
 		}
 		let creditBuf = '';
 		if (fusionData.credit !== '') {
-			creditBuf = fusionData.credit !== '' ? ` <small><b>Sprite: </b>${fusionData.credit}</small><br />`: ``;
+			creditBuf = fusionData.credit !== '' ? ` <small><b>Sprite: </b>${fusionData.credit}</small><br />` : ``;
 		} else if (FangameCredit) {
 			creditBuf = ` <small><b>Concept: </b>${FangameCredit[0]}<br><b>Sprite: </b>${FangameCredit[1]}</small><br />`;
 		}
@@ -1593,7 +1593,7 @@ export class BattleTooltips {
 		const species = pokemon.getSpecies();
 		let rules = this.battle.rules;
 		let baseSpe = species.baseStats.spe;
-		if (pokemon.fusion) baseSpe = Math.floor((baseSpe / 3) + (this.battle.dex.species.get(pokemon.fusion).baseStats.spe * 2/3));
+		if (pokemon.fusion) baseSpe = Math.floor((baseSpe / 3) + (this.battle.dex.species.get(pokemon.fusion).baseStats.spe * 2 / 3));
 		if (rules['Scalemons Mod']) {
 			const bstWithoutHp = species.bst - species.baseStats.hp;
 			const scale = 600 - species.baseStats.hp;
@@ -1813,10 +1813,10 @@ export class BattleTooltips {
 		if (move.flags.bite && value.abilityModify(0, 'Spectral Jaws')) category = 'Special';
 
 		if (this.battle.rules['Physical Special Split Mod']) {
-			const special  = ['Fire', 'Water', 'Grass', 'Electric', 'Psychic', 'Ice', 'Dragon', 'Dark', 'Fairy', 'Nuclear', 'Cosmic'];
-			special.includes(moveType)? category = 'Special' : category = 'Physical'
+			const special = ['Fire', 'Water', 'Grass', 'Electric', 'Psychic', 'Ice', 'Dragon', 'Dark', 'Fairy', 'Nuclear', 'Cosmic'];
+			special.includes(moveType) ? category = 'Special' : category = 'Physical';
 		}
-		
+
 		// SSB
 		if (this.battle.tier.includes('Super Staff Bros')) {
 			if (allowTypeOverride && category !== "Status" && !move.isZ && !move.id.startsWith('hiddenpower')) {
@@ -2232,13 +2232,13 @@ export class BattleTooltips {
 
 		if (move.id === 'lucky7s') {
 			let sevens = 0;
-				sevens += (pokemon.maxhp.toString().match(/7/g) || []).length;
-				sevens += (serverPokemon.stats['atk'].toString().match(/7/g) || []).length;
-				sevens += (serverPokemon.stats['def'].toString().match(/7/g) || []).length;
-				sevens += (serverPokemon.stats['spa'].toString().match(/7/g) || []).length;
-				sevens += (serverPokemon.stats['spd'].toString().match(/7/g) || []).length;
-				sevens += (serverPokemon.stats['spe'].toString().match(/7/g) || []).length;
-			value.set(move.basePower + sevens*5)
+			sevens += (pokemon.maxhp.toString().match(/7/g) || []).length;
+			sevens += (serverPokemon.stats['atk'].toString().match(/7/g) || []).length;
+			sevens += (serverPokemon.stats['def'].toString().match(/7/g) || []).length;
+			sevens += (serverPokemon.stats['spa'].toString().match(/7/g) || []).length;
+			sevens += (serverPokemon.stats['spd'].toString().match(/7/g) || []).length;
+			sevens += (serverPokemon.stats['spe'].toString().match(/7/g) || []).length;
+			value.set(move.basePower + sevens * 5);
 		}
 
 		// Other ability boosts
@@ -2637,7 +2637,7 @@ export class BattleTooltips {
 
 		return value;
 	}
-	getPokemonTypes(pokemon: Pokemon | ServerPokemon, preterastallized = false): ReadonlyArray<TypeName> {
+	getPokemonTypes(pokemon: Pokemon | ServerPokemon, preterastallized = false): readonly TypeName[] {
 
 		if (pokemon.fusion) {
 
@@ -3373,13 +3373,13 @@ export class BattleStatGuesser {
 
 	getStats(set: Dex.PokemonSet) {
 		let species = this.dex.species.get(set.species);
-		let stats = {...species.baseStats};
+		let stats = { ...species.baseStats };
 
 		if (set.fusion && this.dex.species.get(set.fusion).exists) {
 			const fusionSpecies = this.dex.species.get(set.fusion);
 			for (const stat in stats) {
-				if (stat === 'hp' || stat === 'spa' || stat === 'spd') stats[stat] = Math.floor((species.baseStats[stat] * 2/3) + (fusionSpecies.baseStats[stat] * 1/3));
-				if (stat === 'atk' || stat === 'def' || stat === 'spe') stats[stat] = Math.floor((species.baseStats[stat] * 1/3) + (fusionSpecies.baseStats[stat] * 2/3));
+				if (stat === 'hp' || stat === 'spa' || stat === 'spd') stats[stat] = Math.floor((species.baseStats[stat] * 2 / 3) + (fusionSpecies.baseStats[stat] * 1 / 3));
+				if (stat === 'atk' || stat === 'def' || stat === 'spe') stats[stat] = Math.floor((species.baseStats[stat] * 1 / 3) + (fusionSpecies.baseStats[stat] * 2 / 3));
 			}
 		}
 
@@ -3400,13 +3400,13 @@ export function BattleStatOptimizer(set: Dex.PokemonSet, formatid: ID) {
 	if (!supportsEVs || ignoreEVLimits) return null;
 
 	const species = dex.species.get(set.species);
-	let stats = {...species.baseStats};
+	let stats = { ...species.baseStats };
 
 	if (set.fusion && dex.species.get(set.fusion).exists) {
 		const fusionSpecies = dex.species.get(set.fusion);
 		for (const stat in stats) {
-			if (stat === 'hp' || stat === 'spa' || stat === 'spd') stats[stat] = Math.floor((species.baseStats[stat] * 2/3) + (fusionSpecies.baseStats[stat] * 1/3));
-			if (stat === 'atk' || stat === 'def' || stat === 'spe') stats[stat] = Math.floor((species.baseStats[stat] * 1/3) + (fusionSpecies.baseStats[stat] * 2/3));
+			if (stat === 'hp' || stat === 'spa' || stat === 'spd') stats[stat] = Math.floor((species.baseStats[stat] * 2 / 3) + (fusionSpecies.baseStats[stat] * 1 / 3));
+			if (stat === 'atk' || stat === 'def' || stat === 'spe') stats[stat] = Math.floor((species.baseStats[stat] * 1 / 3) + (fusionSpecies.baseStats[stat] * 2 / 3));
 		}
 	}
 

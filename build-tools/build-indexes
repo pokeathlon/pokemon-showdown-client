@@ -25,7 +25,7 @@ if (!fs.existsSync('play.pokemonshowdown.com/sprites/fangame-sprites')) {
 }
 
 process.stdout.write("Syncing fangame sprites... \n");
-child_process.execSync('git pull', {cwd: 'play.pokemonshowdown.com/sprites/fangame-sprites'});
+child_process.execSync('git pull', { cwd: 'play.pokemonshowdown.com/sprites/fangame-sprites' });
 
 const Dex = require('../caches/pokemon-showdown/dist/sim/dex').Dex;
 const CompoundWordNames = require('../caches/pokemon-showdown/dist/data/aliases').CompoundWordNames;
@@ -34,31 +34,31 @@ process.stdout.write("Loading all dex data... ");
 Dex.includeData();
 Dex.includeModData();
 
-let usedMods = [];
+const usedMods = [];
 Dex.formats.all().map(format => {
 	if (!usedMods.includes(format.mod)) usedMods.push(format.mod);
 });
 for (const mod of usedMods) {
-    const modData = Dex.dexes[mod];
+	const modData = Dex.dexes[mod];
 	const genDex = Dex.mod(mod).gen !== 9 ? Dex.dexes['gen' + Dex.mod(mod).gen] : Dex;
-    for (const dataType in modData.data) {
-        if (['Pokedex', 'Moves', 'Items', 'Abilities', 'Learnsets'].includes(dataType)) {
-            let counter = 0;
-            for (const entry in modData.data[dataType]) {
-                if (!(entry in genDex.data[dataType]) && !modData.data[dataType][entry].inherit) {
-                    counter ++;
-                    genDex.data[dataType][entry] = Dex.deepClone(modData.data[dataType][entry]);
-                    if (dataType !== 'Learnsets') genDex.data[dataType][entry].isNonstandard = "Custom";
+	for (const dataType in modData.data) {
+		if (['Pokedex', 'Moves', 'Items', 'Abilities', 'Learnsets'].includes(dataType)) {
+			let counter = 0;
+			for (const entry in modData.data[dataType]) {
+				if (!(entry in genDex.data[dataType]) && !modData.data[dataType][entry].inherit) {
+					counter++;
+					genDex.data[dataType][entry] = Dex.deepClone(modData.data[dataType][entry]);
+					if (dataType !== 'Learnsets') genDex.data[dataType][entry].isNonstandard = "Custom";
 					if (dataType === 'Pokedex') {
 						genDex.data[dataType][entry].tier = "Illegal";
 						genDex.data[dataType][entry].natDexTier = "Illegal";
 						genDex.data[dataType][entry].doublesTier = "Illegal";
 					}
-                }
-            }
-            if (counter > 0) console.log(dataType + ' received ' + counter + ' objects from ' + mod);
-        }
-    }
+				}
+			}
+			if (counter > 0) console.log(dataType + ' received ' + counter + ' objects from ' + mod);
+		}
+	}
 }
 
 console.log("DONE");
@@ -198,7 +198,7 @@ function requireNoCache(pathSpec) {
 	index[index.indexOf('psychic type')] = 'psychic move';
 	index[index.indexOf('psychic move')] = 'psychic type';
 
-	let BattleSearchIndex = index.map(x => {
+	const BattleSearchIndex = index.map(x => {
 		x = x.split(' ');
 		if (x.length > 3) {
 			x[3] = Number(x[3]);
@@ -419,7 +419,7 @@ process.stdout.write("Building `data/teambuilder-tables.js`... ");
 					return 'Regular';
 				}
 				if (isNatDexFusions) {
-					let tier = isDoubles ? species.doublesTier : species.natDexTier;
+					const tier = isDoubles ? species.doublesTier : species.natDexTier;
 					return tier;
 				}
 				if (isFusions || isFusionsHoenn) {
@@ -567,7 +567,7 @@ process.stdout.write("Building `data/teambuilder-tables.js`... ");
 		} else if (isVGC || isMariomonVGC || isPOAVGC) {
 			BattleTeambuilderTable[gen + 'vgc'] = {};
 			BattleTeambuilderTable[gen + 'vgc'].tiers = tiers;
-			BattleTeambuilderTable[gen + 'vgc'].overrideTier = overrideTier
+			BattleTeambuilderTable[gen + 'vgc'].overrideTier = overrideTier;
 			BattleTeambuilderTable[gen + 'vgc'].formatSlices = formatSlices;
 			if (genNum === 9) BattleTeambuilderTable[gen + 'vgc'].metagameBans = metagameBans;
 		} else if (isDoubles) {
@@ -988,8 +988,8 @@ process.stdout.write("Building `data/teambuilder-tables.js`... ");
 			if (gens.indexOf(9) >= 0 && learnset[moveid].some(x => x === '9E')) learnsets[id][moveid] += 'e';
 		}
 	}
-	for (let learnsetmod of ['gen9infinitefusion', 'gen7infinitefusion', 'gen7infinitefusionhoenn', 'gen9pokeathlon', 'gen9insurgence', 'gen6insurgence', 'gen9uranium', 'gen6uranium', 'gen9infinity', 'gen6infinity', 'gen9mariomon', 'gen9chaos', 'gen9chaosfusion']) {
-		let modlearnsets = {};
+	for (const learnsetmod of ['gen9infinitefusion', 'gen7infinitefusion', 'gen7infinitefusionhoenn', 'gen9pokeathlon', 'gen9insurgence', 'gen6insurgence', 'gen9uranium', 'gen6uranium', 'gen9infinity', 'gen6infinity', 'gen9mariomon', 'gen9chaos', 'gen9chaosfusion']) {
+		const modlearnsets = {};
 		BattleTeambuilderTable[learnsetmod].learnsets = modlearnsets;
 		for (const id in Dex.mod(learnsetmod).data.Learnsets) {
 			const learnset = Dex.mod(learnsetmod).data.Learnsets[id].learnset;
@@ -1015,7 +1015,7 @@ process.stdout.write("Building `data/teambuilder-tables.js`... ");
 					}
 					if (available) available = !gen4HMs.has(moveid);
 
-				let minUpperGen = available ? 5 : Math.min(
+					const minUpperGen = available ? 5 : Math.min(
 						...gens.filter(gen => gen > 4)
 					);
 					legalGens += '0123456789'.slice(minUpperGen);
@@ -1310,9 +1310,9 @@ process.stdout.write("Building `data/moves,items,abilities,typechart,learnsets.j
  *********************************************************/
 
 {
-	let Formats = {};
+	const Formats = {};
 	const RawFormats = Dex.formats.all();
-	for (let format of RawFormats) {
+	for (const format of RawFormats) {
 		Formats[format.id] = format;
 		Formats[format.id]['ruleTable'] = Array.from(Dex.formats.getRuleTable(format).keys());
 	}
@@ -1362,7 +1362,7 @@ process.stdout.write("Building `data/moves,items,abilities,typechart,learnsets.j
 	fs.writeFileSync('play.pokemonshowdown.com/data/text.js', buf);
 }
 
-console.log("DONE")
+console.log("DONE");
 
 /*********************************************************
  * Build fusion-index.js
@@ -1371,10 +1371,10 @@ console.log("DONE")
 process.stdout.write("Building fusion data...");
 
 {
-	let BattleFusionIndex = {};
-	let fusionFiles = fs.readdirSync('play.pokemonshowdown.com/sprites/fusion-sprites/');
+	const BattleFusionIndex = {};
+	const fusionFiles = fs.readdirSync('play.pokemonshowdown.com/sprites/fusion-sprites/');
 
-	for (let file of fusionFiles) {
+	for (const file of fusionFiles) {
 		const parts = file.split('.');
 		if (parts[2] !== 'png') continue;
 		if (parts[0] in BattleFusionIndex) {
@@ -1392,10 +1392,10 @@ process.stdout.write("Building fusion data...");
  *********************************************************/
 
 {
-	let FusionCredit = {};
-	let rawCredit = fs.readFileSync('play.pokemonshowdown.com/sprites/fusion-sprites/Sprite Credits.csv').toString();
+	const FusionCredit = {};
+	const rawCredit = fs.readFileSync('play.pokemonshowdown.com/sprites/fusion-sprites/Sprite Credits.csv').toString();
 
-	for (let line of rawCredit.split('\n')) {
+	for (const line of rawCredit.split('\n')) {
 		const parts = line.split(',');
 		FusionCredit[parts[0]] = parts[1];
 	}
@@ -1408,15 +1408,15 @@ process.stdout.write("Building fusion data...");
  *********************************************************/
 
 {
-	let FangameCredit = {};
-	let rawCredit = 
+	const FangameCredit = {};
+	const rawCredit =
 		fs.readFileSync('play.pokemonshowdown.com/sprites/fangame-sprites/pokeathlon/creators.csv').toString() + '\n' +
 		fs.readFileSync('play.pokemonshowdown.com/sprites/fangame-sprites/insurgence/creators.csv').toString() + '\n' +
 		fs.readFileSync('play.pokemonshowdown.com/sprites/fangame-sprites/uranium/creators.csv').toString() + '\n' +
 		fs.readFileSync('play.pokemonshowdown.com/sprites/fangame-sprites/infinity/creators.csv').toString() + '\n' +
 		fs.readFileSync('play.pokemonshowdown.com/sprites/fangame-sprites/mariomon/creators.csv').toString();
 
-	for (let line of rawCredit.split('\n')) {
+	for (const line of rawCredit.split('\n')) {
 		const parts = line.split(';');
 		FangameCredit[parts[0]] = [parts[1], parts[2]];
 	}
@@ -1429,11 +1429,11 @@ process.stdout.write("Building fusion data...");
  *********************************************************/
 
 {
-	let FangameCredit = {};
-	let rawCredit = 
+	const FangameCredit = {};
+	const rawCredit =
 		fs.readFileSync('play.pokemonshowdown.com/sprites/fangame-sprites/mariomon/afd-creators.csv').toString();
 
-	for (let line of rawCredit.split('\n')) {
+	for (const line of rawCredit.split('\n')) {
 		const parts = line.split(';');
 		FangameCredit[parts[0]] = [parts[1], parts[2]];
 	}

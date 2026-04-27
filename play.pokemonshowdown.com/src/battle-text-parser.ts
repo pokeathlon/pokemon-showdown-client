@@ -910,7 +910,7 @@ export class BattleTextParser {
 
 			if ((id === 'mummy' || id === 'lingeringaroma' || id === 'strangeanatomy') && kwArgs.ability) {
 				line1 += this.ability(kwArgs.ability, target);
-			line1 += this.ability(id === 'mummy' ? 'Mummy' : id === 'lingeringaroma' ? 'Lingering Aroma' : 'Strange Anatomy', target);
+				line1 += this.ability(id === 'mummy' ? 'Mummy' : id === 'lingeringaroma' ? 'Lingering Aroma' : 'Strange Anatomy', target);
 				const template = this.template('changeAbility', id);
 				return line1 + template.replace('[TARGET]', this.pokemon(target));
 			}
