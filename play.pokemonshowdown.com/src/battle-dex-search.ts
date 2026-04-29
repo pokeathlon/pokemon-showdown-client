@@ -1922,24 +1922,6 @@ class BattleMoveSearch extends BattleTypedSearch<'move'> {
 					if (this.formatType !== 'natdex' && this.formatType !== 'legendsza' && move.isNonstandard === "Past") {
 						continue;
 					}
-					if (
-						this.formatType?.startsWith('dlc1') &&
-						BattleTeambuilderTable['gen8dlc1']?.nonstandardMoves.includes(moveid)
-					) {
-						continue;
-					}
-					if (
-						this.formatType?.includes('predlc') && this.formatType !== 'predlcnatdex' &&
-						BattleTeambuilderTable['gen9predlc']?.nonstandardMoves.includes(moveid)
-					) {
-						continue;
-					}
-					if (
-						this.formatType?.includes('svdlc1') && this.formatType !== 'svdlc1natdex' &&
-						BattleTeambuilderTable['gen9dlc1']?.nonstandardMoves.includes(moveid)
-					) {
-						continue;
-					}
 					if (moves.includes(moveid)) continue;
 					moves.push(moveid);
 					if (moveid === 'sketch') sketch = true;
@@ -1986,12 +1968,7 @@ class BattleMoveSearch extends BattleTypedSearch<'move'> {
 						if (this.formatType !== 'natdex' && move.isNonstandard === "Past") {
 							continue;
 						}
-						if (
-							this.formatType?.startsWith('dlc1') &&
-							BattleTeambuilderTable['gen8dlc1']?.nonstandardMoves.includes(moveid)
-						) {
-							continue;
-						}
+
 						if (moves.includes(moveid)) continue;
 						moves.push(moveid);
 						if (moveid === 'sketch') sketch = true;
@@ -2087,12 +2064,6 @@ class BattleMoveSearch extends BattleTypedSearch<'move'> {
 							continue;
 						}
 						if (this.formatType !== 'natdex' && move.isNonstandard === "Past") {
-							continue;
-						}
-						if (
-							this.formatType?.startsWith('dlc1') &&
-							BattleTeambuilderTable['gen8dlc1']?.nonstandardMoves.includes(moveid)
-						) {
 							continue;
 						}
 						if (moves.includes(moveid)) continue;
