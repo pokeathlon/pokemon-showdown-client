@@ -892,7 +892,7 @@ export const Dex = new class implements ModdedDex {
 		}
 
 		if (species.tags.includes("Soulstones")) {
-			return `image-rendering:pixelated;background:transparent url(https://play.pokeathlon.com/sprites/fangame-sprites/soulstones/iconsprites/${id}.png) no-repeat scroll ${fainted}`;
+			return `image-rendering:pixelated;background:transparent url(https://play.pokeathlon.com/sprites/fangame-sprites/soulstones/iconsprites/${id}.png);background-repeat:no-repeat;background-position:4px -1px;background-size:32px;${fainted}`;
 		}
 		let top = Math.floor(num / 12) * 30;
 		let left = (num % 12) * 40;
