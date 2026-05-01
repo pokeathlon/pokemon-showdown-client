@@ -652,7 +652,7 @@ export const Dex = new class implements ModdedDex {
 			return spriteData;
 		}
 
-		for (let fangame of ["Infinite Fusion", "Pokeathlon", "Insurgence", "Uranium", "Infinity", "Mariomon"]) {
+		for (let fangame of ["Infinite Fusion", "Pokeathlon", "Insurgence", "Uranium", "Infinity", "Mariomon", "Soulstones"]) {
 			if (species.tags.includes(fangame)) {
 				if (species.eggGroups.includes("Digimon")) spriteData.url = 'https://play.pokeathlon.com/sprites/fangame-sprites/infinity/digimon/' + (spriteData.isFrontSprite ? 'front' : 'back') + (spriteData.shiny ? '-shiny' : '') + '/' + species.id + '.png';
 				else if (species.eggGroups.includes("Mariomon") && (Dex.afdMode || options.afd)) {
@@ -891,6 +891,9 @@ export const Dex = new class implements ModdedDex {
 			return `image-rendering:pixelated;background:transparent;background-image:url(https://play.pokeathlon.com/sprites/fangame-sprites/mariomon/iconsprites/${id}.gif);background-repeat:no-repeat;background-position:4px -1px;${fainted}`;
 		}
 
+		if (species.tags.includes("Soulstones")) {
+			return `image-rendering:pixelated;background:transparent url(https://play.pokeathlon.com/sprites/fangame-sprites/soulstones/iconsprites/${id}.png) no-repeat scroll ${fainted}`;
+		}
 		let top = Math.floor(num / 12) * 30;
 		let left = (num % 12) * 40;
 		return `image-rendering:pixelated;${fusion.length ? 'animation: rainbowshadow ' + ((Math.random() * 2) + 2) + 's infinite;' : ''}background:transparent url(${Dex.resourcePrefix}sprites/pokemonicons-sheet.png?v21) no-repeat scroll -${left}px -${top}px${fainted}`;
@@ -981,7 +984,7 @@ export const Dex = new class implements ModdedDex {
 			let url = 'https://play.pokeathlon.com/sprites/fusion-sprites/' + fusionData.extension + '.png';
 			return 'background-image:url(' + url + ');background-position:' + data.x + 'px ' + data.y + 'px;background-repeat:no-repeat;background-size:100px;image-rendering:pixelated';
 		}
-		for (let fangame of ["Infinite Fusion", "Pokeathlon", "Insurgence", "Uranium", "Infinity", "Mariomon"]) {
+		for (let fangame of ["Infinite Fusion", "Pokeathlon", "Insurgence", "Uranium", "Infinity", "Mariomon", "Soulstones"]) {
 			if (Dex.species.get(pokemon.species).tags.includes(fangame)) {
 				let url = 'https://play.pokeathlon.com/sprites/fangame-sprites/' + toID(fangame) + (!["Infinite Fusion"].includes(fangame) ? '/front' + shiny : '') + '/' + toID(pokemon.species) + (["Pokeathlon", "Uranium"].includes(fangame) ? '.gif' : '.png');
 				if (Dex.species.get(pokemon.species).eggGroups.includes('Digimon')) url = 'https://play.pokeathlon.com/sprites/fangame-sprites/infinity/digimon/front' + shiny + '/' + toID(pokemon.species) + '.png';
