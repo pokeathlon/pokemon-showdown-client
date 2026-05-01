@@ -1692,6 +1692,14 @@ export class BattleLog {
 			this.localizeTime
 		);
 	}
+	static hideForm(input: string) {
+		let filters = ["-Soulstones"]
+		for (const filter of filters) {
+			if (input.endsWith(filter)) {
+				return input.replace(filter, '')
+			}
+		}
+	}
 
 	static initYoutubePlayer(idx: number) {
 		const id = `youtube-iframe-${idx}`;
