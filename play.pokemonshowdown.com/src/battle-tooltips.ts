@@ -1828,8 +1828,11 @@ export class BattleTooltips {
 					if (value.abilityModify(0, 'Atomizate')) moveType = 'Nuclear';
 					if (value.abilityModify(0, 'Energizate')) moveType = 'Electric';
 					if (value.abilityModify(0, 'Transmutate')) moveType = 'Psychic';
+					if (value.abilityModify(0, 'Dark Matter')) moveType = 'Cosmic';
 				} if (moveType === 'Rock') {
 					if (value.abilityModify(0, 'Foundry')) moveType = 'Fire';
+				} if (moveType === 'Light') {
+					if (value.abilityModify(0, 'Black Light')) moveType = 'Dark';
 				}
 				if (value.abilityModify(0, 'Normalize')) moveType = 'Normal';
 			}
@@ -2571,8 +2574,11 @@ export class BattleTooltips {
 				value.abilityModify(this.battle.gen > 6 ? 1.2 : 1.3, "Atomizate");
 				value.abilityModify(this.battle.gen > 6 ? 1.2 : 1.3, "Energizate");
 				value.abilityModify(this.battle.gen > 6 ? 1.2 : 1.3, "Transmutate");
+				value.abilityModify(this.battle.gen > 6 ? 1.2 : 1.3, "Dark Matter");
 			} if (move.type === 'Rock') {
 				value.abilityModify(this.battle.gen > 6 ? 1.2 : 1.3, "Foundry");
+			} if (move.type === 'Light') {
+				value.abilityModify(this.battle.gen > 6 ? 1.2 : 1.3, "Black Light");
 			}
 			if (this.battle.gen > 6) {
 				value.abilityModify(1.2, "Normalize");
@@ -2617,6 +2623,8 @@ export class BattleTooltips {
 					auraBoosted = 'Fairy Aura';
 				} else if (moveType === 'Dark' && allyAbility === 'Dark Aura') {
 					auraBoosted = 'Dark Aura';
+				} else if (moveType === 'Light' && allyAbility === 'Light Aura') {
+					auraBoosted = 'Light Aura';
 				} else if (allyAbility === 'Aura Break') {
 					auraBroken = true;
 				} else if (allyAbility === 'Battery' && ally !== pokemon && move.category === 'Special') {
@@ -2633,6 +2641,8 @@ export class BattleTooltips {
 					auraBoosted = 'Fairy Aura';
 				} else if (foe.ability === 'Dark Aura' && moveType === 'Dark') {
 					auraBoosted = 'Dark Aura';
+				} else if (foe.ability === 'Light Aura' && moveType === 'Light') {
+					auraBoosted = 'Light Aura';
 				} else if (foe.ability === 'Aura Break') {
 					auraBroken = true;
 				}
