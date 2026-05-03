@@ -1833,6 +1833,8 @@ export class BattleTooltips {
 					if (value.abilityModify(0, 'Foundry')) moveType = 'Fire';
 				} if (moveType === 'Light') {
 					if (value.abilityModify(0, 'Black Light')) moveType = 'Dark';
+				} if (moveType === 'Dark') {
+					if (value.abilityModify(0, 'Whiteout')) moveType = 'Light';
 				}
 				if (value.abilityModify(0, 'Normalize')) moveType = 'Normal';
 			}
@@ -2579,6 +2581,8 @@ export class BattleTooltips {
 				value.abilityModify(this.battle.gen > 6 ? 1.2 : 1.3, "Foundry");
 			} if (move.type === 'Light') {
 				value.abilityModify(this.battle.gen > 6 ? 1.2 : 1.3, "Black Light");
+			} if (move.type === 'Dark') {
+				value.abilityModify(this.battle.gen > 6 ? 1.2 : 1.3, "Whiteout");
 			}
 			if (this.battle.gen > 6) {
 				value.abilityModify(1.2, "Normalize");

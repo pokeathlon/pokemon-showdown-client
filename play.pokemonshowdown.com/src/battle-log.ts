@@ -1695,7 +1695,7 @@ export class BattleLog {
 	static hideForm(input: string) {
 		let filters = ["-Soulstones"]
 		for (const filter of filters) {
-			if (input.endsWith(filter)) {
+			if (input.includes(filter)) {
 				return input.replace(filter, '')
 			}
 		}
