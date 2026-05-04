@@ -1289,7 +1289,8 @@
 		},
 		renderSet: function (set, i) {
 			var baseFormat = this.curTeam.format;
-			if (baseFormat.substr(-5) === 'draft') baseFormat = baseFormat.substr(0, baseFormat.length - 5);
+			//if (baseFormat.substr(-5) === 'draft') baseFormat = baseFormat.substr(0, baseFormat.length - 5);
+			// window.Formats includes "draft" in its keys, eliminating this causes it to not find the format, and fail to display fusion/2abil
 			var species = this.curTeam.dex.species.get(set.species);
 			var isChampions = baseFormat.includes('champions');
 			var isLetsGo = baseFormat.includes('letsgo');
