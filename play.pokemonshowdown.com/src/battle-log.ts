@@ -1697,6 +1697,8 @@ export class BattleLog {
 		for (const filter of filters) {
 			if (input.includes(filter)) {
 				return input.replace(filter, '')
+			} else {
+				return input
 			}
 		}
 	}
