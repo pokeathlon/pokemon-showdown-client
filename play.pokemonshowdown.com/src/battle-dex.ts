@@ -1004,6 +1004,7 @@ export const Dex = new class implements ModdedDex {
 		if (num === -3) return 'background:transparent url(https://play.pokeathlon.com/sprites/fangame-sprites/pokeathlon/items/' + item.id + '.png) center/24px';
 		if (num === -4) return 'background:transparent url(https://play.pokeathlon.com/sprites/fangame-sprites/infinity/items/' + item.id + '.png) center/24px';
 		if (num === -5) return 'background:transparent url(https://play.pokeathlon.com/sprites/fangame-sprites/mariomon/items/' + item.id + '.png) center/24px';
+		if (num === -6) return 'background:transparent url(https://play.pokeathlon.com/sprites/fangame-sprites/soulstones/items/' + item.id + '.png) center/24px';
 
 		let top = Math.floor(num / 16) * 24;
 		let left = (num % 16) * 24;
