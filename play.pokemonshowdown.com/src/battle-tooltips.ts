@@ -1299,6 +1299,19 @@ export class BattleTooltips {
 						speedModifiers.push(2);
 					}
 				}
+				if (weather === 'hail' || weather === 'snowscape') {
+					let allyActive = clientPokemon?.side.active;
+					if (allyActive) {
+						for (const ally of allyActive) {
+							if (!ally || ally.fainted) continue;
+							let allyAbility = this.getAllyAbility(ally);
+							if (allyAbility === 'Winter Gift' && (ally.getSpecies().baseSpecies === 'Cherrim-Soulstones' || this.battle.gen <= 4)) {
+								stats.atk = Math.floor(stats.spa * 1.5);
+								stats.spd = Math.floor(stats.spd * 1.5);
+							}
+						}
+					}
+				}
 			}
 		}
 		if (ability === 'defeatist' && serverPokemon.hp <= serverPokemon.maxhp / 2) {

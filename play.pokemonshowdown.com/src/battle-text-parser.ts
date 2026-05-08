@@ -127,7 +127,7 @@ export class BattleTextParser {
 			if ([
 				'ingrain', 'quickguard', 'wideguard', 'craftyshield', 'matblock', 'protect', 'mist', 'safeguard',
 				'electricterrain', 'mistyterrain', 'psychicterrain', 'telepathy', 'stickyhold', 'suctioncups', 'aromaveil',
-				'flowerveil', 'sweetveil', 'disguise', 'safetygoggles', 'protectivepads',
+				'flowerveil', 'sweetveil', 'disguise', 'safetygoggles', 'protectivepads', 'firewall', 'vanguard',
 			].includes(id)) {
 				if (target) {
 					kwArgs.of = pokemon;

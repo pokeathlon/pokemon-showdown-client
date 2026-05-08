@@ -2053,6 +2053,8 @@ export class PokemonSprite extends Sprite {
 		watersport: ['Water Sport', 'good'],
 		mudsport: ['Mud Sport', 'good'],
 		substitute: null,
+		weardown: ['Wear Down', 'bad'],
+		vanguard: ['Vanguard', 'good'],
 		// sub graphics are handled elsewhere, see Battle.Sprite.animSub()
 		uproar: ['Uproar', 'neutral'],
 		rage: ['Rage', 'neutral'],
@@ -2082,6 +2084,7 @@ export class PokemonSprite extends Sprite {
 		laserfocus: ['Laser Focus', 'good'],
 		spotlight: ['Spotlight', 'neutral'],
 		itemremoved: null,
+		firewall: ['Fire Wall', 'good'],
 		// partial trapping
 		bind: ['Bind', 'bad'],
 		greatbind: ['Great Bind', 'bad'],
