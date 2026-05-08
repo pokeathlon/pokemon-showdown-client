@@ -140,7 +140,7 @@ export class BattleTextParser {
 				return { args: ['-singlemove', pokemon, effect], kwArgs: { of: target } };
 			}
 			if ([
-				'bind', 'greatbind', 'wrap', 'clamp', 'whirlpool', 'firespin', 'magmastorm', 'sandtomb', 'infestation', 'snaptrap', 'thundercage', 'trapped',
+				'bind', 'greatbind', 'wrap', 'clamp', 'whirlpool', 'firespin', 'magmastorm', 'sandtomb', 'infestation', 'snaptrap', 'thundercage', 'trapped', 'thornprison', 'sandsnare',
 			].includes(id)) {
 				return { args: ['-start', pokemon, effect], kwArgs: { of: target } };
 			}

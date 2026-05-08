@@ -2094,6 +2094,8 @@ export class PokemonSprite extends Sprite {
 		thundercage: ['Thunder Cage', 'bad'],
 		whirlpool: ['Whirlpool', 'bad'],
 		wrap: ['Wrap', 'bad'],
+		thornprison: ['Thorn Prison', 'bad'],
+		sandsnare: ['Sand Snare', 'bad'],
 		// Gen 1-2
 		mist: ['Mist', 'good'],
 		// Gen 1
