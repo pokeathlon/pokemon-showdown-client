@@ -1310,6 +1310,14 @@ export class ModdedDex {
 					data = { ...data, ...table.overrideTypeChart[id] };
 				}
 			}
+			if (this.modid !== `gen${this.gen}`) {
+				const table = window.BattleTeambuilderTable[this.modid];
+				if (id in (table.removeType || {})) {
+					data.exists = false;
+				} else if (id in (table.overrideTypeChart || {})) {
+					data = { ...data, ...table.overrideTypeChart[id] };
+				}
+			}
 
 			this.cache.Types[id] = data;
 			return data;

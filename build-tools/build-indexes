@@ -1168,6 +1168,22 @@ process.stdout.write("Building `data/teambuilder-tables.js`... ");
 				}
 			}
 		}
+
+		const overrideTypeChart = {};
+		BattleTeambuilderTable[mod].overrideTypeChart = overrideTypeChart;
+		const removeType = {};
+		BattleTeambuilderTable[mod].removeType = removeType;
+		for (const id in modData.TypeChart) {
+			const modEntry = modDex.types.get(id);
+			const parentEntry = parentDex.types.get(id);
+			if (modEntry.isNonstandard) {
+				removeType[id] = true;
+				continue;
+			}
+			if (JSON.stringify(modEntry) !== JSON.stringify(parentEntry)) {
+				overrideTypeChart[id] = modEntry;
+			}
+		}
 	}
 
 	buf += `exports.BattleTeambuilderTable = JSON.parse('${JSON.stringify(BattleTeambuilderTable).replace(/['\\]/g, "\\$&")}');\n\n`;
