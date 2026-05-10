@@ -1842,6 +1842,7 @@ export class BattleTooltips {
 					if (value.abilityModify(0, 'Energizate')) moveType = 'Electric';
 					if (value.abilityModify(0, 'Transmutate')) moveType = 'Psychic';
 					if (value.abilityModify(0, 'Dark Matter')) moveType = 'Cosmic';
+					if (value.abilityModify(0, 'Illuminate')) moveType = 'Light';
 				} if (moveType === 'Rock') {
 					if (value.abilityModify(0, 'Foundry')) moveType = 'Fire';
 				} if (moveType === 'Light') {
@@ -2590,6 +2591,7 @@ export class BattleTooltips {
 				value.abilityModify(this.battle.gen > 6 ? 1.2 : 1.3, "Energizate");
 				value.abilityModify(this.battle.gen > 6 ? 1.2 : 1.3, "Transmutate");
 				value.abilityModify(this.battle.gen > 6 ? 1.2 : 1.3, "Dark Matter");
+				value.abilityModify(this.battle.gen > 6 ? 1.2 : 1.3, "Illuminate");
 			} if (move.type === 'Rock') {
 				value.abilityModify(this.battle.gen > 6 ? 1.2 : 1.3, "Foundry");
 			} if (move.type === 'Light') {
