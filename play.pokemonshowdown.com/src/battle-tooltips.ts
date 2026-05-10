@@ -2632,6 +2632,15 @@ export class BattleTooltips {
 			if (value.tryAbility("Strange Anatomy")) value.set(Math.max(move.basePower - (5 * pokemon.strangeAnatomyTurns), 0), `${5 * pokemon.strangeAnatomyTurns} BP lost from Strange Anatomy`);
 		}
 
+		if (this.battle.dex.modid === 'gen9soulstones') {
+			if (move.id === 'magnitude') value.set(pokemon.level, 'BP equal to level');
+			if (move.secondaries) {
+				for (const secondary of move.secondaries) {
+					if (secondary.chance) value.abilityModify(1 - secondary.chance/100, "Serene Grace")
+				}
+			}
+		}
+
 		if (move.category !== 'Status') {
 			let auraBoosted = '';
 			let auraBroken = false;
