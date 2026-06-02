@@ -803,6 +803,9 @@ export class BattleTooltips {
 			if (move.flags.wind) {
 				text += `<p class="movetag">&#x2713; Wind <small>(activates Wind Power and Wind Rider)</small></p>`;
 			}
+			if (move.flags.bullet && ability === 'cannonfire') {
+				text += `<p class="movetag">&#x2713; Bullet <small>(boosted by Cannon Fire)</small></p>`;
+			}
 			// RBY healing move glitch
 			if (this.battle.gen === 1 && !toID(this.battle.tier).includes('stadium') &&
 				['recover', 'softboiled', 'rest'].includes(move.id)) {
@@ -1237,7 +1240,7 @@ export class BattleTooltips {
 		if (ability === 'purepower' || ability === 'hugepower') {
 			stats.atk *= 2;
 		}
-		if (ability === 'athenian' || ability === 'purefocus') {
+		if (ability === 'athenian' || ability === 'purefocus' || ability === 'genius') {
 			stats.spa *= 2;
 		}
 		if (ability === 'sharpcoral') {
@@ -1246,6 +1249,9 @@ export class BattleTooltips {
 		}
 		if (ability === 'hustle' || (ability === 'gorillatactics' && !clientPokemon?.volatiles['dynamax'])) {
 			stats.atk = Math.floor(stats.atk * 1.5);
+		}
+		if (ability === 'tormented') {
+			stats.spa = Math.floor(stats.spa * 1.5);
 		}
 		if (weather) {
 			if (this.battle.gen >= 4 && this.pokemonHasType(pokemon, 'Rock') && weather === 'sandstorm') {
@@ -1350,8 +1356,14 @@ export class BattleTooltips {
 			stats.def = Math.floor(stats.def * 1.5);
 			stats.spd = Math.floor(stats.spd * 1.5);
 		}
-		if (ability === 'grasspelt' && this.battle.hasPseudoWeather('Grassy Terrain')) {
-			stats.def = Math.floor(stats.def * 1.5);
+		if (this.battle.hasPseudoWeather('Grassy Terrain')) {
+			if (ability === 'grasspelt') {
+				stats.def = Math.floor(stats.def * 1.5);
+			}
+			if (ability === 'forestking') {
+				stats.spa = Math.floor(stats.spa * 1.33);
+				stats.atk = Math.floor(stats.atk * 1.33);
+			}
 		}
 		if (this.battle.hasPseudoWeather('Electric Terrain')) {
 			if (ability === 'surgesurfer') {
@@ -2220,6 +2232,12 @@ export class BattleTooltips {
 		} else if (value.tryAbility('Compound Eyes')) {
 			accuracyModifiers.push(5325);
 			value.abilityModify(1.3, "Compound Eyes");
+		} else if (value.tryAbility('Precision')) {
+			accuracyModifiers.push(5325);
+			value.abilityModify(1.3, "Precision");
+		} else if (value.tryAbility('Tormented')) {
+			accuracyModifiers.push(3277);
+			value.abilityModify(0.8, "Tormented");
 		}
 
 		if (value.tryItem('Wide Lens')) {
@@ -2544,6 +2562,12 @@ export class BattleTooltips {
 		}
 		if (move.flags['bite']) {
 			value.abilityModify(1.5, "Strong Jaw");
+		}
+		if (move.flags['bullet']) {
+			value.abilityModify(1.5, "Cannon Fire");
+		}
+		if (move.flags['wind']) {
+			value.abilityModify(1.3, "Wind Fury");
 		}
 		if (value.value <= 60) {
 			value.abilityModify(1.5, "Technician");
