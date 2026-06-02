@@ -40482,6 +40482,10 @@ BattleMoveAnims['lycanpounce'] = {
 	},
 };
 BattleMoveAnims['spudmortar'] = { anim: BattleMoveAnims['doomdesire'].anim };
+BattleMoveAnims['bloominggrace'] = {
+	anim: BattleMoveAnims['synthesis'].anim,
+	prepareAnim: BattleMoveAnims['geomancy'].prepareAnim,
+};
 
 // Insurgence Moves
 BattleMoveAnims['achillesheel'] = { anim: BattleMoveAnims['lowkick'].anim };
