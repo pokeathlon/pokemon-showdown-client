@@ -1143,6 +1143,8 @@ export class BattleTooltips {
 				stats.atk = Math.floor(stats.atk * 1.5);
 			} else if (this.battle.gen < 2 && pokemon.status === 'brn') {
 				stats.atk = Math.floor(stats.atk * 0.5);
+			} else if (this.battle.gen < 2 && pokemon.status === 'frb') {
+				stats.spa = Math.floor(stats.spa * 0.5);
 			}
 
 			// Paralysis is calculated later in newer generations, so we need to apply it early here
@@ -1986,6 +1988,7 @@ export class BattleTooltips {
 				'darkvoid', 'grasswhistle', 'hypnosis', 'lovelykiss', 'sing', 'sleeppowder', 'spore', 'yawn',
 			].includes(move.id)) inflictsStatus = 'slp';
 			if (move.id === 'willowisp') inflictsStatus = 'brn';
+			if (move.id === 'chillingtouch') inflictsStatus = 'frb';
 			if (['block', 'meanlook', 'spiderweb'].includes(move.id)) inflictsEffect = 'trapped';
 			if (['confuseray', 'supersonic', 'sweetkiss', 'teeterdance'].includes(move.id)) inflictsEffect = 'confusion';
 		}
@@ -2530,6 +2533,9 @@ export class BattleTooltips {
 		if (pokemon.status === 'brn' && move.category === 'Special') {
 			value.abilityModify(1.5, "Flare Boost");
 		}
+		if (pokemon.status === 'frb' && move.category === 'Physical') {
+			value.abilityModify(1.5, "Superconductive");
+		}
 		if (move.flags['punch']) {
 			value.abilityModify(1.2, 'Iron Fist');
 		}
@@ -2732,6 +2738,9 @@ export class BattleTooltips {
 		// Burn isn't really a base power modifier, so it needs to be applied after the Tera BP floor
 		if (this.battle.gen > 2 && serverPokemon.status === 'brn' && move.id !== 'facade' && move.category === 'Physical') {
 			if (!value.tryAbility("Guts")) value.modify(0.5, 'Burn');
+		}
+		if (this.battle.gen > 2 && serverPokemon.status === 'frb' && move.id !== 'facade' && move.category === 'Special') {
+			if (!value.tryAbility("Guts")) value.modify(0.5, 'Frostbite');
 		}
 
 		if (
