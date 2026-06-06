@@ -267,6 +267,8 @@
 			this.updateTeamInterface();
 		},
 		updateFolderList: function () {
+			let sortbyGen = false; //Toggles fangame categories
+
 			var buf = '<div class="folderlist"><div class="folderlistbefore"></div>';
 
 			buf += '<div class="folder' + (!this.curFolder ? ' cur"><div class="folderhack3"><div class="folderhack1"></div><div class="folderhack2"></div>' : '">') + '<div class="selectFolder" data-value="all"><em>(all)</em></div></div>' + (!this.curFolder ? '</div>' : '');
@@ -284,7 +286,6 @@
 						}
 					}
 				}
-
 				var format;
 				if (i === -2) {
 					format = this.curFolderKeep;
@@ -309,53 +310,97 @@
 					folders.push('A~');
 					continue;
 				}
-				switch (format.slice(0, 4)) {
-				case 'gen1': format = 'I' + format.slice(4); break;
-				case 'gen2': format = 'H' + format.slice(4); break;
-				case 'gen3': format = 'G' + format.slice(4); break;
-				case 'gen4': format = 'F' + format.slice(4); break;
-				case 'gen5': format = 'E' + format.slice(4); break;
-				case 'gen6': format = 'D' + format.slice(4); break;
-				case 'gen7': format = 'C' + format.slice(4); break;
-				case 'gen8': format = 'B' + format.slice(4); break;
-				case 'gen9': format = 'A' + format.slice(4); break;
-				default: format = 'X' + format; break;
+				if (sortbyGen) {
+					switch (format.slice(0, 4)) {
+						case 'gen1': format = 'I' + format.slice(4); break;
+						case 'gen2': format = 'H' + format.slice(4); break;
+						case 'gen3': format = 'G' + format.slice(4); break;
+						case 'gen4': format = 'F' + format.slice(4); break;
+						case 'gen5': format = 'E' + format.slice(4); break;
+						case 'gen6': format = 'D' + format.slice(4); break;
+						case 'gen7': format = 'C' + format.slice(4); break;
+						case 'gen8': format = 'B' + format.slice(4); break;
+						case 'gen9': format = 'A' + format.slice(4); break;
+						default: format = 'X' + format; break;
+					}
+				} else {
+					const section = toID(window.Formats[format]?.section);
+
+					let sectionIndex = {};
+					let idx = 0;
+
+					for (const id in window.Formats) {
+						const sec = toID(window.Formats[id]?.section);
+						if (sec && sectionIndex[sec] === undefined) {
+							sectionIndex[sec] = idx;
+							idx += 1;
+						}
+					}
+
+					const letters = 'ABCDEFGHIJKLMNOPQRSTUVWYZ';
+					const prefix = letters[sectionIndex[section]] || 'X';
+
+					format = prefix + format;
 				}
 				folders.push(format);
 			}
 			folders.sort();
 			var gen = '';
+			var section = '';
 			var formatFolderBuf = '<div class="foldersep"></div>';
 			formatFolderBuf += '<div class="folder"><div class="selectFolder" data-value="+"><i class="fa fa-plus"></i><em>(add format folder)</em></div></div>';
 			for (var i = 0; i < folders.length; i++) {
 				var format = folders[i];
 				var newGen;
-				switch (format.charAt(0)) {
-				case 'I': newGen = '1'; break;
-				case 'H': newGen = '2'; break;
-				case 'G': newGen = '3'; break;
-				case 'F': newGen = '4'; break;
-				case 'E': newGen = '5'; break;
-				case 'D': newGen = '6'; break;
-				case 'C': newGen = '7'; break;
-				case 'B': newGen = '8'; break;
-				case 'A': newGen = '9'; break;
-				case 'X': newGen = 'X'; break;
-				case 'Z': newGen = '/'; break;
+				if (sortbyGen) {
+					switch (format.charAt(0)) {
+						case 'I': newGen = '1'; break;
+						case 'H': newGen = '2'; break;
+						case 'G': newGen = '3'; break;
+						case 'F': newGen = '4'; break;
+						case 'E': newGen = '5'; break;
+						case 'D': newGen = '6'; break;
+						case 'C': newGen = '7'; break;
+						case 'B': newGen = '8'; break;
+						case 'A': newGen = '9'; break;
+						case 'X': newGen = 'X'; break;
+						case 'Z': newGen = '/'; break;
+					}
+				} else {
+					newSection = window.Formats[format.slice(1)]?.section || "Undefined"
+					newGen = format.slice(4,5)
 				}
-				if (gen !== newGen) {
-					gen = newGen;
-					if (gen === '/') {
-						buf += formatFolderBuf;
-						formatFolderBuf = '';
-						buf += '<div class="foldersep"></div>';
-						buf += '<div class="folder"><h3>Folders</h3></div>';
-					} else if (gen === 'X') {
-						buf += '<div class="folder"><h3>???</h3></div>';
-					} else {
-						buf += '<div class="folder"><h3>Gen ' + gen + '</h3></div>';
+
+				if (sortbyGen) {
+					if (gen !== newGen) {
+						gen = newGen;
+						if (gen === '/') {
+							buf += formatFolderBuf;
+							formatFolderBuf = '';
+							buf += '<div class="foldersep"></div>';
+							buf += '<div class="folder"><h3>Folders</h3></div>';
+						} else if (!sortbyGen) {
+							buf += '<div class="folder"><h3>' + section + '</h3></div>';
+						} else if (gen === 'X') {
+							buf += '<div class="folder"><h3>???</h3></div>';
+						} else {
+							buf += '<div class="folder"><h3>Gen ' + gen + '</h3></div>';
+						}
+					}
+				} else {
+					if (section !== newSection) {
+						section = newSection;
+						if (gen === '/') {
+							buf += formatFolderBuf;
+							formatFolderBuf = '';
+							buf += '<div class="foldersep"></div>';
+							buf += '<div class="folder"><h3>Folders</h3></div>';
+						} else {
+							buf += '<div class="folder"><h3>' + section + '</h3></div>';
+						} 
 					}
 				}
+
 				var formatName;
 				if (gen === '/') {
 					formatName = format.slice(1);
@@ -371,11 +416,16 @@
 				}
 				formatName = format.slice(1);
 				if (formatName === '~') formatName = '';
-				format = 'gen' + newGen + formatName;
+				format = sortbyGen? 'gen' + newGen + formatName : formatName;
 				if (format.length === 4) formatName = '(uncategorized)';
 				// folders are <div>s rather than <button>s because in theory it has
 				// less weird interactions with HTML5 drag-and-drop
-				buf += '<div class="folder' + (this.curFolder === format ? ' cur"><div class="folderhack3"><div class="folderhack1"></div><div class="folderhack2"></div>' : '">') + '<div class="selectFolder" data-value="' + format + '"><i class="fa ' + (this.curFolder === format ? 'fa-folder-open-o' : 'fa-folder-o') + '"></i>' + formatName + '</div></div>' + (this.curFolder === format ? '</div>' : '');
+				if (sortbyGen) {
+					buf += '<div class="folder' + (this.curFolder === format ? ' cur"><div class="folderhack3"><div class="folderhack1"></div><div class="folderhack2"></div>' : '">') + '<div class="selectFolder" data-value="' + format + '"><i class="fa ' + (this.curFolder === format ? 'fa-folder-open-o' : 'fa-folder-o') + '"></i>' + formatName + '</div></div>' + (this.curFolder === format ? '</div>' : '');
+				} else {
+					buf += '<div class="folder' + (this.curFolder === format ? ' cur"><div class="folderhack3"><div class="folderhack1"></div><div class="folderhack2"></div>' : '">') + '<div class="selectFolder" data-value="' + format + '"><i class="fa ' + (this.curFolder === format ? 'fa-folder-open-o' : 'fa-folder-o') + '"></i>' + (window.Formats[formatName]? window.Formats[formatName]?.name.split('] ')[1] : formatName) + '</div></div>' + (this.curFolder === format ? '</div>' : '');
+				}
+				
 			}
 			buf += formatFolderBuf;
 			buf += '<div class="foldersep"></div>';
