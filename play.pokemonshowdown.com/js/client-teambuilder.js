@@ -396,7 +396,7 @@
 							buf += '<div class="foldersep"></div>';
 							buf += '<div class="folder"><h3>Folders</h3></div>';
 						} else {
-							buf += '<div class="folder"><h3>' + section + '</h3></div>';
+							buf += '<div class="folder"><h3 style="font-size: 10px;">' + section + '</h3></div>';
 						} 
 					}
 				}
