@@ -2612,6 +2612,9 @@ export class BattleTooltips {
 		if (move.category === 'Physical') {
 			if (value.tryAbility("Strange Anatomy")) value.set(Math.max(move.basePower - (5 * pokemon.strangeAnatomyTurns), 0), `${5 * pokemon.strangeAnatomyTurns} BP lost from Strange Anatomy`);
 		}
+		if (this.battle.mySide.sideConditions['scatteredcoins']) {
+			value.abilityModify(1.3, 'Money Equals Power')
+		}
 
 		if (move.category !== 'Status') {
 			let auraBoosted = '';

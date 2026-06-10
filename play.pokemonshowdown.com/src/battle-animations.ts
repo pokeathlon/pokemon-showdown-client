@@ -2121,6 +2121,12 @@ export class PokemonSprite extends Sprite {
 		adaptivecrystal: ['Adaptive: Crystal', 'good'],
 		adaptivenuclear: ['Adaptive: Nuclear', 'good'],
 		adaptivecosmic: ['Adaptive: Cosmic', 'good'],
+		caeciliandefense: ['Caecilian Defense', 'good'],
+		retribution1: ['Retribution: 1', 'good'],
+		retribution2: ['Retribution: 2', 'good'],
+		retribution3: ['Retribution: 3', 'good'],
+		retribution4: ['Retribution: 4', 'good'],
+		retribution5: ['Retribution: 5', 'good'],
 	};
 	forme = '';
 	cryurl: string | undefined = undefined;
