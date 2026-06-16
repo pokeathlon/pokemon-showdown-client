@@ -2127,6 +2127,8 @@ export class PokemonSprite extends Sprite {
 		retribution3: ['Retribution: 3', 'good'],
 		retribution4: ['Retribution: 4', 'good'],
 		retribution5: ['Retribution: 5', 'good'],
+		physical: null,
+		special: null
 	};
 	forme = '';
 	cryurl: string | undefined = undefined;

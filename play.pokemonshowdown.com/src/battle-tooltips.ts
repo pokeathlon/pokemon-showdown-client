@@ -2615,6 +2615,9 @@ export class BattleTooltips {
 		if (this.battle.mySide.sideConditions['scatteredcoins']) {
 			value.abilityModify(1.3, 'Money Equals Power')
 		}
+		if (pokemon.volatiles[move.category.toLowerCase()]) {
+			value.abilityModify(1.3, "Dual Mastery")
+		}
 
 		if (move.category !== 'Status') {
 			let auraBoosted = '';
