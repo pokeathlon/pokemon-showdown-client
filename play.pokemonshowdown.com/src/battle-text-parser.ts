@@ -663,7 +663,7 @@ export class BattleTextParser {
 			let [, pokemon, effect] = args;
 			const line1 = this.maybeAbility(effect, pokemon) || this.maybeAbility(kwArgs.from, kwArgs.of || pokemon);
 			let id = BattleTextParser.effectId(effect);
-			if (id === 'doomdesire' || id === 'futuresight' || id === 'spudmortar' || id === 'chitinsnare') {
+			if (id === 'doomdesire' || id === 'futuresight' || id === 'spudmortar' || id === 'chitinsnare' || id === 'flockshock') {
 				const template = this.template('activate', effect);
 				return line1 + template.replace('[TARGET]', this.pokemon(pokemon));
 			}

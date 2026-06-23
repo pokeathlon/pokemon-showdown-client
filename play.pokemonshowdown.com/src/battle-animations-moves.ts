@@ -40486,6 +40486,7 @@ BattleMoveAnims['bloominggrace'] = {
 	anim: BattleMoveAnims['synthesis'].anim,
 	prepareAnim: BattleMoveAnims['geomancy'].prepareAnim,
 };
+BattleMoveAnims['flockshock'] = { anim: BattleMoveAnims['futuresight'].anim };
 
 // Insurgence Moves
 BattleMoveAnims['achillesheel'] = { anim: BattleMoveAnims['lowkick'].anim };
