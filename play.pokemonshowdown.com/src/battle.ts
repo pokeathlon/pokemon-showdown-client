@@ -773,6 +773,9 @@ export class Side {
 		case 'doomdesire':
 			this.sideConditions[condition] = ['Doom Desire', 1, 3, 0];
 			break;
+		case 'flockshock':
+			this.sideConditions[condition] = ['Flock Shock', 1, 3, 0];
+			break;
 		case 'stealthrock':
 		case 'spikes':
 		case 'toxicspikes':
@@ -2831,9 +2834,13 @@ export class Battle {
 				poke.side.addSideCondition(effect, false);
 				this.scene.updateWeather();
 				break;
+			case 'flockshock':
+				poke.side.addSideCondition(effect, false);
+				this.scene.updateWeather();
+				break;
 			}
 			if (!(effect.id === 'typechange' && poke.terastallized) &&
-				effect.id !== 'futuresight' && effect.id !== 'doomdesire') {
+				effect.id !== 'futuresight' && effect.id !== 'doomdesire' && effect.id !== 'flockshock') {
 				poke.addVolatile(effect.id);
 			}
 			this.scene.updateStatbar(poke);
@@ -2942,6 +2949,11 @@ export class Battle {
 						if (effect.name === 'Future Sight') {
 							this.scene.runOtherAnim('futuresighthit' as ID, [poke]);
 							poke.side.foe.removeSideCondition('Future Sight');
+							this.scene.updateWeather();
+						}
+						if (effect.name === 'Flock Shock') {
+							this.scene.runOtherAnim('futuresighthit' as ID, [poke]);
+							poke.side.foe.removeSideCondition('Flock Shock');
 							this.scene.updateWeather();
 						}
 					}
@@ -3181,6 +3193,7 @@ export class Battle {
 			case 'grasspledge':
 			case 'firepledge':
 			case 'waterpledge':
+			case 'flockshock':
 				this.scene.updateWeather();
 				break;
 			}
