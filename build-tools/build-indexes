@@ -90,7 +90,7 @@ function requireNoCache(pathSpec) {
 	index = index.concat(Object.keys(Dex.data.Abilities).map(x => x + ' ability'));
 	index = index.concat(Object.keys(Dex.data.TypeChart).map(x => toID(x) + ' type'));
 	index = index.concat(['physical', 'special', 'status', 'bite', 'bullet', 'charge', 'contact', 'dance', 'heal', 'powder', 'pulse', 'punch', 'recharge', 'slicing', 'sound', 'wind'].map(x => toID(x) + ' category'));
-	index = index.concat(['pokeathlon', 'insurgence', 'uranium', 'mysterygift', 'poa', 'infinity', 'digimon', 'mariomon'].map(x => toID(x) + ' egggroup'));
+	index = index.concat(['pokeathlon', 'insurgence', 'uranium', 'mysterygift', 'poa', 'infinity', 'digimon', 'mariomon', 'xenoverse'].map(x => toID(x) + ' egggroup'));
 	index = index.concat(['ou', 'uu', 'ru', 'nu', 'pu', 'zu', 'lc', 'nfe', 'uber', 'uubl', 'rubl', 'nubl', 'publ', 'zubl', 'cap', 'caplc', 'capnfe'].map(x => toID(x) + ' tier'));
 
 	const BattleArticleTitles = {};
