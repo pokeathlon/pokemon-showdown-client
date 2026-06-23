@@ -15,7 +15,7 @@ Storage.initialize = function () {
 Storage.safeJSON = function (callback) {
 	return function (data) {
 		if (data.length < 1) return;
-		if (data[0] == ']') data = data.substr(1);
+		if (data[0] === ']') data = data.substr(1);
 		return callback(JSON.parse(data));
 	};
 };
@@ -170,16 +170,15 @@ Storage.bg = {
 		var l = (max + min) / 2;
 		if (max === min) {
 			return '0, 0%';
-		} else {
-			var d = max - min;
-			s = l > 0.5 ? d / (2 - max - min) : d / (max + min);
-			switch (max) {
-			case r: h = (g - b) / d + (g < b ? 6 : 0); break;
-			case g: h = (b - r) / d + 2; break;
-			case b: h = (r - g) / d + 4; break;
-			}
-			h /= 6;
 		}
+		var d = max - min;
+		s = l > 0.5 ? d / (2 - max - min) : d / (max + min);
+		switch (max) {
+		case r: h = (g - b) / d + (g < b ? 6 : 0); break;
+		case g: h = (b - r) / d + 2; break;
+		case b: h = (r - g) / d + 4; break;
+		}
+		h /= 6;
 		return '' + (h * 360) + ',' + (s * 100) + '%';
 	}
 };
@@ -291,7 +290,7 @@ var updatePrefs = function () {
 	var oldShowjoins = Storage.prefs('showjoins');
 	if (oldShowjoins !== undefined && typeof oldShowjoins !== 'object') {
 		var showjoins = {};
-		var serverShowjoins = {global: (oldShowjoins ? 1 : 0)};
+		var serverShowjoins = { global: (oldShowjoins ? 1 : 0) };
 		var showroomjoins = Storage.prefs('showroomjoins');
 		for (var roomid in showroomjoins) {
 			serverShowjoins[roomid] = (showroomjoins[roomid] ? 1 : 0);
@@ -525,7 +524,7 @@ Storage.initTestClient = function () {
 				data.sid = sid;
 				get(uri, data, callback, type);
 			} else {
-				app.addPopup(ProxyPopup, {uri: uri, callback: callback});
+				app.addPopup(ProxyPopup, { uri: uri, callback: callback });
 			}
 		};
 		var post = $.post;
@@ -533,7 +532,7 @@ Storage.initTestClient = function () {
 			if (type === 'html') {
 				uri += '&testclient';
 			}
-			if (uri[0] === '/') { //relative URI
+			if (uri[0] === '/') { // relative URI
 				uri = Dex.resourcePrefix + uri.substr(1);
 			}
 
@@ -547,7 +546,7 @@ Storage.initTestClient = function () {
 					src += '<input type=hidden name="' + i + '" value="' + BattleLog.escapeHTML(data[i]) + '">';
 				}
 				src += '<input type=submit value="Please click this button first."></form></body></html>';
-				app.addPopup(ProxyPopup, {uri: "data:text/html;charset=UTF-8," + encodeURIComponent(src), callback: callback});
+				app.addPopup(ProxyPopup, { uri: "data:text/html;charset=UTF-8," + encodeURIComponent(src), callback: callback });
 			}
 		};
 		Storage.whenPrefsLoaded.load();
@@ -609,7 +608,7 @@ Storage.compareTeams = function (serverTeam, localTeam) {
 };
 
 Storage.loadRemoteTeams = function (after) {
-	$.get(app.user.getActionPHP(), {act: 'getteams'}, Storage.safeJSON(function (data) {
+	$.get(app.user.getActionPHP(), { act: 'getteams' }, Storage.safeJSON(function (data) {
 		if (data.actionerror) {
 			return app.addPopupMessage('Error loading uploaded teams: ' + data.actionerror);
 		}
@@ -639,7 +638,7 @@ Storage.loadRemoteTeams = function (after) {
 				// team comes down from loginserver as comma-separated list of mons
 				// to save bandwidth
 				var mons = team.team.split(',').map(function (mon) {
-					return {species: mon};
+					return { species: mon };
 				});
 				team.team = Storage.packTeam(mons);
 				Storage.teams.unshift(team);
@@ -845,7 +844,7 @@ Storage.packTeam = function (team) {
 		}
 
 		// level
-		if (set.level && set.level != 100) {
+		if (set.level && set.level !== 100) {
 			buf += '|' + set.level;
 		} else {
 			buf += '|';
@@ -858,7 +857,7 @@ Storage.packTeam = function (team) {
 			buf += '|';
 		}
 
-		if (set.pokeball || (set.hpType && !hasHP) || set.gigantamax || (set.dynamaxLevel !== undefined && set.dynamaxLevel !== 10) || set.teraType || set.fusion || set.altsprite) {
+		if (set.pokeball || (set.hpType && !hasHP) || set.gigantamax || (set.dynamaxLevel !== undefined && set.dynamaxLevel !== 10) || set.teraType || set.fusion || set.altsprite || set.ability2) {
 			buf += ',' + (set.hpType || '');
 			buf += ',' + toID(set.pokeball);
 			buf += ',' + (set.gigantamax ? 'G' : '');
@@ -866,6 +865,7 @@ Storage.packTeam = function (team) {
 			buf += ',' + (set.teraType || '');
 			buf += ',' + (set.fusion || '');
 			buf += ',' + (set.altsprite || '');
+			buf += ',' + (set.ability2 || '');
 		}
 	}
 
@@ -889,7 +889,8 @@ Storage.fastUnpackTeam = function (buf) {
 
 		// species
 		j = buf.indexOf('|', i);
-		set.species = buf.substring(i, j) || set.name;
+		var species = Dex.species.get(buf.substring(i, j) || set.name);
+		set.species = species.name;
 		i = j + 1;
 
 		// item
@@ -900,7 +901,6 @@ Storage.fastUnpackTeam = function (buf) {
 		// ability
 		j = buf.indexOf('|', i);
 		var ability = buf.substring(i, j);
-		var species = Dex.species.get(set.species);
 		if (species.baseSpecies === 'Zygarde' && ability === 'H') ability = 'Power Construct';
 		set.ability = (species.abilities && ['', '0', '1', 'H', 'S'].includes(ability) ? species.abilities[ability] || '!!!ERROR!!!' : ability);
 		i = j + 1;
@@ -931,7 +931,7 @@ Storage.fastUnpackTeam = function (buf) {
 					spe: Number(evs[5]) || 0
 				};
 			} else if (evstring === '0') {
-				set.evs = {hp: 0, atk: 0, def: 0, spa: 0, spd: 0, spe: 0};
+				set.evs = { hp: 0, atk: 0, def: 0, spa: 0, spd: 0, spe: 0 };
 			}
 		}
 		i = j + 1;
@@ -970,9 +970,9 @@ Storage.fastUnpackTeam = function (buf) {
 		j = buf.indexOf(']', i);
 		var misc = undefined;
 		if (j < 0) {
-			if (i < buf.length) misc = buf.substring(i).split(',', 8);
+			if (i < buf.length) misc = buf.substring(i).split(',', 9);
 		} else {
-			if (i !== j) misc = buf.substring(i, j).split(',', 8);
+			if (i !== j) misc = buf.substring(i, j).split(',', 9);
 		}
 		if (misc) {
 			set.happiness = (misc[0] ? Number(misc[0]) : 255);
@@ -983,6 +983,7 @@ Storage.fastUnpackTeam = function (buf) {
 			set.teraType = misc[5];
 			set.fusion = misc[6];
 			set.altsprite = misc[7];
+			set.ability2 = misc[8];
 		}
 		if (j < 0) break;
 		i = j + 1;
@@ -1008,7 +1009,8 @@ Storage.unpackTeam = function (buf) {
 
 		// species
 		j = buf.indexOf('|', i);
-		set.species = Dex.species.get(buf.substring(i, j)).name || set.name;
+		var species = Dex.species.get(buf.substring(i, j) || set.name);
+		set.species = species.name;
 		i = j + 1;
 
 		// item
@@ -1019,8 +1021,7 @@ Storage.unpackTeam = function (buf) {
 		// ability
 		j = buf.indexOf('|', i);
 		var ability = Dex.abilities.get(buf.substring(i, j)).name;
-		var species = Dex.species.get(set.species);
-		set.ability = (species.abilities && ability in {'':1, 0:1, 1:1, H:1} ? species.abilities[ability || '0'] : ability);
+		set.ability = (species.abilities && ability in { '': 1, 0: 1, 1: 1, H: 1 } ? species.abilities[ability || '0'] : ability);
 		i = j + 1;
 
 		// moves
@@ -1051,7 +1052,7 @@ Storage.unpackTeam = function (buf) {
 					spe: Number(evs[5]) || 0
 				};
 			} else if (evstring === '0') {
-				set.evs = {hp: 0, atk: 0, def: 0, spa: 0, spd: 0, spe: 0};
+				set.evs = { hp: 0, atk: 0, def: 0, spa: 0, spd: 0, spe: 0 };
 			}
 		}
 		i = j + 1;
@@ -1090,9 +1091,9 @@ Storage.unpackTeam = function (buf) {
 		j = buf.indexOf(']', i);
 		var misc = undefined;
 		if (j < 0) {
-			if (i < buf.length) misc = buf.substring(i).split(',', 8);
+			if (i < buf.length) misc = buf.substring(i).split(',', 9);
 		} else {
-			if (i !== j) misc = buf.substring(i, j).split(',', 8);
+			if (i !== j) misc = buf.substring(i, j).split(',', 9);
 		}
 		if (misc) {
 			set.happiness = (misc[0] ? Number(misc[0]) : 255);
@@ -1103,6 +1104,7 @@ Storage.unpackTeam = function (buf) {
 			set.teraType = misc[5];
 			set.fusion = misc[6];
 			set.altsprite = misc[7];
+			set.ability2 = misc[8];
 		}
 		if (j < 0 || buf.indexOf('|', j) < 0) break;
 		i = j + 1;
@@ -1236,7 +1238,7 @@ Storage.importTeam = function (buffer, teams) {
 			curSet = null;
 			teams.push(Storage.unpackLine(line));
 		} else if (!curSet) {
-			curSet = {name: '', species: '', gender: ''};
+			curSet = { name: '', species: '', gender: '' };
 			team.push(curSet);
 			var atIndex = line.lastIndexOf(' @ ');
 			if (atIndex !== -1) {
@@ -1264,10 +1266,22 @@ Storage.importTeam = function (buffer, teams) {
 			}
 		} else if (line.substr(0, 7) === 'Trait: ') {
 			line = line.substr(7);
-			curSet.ability = line;
+			if (line.includes(' / ')) {
+				var split = line.split(' / ');
+				curSet.ability = split[0];
+				curSet.ability2 = split[1];
+			} else {
+				curSet.ability = line;
+			}
 		} else if (line.substr(0, 9) === 'Ability: ') {
 			line = line.substr(9);
-			curSet.ability = line;
+			if (line.includes(' / ')) {
+				var split = line.split(' / ');
+				curSet.ability = split[0];
+				curSet.ability2 = split[1];
+			} else {
+				curSet.ability = line;
+			}
 		} else if (line === 'Shiny: Yes') {
 			curSet.shiny = true;
 		} else if (line.substr(0, 7) === 'Level: ') {
@@ -1299,7 +1313,7 @@ Storage.importTeam = function (buffer, teams) {
 		} else if (line.substr(0, 5) === 'EVs: ') {
 			line = line.substr(5);
 			var evLines = line.split('/');
-			curSet.evs = {hp: 0, atk: 0, def: 0, spa: 0, spd: 0, spe: 0};
+			curSet.evs = { hp: 0, atk: 0, def: 0, spa: 0, spd: 0, spe: 0 };
 			for (var j = 0; j < evLines.length; j++) {
 				var evLine = $.trim(evLines[j]);
 				var spaceIndex = evLine.indexOf(' ');
@@ -1312,7 +1326,7 @@ Storage.importTeam = function (buffer, teams) {
 		} else if (line.substr(0, 5) === 'IVs: ') {
 			line = line.substr(5);
 			var ivLines = line.split(' / ');
-			curSet.ivs = {hp: 31, atk: 31, def: 31, spa: 31, spd: 31, spe: 31};
+			curSet.ivs = { hp: 31, atk: 31, def: 31, spa: 31, spd: 31, spe: 31 };
 			for (var j = 0; j < ivLines.length; j++) {
 				var ivLine = ivLines[j];
 				var spaceIndex = ivLine.indexOf(' ');
@@ -1360,7 +1374,7 @@ Storage.exportAllTeams = function () {
 	for (var i = 0, len = Storage.teams.length; i < len; i++) {
 		var team = Storage.teams[i];
 		buf += '=== ' + (team.format ? '[' + team.format + (team.capacity === 24 ? '-box] ' : '] ') : '') + (team.folder ? '' + team.folder + '/' : '') + team.name + ' ===\n\n';
-		buf += Storage.exportTeam(team.team, team.gen);
+		buf += Storage.exportTeam(team.team);
 		buf += '\n';
 	}
 	return buf;
@@ -1371,13 +1385,13 @@ Storage.exportFolder = function (folder) {
 		var team = Storage.teams[i];
 		if (team.folder + "/" === folder || team.format === folder) {
 			buf += '=== ' + (team.format ? '[' + team.format + (team.capacity === 24 ? '-box] ' : '] ') : '') + (team.folder ? '' + team.folder + '/' : '') + team.name + ' ===\n\n';
-			buf += Storage.exportTeam(team.team, team.gen);
+			buf += Storage.exportTeam(team.team);
 			buf += '\n';
 		}
 	}
 	return buf;
 };
-Storage.exportTeam = function (team, gen, hidestats) {
+Storage.exportTeam = function (team, hidestats) {
 	if (!team) return "";
 	if (typeof team === 'string') {
 		if (team.indexOf('\n') >= 0) return team;
@@ -1398,9 +1412,9 @@ Storage.exportTeam = function (team, gen, hidestats) {
 		}
 		text += "  \n";
 		if (curSet.ability) {
-			text += 'Ability: ' + curSet.ability + "  \n";
+			text += 'Ability: ' + curSet.ability + (curSet.ability2 ? ' / ' + curSet.ability2 : '') + "  \n";
 		}
-		if (curSet.level && curSet.level != 100) {
+		if (curSet.level && curSet.level !== 100) {
 			text += 'Level: ' + curSet.level + "  \n";
 		}
 		if (curSet.shiny) {
@@ -1421,9 +1435,8 @@ Storage.exportTeam = function (team, gen, hidestats) {
 		if (curSet.gigantamax) {
 			text += 'Gigantamax: Yes  \n';
 		}
-		if (gen === 9) {
-			var species = Dex.species.get(curSet.species);
-			text += 'Tera Type: ' + (species.forceTeraType || curSet.teraType || species.types[0]) + "  \n";
+		if (curSet.teraType) {
+			text += 'Tera Type: ' + curSet.teraType + '  \n';
 		}
 		if (curSet.fusion) {
 			text += 'Fusion: ' + curSet.fusion + "  \n";
@@ -1481,7 +1494,7 @@ Storage.exportTeam = function (team, gen, hidestats) {
 				}
 				if (!defaultIvs) {
 					for (var stat in BattleStatNames) {
-						if (typeof curSet.ivs[stat] === 'undefined' || isNaN(curSet.ivs[stat]) || curSet.ivs[stat] == 31) continue;
+						if (typeof curSet.ivs[stat] === 'undefined' || isNaN(curSet.ivs[stat]) || curSet.ivs[stat] === 31) continue;
 						if (first) {
 							text += 'IVs: ';
 							first = false;
@@ -1518,7 +1531,7 @@ Storage.initDirectory = function () {
 	var self = this;
 
 	var dir = process.env.HOME || process.env.USERPROFILE || process.env.HOMEPATH;
-	if (!(dir.charAt(dir.length - 1) in {'/': 1, '\\': 1})) dir += '/';
+	if (!(dir.charAt(dir.length - 1) in { '/': 1, '\\': 1 })) dir += '/';
 	fs.stat(dir + 'Documents', function (err, stats) {
 		if (err || !stats.isDirectory()) {
 			fs.stat(dir + 'My Documents', function (err, stats) {
@@ -1773,7 +1786,7 @@ Storage.nwSaveTeam = function (team) {
 		this.nwDeleteTeam(team);
 	}
 	team.filename = filename;
-	fs.writeFile(this.dir + 'Teams/' + filename, Storage.exportTeam(team.team, team.gen).replace(/\n/g, '\r\n'), function () {});
+	fs.writeFile(this.dir + 'Teams/' + filename, Storage.exportTeam(team.team).replace(/\n/g, '\r\n'), function () {});
 };
 
 Storage.nwSaveTeams = function () {
@@ -1809,7 +1822,7 @@ Storage.nwDoSaveAllTeams = function () {
 		filename = $.trim(filename).replace(/[\\\/]+/g, '');
 
 		team.filename = filename;
-		fs.writeFile(this.dir + 'Teams/' + filename, Storage.exportTeam(team.team, team.gen).replace(/\n/g, '\r\n'), function () {});
+		fs.writeFile(this.dir + 'Teams/' + filename, Storage.exportTeam(team.team).replace(/\n/g, '\r\n'), function () {});
 	}
 };
 
@@ -1869,7 +1882,7 @@ Storage.nwLogChat = function (roomid, line) {
 	var timestamp = '[' + hours + ':' + minutes + '] ';
 
 	if (!this.chatLogStreams[roomid]) {
-		this.chatLogStreams[roomid] = fs.createWriteStream(this.dir + 'Logs/' + chatLogFdMonth + '/' + roomid + '.txt', {flags: 'a'});
+		this.chatLogStreams[roomid] = fs.createWriteStream(this.dir + 'Logs/' + chatLogFdMonth + '/' + roomid + '.txt', { flags: 'a' });
 		this.chatLogStreams[roomid].write('\n\n\nLog starting ' + now + '\n\n');
 	}
 	this.chatLogStreams[roomid].write(timestamp + line + '\n');

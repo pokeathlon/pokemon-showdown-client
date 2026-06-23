@@ -115,8 +115,8 @@
 			if (rooms.userCount) {
 				var userCount = Number(rooms.userCount);
 				var battleCount = Number(rooms.battleCount);
-				var leftSide = '<button class="button" name="finduser" title="Find an online user"><span class="pixelated usercount"></span><strong>' + userCount + '</strong> ' + (userCount == 1 ? 'user' : 'users') + ' online</button> ';
-				var rightSide = '<button class="button" name="roomlist" title="Watch an active battle"><span class="pixelated battlecount"></span><strong>' + battleCount + '</strong> active ' + (battleCount == 1 ? 'battle' : 'battles') + '</button>';
+				var leftSide = '<button class="button" name="finduser" title="Find an online user"><span class="pixelated usercount' + (Dex.afdMode === true ? ' afd' : '') + '"></span><strong>' + userCount + '</strong> ' + (userCount === 1 ? 'user' : 'users') + ' online</button> ';
+				var rightSide = '<button class="button" name="roomlist" title="Watch an active battle"><span class="pixelated battlecount' + (Dex.afdMode ? ' afd' : '') + '"></span><strong>' + battleCount + '</strong> active ' + (battleCount === 1 ? 'battle' : 'battles') + '</button>';
 				this.$('.roomlisttop').html('<div class="roomcounters">' + leftSide + '</td><td>' + rightSide + '</div>');
 			}
 
@@ -171,7 +171,7 @@
 				(hiddenRooms.length && this.showMoreRooms ? hiddenRooms.sort(this.compareRooms).map(this.renderRoomBtn).join("") : '')
 			);
 			this.$('.roomlist').last().html(
-				`<div><a href="https://discord.com/invite/vsEN6mzuNj" target="_blank" class="blocklink"><small style="float:right">(1300+ members)</small><strong><i class="fa fa-comments-o"></i> Discord<br></strong><small>The Pok&eacute;athlon Discord.</small></a></div>`
+				`<div><a href="https://discord.com/invite/vsEN6mzuNj" target="_blank" class="blocklink"><small style="float:right">(2800+ members)</small><strong><i class="fa fa-comments-o"></i> Discord<br></strong><small>The Pok&eacute;athlon Discord.</small></a></div>`
 			);
 		},
 		roomlist: function () {
@@ -191,10 +191,10 @@
 			app.addPopupPrompt("Username", "Open", function (target) {
 				if (!target) return;
 				if (toID(target) === 'zarel') {
-					app.addPopup(Popup, {htmlMessage: "Zarel is very busy; please don't contact him this way. If you're looking for help, try <a href=\"/help\">joining the Help room</a>?"});
+					app.addPopup(Popup, { htmlMessage: "Zarel is very busy; please don't contact him this way. If you're looking for help, try <a href=\"/help\">joining the Help room</a>?" });
 					return;
 				}
-				app.addPopup(UserPopup, {name: target});
+				app.addPopup(UserPopup, { name: target });
 			});
 		},
 		refresh: function () {
@@ -238,9 +238,9 @@
 				return;
 			}
 			var self = this;
-			app.addPopup(FormatPopup, {format: format, sourceEl: button, selectType: 'watch', onselect: function (newFormat) {
+			app.addPopup(FormatPopup, { format: format, sourceEl: button, selectType: 'watch', onselect: function (newFormat) {
 				self.changeFormat(newFormat);
-			}});
+			} });
 		},
 		changeFormat: function (format) {
 			this.format = format;

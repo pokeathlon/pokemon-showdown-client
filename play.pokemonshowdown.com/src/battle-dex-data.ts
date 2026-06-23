@@ -14,17 +14,19 @@
  * @license MIT
  */
 
+import { Dex, toID } from "./battle-dex";
+
 /**
  * String that contains only lowercase alphanumeric characters.
  */
-type ID = string & {__isID: true};
+export type ID = string & { __isID: true };
 
-interface Nature {
+export interface Nature {
 	plus?: StatNameExceptHP;
 	minus?: StatNameExceptHP;
 }
 
-const BattleNatures: {[k in NatureName]: Nature} = {
+export const BattleNatures: { [k in NatureName]: Nature } = {
 	Adamant: {
 		plus: 'atk',
 		minus: 'spa',
@@ -111,7 +113,7 @@ const BattleNatures: {[k in NatureName]: Nature} = {
 		minus: 'atk',
 	},
 };
-const BattleStatIDs: {[k: string]: StatName | undefined} = {
+export const BattleStatIDs: { [k: string]: StatName | undefined } = {
 	HP: 'hp',
 	hp: 'hp',
 	Atk: 'atk',
@@ -133,7 +135,7 @@ const BattleStatIDs: {[k: string]: StatName | undefined} = {
 	spe: 'spe',
 };
 /** Stat short names */
-const BattleStatNames = {
+export const BattleStatNames = {
 	hp: 'HP',
 	atk: 'Atk',
 	def: 'Def',
@@ -142,11 +144,11 @@ const BattleStatNames = {
 	spe: 'Spe',
 } as const;
 
-const BattleBaseSpeciesChart = [
+export const BattleBaseSpeciesChart = [
 	"unown", "burmy", "shellos", "gastrodon", "deerling", "sawsbuck", "vivillon", "flabebe", "floette", "florges", "furfrou", "minior", "alcremie", "tatsugiri", "pokestarufo", "pokestarbrycenman", "pokestarmt", "pokestarmt2", "pokestartransport", "pokestargiant", "pokestarhumanoid", "pokestarmonster", "pokestarf00", "pokestarf002", "pokestarspirit", "pokestarblackdoor", "pokestarwhitedoor", "pokestarblackbelt",
 ] as ID[];
 
-const BattlePokemonIconIndexes: {[id: string]: number} = {
+export const BattlePokemonIconIndexes: { [id: string]: number } = {
 	// alt forms
 	egg: 1032 + 1,
 	pikachubelle: 1032 + 2,
@@ -544,196 +546,251 @@ const BattlePokemonIconIndexes: {[id: string]: number} = {
 	inteleongmax: 1320 + 81,
 	urshifugmax: 1320 + 82,
 	urshifurapidstrikegmax: 1320 + 83,
+	clefablemega: 1320 + 84,
+	victreebelmega: 1320 + 85,
+	starmiemega: 1320 + 86,
+	dragonitemega: 1320 + 87,
+	meganiummega: 1320 + 88,
+	feraligatrmega: 1320 + 89,
+	skarmorymega: 1320 + 90,
+	froslassmega: 1320 + 91,
+	emboarmega: 1320 + 92,
+	excadrillmega: 1320 + 93,
+	scolipedemega: 1320 + 94,
+	scraftymega: 1320 + 95,
+	eelektrossmega: 1320 + 96,
+	chandeluremega: 1320 + 97,
+	chesnaughtmega: 1320 + 98,
+	delphoxmega: 1320 + 99,
+	greninjamega: 1320 + 100,
+	pyroarmega: 1320 + 101,
+	floettemega: 1320 + 102,
+	malamarmega: 1320 + 103,
+	barbaraclemega: 1320 + 104,
+	dragalgemega: 1320 + 105,
+	hawluchamega: 1320 + 106,
+	zygardemega: 1320 + 107,
+	drampamega: 1320 + 108,
+	falinksmega: 1320 + 109,
+	raichumegax: 1320 + 110,
+	raichumegay: 1320 + 111,
+	chimechomega: 1320 + 112,
+	absolmegaz: 1320 + 113,
+	staraptormega: 1320 + 114,
+	garchompmegaz: 1320 + 115,
+	lucariomegaz: 1320 + 116,
+	heatranmega: 1320 + 117,
+	darkraimega: 1320 + 118,
+	golurkmega: 1320 + 119,
+	meowsticmmega: 1320 + 120,
+	meowsticfmega: 1320 + 120,
+	crabominablemega: 1320 + 121,
+	golisopodmega: 1320 + 122,
+	magearnamega: 1320 + 123,
+	magearnaoriginalmega: 1320 + 124,
+	zeraoramega: 1320 + 125,
+	scovillainmega: 1320 + 126,
+	glimmoramega: 1320 + 127,
+	tatsugiricurlymega: 1320 + 128,
+	tatsugiridroopymega: 1320 + 129,
+	tatsugiristretchymega: 1320 + 130,
+	baxcaliburmega: 1320 + 131,
 
 	// CAP
-	syclant: 1512 + 0,
-	revenankh: 1512 + 1,
-	pyroak: 1512 + 2,
-	fidgit: 1512 + 3,
-	stratagem: 1512 + 4,
-	arghonaut: 1512 + 5,
-	kitsunoh: 1512 + 6,
-	cyclohm: 1512 + 7,
-	colossoil: 1512 + 8,
-	krilowatt: 1512 + 9,
-	voodoom: 1512 + 10,
-	tomohawk: 1512 + 11,
-	necturna: 1512 + 12,
-	mollux: 1512 + 13,
-	aurumoth: 1512 + 14,
-	malaconda: 1512 + 15,
-	cawmodore: 1512 + 16,
-	volkraken: 1512 + 17,
-	plasmanta: 1512 + 18,
-	naviathan: 1512 + 19,
-	crucibelle: 1512 + 20,
-	crucibellemega: 1512 + 21,
-	kerfluffle: 1512 + 22,
-	pajantom: 1512 + 23,
-	jumbao: 1512 + 24,
-	caribolt: 1512 + 25,
-	smokomodo: 1512 + 26,
-	snaelstrom: 1512 + 27,
-	equilibra: 1512 + 28,
-	astrolotl: 1512 + 29,
-	miasmaw: 1512 + 30,
-	chromera: 1512 + 31,
-	venomicon: 1512 + 32,
-	venomiconepilogue: 1512 + 33,
-	saharaja: 1512 + 34,
-	hemogoblin: 1512 + 35,
-	syclar: 1512 + 36,
-	embirch: 1512 + 37,
-	flarelm: 1512 + 38,
-	breezi: 1512 + 39,
-	scratchet: 1512 + 40,
-	necturine: 1512 + 41,
-	cupra: 1512 + 42,
-	argalis: 1512 + 43,
-	brattler: 1512 + 44,
-	cawdet: 1512 + 45,
-	volkritter: 1512 + 46,
-	snugglow: 1512 + 47,
-	floatoy: 1512 + 48,
-	caimanoe: 1512 + 49,
-	pluffle: 1512 + 50,
-	rebble: 1512 + 51,
-	tactite: 1512 + 52,
-	privatyke: 1512 + 53,
-	nohface: 1512 + 54,
-	monohm: 1512 + 55,
-	duohm: 1512 + 56,
-	protowatt: 1512 + 57,
-	voodoll: 1512 + 58,
-	mumbao: 1512 + 59,
-	fawnifer: 1512 + 60,
-	electrelk: 1512 + 61,
-	smogecko: 1512 + 62,
-	smoguana: 1512 + 63,
-	swirlpool: 1512 + 64,
-	coribalis: 1512 + 65,
-	justyke: 1512 + 66,
-	solotl: 1512 + 67,
-	miasmite: 1512 + 68,
-	dorsoil: 1512 + 69,
-	saharascal: 1512 + 70,
-	ababo: 1512 + 71,
-	scattervein: 1512 + 72,
-	cresceidon: 1512 + 73,
-	chuggalong: 1512 + 74,
+	syclant: 1560 + 0,
+	revenankh: 1560 + 1,
+	pyroak: 1560 + 2,
+	fidgit: 1560 + 3,
+	stratagem: 1560 + 4,
+	arghonaut: 1560 + 5,
+	kitsunoh: 1560 + 6,
+	cyclohm: 1560 + 7,
+	colossoil: 1560 + 8,
+	krilowatt: 1560 + 9,
+	voodoom: 1560 + 10,
+	tomohawk: 1560 + 11,
+	necturna: 1560 + 12,
+	mollux: 1560 + 13,
+	aurumoth: 1560 + 14,
+	malaconda: 1560 + 15,
+	cawmodore: 1560 + 16,
+	volkraken: 1560 + 17,
+	plasmanta: 1560 + 18,
+	naviathan: 1560 + 19,
+	crucibelle: 1560 + 20,
+	crucibellemega: 1560 + 21,
+	kerfluffle: 1560 + 22,
+	pajantom: 1560 + 23,
+	jumbao: 1560 + 24,
+	caribolt: 1560 + 25,
+	smokomodo: 1560 + 26,
+	snaelstrom: 1560 + 27,
+	equilibra: 1560 + 28,
+	astrolotl: 1560 + 29,
+	miasmaw: 1560 + 30,
+	chromera: 1560 + 31,
+	venomicon: 1560 + 32,
+	venomiconepilogue: 1560 + 33,
+	saharaja: 1560 + 34,
+	hemogoblin: 1560 + 35,
+	syclar: 1560 + 36,
+	embirch: 1560 + 37,
+	flarelm: 1560 + 38,
+	breezi: 1560 + 39,
+	scratchet: 1560 + 40,
+	necturine: 1560 + 41,
+	cupra: 1560 + 42,
+	argalis: 1560 + 43,
+	brattler: 1560 + 44,
+	cawdet: 1560 + 45,
+	volkritter: 1560 + 46,
+	snugglow: 1560 + 47,
+	floatoy: 1560 + 48,
+	caimanoe: 1560 + 49,
+	pluffle: 1560 + 50,
+	rebble: 1560 + 51,
+	tactite: 1560 + 52,
+	privatyke: 1560 + 53,
+	nohface: 1560 + 54,
+	monohm: 1560 + 55,
+	duohm: 1560 + 56,
+	protowatt: 1560 + 57,
+	voodoll: 1560 + 58,
+	mumbao: 1560 + 59,
+	fawnifer: 1560 + 60,
+	electrelk: 1560 + 61,
+	smogecko: 1560 + 62,
+	smoguana: 1560 + 63,
+	swirlpool: 1560 + 64,
+	coribalis: 1560 + 65,
+	justyke: 1560 + 66,
+	solotl: 1560 + 67,
+	miasmite: 1560 + 68,
+	dorsoil: 1560 + 69,
+	saharascal: 1560 + 70,
+	ababo: 1560 + 71,
+	scattervein: 1560 + 72,
+	cresceidon: 1560 + 73,
+	chuggalong: 1560 + 74,
+	shox: 1560 + 75,
+	chuggon: 1560 + 76,
+	draggalong: 1560 + 77,
+	ramnarok: 1560 + 78,
+	ramnarokradiant: 1560 + 79,
+	flox: 1560 + 80,
 };
 
-const BattlePokemonIconIndexesLeft: {[id: string]: number} = {
-	pikachubelle: 1404 + 0,
-	pikachupopstar: 1404 + 1,
-	clefairy: 1404 + 2,
-	clefable: 1404 + 3,
-	jigglypuff: 1404 + 4,
-	wigglytuff: 1404 + 5,
-	dugtrioalola: 1404 + 6,
-	poliwhirl: 1404 + 7,
-	poliwrath: 1404 + 8,
-	mukalola: 1404 + 9,
-	kingler: 1404 + 10,
-	croconaw: 1404 + 11,
-	cleffa: 1404 + 12,
-	igglybuff: 1404 + 13,
-	politoed: 1404 + 14,
-	unownb: 1404 + 15,
-	unownc: 1404 + 16,
-	unownd: 1404 + 17,
-	unowne: 1404 + 18,
-	unownf: 1404 + 19,
-	unowng: 1404 + 20,
-	unownh: 1404 + 21,
-	unownj: 1404 + 22,
-	unownk: 1404 + 23,
-	unownl: 1404 + 24,
-	unownm: 1404 + 25,
-	unownn: 1404 + 26,
-	unownp: 1404 + 27,
-	unownq: 1404 + 28,
-	unownquestion: 1404 + 29,
-	unownr: 1404 + 30,
-	unowns: 1404 + 31,
-	unownt: 1404 + 32,
-	unownv: 1404 + 33,
-	unownz: 1404 + 34,
-	sneasel: 1404 + 35,
-	teddiursa: 1404 + 36,
-	roselia: 1404 + 37,
-	zangoose: 1404 + 38,
-	seviper: 1404 + 39,
-	castformsnowy: 1404 + 40,
-	absolmega: 1404 + 41,
-	absol: 1404 + 42,
-	regirock: 1404 + 43,
-	torterra: 1404 + 44,
-	budew: 1404 + 45,
-	roserade: 1404 + 46,
-	magmortar: 1404 + 47,
-	togekiss: 1404 + 48,
-	rotomwash: 1404 + 49,
-	shayminsky: 1404 + 50,
-	emboar: 1404 + 51,
-	pansear: 1404 + 52,
-	simisear: 1404 + 53,
-	drilbur: 1404 + 54,
-	excadrill: 1404 + 55,
-	sawk: 1404 + 56,
-	lilligant: 1404 + 57,
-	garbodor: 1404 + 58,
-	solosis: 1404 + 59,
-	vanilluxe: 1404 + 60,
-	amoonguss: 1404 + 61,
-	klink: 1404 + 62,
-	klang: 1404 + 63,
-	klinklang: 1404 + 64,
-	litwick: 1404 + 65,
-	golett: 1404 + 66,
-	golurk: 1404 + 67,
-	kyuremblack: 1404 + 68,
-	kyuremwhite: 1404 + 69,
-	kyurem: 1404 + 70,
-	keldeoresolute: 1404 + 71,
-	meloetta: 1404 + 72,
-	greninja: 1404 + 73,
-	greninjabond: 1404 + 73,
-	greninjaash: 1404 + 74,
-	furfroudebutante: 1404 + 75,
-	barbaracle: 1404 + 76,
-	clauncher: 1404 + 77,
-	clawitzer: 1404 + 78,
-	sylveon: 1404 + 79,
-	klefki: 1404 + 80,
-	zygarde: 1404 + 81,
-	zygarde10: 1404 + 82,
-	zygardecomplete: 1404 + 83,
-	dartrix: 1404 + 84,
-	steenee: 1404 + 85,
-	tsareena: 1404 + 86,
-	comfey: 1404 + 87,
-	miniormeteor: 1404 + 88,
-	minior: 1404 + 89,
-	miniororange: 1404 + 90,
-	minioryellow: 1404 + 91,
-	miniorgreen: 1404 + 92,
-	miniorblue: 1404 + 93,
-	miniorviolet: 1404 + 94,
-	miniorindigo: 1404 + 95,
-	dhelmise: 1404 + 96,
-	necrozma: 1404 + 97,
-	marshadow: 1404 + 98,
-	pikachuoriginal: 1404 + 99,
-	pikachupartner: 1404 + 100,
-	necrozmaduskmane: 1404 + 101,
-	necrozmadawnwings: 1404 + 102,
-	necrozmaultra: 1404 + 103,
-	stakataka: 1404 + 104,
-	blacephalon: 1404 + 105,
+export const BattlePokemonIconIndexesLeft: { [id: string]: number } = {
+	pikachubelle: 1452 + 0,
+	pikachupopstar: 1452 + 1,
+	clefairy: 1452 + 2,
+	clefable: 1452 + 3,
+	jigglypuff: 1452 + 4,
+	wigglytuff: 1452 + 5,
+	dugtrioalola: 1452 + 6,
+	poliwhirl: 1452 + 7,
+	poliwrath: 1452 + 8,
+	mukalola: 1452 + 9,
+	kingler: 1452 + 10,
+	croconaw: 1452 + 11,
+	cleffa: 1452 + 12,
+	igglybuff: 1452 + 13,
+	politoed: 1452 + 14,
+	unownb: 1452 + 15,
+	unownc: 1452 + 16,
+	unownd: 1452 + 17,
+	unowne: 1452 + 18,
+	unownf: 1452 + 19,
+	unowng: 1452 + 20,
+	unownh: 1452 + 21,
+	unownj: 1452 + 22,
+	unownk: 1452 + 23,
+	unownl: 1452 + 24,
+	unownm: 1452 + 25,
+	unownn: 1452 + 26,
+	unownp: 1452 + 27,
+	unownq: 1452 + 28,
+	unownquestion: 1452 + 29,
+	unownr: 1452 + 30,
+	unowns: 1452 + 31,
+	unownt: 1452 + 32,
+	unownv: 1452 + 33,
+	unownz: 1452 + 34,
+	sneasel: 1452 + 35,
+	teddiursa: 1452 + 36,
+	roselia: 1452 + 37,
+	zangoose: 1452 + 38,
+	seviper: 1452 + 39,
+	castformsnowy: 1452 + 40,
+	absolmega: 1452 + 41,
+	absol: 1452 + 42,
+	regirock: 1452 + 43,
+	torterra: 1452 + 44,
+	budew: 1452 + 45,
+	roserade: 1452 + 46,
+	magmortar: 1452 + 47,
+	togekiss: 1452 + 48,
+	rotomwash: 1452 + 49,
+	shayminsky: 1452 + 50,
+	emboar: 1452 + 51,
+	pansear: 1452 + 52,
+	simisear: 1452 + 53,
+	drilbur: 1452 + 54,
+	excadrill: 1452 + 55,
+	sawk: 1452 + 56,
+	lilligant: 1452 + 57,
+	garbodor: 1452 + 58,
+	solosis: 1452 + 59,
+	vanilluxe: 1452 + 60,
+	amoonguss: 1452 + 61,
+	klink: 1452 + 62,
+	klang: 1452 + 63,
+	klinklang: 1452 + 64,
+	litwick: 1452 + 65,
+	golett: 1452 + 66,
+	golurk: 1452 + 67,
+	kyuremblack: 1452 + 68,
+	kyuremwhite: 1452 + 69,
+	kyurem: 1452 + 70,
+	keldeoresolute: 1452 + 71,
+	meloetta: 1452 + 72,
+	greninja: 1452 + 73,
+	greninjabond: 1452 + 73,
+	greninjaash: 1452 + 74,
+	furfroudebutante: 1452 + 75,
+	barbaracle: 1452 + 76,
+	clauncher: 1452 + 77,
+	clawitzer: 1452 + 78,
+	sylveon: 1452 + 79,
+	klefki: 1452 + 80,
+	zygarde: 1452 + 81,
+	zygarde10: 1452 + 82,
+	zygardecomplete: 1452 + 83,
+	dartrix: 1452 + 84,
+	steenee: 1452 + 85,
+	tsareena: 1452 + 86,
+	comfey: 1452 + 87,
+	miniormeteor: 1452 + 88,
+	minior: 1452 + 89,
+	miniororange: 1452 + 90,
+	minioryellow: 1452 + 91,
+	miniorgreen: 1452 + 92,
+	miniorblue: 1452 + 93,
+	miniorviolet: 1452 + 94,
+	miniorindigo: 1452 + 95,
+	dhelmise: 1452 + 96,
+	necrozma: 1452 + 97,
+	marshadow: 1452 + 98,
+	pikachuoriginal: 1452 + 99,
+	pikachupartner: 1452 + 100,
+	necrozmaduskmane: 1452 + 101,
+	necrozmadawnwings: 1452 + 102,
+	necrozmaultra: 1452 + 103,
+	stakataka: 1452 + 104,
+	blacephalon: 1452 + 105,
 };
 
-const BattleAvatarNumbers: {[k: string]: string} = {
+export const BattleAvatarNumbers: { [k: string]: string } = {
 	1: 'lucas',
 	2: 'dawn',
 	3: 'youngster-gen4dp',
@@ -1048,18 +1105,19 @@ const BattleAvatarNumbers: {[k: string]: string} = {
 	1010: '#1010',
 };
 
-type StatName = 'hp' | 'atk' | 'def' | 'spa' | 'spd' | 'spe';
-type NatureName = 'Adamant' | 'Bashful' | 'Bold' | 'Brave' | 'Calm' | 'Careful' | 'Docile' | 'Gentle' |
+export type StatName = 'hp' | 'atk' | 'def' | 'spa' | 'spd' | 'spe';
+export type NatureName = 'Adamant' | 'Bashful' | 'Bold' | 'Brave' | 'Calm' | 'Careful' | 'Docile' | 'Gentle' |
 	'Hardy' | 'Hasty' | 'Impish' | 'Jolly' | 'Lax' | 'Lonely' | 'Mild' | 'Modest' | 'Naive' | 'Naughty' |
 	'Quiet' | 'Quirky' | 'Rash' | 'Relaxed' | 'Sassy' | 'Serious' | 'Timid';
-type StatNameExceptHP = 'atk' | 'def' | 'spa' | 'spd' | 'spe';
-type TypeName = 'Normal' | 'Fighting' | 'Flying' | 'Poison' | 'Ground' | 'Rock' | 'Bug' | 'Ghost' | 'Steel' |
-	'Fire' | 'Water' | 'Grass' | 'Electric' | 'Psychic' | 'Ice' | 'Dragon' | 'Dark' | 'Fairy' | 'Stellar' | 'Crystal' | 'Nuclear' |'???';
-type StatusName = 'par' | 'psn' | 'frz' | 'slp' | 'brn';
-type BoostStatName = 'atk' | 'def' | 'spa' | 'spd' | 'spe' | 'evasion' | 'accuracy' | 'spc';
-type GenderName = 'M' | 'F' | 'N';
+export type StatNameExceptHP = 'atk' | 'def' | 'spa' | 'spd' | 'spe';
+export type TypeName = 'Normal' | 'Fighting' | 'Flying' | 'Poison' | 'Ground' | 'Rock' | 'Bug' | 'Ghost' | 'Steel' |
+	'Fire' | 'Water' | 'Grass' | 'Electric' | 'Psychic' | 'Ice' | 'Dragon' | 'Dark' | 'Fairy' | 'Stellar' | 'Crystal' | 'Nuclear' | '???';
+export type CategoryName = 'Physical' | 'Special' | 'Status';
+export type StatusName = 'par' | 'psn' | 'frz' | 'slp' | 'brn';
+export type BoostStatName = 'atk' | 'def' | 'spa' | 'spd' | 'spe' | 'evasion' | 'accuracy' | 'spc';
+export type GenderName = 'M' | 'F' | 'N';
 
-interface Effect {
+export interface Effect {
 	readonly id: ID;
 	readonly name: string;
 	readonly gen: number;
@@ -1071,7 +1129,7 @@ interface Effect {
 	readonly exists: boolean;
 }
 
-class PureEffect implements Effect {
+export class PureEffect implements Effect {
 	readonly effectType = 'PureEffect';
 	readonly id: ID;
 	readonly name: string;
@@ -1085,7 +1143,7 @@ class PureEffect implements Effect {
 	}
 }
 
-class Item implements Effect {
+export class Item implements Effect {
 	// effect
 	readonly effectType = 'Item';
 	readonly id: ID;
@@ -1098,8 +1156,7 @@ class Item implements Effect {
 	readonly desc: string;
 	readonly shortDesc: string;
 
-	readonly megaStone: string;
-	readonly megaEvolves: string;
+	readonly megaStone: { [megaEvolves: string]: string };
 	readonly zMove: string | true | null;
 	readonly zMoveType: TypeName | '';
 	readonly zMoveFrom: string;
@@ -1108,7 +1165,7 @@ class Item implements Effect {
 	readonly onMemory: TypeName;
 	readonly onDrive: TypeName;
 	readonly fling: any;
-	readonly naturalGift: any;
+	readonly naturalGift: { basePower: number, type: TypeName };
 	readonly isPokeball: boolean;
 	readonly itemUser?: readonly string[];
 
@@ -1125,8 +1182,7 @@ class Item implements Effect {
 		this.desc = data.desc || data.shortDesc || '';
 		this.shortDesc = data.shortDesc || this.desc;
 
-		this.megaStone = data.megaStone || '';
-		this.megaEvolves = data.megaEvolves || '';
+		this.megaStone = data.megaStone || null;
 		this.zMove = data.zMove || null;
 		this.zMoveType = data.zMoveType || '';
 		this.zMoveFrom = data.zMoveFrom || '';
@@ -1153,7 +1209,7 @@ class Item implements Effect {
 	}
 }
 
-interface MoveFlags {
+export interface MoveFlags {
 	/** The move has an animation when used on an ally. */
 	allyanim?: 1 | 0;
 	/** Power is multiplied by 1.5 when used by a Pokemon with the Strong Jaw Ability. */
@@ -1204,12 +1260,12 @@ interface MoveFlags {
 	wind?: 1 | 0;
 }
 
-type MoveTarget = 'normal' | 'any' | 'adjacentAlly' | 'adjacentFoe' | 'adjacentAllyOrSelf' | // single-target
+export type MoveTarget = 'normal' | 'any' | 'adjacentAlly' | 'adjacentFoe' | 'adjacentAllyOrSelf' | // single-target
 	'self' | 'randomNormal' | // single-target, automatic
 	'allAdjacent' | 'allAdjacentFoes' | // spread
 	'allySide' | 'foeSide' | 'all'; // side and field
 
-class Move implements Effect {
+export class Move implements Effect {
 	// effect
 	readonly effectType = 'Move';
 	readonly id: ID;
@@ -1221,12 +1277,13 @@ class Move implements Effect {
 	readonly accuracy: number | true;
 	readonly pp: number;
 	readonly type: TypeName;
-	readonly category: 'Physical' | 'Special' | 'Status';
+	readonly category: CategoryName;
 	readonly priority: number;
 	readonly target: MoveTarget;
 	readonly pressureTarget: MoveTarget;
 	readonly flags: Readonly<MoveFlags>;
 	readonly critRatio: number;
+	readonly damage?: number | 'level' | false | null;
 
 	readonly desc: string;
 	readonly shortDesc: string;
@@ -1235,10 +1292,10 @@ class Move implements Effect {
 	readonly zMove?: {
 		basePower?: number,
 		effect?: string,
-		boost?: {[stat in StatName]?: number},
+		boost?: { [stat in StatName]?: number },
 	};
 	readonly isMax: boolean | string;
-	readonly maxMove: {basePower: number};
+	readonly maxMove: { basePower: number };
 	readonly ohko: true | 'Ice' | null;
 	readonly recoil: number[] | null;
 	readonly heal: number[] | null;
@@ -1247,7 +1304,7 @@ class Move implements Effect {
 	readonly basePowerCallback: boolean;
 	readonly noPPBoosts: boolean;
 	readonly status: string;
-	readonly secondaries: ReadonlyArray<any> | null;
+	readonly secondaries: readonly any[] | null;
 	readonly num: number;
 
 	constructor(id: ID, name: string, data: any) {
@@ -1268,6 +1325,7 @@ class Move implements Effect {
 		this.pressureTarget = data.pressureTarget || this.target;
 		this.flags = data.flags || {};
 		this.critRatio = data.critRatio === 0 ? 0 : (data.critRatio || 1);
+		this.damage = data.damage;
 
 		// TODO: move to text.js
 		this.desc = data.desc;
@@ -1286,43 +1344,43 @@ class Move implements Effect {
 		this.secondaries = data.secondaries || (data.secondary ? [data.secondary] : null);
 
 		this.isMax = data.isMax || false;
-		this.maxMove = data.maxMove || {basePower: 0};
+		this.maxMove = data.maxMove || { basePower: 0 };
 		if (this.category !== 'Status' && !this.maxMove?.basePower) {
 			if (this.isZ || this.isMax) {
-				this.maxMove = {basePower: 1};
+				this.maxMove = { basePower: 1 };
 			} else if (!this.basePower) {
-				this.maxMove = {basePower: 100};
+				this.maxMove = { basePower: 100 };
 			} else if (['Fighting', 'Poison'].includes(this.type)) {
 				if (this.basePower >= 150) {
-					this.maxMove = {basePower: 100};
+					this.maxMove = { basePower: 100 };
 				} else if (this.basePower >= 110) {
-					this.maxMove = {basePower: 95};
+					this.maxMove = { basePower: 95 };
 				} else if (this.basePower >= 75) {
-					this.maxMove = {basePower: 90};
+					this.maxMove = { basePower: 90 };
 				} else if (this.basePower >= 65) {
-					this.maxMove = {basePower: 85};
+					this.maxMove = { basePower: 85 };
 				} else if (this.basePower >= 55) {
-					this.maxMove = {basePower: 80};
+					this.maxMove = { basePower: 80 };
 				} else if (this.basePower >= 45) {
-					this.maxMove = {basePower: 75};
-				} else  {
-					this.maxMove = {basePower: 70};
+					this.maxMove = { basePower: 75 };
+				} else {
+					this.maxMove = { basePower: 70 };
 				}
 			} else {
 				if (this.basePower >= 150) {
-					this.maxMove = {basePower: 150};
+					this.maxMove = { basePower: 150 };
 				} else if (this.basePower >= 110) {
-					this.maxMove = {basePower: 140};
+					this.maxMove = { basePower: 140 };
 				} else if (this.basePower >= 75) {
-					this.maxMove = {basePower: 130};
+					this.maxMove = { basePower: 130 };
 				} else if (this.basePower >= 65) {
-					this.maxMove = {basePower: 120};
+					this.maxMove = { basePower: 120 };
 				} else if (this.basePower >= 55) {
-					this.maxMove = {basePower: 110};
+					this.maxMove = { basePower: 110 };
 				} else if (this.basePower >= 45) {
-					this.maxMove = {basePower: 100};
-				} else  {
-					this.maxMove = {basePower: 90};
+					this.maxMove = { basePower: 100 };
+				} else {
+					this.maxMove = { basePower: 90 };
 				}
 			}
 		}
@@ -1380,7 +1438,7 @@ class Move implements Effect {
 	}
 }
 
-interface AbilityFlags {
+export interface AbilityFlags {
 	/** Can be suppressed by Mold Breaker and related effects */
 	breakable?: 1;
 	/** Ability can't be suppressed by e.g. Gastro Acid or Neutralizing Gas */
@@ -1399,7 +1457,7 @@ interface AbilityFlags {
 	notransform?: 1;
 }
 
-class Ability implements Effect {
+export class Ability implements Effect {
 	// effect
 	readonly effectType = 'Ability';
 	readonly id: ID;
@@ -1446,7 +1504,7 @@ class Ability implements Effect {
 	}
 }
 
-class Species implements Effect {
+export class Species implements Effect {
 	// effect
 	readonly effectType = 'Species';
 	readonly id: ID;
@@ -1463,7 +1521,7 @@ class Species implements Effect {
 
 	// basic data
 	readonly num: number;
-	readonly types: ReadonlyArray<TypeName>;
+	readonly types: readonly TypeName[];
 	readonly abilities: Readonly<{
 		0: string, 1?: string, H?: string, S?: string,
 	}>;
@@ -1477,28 +1535,29 @@ class Species implements Effect {
 	readonly heightm: number;
 	readonly gender: GenderName;
 	readonly color: string;
-	readonly genderRatio: Readonly<{M: number, F: number}> | null;
-	readonly eggGroups: ReadonlyArray<string>;
-	readonly tags: ReadonlyArray<string>;
+	readonly genderRatio: Readonly<{ M: number, F: number }> | null;
+	readonly eggGroups: readonly string[];
+	readonly tags: readonly string[];
 
 	// format data
-	readonly otherFormes: ReadonlyArray<string> | null;
-	readonly cosmeticFormes: ReadonlyArray<string> | null;
-	readonly evos: ReadonlyArray<string> | null;
+	readonly otherFormes: readonly string[] | null;
+	readonly cosmeticFormes: readonly string[] | null;
+	readonly evos: readonly string[] | null;
 	readonly prevo: string;
 	readonly evoType: 'trade' | 'useItem' | 'levelMove' | 'levelExtra' | 'levelFriendship' | 'levelHold' | 'other' | '';
 	readonly evoLevel: number;
 	readonly evoMove: string;
 	readonly evoItem: string;
 	readonly evoCondition: string;
-	readonly requiredItems: ReadonlyArray<string>;
+	readonly nfe: boolean;
+	readonly requiredItems: readonly string[];
 	readonly tier: string;
 	readonly isTotem: boolean;
 	readonly isMega: boolean;
 	readonly isPrimal: boolean;
 	readonly canGigantamax: boolean;
 	readonly cannotDynamax: boolean;
-	readonly forceTeraType: TypeName;
+	readonly requiredTeraType: TypeName;
 	readonly battleOnly: string | string[] | undefined;
 	readonly isNonstandard: string | null;
 	readonly unreleasedHidden: boolean | 'Past';
@@ -1516,15 +1575,16 @@ class Species implements Effect {
 		const baseId = toID(this.baseSpecies);
 		this.formeid = (baseId === this.id ? '' : '-' + toID(this.forme));
 		this.spriteid = baseId + this.formeid;
-		if (this.spriteid.slice(-5) === 'totem') this.spriteid = this.spriteid.slice(0, -5);
+		if (this.spriteid.endsWith('totem')) this.spriteid = this.spriteid.slice(0, -5);
 		if (this.spriteid === 'greninja-bond') this.spriteid = 'greninja';
-		if (this.spriteid.slice(-1) === '-') this.spriteid = this.spriteid.slice(0, -1);
+		if (this.spriteid === 'rockruff-dusk') this.spriteid = 'rockruff';
+		if (this.spriteid.endsWith('-')) this.spriteid = this.spriteid.slice(0, -1);
 		this.baseForme = data.baseForme || '';
 
 		this.num = data.num || 0;
 		this.types = data.types || ['???'];
-		this.abilities = data.abilities || {0: "No Ability"};
-		this.baseStats = data.baseStats || {hp: 0, atk: 0, def: 0, spa: 0, spd: 0, spe: 0};
+		this.abilities = data.abilities || { 0: "No Ability" };
+		this.baseStats = data.baseStats || { hp: 0, atk: 0, def: 0, spa: 0, spd: 0, spe: 0 };
 		this.bst = this.baseStats.hp + this.baseStats.atk + this.baseStats.def +
 			this.baseStats.spa + this.baseStats.spd + this.baseStats.spe;
 		this.weightkg = data.weightkg || 0;
@@ -1545,6 +1605,7 @@ class Species implements Effect {
 		this.evoMove = data.evoMove || '';
 		this.evoItem = data.evoItem || '';
 		this.evoCondition = data.evoCondition || '';
+		this.nfe = data.nfe || false;
 		this.requiredItems = data.requiredItems || (data.requiredItem ? [data.requiredItem] : []);
 		this.tier = data.tier || '';
 
@@ -1553,7 +1614,7 @@ class Species implements Effect {
 		this.isPrimal = !!(this.forme && this.formeid === '-primal');
 		this.canGigantamax = !!data.canGigantamax;
 		this.cannotDynamax = !!data.cannotDynamax;
-		this.forceTeraType = data.forceTeraType || '';
+		this.requiredTeraType = data.requiredTeraType || '';
 		this.battleOnly = data.battleOnly || (this.isMega ? this.baseSpecies : undefined);
 		this.isNonstandard = data.isNonstandard || null;
 		this.unreleasedHidden = data.unreleasedHidden || false;
@@ -1589,19 +1650,21 @@ class Species implements Effect {
 	}
 }
 
-interface Type extends Effect {
-	damageTaken?: AnyObject;
-	HPivs?: Partial<StatsTable>;
-	HPdvs?: Partial<StatsTable>;
+export interface Type extends Effect {
+	damageTaken?: Record<Dex.TypeName | 'powder' | 'prankster' | 'trapped', Dex.WeaknessType>;
+	HPivs?: Partial<Dex.StatsTable>;
+	HPdvs?: Partial<Dex.StatsTable>;
 }
 
+declare const require: any;
+declare const global: any;
 if (typeof require === 'function') {
 	// in Node
-	(global as any).BattleBaseSpeciesChart = BattleBaseSpeciesChart;
-	(global as any).BattleNatures = BattleNatures;
-	(global as any).PureEffect = PureEffect;
-	(global as any).Species = Species;
-	(global as any).Ability = Ability;
-	(global as any).Item = Item;
-	(global as any).Move = Move;
+	global.BattleBaseSpeciesChart = BattleBaseSpeciesChart;
+	global.BattleNatures = BattleNatures;
+	global.PureEffect = PureEffect;
+	global.Species = Species;
+	global.Ability = Ability;
+	global.Item = Item;
+	global.Move = Move;
 }
