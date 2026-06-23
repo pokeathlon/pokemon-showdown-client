@@ -2049,6 +2049,7 @@ export class PokemonSprite extends Sprite {
 		doomdesire: null,
 		futuresight: null,
 		chitinsnare: null,
+		flockshock: null,
 		mimic: ['Mimic', 'good'],
 		watersport: ['Water Sport', 'good'],
 		mudsport: ['Mud Sport', 'good'],
