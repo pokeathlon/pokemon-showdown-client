@@ -275,7 +275,7 @@ process.stdout.write("Building `data/teambuilder-tables.js`... ");
 	const NFE = GENS.map(num => num + 0.3);
 	const LC = GENS.map(num => num + 0.7);
 	const NATDEX = [9.1, 8.1];
-	const OTHER = [9.9, 9.82, 9.83, -9.83, 9.86, -9.86, 9.84, -9.84, -9.82, 9.822, -9.822, 9.823, -9.823, 9.85, -9.85, 9.855, -9.855, 9.87, -9.87, 9.886, -9.887, 9.887, 9.888, -9.888, 9.889, 6.877, -6.877, 9.81, -9.81, 9.83, -9.83, 7.811, -7.811, 7.812, -7.812, 6.833, -6.833, 6.844, -6.844, 5.866, -5.866];
+	const OTHER = [9.9, 9.82, 9.83, -9.83, 9.86, -9.86, -9.866, 9.866, 9.84, -9.84, -9.82, 9.822, -9.822, 9.823, -9.823, 9.85, -9.85, 9.855, -9.855, 9.87, -9.87, 9.886, -9.887, 9.887, 9.888, -9.888, 9.889, 6.877, -6.877, 9.81, -9.81, 9.83, -9.83, 7.811, -7.811, 7.812, -7.812, 6.833, -6.833, 6.844, -6.844, 5.866, -5.866];
 
 	// process.stdout.write("\n  ");
 	for (const genIdent of [...GENS, ...DOUBLES, ...VGC, ...NFE, ...OTHER, ...NATDEX, ...LC]) {
@@ -298,8 +298,8 @@ process.stdout.write("Building `data/teambuilder-tables.js`... ");
 		const isInsg = ('' + genIdent).endsWith('.833');
 		const isNatDexU = ('' + genIdent).endsWith('.84');
 		const isUranium = ('' + genIdent).endsWith('.844');
-		const isNatDexX = ('' + genIdent).endsWith('.86');
-		const isXeno = ('' + genIdent).endsWith('.866');
+		const isNatDexXenoverse = ('' + genIdent).endsWith('.86');
+		const isXenoverse = ('' + genIdent).endsWith('.866');
 		const isNatDexInf = ('' + genIdent).endsWith('.87');
 		const isInfinity = ('' + genIdent).endsWith('.877');
 		const isMariomon = ('' + genIdent).endsWith('.888');
@@ -317,7 +317,7 @@ process.stdout.write("Building `data/teambuilder-tables.js`... ");
 			if (isChaosFusions) genStr += 'chaosfusion';
 			if (isNatDexInsg || isInsg) genStr += 'insurgence';
 			if (isNatDexU || isUranium) genStr += 'uranium';
-			if (isNatDexX || isXeno) genStr += 'xenoverse';
+			if (isNatDexXenoverse || isXenoverse) genStr += 'xenoverse';
 			if (isNatDexInf || isInfinity) genStr += 'infinity';
 			if (isMariomon || isMariomonVGC) genStr += 'mariomon';
 			if (isFRLG) genStr += 'frlg';
@@ -432,12 +432,12 @@ process.stdout.write("Building `data/teambuilder-tables.js`... ");
 					if (species.isMega || species.isNonstandard === "Custom") tier = 'Illegal';
 					return tier;
 				}
-				if (isNatDexPOA || isNatDexInsg || isNatDexU || isNatDexX || isNatDexInf || isNatDexChaos || isChaosFusions) {
+				if (isNatDexPOA || isNatDexInsg || isNatDexU || isNatDexXenoverse || isNatDexInf || isNatDexChaos || isChaosFusions) {
 					let tier = isDoubles ? species.doublesTier : species.natDexTier;
 					if (isNatDexPOA && species.isNonstandard && species.isNonstandard !== "Unobtainable") tier = 'Illegal';
 					return tier;
 				}
-				if (isPOA || isInsg || isUranium || isXeno || isInfinity || isMariomon) {
+				if (isPOA || isInsg || isUranium || isXenoverse || isInfinity || isMariomon) {
 					let tier = isDoubles ? species.doublesTier : species.tier;
 					if (species.isNonstandard === "Custom") tier = 'Illegal';
 					if ((isPOA) && ["Custom", "Unobtainable"].includes(species.isNonstandard)) tier = 'Illegal';
@@ -573,7 +573,7 @@ process.stdout.write("Building `data/teambuilder-tables.js`... ");
 			BattleTeambuilderTable['bh'].overrideTier = overrideTier;
 			BattleTeambuilderTable['bh'].metagameBans = metagameBans;
 			BattleTeambuilderTable['bh'].formatSlices = formatSlices;
-		} else if (isFusions || isFusionsHoenn || isNatDexFusions || isInsg || isNatDexInsg || isUranium || isNatDexU || isXeno || isNatDexX || isInfinity || isNatDexInf || isMariomon || isNatDexChaos || isChaosFusions) {
+		} else if (isFusions || isFusionsHoenn || isNatDexFusions || isInsg || isNatDexInsg || isUranium || isNatDexU || isXenoverse || isNatDexXenoverse || isInfinity || isNatDexInf || isMariomon || isNatDexChaos || isChaosFusions) {
 			BattleTeambuilderTable[gen] = {};
 			BattleTeambuilderTable[gen].learnsets = {};
 			BattleTeambuilderTable[gen].tiers = tiers;
@@ -663,7 +663,7 @@ process.stdout.write("Building `data/teambuilder-tables.js`... ");
 				continue;
 			}
 			if (item.isNonstandard && !isMetBattle) {
-				if (isNatDex || isNatDexFusions || isNatDexPOA || isNatDexX || isNatDexChaos) {
+				if (isNatDex || isNatDexFusions || isNatDexPOA || isNatDexXenoverse || isNatDexChaos) {
 					let curItem = item;
 					let curGen = genNum;
 					while (item.isNonstandard && curGen >= 7) {
