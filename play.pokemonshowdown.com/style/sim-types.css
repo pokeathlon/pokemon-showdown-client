@@ -453,3 +453,69 @@
 	background: linear-gradient(to bottom,  hsl(142,40%,77%),  hsl(142,40%,83%));
 	border-color: hsl(142,40%,41%);
 }
+
+.movemenu button.type-Cosmic {
+	/* bg: 97 to 90, border: 70 */
+	background: hsl(268, 52%, 43%);
+	background: linear-gradient(to bottom,  hsl(269, 20%, 75%),  hsl(253, 52%, 60%));
+	border-color: hsl(239, 72%, 62%);
+}
+.movemenu button.type-Cosmic small {
+	color: hsl(269, 86%, 11%);
+}
+.movemenu button.type-Cosmic:hover {
+	/* bg: 95 to 83, border: 41 */
+	background: hsl(268, 52%, 43%);
+	background: linear-gradient(to bottom,  hsl(269, 20%, 75%),  hsl(253, 52%, 60%));
+	border-color: hsl(239, 72%, 62%);
+}
+.movemenu button.type-Cosmic:active, .movemenu button.type-Cosmic.pressed {
+	/* bg: 83 to 88, border: 41 */
+	background: hsl(268, 52%, 43%);
+	background: linear-gradient(to bottom,  hsl(269, 20%, 75%),  hsl(253, 52%, 60%));
+	border-color: hsl(239, 72%, 62%);
+}
+
+.movemenu button.type-Light {
+	/* bg: 97 to 90, border: 70 */
+	background: hsl(61, 70%, 78%);
+	background: linear-gradient(to bottom,  hsl(310,41%,97%),  hsl(61, 92%, 74%));
+	color: hsl(48, 53%, 29%);
+}
+.movemenu button.type-Light small {
+	color: hsl(48, 53%, 29%);
+}
+.movemenu button.type-Light:hover {
+	/* bg: 95 to 83, border: 41 */
+	background: hsl(61, 70%, 78%);
+	background: linear-gradient(to bottom, hsl(310,41%,97%),  hsl(61, 92%, 60%));
+	color: hsl(48, 53%, 29%);
+}
+.movemenu button.type-Light:active, .movemenu button.type-Light.pressed {
+	/* bg: 83 to 88, border: 41 */
+	background: hsl(61, 70%, 78%);
+	background: linear-gradient(to bottom, hsl(310,41%,97%),  hsl(61, 92%, 74%));
+	color: hsl(48, 53%, 29%);
+}
+
+.movemenu button.type-Sound {
+	/* bg: 97 to 90, border: 70 */
+	background: hsl(150, 100, 84);
+	background: linear-gradient(to bottom, hsl(150, 93%, 82%), hsl(261, 100%, 84%));
+	border-color: hsl(0, 0%, 0%);
+}
+.movemenu button.type-Sound small {
+	color: hsl(0, 0%, 0%);
+}
+.movemenu button.type-Sound:hover {
+	/* bg: 95 to 83, border: 41 */
+	background: hsl(150, 100, 84);
+	background: linear-gradient(to bottom, hsl(150, 100%, 84%), hsl(261, 100%, 84%));
+	border-color: hsl(0, 0%, 0%);
+}
+.movemenu button.type-Sound:active, .movemenu button.type-Sound.pressed {
+	/* bg: 83 to 88, border: 41 */
+	background: hsl(150, 100, 84);
+	background: linear-gradient(to bottom, hsl(150, 100%, 84%), hsl(261, 100%, 84%));
+	border-color: hsl(0, 0%, 0%);
+}

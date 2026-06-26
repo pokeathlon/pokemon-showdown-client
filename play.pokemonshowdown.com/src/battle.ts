@@ -480,11 +480,11 @@ export class Pokemon implements PokemonDetails, PokemonHealth {
 		this.statusData.toxicTurns = 0;
 		if (this.side.battle.gen === 5) this.statusData.sleepTurns = 0;
 	}
-	copyVolatileFrom(pokemon: Pokemon, copySource: 'batonpass' | 'shedtail' | 'illusion') {
+	copyVolatileFrom(pokemon: Pokemon, copySource: 'batonpass' | 'shedtail' | 'illusion' | 'grabandgo') {
 		this.boosts = pokemon.boosts;
 		this.volatiles = pokemon.volatiles;
 		// this.lastMove = pokemon.lastMove; // I think
-		if (copySource === 'batonpass') {
+		if (copySource === 'batonpass' || copySource === 'grabandgo') {
 			const volatilesToRemove = [
 				'airballoon', 'attract', 'autotomize', 'disable', 'encore', 'foresight', 'gmaxchistrike', 'imprison', 'laserfocus', 'mimic', 'miracleeye', 'nightmare', 'saltcure', 'smackdown', 'stockpile1', 'stockpile2', 'stockpile3', 'syrupbomb', 'torment', 'typeadd', 'typechange', 'yawn',
 			];
@@ -800,6 +800,9 @@ export class Side {
 		case 'firepledge':
 			this.sideConditions[condition] = ['Sea of Fire', 1, 4, 0];
 			break;
+		case 'laserfocus':
+			this.sideConditions[condition] = [effect.name, 1, 4, 0];
+			break;
 		default:
 			this.sideConditions[condition] = [effect.name, 1, 0, 0];
 			break;
@@ -906,8 +909,8 @@ export class Side {
 		pokemon.lastMove = '';
 		this.battle.lastMove = 'switch-in';
 		const effect = Dex.getEffect(kwArgs.from);
-		if (['batonpass', 'zbatonpass', 'shedtail'].includes(effect.id)) {
-			pokemon.copyVolatileFrom(this.lastPokemon!, effect.id === 'shedtail' ? 'shedtail' : 'batonpass');
+		if (['batonpass', 'zbatonpass', 'shedtail', 'grabandgo'].includes(effect.id)) {
+			pokemon.copyVolatileFrom(this.lastPokemon!, effect.id === 'shedtail' ? 'shedtail' : effect.id ==='batonpass' ? 'batonpass': 'grabandgo');
 		} else if (this.battle.tier.includes(`Relay Race`) && !effect.id) {
 			if (this.lastPokemon && !this.lastPokemon.fainted) pokemon.copyVolatileFrom(this.lastPokemon, 'batonpass');
 		}
@@ -965,7 +968,7 @@ export class Side {
 	}
 	switchOut(pokemon: Pokemon, kwArgs: KWArgs, slot = pokemon.slot) {
 		const effect = Dex.getEffect(kwArgs.from);
-		if (!['batonpass', 'zbatonpass'].includes(effect.id) &&
+		if (!['batonpass', 'zbatonpass', 'grabandgo'].includes(effect.id) &&
 			!(this.battle.tier.includes(`Relay Race`) && !effect.id)) {
 			pokemon.clearVolatile();
 			if (effect.id === 'shedtail') {
@@ -976,7 +979,7 @@ export class Side {
 			pokemon.removeVolatile('transform' as ID);
 			pokemon.removeVolatile('formechange' as ID);
 		}
-		if (!['batonpass', 'zbatonpass', 'shedtail', 'teleport'].includes(effect.id) &&
+		if (!['batonpass', 'zbatonpass', 'shedtail', 'teleport', 'grabandgo'].includes(effect.id) &&
 			!(this.battle.tier.includes(`Relay Race`) && !effect.id)) {
 			this.battle.log(['switchout', pokemon.ident], { from: effect.id });
 		}
@@ -1822,6 +1825,9 @@ export class Battle {
 				case 'wrap':
 					this.scene.runOtherAnim('bound' as ID, [poke]);
 					break;
+				case 'frb':
+					this.scene.runStatusAnim('frb' as ID, [poke]);
+					break;
 				}
 			} else {
 				if (this.dex.moves.get(this.lastMove).category !== 'Status') {
@@ -2149,6 +2155,9 @@ export class Battle {
 			case 'frz':
 				this.scene.resultAnim(poke, 'Already frozen', 'neutral');
 				break;
+			case 'frb':
+				this.scene.resultAnim(poke, 'Already frostbit', 'neutral');
+				break;
 			case 'unboost':
 				this.scene.resultAnim(poke, 'Stat drop blocked', 'neutral');
 				break;
@@ -2261,6 +2270,10 @@ export class Battle {
 				this.scene.resultAnim(poke, 'Frozen', 'frz');
 				this.scene.runStatusAnim('frz' as ID, [poke]);
 				break;
+			case 'frb':
+				this.scene.resultAnim(poke, 'Frostbit', 'frb');
+				this.scene.runStatusAnim('frb' as ID, [poke]);
+				break;
 			default:
 				this.scene.updateStatbar(poke);
 				break;
@@ -2304,6 +2317,9 @@ export class Battle {
 					break;
 				case 'frz':
 					this.scene.resultAnim(poke, 'Thawed', 'good');
+					break;
+				case 'frb':
+					this.scene.resultAnim(poke, 'Frostbite cured', 'good');
 					break;
 				default:
 					poke.removeVolatile('confusion' as ID);
@@ -3193,6 +3209,7 @@ export class Battle {
 			case 'grasspledge':
 			case 'firepledge':
 			case 'waterpledge':
+			case 'laserfocus':
 			case 'flockshock':
 				this.scene.updateWeather();
 				break;
@@ -3417,7 +3434,7 @@ export class Battle {
 		// status parse
 		if (!status) {
 			output.status = '';
-		} else if (status === 'par' || status === 'brn' || status === 'slp' || status === 'frz' || status === 'tox') {
+		} else if (status === 'par' || status === 'brn' || status === 'slp' || status === 'frz' || status === 'tox' || status === 'frb') {
 			output.status = status;
 		} else if (status === 'psn' && output.status !== 'tox') {
 			output.status = status;

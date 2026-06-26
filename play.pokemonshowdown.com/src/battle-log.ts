@@ -1692,6 +1692,16 @@ export class BattleLog {
 			this.localizeTime
 		);
 	}
+	static hideForm(input: string) {
+		let filters = ["-Orion"]
+		for (const filter of filters) {
+			if (input.includes(filter)) {
+				return input.replace(filter, '')
+			} else {
+				return input
+			}
+		}
+	}
 
 	static initYoutubePlayer(idx: number) {
 		const id = `youtube-iframe-${idx}`;

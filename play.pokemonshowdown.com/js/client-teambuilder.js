@@ -2289,7 +2289,7 @@
 				var color = Math.floor(stats[stat] * 180 / highestStat);
 				if (color > 360) color = 360;
 				buf += '<div><em><span style="width:' + Math.floor(width) + 'px;background:hsl(' + color + ',85%,45%);border-color:hsl(' + color + ',85%,35%)"></span></em></div>';
-				totalev += (set.evs[stat] || 0);
+				if (this.countsEVStat(stat)) totalev += (set.evs[stat] || 0);
 			}
 
 			if (this.curTeam.gen > 2 && (usesStatPoints || supportsEVs)) buf += '<div><em>Remaining:</em></div>';
@@ -2577,7 +2577,7 @@
 					this.minus = i;
 				}
 				buf += '<div><input type="text" name="stat-' + i + '" value="' + val + '" class="textbox inputform numform" /></div>';
-				totalev += (set.evs[i] || 0);
+				if (this.countsEVStat(i)) totalev += (set.evs[i] || 0);
 			}
 			if (this.curTeam.gen > 2 && (usesStatPoints || supportsEVs)) {
 				var maxTotalEVs = usesStatPoints ? 66 : 510;
@@ -2801,6 +2801,42 @@
 		setSlider: function (stat, val) {
 			this.$chart.find('input[name=evslider-' + stat + ']').val(val || 0);
 		},
+		hasRule: function (rule) {
+			var format = (window.Formats && window.Formats[this.curTeam.format]) ||
+				(window.BattleFormats && window.BattleFormats[this.curTeam.format]);
+			var ruleid = toID(rule);
+			if (!format) return false;
+			if (format.ruleTable && format.ruleTable.includes(ruleid)) return true;
+			if (format.ruleset) {
+				for (var i = 0; i < format.ruleset.length; i++) {
+					if (toID(format.ruleset[i]) === ruleid) return true;
+				}
+			}
+			if (format.baseRuleset) {
+				for (var i = 0; i < format.baseRuleset.length; i++) {
+					if (toID(format.baseRuleset[i]) === ruleid) return true;
+				}
+			}
+			return false;
+		},
+		linkedEVStat: function (stat) {
+			if (!this.hasRule('linkEVs')) return '';
+			if (stat === 'atk') return 'spa';
+			if (stat === 'spa') return 'atk';
+			return '';
+		},
+		countsEVStat: function (stat) {
+			return !(this.hasRule('linkEVs') && stat === 'spa');
+		},
+		totalEVs: function (set, overrideStat, overrideVal) {
+			var total = 0;
+			var stats = {hp: 1, atk: 1, def: 1, spa: 1, spd: 1, spe: 1};
+			for (var stat in stats) {
+				if (!this.countsEVStat(stat)) continue;
+				total += stat === overrideStat ? overrideVal : (set.evs[stat] || 0);
+			}
+			return total;
+		},
 		updateNature: function () {
 			var set = this.curSet;
 			if (!set) return;
@@ -2858,6 +2894,8 @@
 
 				if (set.evs[stat] !== val || natureChange) {
 					set.evs[stat] = val;
+					var linkedStat = this.linkedEVStat(stat);
+					if (linkedStat) set.evs[linkedStat] = val;
 					if (this.ignoreEVLimits) {
 						var evNum = supportsEVs ? 252 : supportsAVs ? 200 : 0;
 						if (set.evs['hp'] === undefined) set.evs['hp'] = evNum;
@@ -2868,6 +2906,10 @@
 						if (set.evs['spe'] === undefined) set.evs['spe'] = evNum;
 					}
 					this.setSlider(stat, val);
+					if (linkedStat) {
+						this.setSlider(linkedStat, val);
+						this.$chart.find('input[name=stat-' + linkedStat + ']').val(val || '');
+					}
 					this.updateStatGraph();
 				}
 			} else {
@@ -2942,6 +2984,7 @@
 			if (!set) return;
 			var val = +slider.value;
 			var originalVal = val;
+			var linkedStat = this.linkedEVStat(stat);
 			var result = this.getStat(stat, set, val);
 			var usesStatPoints = this.curTeam.format.includes('champions');
 			var supportsEVs = !this.curTeam.format.includes('letsgo') && !usesStatPoints;
@@ -2950,10 +2993,9 @@
 			while (val > 0 && this.getStat(stat, set, val - step) === result) val -= step;
 
 			if ((usesStatPoints || supportsEVs) && !this.ignoreEVLimits && set.evs) {
-				var total = 0;
-				for (var i in set.evs) {
-					total += (i === stat ? val : set.evs[i]);
-				}
+				var overrideStat = stat;
+				if (linkedStat && !this.countsEVStat(stat)) overrideStat = linkedStat;
+				var total = this.totalEVs(set, overrideStat, val);
 				var totalLimit = usesStatPoints ? 66 : 508;
 				var limit = usesStatPoints ? 32 : 252;
 				if (total > totalLimit && val - total + totalLimit >= 0) {
@@ -2982,9 +3024,14 @@
 				if (set.evs['spe'] === undefined) set.evs['spe'] = evNum;
 			}
 			set.evs[stat] = val;
+			if (linkedStat) set.evs[linkedStat] = val;
 
 			val = '' + (val || '') + (this.plus === stat ? '+' : '') + (this.minus === stat ? '-' : '');
 			this.$('input[name=stat-' + stat + ']').val(val);
+			if (linkedStat) {
+				this.setSlider(linkedStat, set.evs[linkedStat]);
+				this.$('input[name=stat-' + linkedStat + ']').val(set.evs[linkedStat] || '');
+			}
 
 			this.updateStatGraph();
 		},

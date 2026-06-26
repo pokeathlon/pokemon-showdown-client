@@ -2054,6 +2054,8 @@ export class PokemonSprite extends Sprite {
 		watersport: ['Water Sport', 'good'],
 		mudsport: ['Mud Sport', 'good'],
 		substitute: null,
+		weardown: ['Wear Down', 'bad'],
+		vanguard: ['Vanguard', 'good'],
 		// sub graphics are handled elsewhere, see Battle.Sprite.animSub()
 		uproar: ['Uproar', 'neutral'],
 		rage: ['Rage', 'neutral'],
@@ -2083,6 +2085,7 @@ export class PokemonSprite extends Sprite {
 		laserfocus: ['Laser Focus', 'good'],
 		spotlight: ['Spotlight', 'neutral'],
 		itemremoved: null,
+		firewall: ['Fire Wall', 'good'],
 		// partial trapping
 		bind: ['Bind', 'bad'],
 		greatbind: ['Great Bind', 'bad'],
@@ -2095,6 +2098,8 @@ export class PokemonSprite extends Sprite {
 		thundercage: ['Thunder Cage', 'bad'],
 		whirlpool: ['Whirlpool', 'bad'],
 		wrap: ['Wrap', 'bad'],
+		thornprison: ['Thorn Prison', 'bad'],
+		sandsnare: ['Sand Snare', 'bad'],
 		// Gen 1-2
 		mist: ['Mist', 'good'],
 		// Gen 1
@@ -3050,7 +3055,9 @@ export class PokemonSprite extends Sprite {
 			status += '<span class="par">PAR</span> ';
 		} else if (pokemon.status === 'frz') {
 			status += '<span class="frz">FRZ</span> ';
-		}
+		} else if (pokemon.status === 'frb') {
+			status += '<span class="frb">FRB</span> ';
+		} 
 		if (pokemon.terastallized) {
 			status += `<img src="https://play.pokeathlon.com/fx/types/${encodeURIComponent(pokemon.terastallized)}.png" alt="${pokemon.terastallized}" class="pixelated" /> `;
 		} else if (pokemon.volatiles.typechange && pokemon.volatiles.typechange[1]) {
@@ -6308,6 +6315,57 @@ export const BattleStatusAnims: AnimTable = {
 		},
 	},
 	frz: {
+		anim(scene, [attacker]) {
+			scene.showEffect('icicle', {
+				x: attacker.x - 30,
+				y: attacker.y,
+				z: attacker.z,
+				scale: 0.5,
+				opacity: 0.5,
+				time: 200,
+			}, {
+				scale: 0.9,
+				opacity: 0,
+				time: 600,
+			}, 'linear', 'fade');
+			scene.showEffect('icicle', {
+				x: attacker.x,
+				y: attacker.y - 30,
+				z: attacker.z,
+				scale: 0.5,
+				opacity: 0.5,
+				time: 300,
+			}, {
+				scale: 0.9,
+				opacity: 0,
+				time: 650,
+			}, 'linear', 'fade');
+			scene.showEffect('icicle', {
+				x: attacker.x + 15,
+				y: attacker.y,
+				z: attacker.z,
+				scale: 0.5,
+				opacity: 0.5,
+				time: 400,
+			}, {
+				scale: 0.9,
+				opacity: 0,
+				time: 700,
+			}, 'linear', 'fade');
+			scene.showEffect('wisp', {
+				x: attacker.x,
+				y: attacker.y,
+				z: attacker.z,
+				scale: 1,
+				opacity: 0.5,
+			}, {
+				scale: 3,
+				opacity: 0,
+				time: 600,
+			}, 'linear', 'fade');
+		},
+	},
+	frb: {
 		anim(scene, [attacker]) {
 			scene.showEffect('icicle', {
 				x: attacker.x - 30,

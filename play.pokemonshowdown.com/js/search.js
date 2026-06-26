@@ -335,7 +335,7 @@
 				name += '<small>' + pokemon.name.substr(tagStart) + '</small>';
 			}
 		}
-		buf += '<span class="col pokemonnamecol">' + name + '</span> ';
+		buf += '<span class="col pokemonnamecol">' + BattleLog.hideForm(name) + '</span> ';
 
 		// error
 		if (errorMessage) {

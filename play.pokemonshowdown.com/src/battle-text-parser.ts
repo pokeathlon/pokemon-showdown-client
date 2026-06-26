@@ -127,7 +127,7 @@ export class BattleTextParser {
 			if ([
 				'ingrain', 'quickguard', 'wideguard', 'craftyshield', 'matblock', 'protect', 'mist', 'safeguard',
 				'electricterrain', 'mistyterrain', 'psychicterrain', 'telepathy', 'stickyhold', 'suctioncups', 'aromaveil',
-				'flowerveil', 'sweetveil', 'disguise', 'safetygoggles', 'protectivepads',
+				'flowerveil', 'sweetveil', 'disguise', 'safetygoggles', 'protectivepads', 'firewall', 'vanguard',
 			].includes(id)) {
 				if (target) {
 					kwArgs.of = pokemon;
@@ -140,7 +140,7 @@ export class BattleTextParser {
 				return { args: ['-singlemove', pokemon, effect], kwArgs: { of: target } };
 			}
 			if ([
-				'bind', 'greatbind', 'wrap', 'clamp', 'whirlpool', 'firespin', 'magmastorm', 'sandtomb', 'infestation', 'snaptrap', 'thundercage', 'trapped',
+				'bind', 'greatbind', 'wrap', 'clamp', 'whirlpool', 'firespin', 'magmastorm', 'sandtomb', 'infestation', 'snaptrap', 'thundercage', 'trapped', 'thornprison', 'sandsnare',
 			].includes(id)) {
 				return { args: ['-start', pokemon, effect], kwArgs: { of: target } };
 			}
@@ -1114,7 +1114,7 @@ export class BattleTextParser {
 			}
 
 			templateId = 'fail';
-			if (['brn', 'frz', 'par', 'psn', 'slp', 'substitute', 'shedtail'].includes(id)) {
+			if (['brn', 'frz', 'frb', 'par', 'psn', 'slp', 'substitute', 'shedtail'].includes(id)) {
 				templateId = 'alreadyStarted';
 			}
 			if (kwArgs.heavy) templateId = 'failTooHeavy';
