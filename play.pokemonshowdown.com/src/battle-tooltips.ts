@@ -1226,6 +1226,34 @@ export class BattleTooltips {
 			stats.def *= 2;
 		}
 
+		if (item === 'dandelight' && (speciesName === 'Delcatty-Orion' || fusionSpecies === 'Delcatty-Orion')) {
+			stats.def *= Math.floor(1.25);
+			stats.spd *= Math.floor(1.25);
+		}
+
+		if (item === 'sharpcoral' && (['Cubone-Orion', 'Marowak-Orion'].includes(speciesName) || ['Cubone-Orion', 'Marowak-Orion'].includes(fusionSpecies))) {
+			stats.atk *= 2;
+		}
+
+
+		if (item === 'sharpcoral' && (['Omanyte-Orion', 'Omastar-Orion'].includes(speciesName) || ['Omanyte-Orion', 'Omastar-Orion'].includes(fusionSpecies))) {
+			stats.spa *= 2;
+		}
+
+		if (item === 'focusingorb' && (speciesName === 'Clamperl-Orion' || fusionSpecies === 'Clamperl-Orion')) {
+			stats.def *= 2;
+			stats.spd *= 2;
+		}
+
+		if (item === 'voidheart' && (speciesName === 'Volbeat-Orion' || fusionSpecies === 'Volbeat-Orion')) {
+			stats.def *= Math.floor(1.5);
+			stats.atk *= Math.floor(1.5);
+		}
+
+		if (item === 'voidheart' && (speciesName === 'Illumise-Orion' || fusionSpecies === 'Illumise-Orion')) {
+			stats.spa *= Math.floor(1.5);
+			stats.spd *= Math.floor(1.5);
+		}
 		// check abilities other than Guts and Quick Feet
 		// check items other than light ball, thick club, metal/quick powder
 		if (this.battle.gen <= 2) {
@@ -1261,6 +1289,9 @@ export class BattleTooltips {
 				stats.spd = Math.floor(stats.spd * 1.5);
 			}
 			if (this.pokemonHasType(pokemon, 'Ice') && weather === 'snowscape') {
+				stats.def = Math.floor(stats.def * 1.5);
+			}
+			if (this.pokemonHasType(pokemon, 'Ice') && weather === 'hail' && this.battle.dex.modid === 'gen9soulstones') {
 				stats.def = Math.floor(stats.def * 1.5);
 			}
 			if (ability === 'sandydefense' && weather === 'sandstorm') {
@@ -1316,7 +1347,7 @@ export class BattleTooltips {
 						for (const ally of allyActive) {
 							if (!ally || ally.fainted) continue;
 							let allyAbility = this.getAllyAbility(ally);
-							if (allyAbility === 'Winter Gift' && (ally.getSpecies().baseSpecies === 'Cherrim-Soulstones' || this.battle.gen <= 4)) {
+							if (allyAbility === 'Winter Gift' && (ally.getSpecies().baseSpecies === 'Cherrim-Orion' || this.battle.gen <= 4)) {
 								stats.atk = Math.floor(stats.spa * 1.5);
 								stats.spd = Math.floor(stats.spd * 1.5);
 							}
@@ -1420,6 +1451,15 @@ export class BattleTooltips {
 		}
 		if (['ironball', 'anchor'].includes(item) || speedHalvingEVItems.includes(item)) {
 			speedModifiers.push(0.5);
+		}
+		if (item === 'assaultarmor') {
+			stats.def = Math.floor(stats.def * 1.5);
+		}
+		if (item === 'wisevest') {
+			stats.spd = Math.floor(stats.spd * 1.1);
+		}
+		if (item === 'musclearmor') {
+			stats.def = Math.floor(stats.def * 1.1);
 		}
 		if (ability === 'furcoat') {
 			stats.def *= 2;
@@ -2725,7 +2765,7 @@ export class BattleTooltips {
 			(this.battle.hasPseudoWeather('Grassy Terrain') && moveType === 'Grass') ||
 			(this.battle.hasPseudoWeather('Psychic Terrain') && moveType === 'Psychic')) {
 			if (pokemon.isGrounded(serverPokemon) && item.id != 'fieldcleats') {
-				value.modify(this.battle.gen > 7 ? 1.3 : 1.5, 'Terrain boost');
+				value.modify((this.battle.gen > 7 || this.battle.dex.modid === 'gen9soulstones') ? 1.3 : 1.5, 'Terrain boost');
 			}
 		} else if (this.battle.hasPseudoWeather('Misty Terrain') && moveType === 'Dragon' && move.id != 'mistbarrage' && item.id != 'fieldcleats') {
 			if (target ? target.isGrounded() : true) {

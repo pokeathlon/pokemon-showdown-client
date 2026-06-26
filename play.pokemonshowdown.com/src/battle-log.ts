@@ -1693,7 +1693,7 @@ export class BattleLog {
 		);
 	}
 	static hideForm(input: string) {
-		let filters = ["-Soulstones"]
+		let filters = ["-Orion"]
 		for (const filter of filters) {
 			if (input.includes(filter)) {
 				return input.replace(filter, '')
