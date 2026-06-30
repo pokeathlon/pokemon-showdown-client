@@ -2789,6 +2789,13 @@ export class BattleTooltips {
 		if (
 			move.id === 'expandingforce' &&
 			this.battle.hasPseudoWeather('Psychic Terrain') &&
+			pokemon.isGrounded(serverPokemon) && item.id != 'fieldcleats' &&
+			this.battle.dex.modid === 'gen9soulstones'
+		) {
+			value.modify(1.3, 'Expanding Force + Psychic Terrain boost');
+		} else if (
+			move.id === 'expandingforce' &&
+			this.battle.hasPseudoWeather('Psychic Terrain') &&
 			pokemon.isGrounded(serverPokemon) && item.id != 'fieldcleats'
 		) {
 			value.modify(1.5, 'Expanding Force + Psychic Terrain boost');
@@ -2796,7 +2803,9 @@ export class BattleTooltips {
 		if (move.id === 'mistyexplosion' && this.battle.hasPseudoWeather('Misty Terrain') && item.id != 'fieldcleats') {
 			value.modify(1.5, 'Misty Explosion + Misty Terrain boost');
 		}
-		if (move.id === 'risingvoltage' && this.battle.hasPseudoWeather('Electric Terrain') && target?.isGrounded()) {
+		if (move.id === 'risingvoltage' && this.battle.hasPseudoWeather('Electric Terrain') && target?.isGrounded() && this.battle.dex.modid === 'gen9soulstones') {
+			value.modify(1.6, 'Rising Voltage + Electric Terrain boost');
+		} else if (move.id === 'risingvoltage' && this.battle.hasPseudoWeather('Electric Terrain') && target?.isGrounded()) {
 			value.modify(2, 'Rising Voltage + Electric Terrain boost');
 		}
 
