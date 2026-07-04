@@ -1871,7 +1871,9 @@ class BattleMoveSearch extends BattleTypedSearch<'move'> {
 		const dex = this.dex;
 		let species = dex.species.get(this.species);
 		const format = this.format;
-		const isFusion = (this.set?.fusion && dex.species.get(this.set?.fusion).exists);
+		const modId = this.dex.modid;
+		const isFusion = (this.set?.fusion && dex.species.get(this.set?.fusion).exists && modId.includes("fusion"));
+		console.log(modId);
 		const isHackmons = (format.includes('hackmons') || format.endsWith('bh'));
 		const isSTABmons = (format.includes('stabmons') || format === 'staaabmons');
 		const isTradebacks = format.includes('tradebacks');
@@ -1883,6 +1885,7 @@ class BattleMoveSearch extends BattleTypedSearch<'move'> {
 		let moves: string[] = [];
 		let sketchMoves: string[] = [];
 		let expertMoves: string[] = [];
+		let mgMoves: string[] = [];
 		let sketch = false;
 		let gen = `${dex.gen}`;
 		let lsetTable = BattleTeambuilderTable;
@@ -1934,117 +1937,142 @@ class BattleMoveSearch extends BattleTypedSearch<'move'> {
 			}
 			learnsetid = this.nextLearnsetid(learnsetid, species.id, true);
 		}
-		if (isFusion) {
-			learnsetid = this.firstLearnsetid(toID(this.set?.fusion));
-			while (learnsetid) {
-				let learnset = lsetTable.learnsets[learnsetid] || BattleTeambuilderTable.learnsets[learnsetid];
-				if (learnset) {
-					for (let moveid in learnset) {
-						let learnsetEntry = learnset[moveid];
-						const move = dex.moves.get(moveid);
-						const minGenCode: { [gen: number]: string } = { 6: 'p', 7: 'q', 8: 'g', 9: 'a' };
-						if (regionBornLegality && !learnsetEntry.includes(minGenCode[dex.gen])) {
-							continue;
-						}
-						const currentSpecies = dex.species.get(learnsetid);
-						const originalSpecies = dex.species.get(species.id);
-						let nextSpecies = this.nextLearnsetid(species.id, species.id);
-						while (nextSpecies) {
-							if (nextSpecies === learnsetid) break;
-							nextSpecies = this.nextLearnsetid(nextSpecies, species.id);
-						}
-						if (
-							currentSpecies.baseSpecies !== originalSpecies.baseSpecies && !nextSpecies &&
-							(!learnsetEntry.includes('e') || dex.gen !== 9)
-						) {
-							continue;
-						}
-						if (
-							!learnsetEntry.includes(gen) &&
-							(!isTradebacks ? true : !(move.gen <= dex.gen && learnsetEntry.includes('' + (dex.gen + 1))))
-						) {
-							continue;
-						}
-						if (this.formatType !== 'natdex' && move.isNonstandard === "Past") {
-							continue;
-						}
 
-						if (moves.includes(moveid)) continue;
-						moves.push(moveid);
-						if (moveid === 'sketch') sketch = true;
-						if (moveid === 'hiddenpower') {
-							moves.push(
-								'hiddenpowerbug', 'hiddenpowerdark', 'hiddenpowerdragon', 'hiddenpowerelectric', 'hiddenpowerfighting', 'hiddenpowerfire', 'hiddenpowerflying', 'hiddenpowerghost', 'hiddenpowergrass', 'hiddenpowerground', 'hiddenpowerice', 'hiddenpowerpoison', 'hiddenpowerpsychic', 'hiddenpowerrock', 'hiddenpowersteel', 'hiddenpowerwater'
-							);
-						}
-					}
+		// Proooobably a duplicate?? leaving it here just in case
+		//
+		// if (isFusion) {
+		// 	learnsetid = this.firstLearnsetid(toID(this.set?.fusion));
+		// 	while (learnsetid) {
+		// 		let learnset = lsetTable.learnsets[learnsetid] || BattleTeambuilderTable.learnsets[learnsetid];
+		// 		if (learnset) {
+		// 			for (let moveid in learnset) {
+		// 				let learnsetEntry = learnset[moveid];
+		// 				const move = dex.moves.get(moveid);
+		// 				const minGenCode: { [gen: number]: string } = { 6: 'p', 7: 'q', 8: 'g', 9: 'a' };
+		// 				if (regionBornLegality && !learnsetEntry.includes(minGenCode[dex.gen])) {
+		// 					continue;
+		// 				}
+		// 				const currentSpecies = dex.species.get(learnsetid);
+		// 				const originalSpecies = dex.species.get(species.id);
+		// 				let nextSpecies = this.nextLearnsetid(species.id, species.id);
+		// 				while (nextSpecies) {
+		// 					if (nextSpecies === learnsetid) break;
+		// 					nextSpecies = this.nextLearnsetid(nextSpecies, species.id);
+		// 				}
+		// 				if (
+		// 					currentSpecies.baseSpecies !== originalSpecies.baseSpecies && !nextSpecies &&
+		// 					(!learnsetEntry.includes('e') || dex.gen !== 9)
+		// 				) {
+		// 					continue;
+		// 				}
+		// 				if (
+		// 					!learnsetEntry.includes(gen) &&
+		// 					(!isTradebacks ? true : !(move.gen <= dex.gen && learnsetEntry.includes('' + (dex.gen + 1))))
+		// 				) {
+		// 					continue;
+		// 				}
+		// 				if (this.formatType !== 'natdex' && move.isNonstandard === "Past") {
+		// 					continue;
+		// 				}
+
+		// 				if (moves.includes(moveid)) continue;
+		// 				moves.push(moveid);
+		// 				if (moveid === 'sketch') sketch = true;
+		// 				if (moveid === 'hiddenpower') {
+		// 					moves.push(
+		// 						'hiddenpowerbug', 'hiddenpowerdark', 'hiddenpowerdragon', 'hiddenpowerelectric', 'hiddenpowerfighting', 'hiddenpowerfire', 'hiddenpowerflying', 'hiddenpowerghost', 'hiddenpowergrass', 'hiddenpowerground', 'hiddenpowerice', 'hiddenpowerpoison', 'hiddenpowerpsychic', 'hiddenpowerrock', 'hiddenpowersteel', 'hiddenpowerwater'
+		// 					);
+		// 				}
+		// 			}
+		// 		}
+		// 		learnsetid = this.nextLearnsetid(learnsetid, toID(this.set?.fusion), true);
+		// 	}
+
+		// 	let fusionSpecies = dex.species.get(this.set?.fusion);
+
+		// 	let allCombinations: string[][] = [];
+		// 	let fusionLine: string[] = [fusionSpecies.name];
+		// 	let speciesLine: string[] = [species.name];
+
+		// 	if (fusionSpecies.isMega && fusionSpecies.baseSpecies) fusionLine.push(fusionSpecies.baseSpecies);
+		// 	if (fusionSpecies.changesFrom) fusionLine.push(fusionSpecies.changesFrom);
+		// 	if (fusionSpecies.prevo) fusionLine.push(fusionSpecies.prevo);
+		// 	if (this.dex.species.get(fusionSpecies.prevo).prevo) fusionLine.push(this.dex.species.get(fusionSpecies.prevo).prevo);
+
+		// 	if (species.isMega && species.baseSpecies) speciesLine.push(species.baseSpecies);
+		// 	if (species.changesFrom) speciesLine.push(species.changesFrom);
+		// 	if (species.prevo) speciesLine.push(species.prevo);
+		// 	if (this.dex.species.get(species.prevo).prevo) speciesLine.push(this.dex.species.get(species.prevo).prevo);
+
+		// 	for (let head of fusionLine) {
+		// 		for (let body of speciesLine) {
+		// 			allCombinations.push(...[[head, body], [body, head]]);
+		// 		}
+		// 	}
+
+		// 	for (const combination of allCombinations) {
+		// 		const combination_head = dex.species.get(combination[0]);
+		// 		const combination_body = dex.species.get(combination[1]);
+
+		// 		let speciesTypes = combination_head.types;
+		// 		let fusionTypes = combination_body.types;
+
+		// 		if (speciesTypes.length === 2 && speciesTypes.includes('Flying') && speciesTypes.includes('Normal')) speciesTypes = ['Flying'];
+		// 		if (fusionTypes.length === 2 && fusionTypes.includes('Flying') && fusionTypes.includes('Normal')) fusionTypes = ['Flying'];
+
+		// 		const typesSet = new Set([speciesTypes[0]]);
+		// 		const bonusType = this.dex.types.get(fusionTypes[fusionTypes.length - 1]);
+		// 		if (bonusType.exists) typesSet.add(bonusType.name);
+		// 		if (fusionTypes.length === 2 && typesSet.size === 1) typesSet.add(fusionTypes[0]);
+
+		// 		let tutorMoves = (this.dex.modid.includes('pokeathlon') || this.dex.modid.includes("chaos")) ? { ...fusionMoves, ...PoAfusionMoves } : fusionMoves;
+
+		// 		for (let id in mysteryGiftMoves) {
+		// 			let data = mysteryGiftMoves[id];
+		// 			for (let possibleSource of data) {
+		// 				let canLearn = true;
+		// 				if ("mysteryGift" in possibleSource) {
+		// 					if (!possibleSource["mysteryGift"].includes(combination_head.id) && !possibleSource["mysteryGift"].includes(combination_body.id)) canLearn = false;
+		// 				}
+		// 				if (canLearn && !moves.includes(id) && !mgMoves.includes(id)) mgMoves.push(id);
+		// 			}
+		// 		}
+		// 		for (let id in tutorMoves) {
+		// 			let data = tutorMoves[id];
+		// 			for (let possibleSource of data) {
+		// 				let canLearn = true;
+		// 				if ("fusion" in possibleSource) {
+		// 					if (!possibleSource["fusion"].includes(combination_head.id) && !possibleSource["fusion"].includes(combination_body.id)) canLearn = false;
+		// 				}
+		// 				if ("type" in possibleSource) {
+		// 					for (let type of possibleSource["type"]) {
+		// 						if (!typesSet.has(type)) canLearn = false;
+		// 					}
+		// 				}
+		// 				if ("learns" in possibleSource) {
+		// 					let canLearnReqMove = false;
+		// 					for (let reqMove of possibleSource["learns"]) {
+		// 						if (this.canLearn(combination_head.id, reqMove as ID) || this.canLearn(combination_body.id, reqMove as ID)) canLearnReqMove = true;
+		// 					}
+		// 					if (!canLearnReqMove) canLearn = false;
+		// 				}
+		// 				if (canLearn && !moves.includes(id) && !expertMoves.includes(id)) expertMoves.push(id);
+		// 			}
+		// 		}
+		// 	}
+		// }
+
+		for (let id in mysteryGiftMoves) {
+			let data = mysteryGiftMoves[id];
+			for (let possibleSource of data) {
+				let canLearn = true;
+				if ("mysteryGift" in possibleSource) {
+					if (!possibleSource["mysteryGift"].includes(dex.species.get(species.id).id)) canLearn = false;
 				}
-				learnsetid = this.nextLearnsetid(learnsetid, toID(this.set?.fusion), true);
-			}
-
-			let fusionSpecies = dex.species.get(this.set?.fusion);
-
-			let allCombinations: string[][] = [];
-			let fusionLine: string[] = [fusionSpecies.name];
-			let speciesLine: string[] = [species.name];
-
-			if (fusionSpecies.isMega && fusionSpecies.baseSpecies) fusionLine.push(fusionSpecies.baseSpecies);
-			if (fusionSpecies.changesFrom) fusionLine.push(fusionSpecies.changesFrom);
-			if (fusionSpecies.prevo) fusionLine.push(fusionSpecies.prevo);
-			if (this.dex.species.get(fusionSpecies.prevo).prevo) fusionLine.push(this.dex.species.get(fusionSpecies.prevo).prevo);
-
-			if (species.isMega && species.baseSpecies) speciesLine.push(species.baseSpecies);
-			if (species.changesFrom) speciesLine.push(species.changesFrom);
-			if (species.prevo) speciesLine.push(species.prevo);
-			if (this.dex.species.get(species.prevo).prevo) speciesLine.push(this.dex.species.get(species.prevo).prevo);
-
-			for (let head of fusionLine) {
-				for (let body of speciesLine) {
-					allCombinations.push(...[[head, body], [body, head]]);
-				}
-			}
-
-			for (const combination of allCombinations) {
-				const combination_head = dex.species.get(combination[0]);
-				const combination_body = dex.species.get(combination[1]);
-
-				let speciesTypes = combination_head.types;
-				let fusionTypes = combination_body.types;
-
-				if (speciesTypes.length === 2 && speciesTypes.includes('Flying') && speciesTypes.includes('Normal')) speciesTypes = ['Flying'];
-				if (fusionTypes.length === 2 && fusionTypes.includes('Flying') && fusionTypes.includes('Normal')) fusionTypes = ['Flying'];
-
-				const typesSet = new Set([speciesTypes[0]]);
-				const bonusType = this.dex.types.get(fusionTypes[fusionTypes.length - 1]);
-				if (bonusType.exists) typesSet.add(bonusType.name);
-				if (fusionTypes.length === 2 && typesSet.size === 1) typesSet.add(fusionTypes[0]);
-
-				let tutorMoves = (this.dex.modid.includes('pokeathlon') || this.dex.modid.includes("chaos")) ? { ...fusionMoves, ...PoAfusionMoves } : fusionMoves;
-
-				for (let id in tutorMoves) {
-					let data = tutorMoves[id];
-					for (let possibleSource of data) {
-						let canLearn = true;
-						if ("fusion" in possibleSource) {
-							if (!possibleSource["fusion"].includes(combination_head.id) && !possibleSource["fusion"].includes(combination_body.id)) canLearn = false;
-						}
-						if ("type" in possibleSource) {
-							for (let type of possibleSource["type"]) {
-								if (!typesSet.has(type)) canLearn = false;
-							}
-						}
-						if ("learns" in possibleSource) {
-							let canLearnReqMove = false;
-							for (let reqMove of possibleSource["learns"]) {
-								if (this.canLearn(combination_head.id, reqMove as ID) || this.canLearn(combination_body.id, reqMove as ID)) canLearnReqMove = true;
-							}
-							if (!canLearnReqMove) canLearn = false;
-						}
-						if (canLearn && !moves.includes(id) && !expertMoves.includes(id)) expertMoves.push(id);
-					}
-				}
+				if (canLearn && !moves.includes(id) && !mgMoves.includes(id)) mgMoves.push(id);
 			}
 		}
+
 		if (isFusion) {
 			learnsetid = this.firstLearnsetid(toID(this.set?.fusion));
 			while (learnsetid) {
@@ -2118,6 +2146,16 @@ class BattleMoveSearch extends BattleTypedSearch<'move'> {
 
 				let tutorMoves = (this.dex.modid.includes('pokeathlon') || this.dex.modid.includes("chaos")) ? { ...fusionMoves, ...PoAfusionMoves } : fusionMoves;
 
+				for (let id in mysteryGiftMoves) {
+					let data = mysteryGiftMoves[id];
+					for (let possibleSource of data) {
+						let canLearn = true;
+						if ("mysteryGift" in possibleSource) {
+							if (!possibleSource["mysteryGift"].includes(combination_head.id) && !possibleSource["mysteryGift"].includes(combination_body.id)) canLearn = false;
+						}
+						if (canLearn && !moves.includes(id) && !mgMoves.includes(id)) mgMoves.push(id);
+					}
+				}
 				for (let id in tutorMoves) {
 					let data = tutorMoves[id];
 					for (let possibleSource of data) {
@@ -2202,7 +2240,9 @@ class BattleMoveSearch extends BattleTypedSearch<'move'> {
 		moves.sort();
 		sketchMoves.sort();
 		expertMoves.sort();
+		mgMoves.sort();
 
+		let mgDisplayMoves: SearchRow[] = [];
 		let expertFusionMoves: SearchRow[] = [];
 		let usableMoves: SearchRow[] = [];
 		let uselessMoves: SearchRow[] = [];
@@ -2210,6 +2250,12 @@ class BattleMoveSearch extends BattleTypedSearch<'move'> {
 			expertFusionMoves.push(['header', "(Fusion Only) Expert Moves"]);
 			for (const id of expertMoves) {
 				expertFusionMoves.push(['move', id as ID]);
+			}
+		}
+		if (mgMoves?.length) {
+			mgDisplayMoves.push(['header', "Mystery Gift Moves"]);
+			for (const id of mgMoves) {
+				mgDisplayMoves.push(['move', id as ID]);
 			}
 		}
 		for (const id of moves) {
@@ -2234,7 +2280,7 @@ class BattleMoveSearch extends BattleTypedSearch<'move'> {
 				uselessMoves.push(['move', id as ID]);
 			}
 		}
-		return [...expertFusionMoves, ...usableMoves, ...uselessMoves];
+		return [...mgDisplayMoves, ...expertFusionMoves, ...usableMoves, ...uselessMoves];
 	}
 	filter(row: SearchRow, filters: string[][]) {
 		if (!filters) return true;
@@ -2350,6 +2396,9 @@ class BattleTypeSearch extends BattleTypedSearch<'type'> {
 	}
 }
 
+const mysteryGiftMoves: { [key: string]: { [key: string]: string[] }[] } = {
+	"rapidspin": [{ "mysteryGift": ["carbink"] }],
+};
 const fusionMoves: { [key: string]: { [key: string]: string[] }[] } = {
 	"attackorder": [{ "fusion": ["beedrill"] }],
 	"pollenpuff": [{ "fusion": ["butterfree", "celebi", "parasect", "vileplume", "breloom"] }],
