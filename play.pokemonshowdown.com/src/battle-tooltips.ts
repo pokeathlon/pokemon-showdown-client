@@ -1148,7 +1148,7 @@ export class BattleTooltips {
 			if (this.battle.gen > 2 && ability === 'guts') {
 				stats.atk = Math.floor(stats.atk * 1.5);
 			} else if (this.battle.gen > 2 && ability === 'attunement') {
-				stats.atk = Math.floor(stats.atk * 1.5);
+				stats.spa = Math.floor(stats.spa * 1.5);
 			} else if (this.battle.gen < 2 && pokemon.status === 'brn') {
 				stats.atk = Math.floor(stats.atk * 0.5);
 			}else if (this.battle.gen < 2 && pokemon.status === 'frb') {
