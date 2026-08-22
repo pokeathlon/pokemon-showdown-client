@@ -1305,6 +1305,7 @@ export class Move implements Effect {
 	readonly noPPBoosts: boolean;
 	readonly status: string;
 	readonly secondaries: readonly any[] | null;
+	readonly selfSwitch: any | null;
 	readonly num: number;
 
 	constructor(id: ID, name: string, data: any) {
@@ -1342,6 +1343,7 @@ export class Move implements Effect {
 		this.noPPBoosts = data.noPPBoosts || false;
 		this.status = data.status || '';
 		this.secondaries = data.secondaries || (data.secondary ? [data.secondary] : null);
+		this.selfSwitch = data.selfSwitch || null;
 
 		this.isMax = data.isMax || false;
 		this.maxMove = data.maxMove || { basePower: 0 };
