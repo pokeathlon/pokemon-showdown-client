@@ -20,8 +20,8 @@ import type { BattleRoom } from './panel-battle';
 import { Teams } from './battle-teams';
 import type preact from '../js/lib/preact';
 
-declare const BattleTextAFD: any;
-declare const BattleTextNotAFD: any;
+export const VERTICAL_HEADER_WIDTH = 240;
+export const NARROW_MODE_HEADER_WIDTH = 280;
 
 /**********************************************************************
  * Config
@@ -256,17 +256,6 @@ class PSPrefs extends PSStreamModel<string | null> {
 
 	setAFD(mode?: typeof this['afd']) {
 		if (mode === undefined) {
-			// init
-			if (typeof BattleTextAFD !== 'undefined') {
-				for (const id in BattleTextNotAFD) {
-					if (!BattleTextAFD[id]) {
-						BattleTextAFD[id] = BattleTextNotAFD[id];
-					} else {
-						BattleTextAFD[id] = { ...BattleTextNotAFD[id], ...BattleTextAFD[id] };
-					}
-				}
-			}
-
 			if (Config.server?.afd) {
 				mode = true;
 			} else if (this.afd !== undefined) {
@@ -278,14 +267,7 @@ class PSPrefs extends PSStreamModel<string | null> {
 		}
 
 		Dex.afdMode = mode;
-
-		if (typeof BattleTextAFD !== 'undefined') {
-			if (mode === true) {
-				(BattleText as any) = BattleTextAFD;
-			} else {
-				(BattleText as any) = BattleTextNotAFD;
-			}
-		}
+		if (mode === true) Dex.loadTextData('en-afd');
 	}
 	doAutojoin() {
 		let autojoin = PS.prefs.autojoin;
@@ -1468,11 +1450,12 @@ export class PSRoom extends PSStreamModel<Args | null> implements RoomOptions {
 				this.add('||AFD is currently set to ' + mode);
 				this.send('/help afd');
 			}
-			for (let roomid in PS.rooms) {
-				let battle = PS.rooms[roomid] && (PS.rooms[roomid] as BattleRoom).battle;
-				if (!battle) continue;
-				battle.resetToCurrentTurn();
-			}
+			void Dex.loadTextData().then(() => {
+				for (const roomid in PS.rooms) {
+					const battle = (PS.rooms[roomid] as BattleRoom)?.battle;
+					if (battle) battle.resetToCurrentTurn();
+				}
+			});
 		},
 		'clearpms'() {
 			let rooms = PS.miniRoomList.filter(roomid => roomid.startsWith('dm-'));

@@ -620,7 +620,13 @@ class OptionsPanel extends PSRoomPanel {
 			break;
 		}
 		case 'language': {
-			PS.prefs.set(setting, elem.value);
+			PS.prefs.set('serversettings', { ...PS.prefs.serversettings, language: elem.value });
+			void Dex.loadTextData().then(() => {
+				for (const roomid in PS.rooms) {
+					const battle = (PS.rooms[roomid] as BattleRoom)?.battle;
+					if (battle) battle.resetToCurrentTurn();
+				}
+			});
 			PS.send(`/language ${elem.value}`);
 			break;
 		}
@@ -678,7 +684,29 @@ class OptionsPanel extends PSRoomPanel {
 				<button className="button" data-href="register">Register</button>)}
 
 			<hr />
-			<h3>Graphics</h3>
+			<h3>General</h3>
+			<p>
+				<label class="optlabel">
+					<i class="fa fa-globe" aria-hidden></i> Language: {}
+					<select name="language" onChange={this.handleOnChange} class="select" value={serverSettings.language || 'english'}>
+						<option value="english">English</option>
+						<option value="german">Deutsch</option>
+						<option value="spanish">Español</option>
+						<option value="french">Français</option>
+						<option value="italian">Italiano</option>
+						<option value="dutch">Nederlands</option>
+						<option value="portuguese">Português</option>
+						<option value="turkish">Türkçe</option>
+						<option value="hindi">हिंदी</option>
+						<option value="japanese">日本語</option>
+						<option value="korean">한국어</option>
+						<option value="simplifiedchinese">简体中文</option>
+						<option value="traditionalchinese">繁體中文</option>
+					</select>
+				</label>
+			</p>
+			<hr />
+			<h3>Appearance</h3>
 			<p>
 				<label class="optlabel">Theme: <select name="theme" class="button" onChange={this.setTheme}>
 					<option value="light" selected={PS.prefs.theme === 'light'}>Light</option>
@@ -749,29 +777,12 @@ class OptionsPanel extends PSRoomPanel {
 			</p>
 			<p>
 				<label class="optlabel">
-					Language: {}
-					<select name="language" onChange={this.handleOnChange} class="button">
-						<option value="german" selected={PS.prefs.language === "german"}>Deutsch</option>
-						<option value="english" selected={PS.prefs.language === "english"}>English</option>
-						<option value="spanish" selected={PS.prefs.language === "spanish"}>Español</option>
-						<option value="french" selected={PS.prefs.language === "french"}>Français</option>
-						<option value="italian" selected={PS.prefs.language === "italian"}>Italiano</option>
-						<option value="dutch" selected={PS.prefs.language === "dutch"}>Nederlands</option>
-						<option value="portuguese" selected={PS.prefs.language === "portuguese"}>Português</option>
-						<option value="turkish" selected={PS.prefs.language === "turkish"}>Türkçe</option>
-						<option value="hindi" selected={PS.prefs.language === "hindi"}>हिंदी</option>
-						<option value="japanese" selected={PS.prefs.language === "japanese"}>日本語</option>
-						<option value="simplifiedchinese" selected={PS.prefs.language === "simplifiedchinese"}>简体中文</option>
-						<option value="traditionalchinese" selected={PS.prefs.language === "traditionalchinese"}>中文</option>
-					</select>
-				</label>
-			</p>
-			<p>
-				<label class="optlabel">
-					Tournaments: <select name="tournaments" class="button" onChange={this.handleOnChange}>
-						<option value="" selected={!PS.prefs.tournaments}>Notify when joined</option>
-						<option value="notify" selected={PS.prefs.tournaments === "notify"}>Always notify</option>
-						<option value="hide" selected={PS.prefs.tournaments === "hide"}>Hide</option>
+					Tournaments: <select
+						name="tournaments" class="select" onChange={this.handleOnChange} value={PS.prefs.tournaments || 'notify'}
+					>
+						<option value="notify">Always notify</option>
+						<option value="nonotify">Notify when joined</option>
+						<option value="hide">Hide</option>
 					</select>
 				</label>
 			</p>
