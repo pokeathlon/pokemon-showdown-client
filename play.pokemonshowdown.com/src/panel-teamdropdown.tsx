@@ -7,15 +7,26 @@
 
 import { PS, type Team } from "./client-main";
 import { PSIcon, PSPanelWrapper, PSRoomPanel } from "./panels";
-import { Dex, toID, type ID } from "./battle-dex";
-import { BattleNatures, BattleStatIDs, type StatNameExceptHP } from "./battle-dex-data";
+import { Dex, TL, toID, type ID } from "./battle-dex";
 import { Teams } from "./battle-teams";
 
 export class PSTeambuilder {
-	static exportPackedTeam(team: Team, newFormat?: boolean) {
+	static exportPackedTeam(team: Team) {
 		const sets = Teams.unpack(team.packedTeam);
 		const dex = Dex.forFormat(team.format);
-		return Teams.export(sets, dex, newFormat);
+		return Teams.export(sets, dex);
+	}
+	static exportTeamBackup(teams: Team[], readable = false) {
+		if (!readable) return PS.teams.packAll(teams);
+		let buf = '';
+		for (const team of teams) {
+			const format = team.format ? `[${team.format}${team.isBox ? '-box' : ''}] ` : '';
+			const folder = team.folder ? `${team.folder}/` : '';
+			buf += `=== ${format}${folder}${team.name} ===\n\n`;
+			buf += this.exportPackedTeam(team);
+			buf += `\n`;
+		}
+		return buf;
 	}
 	static splitPrefix(buffer: string, delimiter: string, prefixOffset = 0): [string, string] {
 		const delimIndex = buffer.indexOf(delimiter);
@@ -307,7 +318,7 @@ export function TeamBox(props: { team: Team | null, noLink?: boolean, button?: b
 				pokemon => PSIcon({ pokemon })
 			)
 		) : (
-			<em>(empty {team.isBox ? 'box' : 'team'})</em>
+			<em>{team.isBox ? TL`(empty box)` : TL`(empty team)`}</em>
 		);
 		let format = team.format as string;
 		if (format.startsWith(`gen${Dex.gen}`)) format = format.slice(4);
@@ -318,7 +329,7 @@ export function TeamBox(props: { team: Team | null, noLink?: boolean, button?: b
 		];
 	} else {
 		contents = [
-			<em>Select a team</em>,
+			<em>{TL`Select a team`}</em>,
 		];
 	}
 	const className = `team${team?.isBox ? ' pc-box' : ''}`;
@@ -344,13 +355,13 @@ export function TeamBox(props: { team: Team | null, noLink?: boolean, button?: b
 class TeamDropdownPanel extends PSRoomPanel {
 	static readonly id = 'teamdropdown';
 	static readonly routes = ['teamdropdown'];
-	static readonly location = 'semimodal-popup';
+	static readonly location = 'modal-popup';
 	static readonly noURL = true;
 	gen = '';
 	format: string | null = null;
 	getTeams() {
-		if (!this.format && !this.gen) return PS.teams.list;
 		return PS.teams.list.filter(team => {
+			if (team.isBox) return false;
 			if (this.gen && !team.format.startsWith(this.gen)) return false;
 			if (this.format && team.format !== this.format) return false;
 			return true;
@@ -382,7 +393,14 @@ class TeamDropdownPanel extends PSRoomPanel {
 		const room = this.props.room;
 		if (!room.parentElem) {
 			return <PSPanelWrapper room={room}>
-				<p>Error: You tried to open a team selector, but you have nothing to select a team for.</p>
+				<div class="pad">
+					<p>{TL`This team selector is no longer available (the challenge was cancelled or something).`}</p>
+					<p class="buttonbar">
+						<button type="button" data-cmd="/close" class="button">
+							{TL`[Close]`}
+						</button>
+					</p>
+				</div>
 			</PSPanelWrapper>;
 		}
 		const baseFormat = room.parentElem.getAttribute('data-format') || Dex.modid;
@@ -401,10 +419,10 @@ class TeamDropdownPanel extends PSRoomPanel {
 			teams = this.getTeams();
 		}
 
-		let availableWidth = document.body.offsetWidth;
-		let width = 307;
-		if (availableWidth > 636) width = 613;
-		if (availableWidth > 945) width = 919;
+		let availableWidth = window.innerWidth;
+		let width = 320;
+		if (availableWidth > 636) width = 618;
+		if (availableWidth > 945) width = 916;
 
 		let teamBuckets: { [folder: string]: Team[] } = {};
 		for (const team of teams) {
@@ -417,6 +435,7 @@ class TeamDropdownPanel extends PSRoomPanel {
 		const baseGen = baseFormat.slice(0, 4);
 		let genList: string[] = [];
 		for (const team of PS.teams.list) {
+			if (team.isBox) continue;
 			const gen = team.format.slice(0, 4);
 			if (gen && !genList.includes(gen)) genList.push(gen);
 		}
@@ -434,23 +453,23 @@ class TeamDropdownPanel extends PSRoomPanel {
 			<button
 				class={'button' + (baseGen === this.format ? ' disabled' : '')} onClick={this.setFormat} name="format" value={baseGen}
 			>
-				<i class="fa fa-folder-o" aria-hidden></i> [{baseGen}] <em>(uncategorized)</em>
+				<i class="fa fa-folder-o" aria-hidden></i> [{baseGen}] <em>{TL`(uncategorized)`}</em>
 			</button> {}
 			<button
 				class={'button' + (baseGen === this.gen ? ' disabled' : '')} onClick={this.setFormat} name="gen" value={baseGen}
 			>
-				<i class="fa fa-folder-o" aria-hidden></i> [{baseGen}] <em>(all)</em>
+				<i class="fa fa-folder-o" aria-hidden></i> [{baseGen}] <em>{TL`(all)`}</em>
 			</button> {}
 			{hasOtherGens && !this.gen && (
-				<button class="button" onClick={this.setFormat} name="gen" value={baseGen}>Other gens</button>
+				<button class="button" onClick={this.setFormat} name="gen" value={baseGen}>{TL`[Other gens]`}</button>
 			)}
 		</p>);
 
 		if (hasOtherGens && this.gen) {
-			teamList.push(<h2>Other gens</h2>);
+			teamList.push(<h2>{TL`[Other gens]`}</h2>);
 			teamList.push(<p>{genList.sort().map(gen => [
 				<button class={'button' + (gen === this.gen ? ' disabled' : '')} onClick={this.setFormat} name="gen" value={gen}>
-					<i class="fa fa-folder-o" aria-hidden></i> [{gen}] <em>(all)</em>
+					<i class="fa fa-folder-o" aria-hidden></i> [{gen}] <em>{TL`(all)`}</em>
 				</button>,
 				" ",
 			])}</p>);
@@ -486,7 +505,7 @@ class TeamDropdownPanel extends PSRoomPanel {
 
 		return <PSPanelWrapper room={room} width={width}><div class="pad">
 			{teamList}
-			{isEmpty && <p><em>No teams found</em></p>}
+			{isEmpty && <p><em>{TL`No teams found`}</em></p>}
 		</div></PSPanelWrapper>;
 	}
 }
@@ -502,6 +521,7 @@ export interface FormatData {
 	tournamentShow?: boolean;
 	bestOfDefault?: boolean;
 	teraPreviewDefault?: boolean;
+	itemClauseDefault?: boolean;
 	rated: boolean;
 	teambuilderLevel?: number | null;
 	partner?: boolean;
@@ -517,7 +537,7 @@ export type SelectType = 'teambuilder' | 'challenge' | 'search' | 'tournament';
 class FormatDropdownPanel extends PSRoomPanel {
 	static readonly id = 'formatdropdown';
 	static readonly routes = ['formatdropdown'];
-	static readonly location = 'semimodal-popup';
+	static readonly location = 'modal-popup';
 	static readonly noURL = true;
 	gen = '' as ID;
 	format: string | null = null;
@@ -549,7 +569,14 @@ class FormatDropdownPanel extends PSRoomPanel {
 		const room = this.props.room;
 		if (!room.parentElem) {
 			return <PSPanelWrapper room={room}>
-				<p>Error: You tried to open a format selector, but you have nothing to select a format for.</p>
+				<div class="pad">
+					<p>{TL`This format selector is no longer available.`}</p>
+					<p class="buttonbar">
+						<button type="button" data-cmd="/close" class="button">
+							{TL`[Close]`}
+						</button>
+					</p>
+				</div>
 			</PSPanelWrapper>;
 		}
 
@@ -565,10 +592,10 @@ class FormatDropdownPanel extends PSRoomPanel {
 		const curGen = (gen: string) => this.gen === gen ? ' cur' : '';
 		const searchBar = <div style="margin-bottom: 0.5em">
 			<input
-				type="search" name="search" placeholder="Search formats" class="textbox autofocus" autocomplete="off"
+				type="search" name="search" placeholder={TL`Search formats`} class="textbox autofocus" autocomplete="off"
 				onInput={this.updateSearch} onChange={this.updateSearch}
 			/> {}
-			<button onClick={this.toggleGen} value="gen9" class={`button button-first${curGen('gen9')}`}>Gen 9</button>
+			<button onClick={this.toggleGen} value="gen9" class={`button button-first${curGen('gen9')}`}>{TL`Gen ${9}`}</button>
 			<button onClick={this.toggleGen} value="gen8" class={`button button-middle${curGen('gen8')}`}>8</button>
 			<button onClick={this.toggleGen} value="gen7" class={`button button-middle${curGen('gen7')}`}>7</button>
 			<button onClick={this.toggleGen} value="gen6" class={`button button-middle${curGen('gen6')}`}>6</button>
@@ -581,7 +608,7 @@ class FormatDropdownPanel extends PSRoomPanel {
 		if (!formatsLoaded) {
 			return <PSPanelWrapper room={room}><div class="pad">
 				{searchBar}
-				<p>Loading...</p>
+				<p>{TL`Loading...`}</p>
 			</div></PSPanelWrapper>;
 		}
 
@@ -666,7 +693,7 @@ class FormatDropdownPanel extends PSRoomPanel {
 						if (selectType === 'teambuilder' && format.team) return null;
 						return <li><button value={format.name} class={`option${curFormat === format.id ? ' cur' : ''}`}>
 							{format.name.replace('[Gen 8 ', '[').replace('[Gen 9] ', '').replace('[Gen 7 ', '[')}
-							{format.section === 'No Format' && <em> (uncategorized)</em>}
+							{format.section === 'No Format' && <em> {TL`(uncategorized)`}</em>}
 							<i class="star fa fa-star cur" data-cmd={`/unstar ${format.id}`}></i>
 						</button></li>;
 					})}
@@ -679,7 +706,7 @@ class FormatDropdownPanel extends PSRoomPanel {
 								class={`option${curFormat === format.id ? ' cur' : ''}`}
 							>
 								{format.name.replace('[Gen 8 ', '[').replace('[Gen 9] ', '').replace('[Gen 7 ', '[')}
-								{format.section === 'No Format' && <em> (uncategorized)</em>}
+								{format.section === 'No Format' && <em> {TL`(uncategorized)`}</em>}
 								<i class="star fa fa-star-o" data-cmd={`/star ${format.id}`}></i>
 							</button></li>;
 						} else {
@@ -688,9 +715,7 @@ class FormatDropdownPanel extends PSRoomPanel {
 					})}
 				</ul>
 			))}
-			{noResults && <p>
-				<em>No formats{!!searchID && ` matching "${searchID}"`} found</em>
-			</p>}
+			{noResults && <p><em>{searchID ? TL`No formats matching "${searchID}" found` : TL`No formats found`}</em></p>}
 			<div style="float: left"></div>
 		</div></PSPanelWrapper>;
 	}
