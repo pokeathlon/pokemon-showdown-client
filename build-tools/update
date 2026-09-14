@@ -225,7 +225,7 @@ function cachebust(contents, sourceDir) {
 }
 
 // add hashes to js and css files and rewrite URLs
-let indexContents = fs.readFileSync('play.pokemonshowdown.com/testclient.html', { encoding: 'utf8' });
+let indexContents = fs.readFileSync('play.pokemonshowdown.com/testclient-old.html', { encoding: 'utf8' });
 indexContents = indexContents.replace(/\?\?/g, `?${Math.random()}`);
 let preactIndexContents = fs.readFileSync('play.pokemonshowdown.com/index-new.html', UTF8);
 preactIndexContents = cachebust(preactIndexContents, 'play.pokemonshowdown.com');

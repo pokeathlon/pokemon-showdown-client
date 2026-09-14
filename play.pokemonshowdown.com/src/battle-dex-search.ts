@@ -1474,7 +1474,7 @@ class BattleAbilitySearch extends BattleTypedSearch<'ability'> {
 		}
 		if (isFusion && fusionSpecies.abilities['1'] && !Object.values(species.abilities).includes(fusionSpecies.abilities['1'])) abilitySet.push(['ability', toID(fusionSpecies.abilities['1'])]);
 		if (species.abilities['H']) {
-			abilitySet.push(['header', TL`Hidden Abilities`]);
+			abilitySet.push(['header', `Hidden Abilities`]);
 			abilitySet.push(['ability', toID(species.abilities['H'])]);
 		}
 		if (isFusion && fusionSpecies.abilities['H'] && !Object.values(species.abilities).includes(fusionSpecies.abilities['H'])) {
@@ -1482,7 +1482,7 @@ class BattleAbilitySearch extends BattleTypedSearch<'ability'> {
 			abilitySet.push(['ability', toID(fusionSpecies.abilities['H'])]);
 		}
 		if (species.abilities['S']) {
-			abilitySet.push(['header', TL`Special Event Abilities`]);
+			abilitySet.push(['header', `Special Event Abilities`]);
 			abilitySet.push(['ability', toID(species.abilities['S'])]);
 		}
 		if (isFusion && fusionSpecies.abilities['S'] && !Object.values(species.abilities).includes(fusionSpecies.abilities['S'])) {

@@ -1,0 +1,151 @@
+﻿<!DOCTYPE html>
+<html>
+	<head>
+		<meta charset="UTF-8" />
+		<meta id="viewport" name="viewport" content="width=device-width" />
+		<title>Pok&eacute;athlon!</title>
+		<link rel="shortcut icon" href="favicon.ico" id="dynamic-favicon" />
+		<link rel="stylesheet" href="style/battle.css?0.9530886689300893" />
+		<link rel="stylesheet" href="style/client.css?0.9530886689300893" />
+		<link rel="stylesheet" href="style/sim-types.css?0.9530886689300893" />
+		<link rel="stylesheet" href="style/utilichart.css?0.9530886689300893" />
+		<link rel="stylesheet" href="style/font-awesome.css?0.9530886689300893" />
+		<meta name="robots" content="noindex" />
+		<meta http-equiv="X-UA-Compatible" content="IE=Edge" />
+		<script src="https://play.pokeathlon.com/config/config.js?0.9530886689300893"></script>
+		<script>
+			Config.testclient = true;
+			(function() {
+				if (location.search !== '') {
+					var m = /\?~~(([^:\/]*)(:[0-9]*)?)/.exec(location.search);
+					if (m) {
+						Config.server = {
+							id: m[1],
+							host: m[2],
+							port: (m[3] && parseInt(m[3].substr(1))) || 8000
+						};
+					} else {
+						alert('Unrecognised query string syntax: ' + location.search);
+					}
+				} else {
+					Config.server = {
+						id: 'showdown',
+						host: 'sim.pokeathlon.com',
+						port: 443,
+						httpport: 8000,
+					};
+				}
+			})();
+		</script>
+		<!--[if lte IE 8]><script>
+			Config.oldie = true;
+		</script><![endif]-->
+	</head>
+	<body>
+		<div id="header" class="header">
+			<img class="logo" src="pokemonshowdownbeta.png" alt="Pok&eacute;mon Showdown! (beta)" width="146" height="44" /><div class="maintabbarbottom"></div>
+		</div>
+		<div class="ps-room scrollable" id="mainmenu"><div class="mainmenuwrapper">
+			<div class="leftmenu">
+				<div class="activitymenu">
+					<div class="pmbox">
+						<div class="pm-window news-embed">
+							<h3><button class="closebutton" tabindex="-1" aria-label="Close"><i class="fa fa-times-circle"></i></button><button class="minimizebutton" tabindex="-1" aria-label="Minimize"><i class="fa fa-minus-circle"></i></button>Latest News</h3>
+							<div class="pm-log" style="max-height:none">
+								<div class="newsentry"><h2>Welcome to Pokéathlon!</h2><p>Have fun with the fusions, and make sure to join the <a target="_blank" href="https://discord.gg/vsEN6mzuNj">Pokéathlon Discord</a> for other fangames (coming soon) and custom Pokémon creation.</p><p>—<strong><a class="rainbow" target="_blank" href="https://ko-fi.com/yoshifanfic">yoshifanfic</a></strong> <small class="date">on Nov 16, 2023</small></p></div>
+								<div class="newsentry">
+									<h2>List of Fangames</h2>
+									<h4 style="display:inline-block;margin-bottom:10px;margin-top:5px;margin-left:5px"><img src="https://static.wikia.nocookie.net/infinitefusion/images/4/4a/Site-favicon.ico" width="11px" height="11px" style="margin-right:5px"><a target="_blank" href="https://infinitefusion.fandom.com/wiki/Pok%C3%A9mon_Infinite_Fusion_Wiki" style="color:rgb(141, 110, 255);text-decoration:none;"> Pokémon Infinite Fusion </a></h4>
+									<h4 style="display:inline-block;margin-bottom:10px;margin-left:5px"><img src="https://p-insurgence.com/favicon.ico" width="11px" height="11px" style="margin-right:5px"><a target="_blank" href="https://wiki.p-insurgence.com/" style="color:rgb(141, 110, 255);text-decoration:none;"> Pokémon Insurgence </a></h4>
+									<h4 style="display:inline-block;margin-bottom:10px;margin-left:5px"><img src="https://static.wikia.nocookie.net/pokemon-uranium/images/4/4a/Site-favicon.ico" width="11px" height="11px" style="margin-right:5px"><a target="_blank" href="https://pokemon-uranium.fandom.com/wiki/Main_Page" style="color:rgb(141, 110, 255);text-decoration:none;"> Pokémon Uranium </a></h4>
+									<h4 style="display:inline-block;margin-bottom:10px;margin-left:5px"><img src="https://static.wikia.nocookie.net/p-infinity/images/4/4a/Site-favicon.ico" width="11px" height="11px" style="margin-right:5px"><a target="_blank" href="https://p-infinity.fandom.com/wiki/Pokemon_Infinity_Wiki" style="color:rgb(141, 110, 255);text-decoration:none;"> Pokémon Infinity </a></h4>
+									<h4 style="display:inline-block;margin-bottom:10px;margin-left:5px"><img src="https://play.pokeathlon.com/fx/plumbercap.png" width="11px" height="11px" style="margin-right:5px"><a target="_blank" href="https://www.pokecommunity.com/threads/super-mariomon.535764/" style="color:rgb(141, 110, 255);text-decoration:none;"> Super Mariomon </a></h4>
+									<h4 style="display:inline-block;margin-bottom:20px;margin-left:5px"><img src="https://play.pokeathlon.com/sprites/fangame-sprites/soulstones/iconsprites/breloomorion.png" width="11px" height="11px" style="margin-right:5px"><a target="_blank" href="https://www.pokecommunity.com/threads/pokemon-soulstones-2-time-wardens-post-game-released.501217/" style="color:rgb(141, 110, 255);text-decoration:none;"> Soulstones 2: Time Wardens </a></h4>
+								</div>
+							</div>
+						</div>
+					</div>
+				</div>
+				<div class="mainmenu">
+					<div id="loading-message" class="mainmessage">Initializing... <noscript>FAILED<br /><br />Pok&eacute;mon Showdown requires JavaScript.</noscript></div>
+				</div>
+			</div>
+			<div class="rightmenu">
+			</div>
+			<div class="mainmenufooter">
+				<div class="bgcredit"></div>
+				<small><a href="https://pokeathlon.com/" target="_blank"><strong>Pok&eacute;athlon</strong></a> | <a href="//pokemonshowdown.com/dex/" target="_blank">Pokédex</a> | <a href="https://replay.pokeathlon.com" target="_blank">Replays</a> | <a href="https://discord.gg/vsEN6mzuNj" target="_blank">Discord</a></small>
+			</div>
+		</div></div>
+		<script>
+			document.getElementById('loading-message').innerHTML += ' DONE<br />Loading libraries...';
+		</script>
+		<script nomodule src="/js/lib/ps-polyfill.js?0.9530886689300893"></script>
+		<script src="js/lib/jquery-2.2.4.min.js?0.9530886689300893"></script>
+		<script src="js/lib/jquery-cookie.js?0.9530886689300893"></script>
+		<script src="js/lib/autoresize.jquery.min.js?0.9530886689300893"></script>
+		<script src="js/battle-sound.js?0.9530886689300893"></script>
+		<script src="config/testclient-key.js?0.9530886689300893"></script>
+		<script src="js/lib/html-css-sanitizer-minified.js?0.9530886689300893"></script>
+		<script src="js/lib/lodash.core.js?0.9530886689300893"></script>
+		<script src="js/lib/backbone.js?0.9530886689300893"></script>
+		<script src="js/lib/d3.v3.min.js?0.9530886689300893"></script>
+
+		<script>
+			document.getElementById('loading-message').innerHTML += ' DONE<br />Loading data...';
+			window.exports = window;
+		</script>
+
+		<!-- fallback for if you've never done a full build -->
+		<script src="js/server/chat-formatter.js?0.9530886689300893"></script>
+		<script src="js/battledata.js?0.9530886689300893" onerror="alert('You must build the client with `node build` before using testclient.html')"></script>
+		<script src="data/text.js?0.9530886689300893"></script>
+		<script src="https://play.pokemonshowdown.com/data/pokedex-mini.js?0.9530886689300893"></script>
+		<script src="https://play.pokemonshowdown.com/data/pokedex-mini-bw.js?0.9530886689300893"></script>
+		<script src="data/typechart.js?0.9530886689300893"></script>
+		<script src="js/battle.js?0.9530886689300893"></script>
+		<script src="js/lib/sockjs-1.4.0-nwjsfix.min.js?0.9530886689300893"></script>
+		<script src="js/lib/color-thief.min.js?0.9530886689300893"></script>
+
+		<script>
+			document.getElementById('loading-message').innerHTML += ' DONE<br />Loading client...';
+		</script>
+
+		<script src="js/client.js?0.9530886689300893"></script>
+		<script src="js/client-topbar.js?0.9530886689300893"></script>
+		<script src="js/client-mainmenu.js?0.9530886689300893"></script>
+		<script src="js/client-teambuilder.js?0.9530886689300893"></script>
+		<script src="js/client-ladder.js?0.9530886689300893"></script>
+		<script src="js/client-chat.js?0.9530886689300893"></script>
+		<script src="js/client-chat-tournament.js?0.9530886689300893"></script>
+		<script src="js/battle-tooltips.js?0.9530886689300893"></script>
+		<script src="js/client-battle.js?0.9530886689300893"></script>
+		<script src="js/client-rooms.js?0.9530886689300893"></script>
+		<script src="js/storage.js?0.9530886689300893"></script>
+		<script src="data/graphics.js?0.9530886689300893"></script>
+
+		<script src="data/pokedex.js?0.9530886689300893"></script>
+		<script src="data/moves.js?0.9530886689300893"></script>
+		<script src="data/items.js?0.9530886689300893"></script>
+		<script src="data/abilities.js?0.9530886689300893"></script>
+
+		<script src="data/search-index.js?0.9530886689300893"></script>
+		<script src="data/teambuilder-tables.js?0.9530886689300893"></script>
+		<script src="data/fusion-index.js?0.9530886689300893"></script>
+		<script src="data/fusion-credits.js?0.9530886689300893"></script>
+		<script src="data/fangame-credits.js?0.9530886689300893"></script>
+		<script src="data/afd-credits.js?0.9530886689300893"></script>
+		<script src="data/formats.js?0.9530886689300893"></script>
+		<script src="js/battle-dex-search.js?0.9530886689300893"></script>
+		<script src="js/search.js?0.9530886689300893"></script>
+
+		<script src="data/aliases.js?0.9530886689300893" async="async"></script>
+
+		<script>
+			window.onload = () => {
+				window.app = new App();
+			}
+		</script>
+
+	</body>
+</html>
