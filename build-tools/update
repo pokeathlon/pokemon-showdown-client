@@ -225,8 +225,10 @@ function cachebust(contents, sourceDir) {
 }
 
 // add hashes to js and css files and rewrite URLs
-let indexContents = fs.readFileSync('play.pokemonshowdown.com/testclient-old.html', { encoding: 'utf8' });
-indexContents = indexContents.replace(/\?\?/g, `?${Math.random()}`);
+let ourIndexContents = fs.readFileSync('play.pokemonshowdown.com/testclient-old.html', { encoding: 'utf8' });
+ourIndexContents = ourIndexContents.replace(/\?\?/g, `?${Math.random()}`);
+let indexContents = fs.readFileSync('play.pokemonshowdown.com/index-old.html', UTF8);
+indexContents = cachebust(indexContents, 'play.pokemonshowdown.com');
 let preactIndexContents = fs.readFileSync('play.pokemonshowdown.com/index-new.html', UTF8);
 preactIndexContents = cachebust(preactIndexContents, 'play.pokemonshowdown.com');
 let crossprotocolContents = fs.readFileSync('play.pokemonshowdown.com/crossprotocol.html', UTF8);
@@ -271,6 +273,7 @@ const customHead = readOptionalFile('config/head-custom.html');
 indexContents = indexContents.replace(/<!-- config\/head-custom\.html -->/g, customHead);
 preactIndexContents = preactIndexContents.replace(/<!-- config\/head-custom\.html -->/g, customHead);
 
+fs.writeFileSync('play.pokemonshowdown.com/caches/index.html', ourIndexContents);
 fs.writeFileSync('play.pokemonshowdown.com/caches/index-old.html', indexContents);
 if (indexContents2) {
 	fs.writeFileSync('play.pokemonshowdown.com/caches/index-test.html', indexContents2);
@@ -280,6 +283,7 @@ if (indexContents2) {
 fs.writeFileSync('play.pokemonshowdown.com/caches/index-new.html', preactIndexContents);
 fs.writeFileSync('play.pokemonshowdown.com/caches/crossprotocol.html', crossprotocolContents);
 fs.writeFileSync('play.pokemonshowdown.com/js/replay-embed.js', replayEmbedContents);
+
 
 let replaysContents = fs.readFileSync('replay.pokemonshowdown.com/index.php', UTF8);
 replaysContents = replaysContents.replace('<?php', "<?php\n\nchdir(dirname(__DIR__));");
