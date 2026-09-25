@@ -992,9 +992,15 @@ p.or:after {
 	position: absolute;
 	left: -30px;
 	bottom: -5px;
-	background: url(https://play.pokemonshowdown.com/sprites/gen5ani/jirachi.gif) center no-repeat;
+	background: url(https://play.pokemonshowdown.com/sprites/gen5/meloetta.png) center no-repeat;
 }
-
+.roomcounters button:hover .usercount {
+	background: url(https://play.pokemonshowdown.com/sprites/gen5ani/meloetta.gif) center no-repeat;
+}
+.roomcounters .usercount.afd,
+.roomcounters button:hover .usercount.afd {
+	background: url(https://play.pokemonshowdown.com/sprites/afd/meloetta.png) center no-repeat;
+}
 .roomcounters .battlecount {
 	display: block;
 	width: 46px;
@@ -1002,8 +1008,16 @@ p.or:after {
 	position: absolute;
 	right: -30px;
 	bottom: -10px;
-	background: url(https://play.pokemonshowdown.com/sprites/gen5ani/victini.gif) center no-repeat;
+	background: url(https://play.pokemonshowdown.com/sprites/gen5/meloetta-pirouette.png) center no-repeat;
 }
+.roomcounters button:hover .battlecount {
+	background: url(https://play.pokemonshowdown.com/sprites/gen5ani/meloetta-pirouette.gif) center no-repeat;
+} 
+.roomcounters .battlecount.afd,
+.roomcounters button:hover .battlecount.afd {
+	background: url(https://play.pokemonshowdown.com/sprites/afd/meloetta-pirouette.png) center no-repeat;
+}
+
 .roomlist {
 	max-width: 480px;
 	text-align: left;
@@ -1808,9 +1822,6 @@ p.or:after {
 .status.frz {
 	background: #009AA4;
 }
-.status.frb {
-	background: #009AA4;
-}
 
 .movebutton {
 	float: left;
@@ -2368,7 +2379,7 @@ p.or:after {
 	background: transparent;
 	border: 1px solid transparent;
 	border-radius: 4px;
-	padding: 2px 2px;
+	padding: 2px 5px;
 	margin: 0;
 	font-size: 9pt;
 	font-family: Verdana, sans-serif;
@@ -2398,17 +2409,6 @@ p.or:after {
 	padding: 1px 0 0 0;
 	width: 110px;
 
-	box-shadow: inset 1px 1px 0 rgba(255,255,255,.6);
-}
-.setcell-fusion {
-	position: absolute;
-	left: 172px;
-	top: 5px;
-	border: 1px solid #999999;
-	background: #CBD6E1;
-	border-radius: 5px;
-	padding: 1px 0 0 0;
-	width: 110px;
 	box-shadow: inset 1px 1px 0 rgba(255,255,255,.6);
 }
 .setchart {
@@ -2474,7 +2474,6 @@ p.or:after {
 	padding-bottom: 1px;
 }
 .setchart label,
-.setcell-fusion label,
 .setchart-nickname label {
 	display: block;
 	font-size: 8pt;
@@ -2485,7 +2484,6 @@ p.or:after {
 .setcol-icon label {
 	text-shadow: #DAE5F0 1px 1px 0, #DAE5F0 1px -1px 0, #DAE5F0 -1px 1px 0, #DAE5F0 -1px -1px 0;
 }
-.setcell-fusion label,
 .setchart-nickname label {
 	font-size: 7pt;
 	margin-bottom: -1px;
@@ -2622,7 +2620,6 @@ p.or:after {
 	display: block;
 }
 .setchart input,
-.setcell-fusion input,
 .setchart-nickname input,
 .statform input.inputform {
 	display: block;
@@ -2696,7 +2693,6 @@ p.or:after {
 .teambuilder-clipboard-data:hover {
 	border: 1px solid #BBBBBB;
 }
-.teambuilder-clipboard-data .banned,
 .teambuilder-clipboard-data .result {
 	height: 32px;
 }
@@ -2813,37 +2809,18 @@ p.or:after {
 .teamchartbox.individual .teamchart {
 	margin-top: -2px;
 }
-.teambuilder-results .banned a {
-	border-radius: 4px;
-	cursor: not-allowed;
-	opacity: 0.5;
-}
 .teambuilder-results .result a {
 	border-radius: 4px;
 	cursor: pointer;
-}
-.teambuilder-results .banned a.cur {
-	border-color: #550000;
-	background: rgba(248, 0, 0, 0.4);
 }
 .teambuilder-results .result a.cur {
 	border-color: #555555;
 	background: rgba(248, 248, 248, 0.4);
 }
-.teambuilder-results .banned a:hover,
-.teambuilder-results .banned a.hover {
-	border-color: #d80000;
-	background: rgb(247, 122, 122);
-}
 .teambuilder-results .result a:hover,
 .teambuilder-results .result a.hover {
 	border-color: #D8D8D8;
 	background: #F8F8F8;
-}
-.teambuilder-results .banned a.cur:hover,
-.teambuilder-results .banned a.cur.hover {
-	border-color: #550000;
-	background: #F80000;
 }
 .teambuilder-results .result a.cur:hover,
 .teambuilder-results .result a.cur.hover {
@@ -2953,7 +2930,6 @@ p.or:after {
 	width: 110px;
 	text-align: right;
 }
-.changesprite i,
 .changeform i {
 	cursor: pointer;
 	display: block;
@@ -2968,7 +2944,6 @@ p.or:after {
 	background: rgba(255,255,255,.5);
 	box-shadow: 0 1px 2px rgba(0,0,0,.2);
 }
-.changesprite i:hover,
 .changeform i:hover {
 	color: #DAE5F0;
 	background: #569;
@@ -3156,13 +3131,12 @@ p.or:after {
 .dark .usergroup {
 	color: #BBB;
 }
-.dark .changesprite i,
+
 .dark .changeform i {
 	border-color: #bbb;
 	color: #bbb;
 	background: rgba(0,0,0,.5);
 }
-.dark .changesprite i:hover,
 .dark .changeform i:hover {
 	border-color: #EEE;
 	color: #EEE;
@@ -3307,23 +3281,12 @@ p.or:after {
 		opacity: 1;
 }
 
-.dark .teambuilder-results .banned a.hover,
-.dark .teambuilder-results .banned a:hover {
-	border-color: #770000;
-	background: rgba(100, 0, 0, 0.5);
-	color: #FFFFFF;
-}
 .dark .teambuilder-results .result a.hover,
 .dark .teambuilder-results .result a:hover,
 .dark .setmenu button:hover,
 .dark .teamlist button:hover {
 	border-color: #777777;
 	background: rgba(100, 100, 100, 0.5);
-	color: #FFFFFF;
-}
-.dark .teambuilder-results .banned a.cur:hover {
-	border-color: #BB0000;
-	background: rgba(100, 0, 0, 0.4);
 	color: #FFFFFF;
 }
 .dark .teambuilder-results .result a.cur {
@@ -3355,7 +3318,6 @@ p.or:after {
 }
 
 .dark .setchart,
-.dark .setcell-fusion,
 .dark .setchart-nickname {
 	background-color: #5A6570;
 	box-shadow: none;
@@ -3364,7 +3326,6 @@ p.or:after {
 	text-shadow: #5A6570 1px 1px 0,#5A6570 1px -1px 0,#5A6570 -1px 1px 0,#5A6570 -1px -1px 0;
 }
 .dark .setchart label,
-.dark .setcell-fusion label,
 .dark .setchart-nickname label,
 .dark .setchart .statrow-head em {
 	color: #BBB;
@@ -3375,69 +3336,4 @@ p.or:after {
 .dark iframe.textbox:hover,
 .dark iframe.textbox:focus {
 	background: #DDDDDD;
-}
-
-/*********************************************************
- * <rainbow>
- *********************************************************/
- .rainbow{
-	animation: rainbow 2.5s linear;
-	animation-iteration-count: infinite;
-}
-.rainbowshadow{
-	animation: rainbowshadow 2.5s linear;
-	animation-iteration-count: infinite;
-}
-@keyframes rainbow{
-	100%, 0% {
-		color: rgb(205,50,50);
-	}
-	8% {
-		color: rgb(205,77,50);
-	}
-	16% {
-		color: rgb(205,205,50);
-	}
-	25% {
-		color: rgb(77,205,50);
-	}
-	33% {
-		color: rgb(50,205,50);
-	}
-	41% {
-		color: rgb(50,205,77);
-	}
-	50% {
-		color: rgb(50,205,205);
-	}
-	58% {
-		color: rgb(50,77,205);
-	}
-	66% {
-		color: rgb(50,50,205);
-	}
-	75% {
-		color: rgb(77,50,205);
-	}
-	83% {
-		color: rgb(205,50,205);
-	}
-	91% {
-		color: rgb(205,50,77);
-	}
-}
-
-@keyframes rainbowshadow {
-	100%, 0% { filter: drop-shadow(0px 0px 2px rgb(205,50,50)) }
-	8% { filter: drop-shadow(0px 0px 2px rgb(205,77,50)) }
-	16% { filter: drop-shadow(0px 0px 2px rgb(205,205,50)) }
-	25% { filter: drop-shadow(0px 0px 2px rgb(77,205,50)) }
-	33% { filter: drop-shadow(0px 0px 2px rgb(50,205,50)) }
-	41% { filter: drop-shadow(0px 0px 2px rgb(50,205,77)) }
-	50% { filter: drop-shadow(0px 0px 2px rgb(50,205,205)) }
-	58% { filter: drop-shadow(0px 0px 2px rgb(50,77,205)) }
-	66% { filter: drop-shadow(0px 0px 2px rgb(50,50,205)) }
-	75% { filter: drop-shadow(0px 0px 2px rgb(77,50,205)) }
-	83% { filter: drop-shadow(0px 0px 2px rgb(205,50,205)) }
-	91% { filter: drop-shadow(0px 0px 2px rgb(205,50,77)) }
 }
