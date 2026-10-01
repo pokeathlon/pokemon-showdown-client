@@ -39,6 +39,9 @@
 .replay-controls-2 {
 	position:absolute;top:415px;left:5px;right:0px;text-align:left;
 }
+.replay-controls-3 {
+	position:absolute;top:475px;left:5px;right:0px;text-align:left;
+}
 .replay-wrapper {
 	position: relative;
 	padding-top: 460px !important;

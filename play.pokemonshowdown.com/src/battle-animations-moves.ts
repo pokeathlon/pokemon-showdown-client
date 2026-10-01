@@ -124,7 +124,7 @@ export const BattleMoveAnims: AnimTable = {
 				opacity: 0,
 				time: 900,
 			}, 'linear');
-			scene.showEffect('poisonwisp', {
+			scene.showEffect('purplewisp', {
 				x: attacker.x + 60,
 				y: attacker.y + 50,
 				z: attacker.z,
@@ -406,7 +406,7 @@ export const BattleMoveAnims: AnimTable = {
 	dragondance: {
 		anim(scene, [attacker]) {
 			BattleOtherAnims.shake.anim(scene, [attacker]);
-			scene.showEffect('poisonwisp', {
+			scene.showEffect('purplewisp', {
 				x: attacker.x,
 				y: attacker.y,
 				z: attacker.z,
@@ -420,7 +420,7 @@ export const BattleMoveAnims: AnimTable = {
 				opacity: 0,
 				time: 300,
 			}, 'ballistic');
-			scene.showEffect('poisonwisp', {
+			scene.showEffect('purplewisp', {
 				x: attacker.x,
 				y: attacker.y,
 				z: attacker.z,
@@ -434,7 +434,7 @@ export const BattleMoveAnims: AnimTable = {
 				opacity: 0,
 				time: 450,
 			}, 'ballistic');
-			scene.showEffect('poisonwisp', {
+			scene.showEffect('purplewisp', {
 				x: attacker.x,
 				y: attacker.y,
 				z: attacker.z,
@@ -1115,7 +1115,7 @@ export const BattleMoveAnims: AnimTable = {
 				opacity: 0.4,
 				time: 600,
 			}, 'linear', 'fade');
-			scene.showEffect('poisonwisp', {
+			scene.showEffect('purplewisp', {
 				x: defender.x - 50,
 				y: defender.y,
 				z: defender.z,
@@ -1130,7 +1130,7 @@ export const BattleMoveAnims: AnimTable = {
 				opacity: 0.4,
 				time: 600,
 			}, 'linear', 'fade');
-			scene.showEffect('poisonwisp', {
+			scene.showEffect('purplewisp', {
 				x: defender.x + 50,
 				y: defender.y,
 				z: defender.z,
@@ -1164,7 +1164,7 @@ export const BattleMoveAnims: AnimTable = {
 	},
 	embargo: {
 		anim(scene, [attacker, defender]) {
-			scene.showEffect('poisonwisp', {
+			scene.showEffect('purplewisp', {
 				x: defender.x + 50,
 				y: defender.y,
 				z: defender.z,
@@ -1179,7 +1179,7 @@ export const BattleMoveAnims: AnimTable = {
 				opacity: 0.4,
 				time: 600,
 			}, 'linear', 'fade');
-			scene.showEffect('poisonwisp', {
+			scene.showEffect('purplewisp', {
 				x: defender.x - 50,
 				y: defender.y,
 				z: defender.z,
@@ -1194,7 +1194,7 @@ export const BattleMoveAnims: AnimTable = {
 				opacity: 0.4,
 				time: 600,
 			}, 'linear', 'fade');
-			scene.showEffect('poisonwisp', {
+			scene.showEffect('purplewisp', {
 				x: defender.x + 50,
 				y: defender.y,
 				z: defender.z,
@@ -1209,7 +1209,7 @@ export const BattleMoveAnims: AnimTable = {
 				opacity: 0.4,
 				time: 800,
 			}, 'linear', 'fade');
-			scene.showEffect('poisonwisp', {
+			scene.showEffect('purplewisp', {
 				x: defender.x - 50,
 				y: defender.y,
 				z: defender.z,
@@ -1488,7 +1488,7 @@ export const BattleMoveAnims: AnimTable = {
 	},
 	dragonbreath: {
 		anim(scene, [attacker, defender]) {
-			scene.showEffect('poisonwisp', {
+			scene.showEffect('purplewisp', {
 				x: attacker.x,
 				y: attacker.y,
 				z: attacker.z,
@@ -1501,7 +1501,7 @@ export const BattleMoveAnims: AnimTable = {
 				scale: 1,
 				opacity: 0.2,
 			}, 'decel');
-			scene.showEffect('poisonwisp', {
+			scene.showEffect('purplewisp', {
 				x: attacker.x,
 				y: attacker.y,
 				z: attacker.z,
@@ -1515,7 +1515,7 @@ export const BattleMoveAnims: AnimTable = {
 				scale: 1,
 				opacity: 0.2,
 			}, 'decel');
-			scene.showEffect('poisonwisp', {
+			scene.showEffect('purplewisp', {
 				x: attacker.x,
 				y: attacker.y,
 				z: attacker.z,
@@ -1582,7 +1582,7 @@ export const BattleMoveAnims: AnimTable = {
 					opacity: 0,
 					time: 40 * i + 600,
 				}, 'linear');
-				scene.showEffect('poisonwisp', {
+				scene.showEffect('purplewisp', {
 					x: attacker.x + xstep * (i + 1),
 					y: attacker.y + ystep * (i + 1),
 					z: attacker.z + zstep * (i + 1),
@@ -1990,7 +1990,7 @@ export const BattleMoveAnims: AnimTable = {
 	},
 	mortalspin: {
 		anim(scene, [attacker, defender]) {
-			scene.showEffect('poisonwisp', {
+			scene.showEffect('purplewisp', {
 				x: attacker.x,
 				y: attacker.y,
 				z: attacker.z,
@@ -2004,7 +2004,7 @@ export const BattleMoveAnims: AnimTable = {
 				opacity: 0.8,
 				time: 400,
 			}, 'decel', 'explode');
-			scene.showEffect('poisonwisp', {
+			scene.showEffect('purplewisp', {
 				x: defender.x,
 				y: defender.y + 60,
 				z: defender.behind(-30),
@@ -2651,7 +2651,7 @@ export const BattleMoveAnims: AnimTable = {
 				opacity: 0.1,
 				time: 500,
 			}, 'decel', 'fade');
-			scene.showEffect('poisonwisp', {
+			scene.showEffect('purplewisp', {
 				x: attacker.x,
 				y: attacker.y - 15,
 				z: attacker.z,
@@ -2692,7 +2692,7 @@ export const BattleMoveAnims: AnimTable = {
 				opacity: 0.1,
 				time: 500,
 			}, 'decel', 'fade');
-			scene.showEffect('poisonwisp', {
+			scene.showEffect('purplewisp', {
 				x: attacker.x,
 				y: attacker.y - 15,
 				z: attacker.z,
@@ -3580,7 +3580,7 @@ export const BattleMoveAnims: AnimTable = {
 	},
 	acidarmor: {
 		anim(scene, [attacker]) {
-			scene.showEffect('poisonwisp', {
+			scene.showEffect('purplewisp', {
 				x: attacker.x,
 				y: attacker.y,
 				z: attacker.z,
@@ -3592,7 +3592,7 @@ export const BattleMoveAnims: AnimTable = {
 				opacity: 1,
 				time: 300,
 			}, 'linear');
-			scene.showEffect('poisonwisp', {
+			scene.showEffect('purplewisp', {
 				x: attacker.x,
 				y: attacker.y,
 				z: attacker.z,
@@ -3764,7 +3764,7 @@ export const BattleMoveAnims: AnimTable = {
 				defender.delay(500);
 				BattleOtherAnims.shake.anim(scene, [defender]);
 
-				scene.showEffect('poisonwisp', {
+				scene.showEffect('purplewisp', {
 					x: defender.x,
 					y: defender.y,
 					z: defender.z,
@@ -3777,7 +3777,7 @@ export const BattleMoveAnims: AnimTable = {
 					time: 1100,
 				}, 'decel', 'fade');
 
-				scene.showEffect('poisonwisp', {
+				scene.showEffect('purplewisp', {
 					x: defender.x,
 					y: defender.y,
 					z: defender.z,
@@ -4513,7 +4513,7 @@ export const BattleMoveAnims: AnimTable = {
 				opacity: 0,
 				time: 100,
 			}, 'linear');
-			scene.showEffect('poisonwisp', {
+			scene.showEffect('purplewisp', {
 				x: defender.x,
 				y: defender.y,
 				z: defender.z,
@@ -4527,7 +4527,7 @@ export const BattleMoveAnims: AnimTable = {
 				opacity: 0,
 				time: 950,
 			}, 'linear', 'fade');
-			scene.showEffect('poisonwisp', {
+			scene.showEffect('purplewisp', {
 				x: defender.x,
 				y: defender.y,
 				z: defender.z,
@@ -4541,7 +4541,7 @@ export const BattleMoveAnims: AnimTable = {
 				opacity: 0,
 				time: 950,
 			}, 'linear', 'fade');
-			scene.showEffect('poisonwisp', {
+			scene.showEffect('purplewisp', {
 				x: defender.x,
 				y: defender.y,
 				z: defender.z,
@@ -4555,7 +4555,7 @@ export const BattleMoveAnims: AnimTable = {
 				opacity: 0,
 				time: 950,
 			}, 'linear', 'fade');
-			scene.showEffect('poisonwisp', {
+			scene.showEffect('purplewisp', {
 				x: defender.x,
 				y: defender.y,
 				z: defender.z,
@@ -4569,7 +4569,7 @@ export const BattleMoveAnims: AnimTable = {
 				opacity: 0,
 				time: 950,
 			}, 'linear', 'fade');
-			scene.showEffect('poisonwisp', {
+			scene.showEffect('purplewisp', {
 				x: defender.x,
 				y: defender.y,
 				z: defender.z,
@@ -4964,7 +4964,7 @@ export const BattleMoveAnims: AnimTable = {
 			let yf2 = [0, 1, 0, -1];
 
 			for (let i = 0; i < 4; i++) {
-				scene.showEffect('poisonwisp', {
+				scene.showEffect('purplewisp', {
 					x: attacker.x,
 					y: attacker.y,
 					z: attacker.z,
@@ -4978,7 +4978,7 @@ export const BattleMoveAnims: AnimTable = {
 					opacity: 0.5,
 					time: 800,
 				}, 'accel');
-				scene.showEffect('poisonwisp', {
+				scene.showEffect('purplewisp', {
 					x: attacker.x,
 					y: attacker.y,
 					z: attacker.z,
@@ -7358,7 +7358,7 @@ export const BattleMoveAnims: AnimTable = {
 				time: 1000,
 			}, 'linear', 'fade');
 
-			scene.showEffect('poisonwisp', {
+			scene.showEffect('purplewisp', {
 				x: defender.x,
 				y: defender.y,
 				z: defender.z,
@@ -7372,7 +7372,7 @@ export const BattleMoveAnims: AnimTable = {
 				opacity: 0.5,
 				time: 750,
 			}, 'decel', 'fade');
-			scene.showEffect('poisonwisp', {
+			scene.showEffect('purplewisp', {
 				x: defender.x,
 				y: defender.y,
 				z: defender.z,
@@ -7386,7 +7386,7 @@ export const BattleMoveAnims: AnimTable = {
 				opacity: 0.5,
 				time: 850,
 			}, 'decel', 'fade');
-			scene.showEffect('poisonwisp', {
+			scene.showEffect('purplewisp', {
 				x: defender.x,
 				y: defender.y,
 				z: defender.z,
@@ -8795,7 +8795,6 @@ export const BattleMoveAnims: AnimTable = {
 	},
 	ragefist: {
 		anim(scene, [attacker, defender]) {
-
 			scene.backgroundEffect('#000000', 900, 0.3);
 			scene.showEffect('angry', {
 				x: attacker.x + 20,
@@ -10207,7 +10206,7 @@ export const BattleMoveAnims: AnimTable = {
 	},
 	poisonfang: {
 		anim(scene, [attacker, defender]) {
-			scene.showEffect('poisonwisp', {
+			scene.showEffect('purplewisp', {
 				x: defender.x,
 				y: defender.y,
 				z: defender.z,
@@ -10222,7 +10221,7 @@ export const BattleMoveAnims: AnimTable = {
 				opacity: 0,
 				time: 800,
 			}, 'linear');
-			scene.showEffect('poisonwisp', {
+			scene.showEffect('purplewisp', {
 				x: defender.x,
 				y: defender.y,
 				z: defender.z,
@@ -12176,7 +12175,7 @@ export const BattleMoveAnims: AnimTable = {
 				opacity: 0,
 				time: 300,
 			}, 'ballistic2Under', 'fade');
-			scene.showEffect('poisonwisp', {
+			scene.showEffect('purplewisp', {
 				x: attacker.x,
 				y: attacker.y,
 				z: attacker.z,
@@ -12190,7 +12189,7 @@ export const BattleMoveAnims: AnimTable = {
 				opacity: 0,
 				time: 300,
 			}, 'ballistic');
-			scene.showEffect('poisonwisp', {
+			scene.showEffect('purplewisp', {
 				x: attacker.x,
 				y: attacker.y,
 				z: attacker.z,
@@ -12204,7 +12203,7 @@ export const BattleMoveAnims: AnimTable = {
 				opacity: 0,
 				time: 450,
 			}, 'ballistic');
-			scene.showEffect('poisonwisp', {
+			scene.showEffect('purplewisp', {
 				x: attacker.x,
 				y: attacker.y,
 				z: attacker.z,
@@ -13606,7 +13605,7 @@ export const BattleMoveAnims: AnimTable = {
 	},
 	poisongas: {
 		anim(scene, [attacker, defender]) {
-			scene.showEffect('poisonwisp', {
+			scene.showEffect('purplewisp', {
 				x: defender.x + 10,
 				y: defender.y - 35,
 				z: defender.z,
@@ -13620,7 +13619,7 @@ export const BattleMoveAnims: AnimTable = {
 				opacity: 0,
 				time: 300,
 			}, 'linear');
-			scene.showEffect('poisonwisp', {
+			scene.showEffect('purplewisp', {
 				x: defender.x - 30,
 				y: defender.y - 35,
 				z: defender.z,
@@ -13634,7 +13633,7 @@ export const BattleMoveAnims: AnimTable = {
 				opacity: 0,
 				time: 400,
 			}, 'linear');
-			scene.showEffect('poisonwisp', {
+			scene.showEffect('purplewisp', {
 				x: defender.x + 40,
 				y: defender.y - 35,
 				z: defender.z,
@@ -13652,7 +13651,7 @@ export const BattleMoveAnims: AnimTable = {
 	},
 	smog: {
 		anim(scene, [attacker, defender]) {
-			scene.showEffect('poisonwisp', {
+			scene.showEffect('purplewisp', {
 				x: attacker.x,
 				y: attacker.y,
 				z: attacker.z,
@@ -13667,7 +13666,7 @@ export const BattleMoveAnims: AnimTable = {
 				opacity: 0.3,
 				time: 400,
 			}, 'decel', 'explode');
-			scene.showEffect('poisonwisp', {
+			scene.showEffect('purplewisp', {
 				x: attacker.x,
 				y: attacker.y,
 				z: attacker.z,
@@ -13682,7 +13681,7 @@ export const BattleMoveAnims: AnimTable = {
 				opacity: 0.3,
 				time: 500,
 			}, 'decel', 'explode');
-			scene.showEffect('poisonwisp', {
+			scene.showEffect('purplewisp', {
 				x: attacker.x,
 				y: attacker.y,
 				z: attacker.z,
@@ -13698,7 +13697,7 @@ export const BattleMoveAnims: AnimTable = {
 				time: 600,
 			}, 'decel', 'explode');
 
-			scene.showEffect('poisonwisp', {
+			scene.showEffect('purplewisp', {
 				x: defender.x + 30,
 				y: defender.y,
 				z: defender.z,
@@ -13712,7 +13711,7 @@ export const BattleMoveAnims: AnimTable = {
 				opacity: 0.2,
 				time: 800,
 			}, 'decel', 'fade');
-			scene.showEffect('poisonwisp', {
+			scene.showEffect('purplewisp', {
 				x: defender.x - 30,
 				y: defender.y,
 				z: defender.z,
@@ -13726,7 +13725,7 @@ export const BattleMoveAnims: AnimTable = {
 				opacity: 0.2,
 				time: 900,
 			}, 'decel', 'fade');
-			scene.showEffect('poisonwisp', {
+			scene.showEffect('purplewisp', {
 				x: defender.x + 15,
 				y: defender.y,
 				z: defender.z,
@@ -14323,7 +14322,7 @@ export const BattleMoveAnims: AnimTable = {
 	ominouswind: {
 		anim(scene, [attacker, defender]) {
 			for (let i = 0; i < 3; i++) {
-				scene.showEffect('poisonwisp', {
+				scene.showEffect('purplewisp', {
 					x: defender.x + 30,
 					y: defender.y - 35,
 					z: defender.behind(i * 40 - 60),
@@ -14338,7 +14337,7 @@ export const BattleMoveAnims: AnimTable = {
 					opacity: 0.4,
 					time: 200 * i + 200,
 				}, 'linear', 'fade');
-				scene.showEffect('poisonwisp', {
+				scene.showEffect('purplewisp', {
 					x: defender.x - 30,
 					y: defender.y + 35,
 					z: defender.behind(i * 40 - 60),
@@ -14353,7 +14352,7 @@ export const BattleMoveAnims: AnimTable = {
 					opacity: 0.4,
 					time: 200 * i + 200,
 				}, 'linear', 'fade');
-				scene.showEffect('poisonwisp', {
+				scene.showEffect('purplewisp', {
 					x: defender.x + 30,
 					y: defender.y,
 					z: defender.behind(i * 40 - 60),
@@ -14368,7 +14367,7 @@ export const BattleMoveAnims: AnimTable = {
 					opacity: 0.4,
 					time: 200 * i + 200,
 				}, 'linear', 'fade');
-				scene.showEffect('poisonwisp', {
+				scene.showEffect('purplewisp', {
 					x: defender.x - 30,
 					y: defender.y,
 					z: defender.behind(i * 40 - 60),
@@ -16204,7 +16203,7 @@ export const BattleMoveAnims: AnimTable = {
 				time: 600,
 			}, 'linear');
 
-			scene.showEffect('poisonwisp', {
+			scene.showEffect('purplewisp', {
 				x: defender.x - 30,
 				y: defender.y,
 				z: defender.z,
@@ -16216,7 +16215,7 @@ export const BattleMoveAnims: AnimTable = {
 				opacity: 0,
 				time: 600,
 			}, 'linear', 'fade');
-			scene.showEffect('poisonwisp', {
+			scene.showEffect('purplewisp', {
 				x: defender.x,
 				y: defender.y - 30,
 				z: defender.z,
@@ -16228,7 +16227,7 @@ export const BattleMoveAnims: AnimTable = {
 				opacity: 0,
 				time: 650,
 			}, 'linear', 'fade');
-			scene.showEffect('poisonwisp', {
+			scene.showEffect('purplewisp', {
 				x: defender.x + 15,
 				y: defender.y,
 				z: defender.z,
@@ -16735,7 +16734,7 @@ export const BattleMoveAnims: AnimTable = {
 				opacity: 0.6,
 				time: 200,
 			}, 'linear', 'explode');
-			scene.showEffect('poisonwisp', {
+			scene.showEffect('purplewisp', {
 				x: attacker.x,
 				y: attacker.y,
 				z: attacker.z,
@@ -16763,7 +16762,7 @@ export const BattleMoveAnims: AnimTable = {
 				opacity: 0.6,
 				time: 300,
 			}, 'linear', 'explode');
-			scene.showEffect('poisonwisp', {
+			scene.showEffect('purplewisp', {
 				x: attacker.x,
 				y: attacker.y,
 				z: attacker.z,
@@ -16794,7 +16793,7 @@ export const BattleMoveAnims: AnimTable = {
 				opacity: 0.6,
 				time: 200,
 			}, 'linear', 'explode');
-			scene.showEffect('poisonwisp', {
+			scene.showEffect('purplewisp', {
 				x: attacker.x,
 				y: attacker.y,
 				z: attacker.z,
@@ -16822,7 +16821,7 @@ export const BattleMoveAnims: AnimTable = {
 				opacity: 0.6,
 				time: 300,
 			}, 'linear', 'explode');
-			scene.showEffect('poisonwisp', {
+			scene.showEffect('purplewisp', {
 				x: attacker.x,
 				y: attacker.y,
 				z: attacker.z,
@@ -16849,7 +16848,7 @@ export const BattleMoveAnims: AnimTable = {
 				opacity: 0.6,
 				time: 200,
 			}, 'linear', 'explode');
-			scene.showEffect('poisonwisp', {
+			scene.showEffect('purplewisp', {
 				x: attacker.x,
 				y: attacker.y,
 				z: attacker.z,
@@ -16877,7 +16876,7 @@ export const BattleMoveAnims: AnimTable = {
 				opacity: 0.6,
 				time: 750,
 			}, 'linear', 'explode');
-			scene.showEffect('poisonwisp', {
+			scene.showEffect('purplewisp', {
 				x: attacker.x,
 				y: attacker.y,
 				z: attacker.z,
@@ -16954,7 +16953,7 @@ export const BattleMoveAnims: AnimTable = {
 	},
 	toxic: {
 		anim(scene, [attacker, defender]) {
-			scene.showEffect('poisonwisp', {
+			scene.showEffect('purplewisp', {
 				x: attacker.x,
 				y: attacker.y,
 				z: attacker.z,
@@ -17020,7 +17019,7 @@ export const BattleMoveAnims: AnimTable = {
 	},
 	sludge: {
 		anim(scene, [attacker, defender]) {
-			scene.showEffect('poisonwisp', {
+			scene.showEffect('purplewisp', {
 				x: attacker.x,
 				y: attacker.y,
 				z: attacker.z,
@@ -17034,7 +17033,7 @@ export const BattleMoveAnims: AnimTable = {
 				opacity: 1,
 				time: 400,
 			}, 'ballistic', 'fade');
-			scene.showEffect('poisonwisp', {
+			scene.showEffect('purplewisp', {
 				x: attacker.x,
 				y: attacker.y,
 				z: attacker.z,
@@ -17049,7 +17048,7 @@ export const BattleMoveAnims: AnimTable = {
 				opacity: 1,
 				time: 500,
 			}, 'ballistic', 'fade');
-			scene.showEffect('poisonwisp', {
+			scene.showEffect('purplewisp', {
 				x: attacker.x,
 				y: attacker.y,
 				z: attacker.z,
@@ -17095,7 +17094,7 @@ export const BattleMoveAnims: AnimTable = {
 
 			const defender = defenders[1] || defenders[0];
 			scene.backgroundEffect('#AA00AA', 700, 0.2);
-			scene.showEffect('poisonwisp', {
+			scene.showEffect('purplewisp', {
 				x: attacker.x,
 				y: attacker.y - 25,
 				z: attacker.z,
@@ -17108,7 +17107,7 @@ export const BattleMoveAnims: AnimTable = {
 				scale: 2,
 				opacity: 0.6,
 			}, 'decel', 'explode');
-			scene.showEffect('poisonwisp', {
+			scene.showEffect('purplewisp', {
 				x: attacker.x - 30,
 				y: attacker.y - 25,
 				z: attacker.z,
@@ -17121,7 +17120,7 @@ export const BattleMoveAnims: AnimTable = {
 				scale: 2,
 				opacity: 0.6,
 			}, 'decel', 'explode');
-			scene.showEffect('poisonwisp', {
+			scene.showEffect('purplewisp', {
 				x: attacker.x + 30,
 				y: attacker.y - 25,
 				z: attacker.z,
@@ -17186,7 +17185,7 @@ export const BattleMoveAnims: AnimTable = {
 	},
 	sludgebomb: {
 		anim(scene, [attacker, defender]) {
-			scene.showEffect('poisonwisp', {
+			scene.showEffect('purplewisp', {
 				x: attacker.x,
 				y: attacker.y,
 				z: attacker.z,
@@ -17200,7 +17199,7 @@ export const BattleMoveAnims: AnimTable = {
 				opacity: 1,
 				time: 400,
 			}, 'ballistic', 'explode');
-			scene.showEffect('poisonwisp', {
+			scene.showEffect('purplewisp', {
 				x: attacker.x,
 				y: attacker.y,
 				z: attacker.z,
@@ -17215,7 +17214,7 @@ export const BattleMoveAnims: AnimTable = {
 				opacity: 1,
 				time: 500,
 			}, 'ballistic', 'explode');
-			scene.showEffect('poisonwisp', {
+			scene.showEffect('purplewisp', {
 				x: attacker.x,
 				y: attacker.y,
 				z: attacker.z,
@@ -18920,7 +18919,7 @@ export const BattleMoveAnims: AnimTable = {
 	},
 	spore: {
 		anim(scene, [attacker, defender]) {
-			scene.showEffect('poisonwisp', {
+			scene.showEffect('purplewisp', {
 				x: defender.x + 10,
 				y: defender.y + 90,
 				z: defender.z,
@@ -18931,7 +18930,7 @@ export const BattleMoveAnims: AnimTable = {
 				opacity: 1,
 				time: 500,
 			}, 'decel', 'fade');
-			scene.showEffect('poisonwisp', {
+			scene.showEffect('purplewisp', {
 				x: defender.x + 30,
 				y: defender.y + 90,
 				z: defender.z,
@@ -18943,7 +18942,7 @@ export const BattleMoveAnims: AnimTable = {
 				opacity: 1,
 				time: 650,
 			}, 'decel', 'fade');
-			scene.showEffect('poisonwisp', {
+			scene.showEffect('purplewisp', {
 				x: defender.x - 30,
 				y: defender.y + 90,
 				z: defender.z,
@@ -19200,7 +19199,7 @@ export const BattleMoveAnims: AnimTable = {
 	psystrike: {
 		anim(scene, [attacker, defender]) {
 			scene.backgroundEffect(`url('https://${Config.routes.client}/fx/weather-psychicterrain.png')`, 950, 0.6);
-			scene.showEffect('poisonwisp', {
+			scene.showEffect('purplewisp', {
 				x: defender.x - 100,
 				y: defender.y,
 				z: defender.z,
@@ -19213,7 +19212,7 @@ export const BattleMoveAnims: AnimTable = {
 				opacity: 1,
 				time: 250,
 			}, 'decel', 'fade');
-			scene.showEffect('poisonwisp', {
+			scene.showEffect('purplewisp', {
 				x: defender.x + 70,
 				y: defender.y - 70,
 				z: defender.z,
@@ -19227,7 +19226,7 @@ export const BattleMoveAnims: AnimTable = {
 				opacity: 1,
 				time: 350,
 			}, 'decel', 'fade');
-			scene.showEffect('poisonwisp', {
+			scene.showEffect('purplewisp', {
 				x: defender.x,
 				y: defender.y + 100,
 				z: defender.z,
@@ -19242,7 +19241,7 @@ export const BattleMoveAnims: AnimTable = {
 				time: 450,
 			}, 'decel', 'fade');
 
-			scene.showEffect('poisonwisp', {
+			scene.showEffect('purplewisp', {
 				x: defender.x,
 				y: defender.y,
 				z: defender.z,
@@ -19256,7 +19255,7 @@ export const BattleMoveAnims: AnimTable = {
 				opacity: 0,
 				time: 950,
 			}, 'linear', 'fade');
-			scene.showEffect('poisonwisp', {
+			scene.showEffect('purplewisp', {
 				x: defender.x,
 				y: defender.y,
 				z: defender.z,
@@ -19270,7 +19269,7 @@ export const BattleMoveAnims: AnimTable = {
 				opacity: 0,
 				time: 950,
 			}, 'linear', 'fade');
-			scene.showEffect('poisonwisp', {
+			scene.showEffect('purplewisp', {
 				x: defender.x,
 				y: defender.y,
 				z: defender.z,
@@ -19284,7 +19283,7 @@ export const BattleMoveAnims: AnimTable = {
 				opacity: 0,
 				time: 950,
 			}, 'linear', 'fade');
-			scene.showEffect('poisonwisp', {
+			scene.showEffect('purplewisp', {
 				x: defender.x,
 				y: defender.y,
 				z: defender.z,
@@ -19298,7 +19297,7 @@ export const BattleMoveAnims: AnimTable = {
 				opacity: 0,
 				time: 950,
 			}, 'linear', 'fade');
-			scene.showEffect('poisonwisp', {
+			scene.showEffect('purplewisp', {
 				x: defender.x,
 				y: defender.y,
 				z: defender.z,
@@ -19326,7 +19325,7 @@ export const BattleMoveAnims: AnimTable = {
 	shadowball: {
 		anim(scene, [attacker, defender]) {
 			scene.backgroundEffect('#000000', 1000, 0.1);
-			scene.showEffect('poisonwisp', {
+			scene.showEffect('purplewisp', {
 				x: attacker.x,
 				y: attacker.y + 100,
 				z: attacker.behind(-20),
@@ -19340,7 +19339,7 @@ export const BattleMoveAnims: AnimTable = {
 				opacity: 0.8,
 				time: 200,
 			}, 'decel', 'fade');
-			scene.showEffect('poisonwisp', {
+			scene.showEffect('purplewisp', {
 				x: attacker.x - 60,
 				y: attacker.y - 80,
 				z: attacker.behind(-20),
@@ -19354,7 +19353,7 @@ export const BattleMoveAnims: AnimTable = {
 				opacity: 0.8,
 				time: 300,
 			}, 'decel', 'fade');
-			scene.showEffect('poisonwisp', {
+			scene.showEffect('purplewisp', {
 				x: attacker.x + 60,
 				y: attacker.y - 80,
 				z: attacker.behind(-20),
@@ -19368,7 +19367,7 @@ export const BattleMoveAnims: AnimTable = {
 				opacity: 0.8,
 				time: 400,
 			}, 'decel', 'fade');
-			scene.showEffect('poisonwisp', {
+			scene.showEffect('purplewisp', {
 				x: attacker.x - 90,
 				y: attacker.y + 40,
 				z: attacker.behind(-20),
@@ -19382,7 +19381,7 @@ export const BattleMoveAnims: AnimTable = {
 				opacity: 0.8,
 				time: 500,
 			}, 'decel', 'fade');
-			scene.showEffect('poisonwisp', {
+			scene.showEffect('purplewisp', {
 				x: attacker.x + 90,
 				y: attacker.y + 40,
 				z: attacker.behind(-20),
@@ -19409,7 +19408,7 @@ export const BattleMoveAnims: AnimTable = {
 				opacity: 0.5,
 				time: 600,
 			}, 'decel', 'fade');
-			scene.showEffect('poisonwisp', {
+			scene.showEffect('purplewisp', {
 				x: attacker.x,
 				y: attacker.y,
 				z: attacker.behind(-20),
@@ -19434,7 +19433,7 @@ export const BattleMoveAnims: AnimTable = {
 				z: defender.z,
 				time: 900,
 			}, 'accel', 'explode');
-			scene.showEffect('poisonwisp', {
+			scene.showEffect('purplewisp', {
 				x: attacker.x,
 				y: attacker.y,
 				z: attacker.behind(-20),
@@ -19462,7 +19461,7 @@ export const BattleMoveAnims: AnimTable = {
 	hex: {
 		anim(scene, [attacker, defender]) {
 			scene.backgroundEffect('#000000', 700, 0.3);
-			scene.showEffect('poisonwisp', {
+			scene.showEffect('purplewisp', {
 				x: defender.x + 40,
 				y: defender.y,
 				z: defender.z,
@@ -19472,7 +19471,7 @@ export const BattleMoveAnims: AnimTable = {
 				scale: 3,
 				opacity: 0,
 			}, 'decel');
-			scene.showEffect('poisonwisp', {
+			scene.showEffect('purplewisp', {
 				x: defender.x - 40,
 				y: defender.y - 20,
 				z: defender.z,
@@ -19483,7 +19482,7 @@ export const BattleMoveAnims: AnimTable = {
 				scale: 3,
 				opacity: 0,
 			}, 'decel');
-			scene.showEffect('poisonwisp', {
+			scene.showEffect('purplewisp', {
 				x: defender.x + 10,
 				y: defender.y + 20,
 				z: defender.z,
@@ -19655,7 +19654,7 @@ export const BattleMoveAnims: AnimTable = {
 				time: 800,
 			}, 'linear');
 			for (let i = 0; i < 4; i++) {
-				scene.showEffect('poisonwisp', {
+				scene.showEffect('purplewisp', {
 					x: attacker.x,
 					y: attacker.y,
 					z: attacker.z,
@@ -19669,7 +19668,7 @@ export const BattleMoveAnims: AnimTable = {
 					opacity: 0.4,
 					time: 600,
 				}, 'accel', 'fade');
-				scene.showEffect('poisonwisp', {
+				scene.showEffect('purplewisp', {
 					x: attacker.x,
 					y: attacker.y,
 					z: attacker.z,
@@ -19754,7 +19753,7 @@ export const BattleMoveAnims: AnimTable = {
 						opacity: 0.4,
 						time: 600,
 					}, 'accel', 'fade');
-					scene.showEffect('poisonwisp', {
+					scene.showEffect('purplewisp', {
 						x: attacker.x,
 						y: attacker.y,
 						z: attacker.z,
@@ -21154,7 +21153,7 @@ export const BattleMoveAnims: AnimTable = {
 	},
 	psyshock: {
 		anim(scene, [attacker, defender]) {
-			scene.showEffect('poisonwisp', {
+			scene.showEffect('purplewisp', {
 				x: defender.x + 40,
 				y: defender.y,
 				z: defender.z,
@@ -21164,7 +21163,7 @@ export const BattleMoveAnims: AnimTable = {
 				scale: 3,
 				opacity: 0,
 			}, 'decel');
-			scene.showEffect('poisonwisp', {
+			scene.showEffect('purplewisp', {
 				x: defender.x - 40,
 				y: defender.y - 20,
 				z: defender.z,
@@ -21191,7 +21190,7 @@ export const BattleMoveAnims: AnimTable = {
 	barbbarrage: {
 		anim(scene, [attacker, defender]) {
 			for (let i = 0; i < 8; i++) {
-				scene.showEffect('poisonwisp', {
+				scene.showEffect('purplewisp', {
 					x: attacker.x,
 					y: attacker.y,
 					z: attacker.z,
@@ -21205,7 +21204,7 @@ export const BattleMoveAnims: AnimTable = {
 					opacity: 0,
 					time: 500,
 				}, 'decel');
-				scene.showEffect('poisonwisp', {
+				scene.showEffect('purplewisp', {
 					x: defender.x + (![0, 4].includes(i) ? (50 * (i > 4 ? -1 : 1)) : 0),
 					y: defender.y + (![2, 6].includes(i) ? (50 * (i > 2 && i < 6 ? -1 : 1)) : 0),
 					z: defender.z,
@@ -21224,7 +21223,7 @@ export const BattleMoveAnims: AnimTable = {
 	esperwing: {
 		anim(scene, [attacker, defender]) {
 			for (let i = 0; i < 8; i++) {
-				scene.showEffect(i % 2 === 0 ? 'poisonwisp' : 'mistball', {
+				scene.showEffect(i % 2 === 0 ? 'purplewisp' : 'mistball', {
 					x: attacker.x,
 					y: attacker.y,
 					z: attacker.z,
@@ -21252,7 +21251,7 @@ export const BattleMoveAnims: AnimTable = {
 					opacity: 0,
 					time: 500,
 				}, 'decel');
-				scene.showEffect(i % 2 === 0 ? 'poisonwisp' : 'mistball', {
+				scene.showEffect(i % 2 === 0 ? 'purplewisp' : 'mistball', {
 					x: attacker.x + (![0, 4].includes(i) ? (50 * (i > 4 ? -1 : 1)) : 0),
 					y: attacker.y + (![2, 6].includes(i) ? (50 * (i > 2 && i < 6 ? -1 : 1)) : 0),
 					z: attacker.z,
@@ -22739,7 +22738,7 @@ export const BattleMoveAnims: AnimTable = {
 						opacity: 0,
 						time: 40 * i + 600,
 					}, 'linear');
-					scene.showEffect('poisonwisp', {
+					scene.showEffect('purplewisp', {
 						x: attacker.x + xstep * (i + 1),
 						y: attacker.y + ystep * (i + 1),
 						z: attacker.z + zstep * (i + 1),
@@ -23983,7 +23982,7 @@ export const BattleMoveAnims: AnimTable = {
 			let ystep = (defender.x - 200 - attacker.x) / 5;
 			let zstep = (defender.z - attacker.z) / 5;
 
-			scene.backgroundEffect(`url('https://${Config.routes.client}/fx/weather-sandstorm.png')`, 900, 0.5);
+			scene.backgroundEffect(`url('https://${Config.routes.client}/fx/bg-space.jpg')`, 900, 0.6);
 
 			for (let i = 0; i < 5; i++) {
 				scene.showEffect('mudwisp', {
@@ -25814,7 +25813,7 @@ export const BattleMoveAnims: AnimTable = {
 				time: 800,
 			}, 'linear');
 
-			scene.showEffect('poisonwisp', {
+			scene.showEffect('purplewisp', {
 				x: defender.x + 40,
 				y: defender.y,
 				z: defender.z,
@@ -25838,7 +25837,7 @@ export const BattleMoveAnims: AnimTable = {
 				opacity: 0,
 				time: 1450,
 			}, 'decel');
-			scene.showEffect('poisonwisp', {
+			scene.showEffect('purplewisp', {
 				x: defender.x + 10,
 				y: defender.y + 20,
 				z: defender.z,
@@ -26245,7 +26244,7 @@ export const BattleMoveAnims: AnimTable = {
 	},
 	psychocut: {
 		anim(scene, [attacker, defender]) {
-			scene.showEffect('poisonwisp', {
+			scene.showEffect('purplewisp', {
 				x: defender.x + 60,
 				y: defender.y + 30,
 				z: defender.z,
@@ -26259,7 +26258,7 @@ export const BattleMoveAnims: AnimTable = {
 				opacity: 0.4,
 				time: 200,
 			}, 'linear', 'fade');
-			scene.showEffect('poisonwisp', {
+			scene.showEffect('purplewisp', {
 				x: defender.x + 60,
 				y: defender.y + 30,
 				z: defender.z,
@@ -26274,7 +26273,7 @@ export const BattleMoveAnims: AnimTable = {
 				opacity: 0.4,
 				time: 300,
 			}, 'linear', 'fade');
-			scene.showEffect('poisonwisp', {
+			scene.showEffect('purplewisp', {
 				x: defender.x + 80,
 				y: defender.y + 10,
 				z: defender.z,
@@ -27637,7 +27636,7 @@ export const BattleMoveAnims: AnimTable = {
 	},
 	gunkshot: {
 		anim(scene, [attacker, defender]) {
-			scene.showEffect('poisonwisp', {
+			scene.showEffect('purplewisp', {
 				x: attacker.x,
 				y: attacker.y,
 				z: attacker.z,
@@ -27651,7 +27650,7 @@ export const BattleMoveAnims: AnimTable = {
 				opacity: 0.3,
 				time: 200,
 			}, 'linear', 'explode');
-			scene.showEffect('poisonwisp', {
+			scene.showEffect('purplewisp', {
 				x: attacker.x,
 				y: attacker.y,
 				z: attacker.z,
@@ -27666,7 +27665,7 @@ export const BattleMoveAnims: AnimTable = {
 				opacity: 0.3,
 				time: 275,
 			}, 'linear', 'explode');
-			scene.showEffect('poisonwisp', {
+			scene.showEffect('purplewisp', {
 				x: attacker.x,
 				y: attacker.y,
 				z: attacker.z,
@@ -27681,7 +27680,7 @@ export const BattleMoveAnims: AnimTable = {
 				opacity: 0.3,
 				time: 350,
 			}, 'linear', 'explode');
-			scene.showEffect('poisonwisp', {
+			scene.showEffect('purplewisp', {
 				x: attacker.x,
 				y: attacker.y,
 				z: attacker.z,
@@ -27696,7 +27695,7 @@ export const BattleMoveAnims: AnimTable = {
 				opacity: 0.3,
 				time: 425,
 			}, 'linear', 'explode');
-			scene.showEffect('poisonwisp', {
+			scene.showEffect('purplewisp', {
 				x: attacker.x,
 				y: attacker.y,
 				z: attacker.z,
@@ -27711,7 +27710,7 @@ export const BattleMoveAnims: AnimTable = {
 				opacity: 0.3,
 				time: 500,
 			}, 'linear', 'explode');
-			scene.showEffect('poisonwisp', {
+			scene.showEffect('purplewisp', {
 				x: attacker.x,
 				y: attacker.y,
 				z: attacker.z,
@@ -27967,7 +27966,7 @@ export const BattleMoveAnims: AnimTable = {
 	},
 	poisonjab: {
 		anim(scene, [attacker, defender]) {
-			scene.showEffect('poisonwisp', {
+			scene.showEffect('purplewisp', {
 				x: defender.x,
 				y: defender.y,
 				z: defender.z,
@@ -27982,7 +27981,7 @@ export const BattleMoveAnims: AnimTable = {
 				opacity: 0,
 				time: 700,
 			}, 'linear');
-			scene.showEffect('poisonwisp', {
+			scene.showEffect('purplewisp', {
 				x: defender.x,
 				y: defender.y,
 				z: defender.z,
@@ -27997,7 +27996,7 @@ export const BattleMoveAnims: AnimTable = {
 				opacity: 0,
 				time: 800,
 			}, 'linear');
-			scene.showEffect('poisonwisp', {
+			scene.showEffect('purplewisp', {
 				x: defender.x,
 				y: defender.y,
 				z: defender.z,
@@ -28079,7 +28078,7 @@ export const BattleMoveAnims: AnimTable = {
 				scale: 1.25,
 				time: 600,
 			}, 'accel', 'explode');
-			scene.showEffect('poisonwisp', {
+			scene.showEffect('purplewisp', {
 				x: attacker.x,
 				y: attacker.y,
 				z: attacker.z,
@@ -28091,7 +28090,7 @@ export const BattleMoveAnims: AnimTable = {
 				opacity: 0.5,
 				time: 400,
 			}, 'decel', 'fade');
-			scene.showEffect('poisonwisp', {
+			scene.showEffect('purplewisp', {
 				x: attacker.x,
 				y: attacker.y,
 				z: attacker.z,
@@ -28377,7 +28376,7 @@ export const BattleMoveAnims: AnimTable = {
 	spite: {
 		anim(scene, [attacker, defender]) {
 			scene.backgroundEffect('#000000', 1300, 0.3);
-			scene.showEffect('poisonwisp', {
+			scene.showEffect('purplewisp', {
 				x: attacker.x,
 				y: attacker.y,
 				z: attacker.z,
@@ -28828,7 +28827,7 @@ export const BattleMoveAnims: AnimTable = {
 					opacity: 0,
 					time: 40 * i + 600,
 				}, 'linear');
-				scene.showEffect('poisonwisp', {
+				scene.showEffect('purplewisp', {
 					x: attacker.x + xstep * (i + 1),
 					y: attacker.y + ystep * (i + 1),
 					z: attacker.z + zstep * (i + 1),
@@ -29142,7 +29141,7 @@ export const BattleMoveAnims: AnimTable = {
 	},
 	powertrip: {
 		anim(scene, [attacker, defender]) {
-			scene.showEffect('poisonwisp', {
+			scene.showEffect('purplewisp', {
 				x: attacker.x + 30,
 				y: attacker.y,
 				z: attacker.z,
@@ -29154,7 +29153,7 @@ export const BattleMoveAnims: AnimTable = {
 				opacity: 0.2,
 				time: 500,
 			}, 'linear', 'fade');
-			scene.showEffect('poisonwisp', {
+			scene.showEffect('purplewisp', {
 				x: attacker.x - 30,
 				y: attacker.y,
 				z: attacker.z,
@@ -29166,7 +29165,7 @@ export const BattleMoveAnims: AnimTable = {
 				opacity: 0.2,
 				time: 600,
 			}, 'linear', 'fade');
-			scene.showEffect('poisonwisp', {
+			scene.showEffect('purplewisp', {
 				x: attacker.x + 15,
 				y: attacker.y,
 				z: attacker.z,
@@ -29178,7 +29177,7 @@ export const BattleMoveAnims: AnimTable = {
 				opacity: 0.2,
 				time: 700,
 			}, 'linear', 'fade');
-			scene.showEffect('poisonwisp', {
+			scene.showEffect('purplewisp', {
 				x: attacker.x - 15,
 				y: attacker.y,
 				z: attacker.z,
@@ -29707,7 +29706,7 @@ export const BattleMoveAnims: AnimTable = {
 				opacity: 0.1,
 				time: 400,
 			}, 'decel', 'fade');
-			scene.showEffect('poisonwisp', {
+			scene.showEffect('purplewisp', {
 				x: attacker.x,
 				y: attacker.y - 25,
 				z: attacker.z,
@@ -29719,7 +29718,7 @@ export const BattleMoveAnims: AnimTable = {
 				opacity: 0.5,
 				time: 500,
 			}, 'linear', 'fade');
-			scene.showEffect('poisonwisp', {
+			scene.showEffect('purplewisp', {
 				x: attacker.x,
 				y: attacker.y - 25,
 				z: attacker.z,
@@ -29732,7 +29731,7 @@ export const BattleMoveAnims: AnimTable = {
 				time: 500,
 			}, 'linear', 'fade');
 
-			scene.showEffect('poisonwisp', {
+			scene.showEffect('purplewisp', {
 				x: attacker.x - 50,
 				y: attacker.y - 40,
 				z: attacker.z,
@@ -29745,7 +29744,7 @@ export const BattleMoveAnims: AnimTable = {
 				z: defender.z,
 				time: 900,
 			}, 'decel', 'fade');
-			scene.showEffect('poisonwisp', {
+			scene.showEffect('purplewisp', {
 				x: attacker.x - 50,
 				y: attacker.y - 40,
 				z: attacker.z,
@@ -29758,7 +29757,7 @@ export const BattleMoveAnims: AnimTable = {
 				z: defender.z,
 				time: 900,
 			}, 'decel', 'fade');
-			scene.showEffect('poisonwisp', {
+			scene.showEffect('purplewisp', {
 				x: attacker.x,
 				y: attacker.y - 40,
 				z: attacker.z,
@@ -29787,7 +29786,7 @@ export const BattleMoveAnims: AnimTable = {
 				opacity: 0.1,
 				time: 1200,
 			}, 'decel', 'fade');
-			scene.showEffect('poisonwisp', {
+			scene.showEffect('purplewisp', {
 				x: defender.x,
 				y: defender.y - 25,
 				z: defender.z,
@@ -29800,7 +29799,7 @@ export const BattleMoveAnims: AnimTable = {
 				scale: 3,
 				time: 1200,
 			}, 'linear', 'explode');
-			scene.showEffect('poisonwisp', {
+			scene.showEffect('purplewisp', {
 				x: defender.x,
 				y: defender.y - 25,
 				z: defender.z,
@@ -29936,7 +29935,7 @@ export const BattleMoveAnims: AnimTable = {
 				time: 1300,
 			}, 'linear');
 
-			scene.showEffect('poisonwisp', {
+			scene.showEffect('purplewisp', {
 				x: attacker.x,
 				y: attacker.y - 30,
 				z: attacker.z,
@@ -29948,7 +29947,7 @@ export const BattleMoveAnims: AnimTable = {
 				opacity: 0,
 				time: 2200,
 			}, 'linear', 'fade');
-			scene.showEffect('poisonwisp', {
+			scene.showEffect('purplewisp', {
 				x: attacker.x,
 				y: attacker.y - 30,
 				z: attacker.z,
@@ -32508,7 +32507,7 @@ export const BattleMoveAnims: AnimTable = {
 				scale: 6,
 				opacity: 0,
 			}, 'linear');
-			scene.showEffect('poisonwisp', {
+			scene.showEffect('purplewisp', {
 				x: attacker.x,
 				y: attacker.y,
 				z: attacker.z,
@@ -32520,7 +32519,7 @@ export const BattleMoveAnims: AnimTable = {
 				time: 600,
 			}, 'decel', 'fade');
 
-			scene.showEffect('poisonwisp', {
+			scene.showEffect('purplewisp', {
 				x: attacker.x,
 				y: attacker.y - 25,
 				z: attacker.z,
@@ -32533,7 +32532,7 @@ export const BattleMoveAnims: AnimTable = {
 				xscale: 4,
 				opacity: 0.6,
 			}, 'decel', 'fade');
-			scene.showEffect('poisonwisp', {
+			scene.showEffect('purplewisp', {
 				x: attacker.x - 30,
 				y: attacker.y - 25,
 				z: attacker.z,
@@ -32546,7 +32545,7 @@ export const BattleMoveAnims: AnimTable = {
 				xscale: 4,
 				opacity: 0.6,
 			}, 'decel', 'fade');
-			scene.showEffect('poisonwisp', {
+			scene.showEffect('purplewisp', {
 				x: attacker.x + 30,
 				y: attacker.y - 25,
 				z: attacker.z,
@@ -32762,7 +32761,7 @@ export const BattleMoveAnims: AnimTable = {
 				time: 1425,
 			}, 'linear');
 
-			scene.showEffect('poisonwisp', {
+			scene.showEffect('purplewisp', {
 				x: defender.x,
 				y: defender.y - 25,
 				z: defender.z,
@@ -32776,7 +32775,7 @@ export const BattleMoveAnims: AnimTable = {
 				xscale: 5,
 				time: 1800,
 			}, 'linear', 'fade');
-			scene.showEffect('poisonwisp', {
+			scene.showEffect('purplewisp', {
 				x: defender.x,
 				y: defender.y - 25,
 				z: defender.z,
@@ -32843,7 +32842,7 @@ export const BattleMoveAnims: AnimTable = {
 				opacity: 0.5,
 				time: 900,
 			}, 'decel', 'fade');
-			scene.showEffect('poisonwisp', {
+			scene.showEffect('purplewisp', {
 				x: attacker.x,
 				y: attacker.y,
 				z: attacker.z,
@@ -32871,7 +32870,7 @@ export const BattleMoveAnims: AnimTable = {
 				scale: 2,
 				time: 1500,
 			}, 'accel', 'explode');
-			scene.showEffect('poisonwisp', {
+			scene.showEffect('purplewisp', {
 				x: attacker.x,
 				y: attacker.y,
 				z: attacker.z,
@@ -32896,7 +32895,7 @@ export const BattleMoveAnims: AnimTable = {
 				scale: 2,
 				time: 2200,
 			}, 'linear', 'fade');
-			scene.showEffect('poisonwisp', {
+			scene.showEffect('purplewisp', {
 				x: defender.x,
 				y: defender.y + 80,
 				z: defender.z,
@@ -32932,7 +32931,7 @@ export const BattleMoveAnims: AnimTable = {
 				opacity: 0,
 				time: 2200,
 			}, 'linear');
-			scene.showEffect('poisonwisp', {
+			scene.showEffect('purplewisp', {
 				x: defender.x,
 				y: defender.y + 80,
 				z: defender.z,
@@ -33130,7 +33129,7 @@ export const BattleMoveAnims: AnimTable = {
 			let zstep = defender.z / 5;
 
 			for (let i = 0; i < 5; i++) {
-				scene.showEffect('poisonwisp', {
+				scene.showEffect('purplewisp', {
 					x: defender.x - 200 + xstep * (i + 1),
 					y: (defender.y + 200) + ystep * (i + 1),
 					z: defender.z + zstep * (i + 1),
@@ -33144,7 +33143,7 @@ export const BattleMoveAnims: AnimTable = {
 			}
 			xstep = (defender.x + 150 - defender.x) / 5;
 			for (let i = 0; i < 5; i++) {
-				scene.showEffect('poisonwisp', {
+				scene.showEffect('purplewisp', {
 					x: defender.x - 150 + xstep * (i + 1),
 					y: (defender.y + 200) + ystep * (i + 1),
 					z: defender.z + zstep * (i + 1),
@@ -33158,7 +33157,7 @@ export const BattleMoveAnims: AnimTable = {
 			}
 			xstep = (defender.x + 100 - defender.x) / 5;
 			for (let i = 0; i < 5; i++) {
-				scene.showEffect('poisonwisp', {
+				scene.showEffect('purplewisp', {
 					x: defender.x - 100 + xstep * (i + 1),
 					y: (defender.y + 200) + ystep * (i + 1),
 					z: defender.z + zstep * (i + 1),
@@ -33172,7 +33171,7 @@ export const BattleMoveAnims: AnimTable = {
 			}
 			xstep = (defender.x + 50 - defender.x) / 5;
 			for (let i = 0; i < 5; i++) {
-				scene.showEffect('poisonwisp', {
+				scene.showEffect('purplewisp', {
 					x: defender.x - 50 + xstep * (i + 1),
 					y: (defender.y + 200) + ystep * (i + 1),
 					z: defender.z + zstep * (i + 1),
@@ -33186,7 +33185,7 @@ export const BattleMoveAnims: AnimTable = {
 			}
 			xstep = (defender.x - 50 - defender.x) / 5;
 			for (let i = 0; i < 5; i++) {
-				scene.showEffect('poisonwisp', {
+				scene.showEffect('purplewisp', {
 					x: defender.x + 50 + xstep * (i + 1),
 					y: (defender.y + 200) + ystep * (i + 1),
 					z: defender.z + zstep * (i + 1),
@@ -33200,7 +33199,7 @@ export const BattleMoveAnims: AnimTable = {
 			}
 			xstep = (defender.x - 100 - defender.x) / 5;
 			for (let i = 0; i < 5; i++) {
-				scene.showEffect('poisonwisp', {
+				scene.showEffect('purplewisp', {
 					x: defender.x + 100 + xstep * (i + 1),
 					y: (defender.y + 200) + ystep * (i + 1),
 					z: defender.z + zstep * (i + 1),
@@ -33214,7 +33213,7 @@ export const BattleMoveAnims: AnimTable = {
 			}
 			xstep = (defender.x - 150 - defender.x) / 5;
 			for (let i = 0; i < 5; i++) {
-				scene.showEffect('poisonwisp', {
+				scene.showEffect('purplewisp', {
 					x: defender.x + 150 + xstep * (i + 1),
 					y: (defender.y + 200) + ystep * (i + 1),
 					z: defender.z + zstep * (i + 1),
@@ -33228,7 +33227,7 @@ export const BattleMoveAnims: AnimTable = {
 			}
 			xstep = (defender.x - 200 - defender.x) / 5;
 			for (let i = 0; i < 5; i++) {
-				scene.showEffect('poisonwisp', {
+				scene.showEffect('purplewisp', {
 					x: defender.x + 200 + xstep * (i + 1),
 					y: (defender.y + 200) + ystep * (i + 1),
 					z: defender.z + zstep * (i + 1),
@@ -33266,7 +33265,7 @@ export const BattleMoveAnims: AnimTable = {
 				opacity: 0,
 				time: 1500,
 			}, 'linear', 'fade');
-			scene.showEffect('poisonwisp', {
+			scene.showEffect('purplewisp', {
 				x: defender.x,
 				y: defender.y,
 				z: defender.z,
@@ -34534,7 +34533,7 @@ export const BattleMoveAnims: AnimTable = {
 			}
 			xstep = (attacker.x - 50 - attacker.x) / 5;
 			for (let i = 0; i < 5; i++) {
-				scene.showEffect('poisonwisp', {
+				scene.showEffect('purplewisp', {
 					x: attacker.x + 50 + xstep * (i + 1),
 					y: (attacker.y + 200) + ystep * (i + 1),
 					z: attacker.z + zstep * (i + 1),
@@ -36010,7 +36009,7 @@ export const BattleMoveAnims: AnimTable = {
 				opacity: 0,
 				time: 3900,
 			}, 'decel');
-			scene.showEffect('poisonwisp', {
+			scene.showEffect('purplewisp', {
 				x: defender.x,
 				y: defender.y + 350,
 				z: defender.z,
@@ -36023,7 +36022,7 @@ export const BattleMoveAnims: AnimTable = {
 				xscale: 0,
 				time: 4200,
 			}, 'accel', 'fade');
-			scene.showEffect('poisonwisp', {
+			scene.showEffect('purplewisp', {
 				x: defender.x,
 				y: defender.y - 30,
 				z: defender.z,
@@ -36427,7 +36426,7 @@ export const BattleMoveAnims: AnimTable = {
 				opacity: 0.1,
 				time: 750,
 			}, 'linear');
-			scene.showEffect('poisonwisp', {
+			scene.showEffect('purplewisp', {
 				x: defender.x - 20,
 				y: defender.y + 20,
 				z: defender.z,
@@ -36438,7 +36437,7 @@ export const BattleMoveAnims: AnimTable = {
 				scale: 2,
 				opacity: 0,
 			}, 'decel');
-			scene.showEffect('poisonwisp', {
+			scene.showEffect('purplewisp', {
 				x: defender.x + 20,
 				y: defender.y + 20,
 				z: defender.z,
@@ -37259,7 +37258,7 @@ export const BattleMoveAnims: AnimTable = {
 			let y2 = [1, 1, -1, -1];
 
 			for (let i = 0; i < 4; i++) {
-				scene.showEffect('poisonwisp', {
+				scene.showEffect('purplewisp', {
 					x: defender.x,
 					y: defender.y,
 					z: defender.z,
@@ -37432,7 +37431,7 @@ export const BattleMoveAnims: AnimTable = {
 					opacity: 0,
 					time: 400 + 200 * i,
 				}, 'linear');
-				scene.showEffect('poisonwisp', {
+				scene.showEffect('purplewisp', {
 					x: attacker.x,
 					y: attacker.y,
 					z: attacker.z,
@@ -37609,6 +37608,936 @@ export const BattleMoveAnims: AnimTable = {
 			}, 'decel', 'fade');
 		},
 	},
+	blazingtorque: {
+		anim(scene, [attacker, defender]) {
+			// rev up once in place, then flash twice more on the way there, and finally explode on contact
+			const size = [2, 3];
+			const opct = [0.3, 0.6];
+			const tick = 120;
+			const stepX = (defender.x - attacker.x) / 10;
+			const stepY = (defender.y - attacker.y) / 10;
+			const stepZ = (defender.z - attacker.z) / 10;
+			const tallerBy = 35;
+			const projectileSprite = 'fireball';
+			const projectileSpeed = 10;
+			// mimic attacker's acceleration; 1 + 2 + 3 + 4 = 10
+			const steps = [0, 0, 0, 1, 3, 6, 10, 12.5];
+			let ball: JQuery, wisp: JQuery;
+			for (let i = 0; i < 7; i++) {
+				let offset1 = steps[i];
+				let offset2 = steps[i + 1];
+
+				const ballArgs: Parameters<typeof scene['showEffect']> = ['flareball', {
+					x: attacker.x + offset1 * stepX,
+					y: attacker.y + offset1 * stepY + tallerBy,
+					z: attacker.z + offset1 * stepZ,
+					scale: size[i % 2],
+					opacity: opct[i % 2],
+					time: 0,
+				}, {
+					x: attacker.x + offset2 * stepX,
+					y: attacker.y + offset2 * stepY + tallerBy,
+					z: attacker.z + offset2 * stepZ,
+					scale: size[(i + 1) % 2],
+					opacity: opct[(i + 1) % 2],
+					time: tick,
+				}, 'swing', i === 6 ? 'explode' : 'gone', { filter: 'hue-rotate(-12deg)' }];
+				ball = ball! ? scene.animateEffect(ball, ...ballArgs) : scene.showEffect(...ballArgs);
+
+				const wispArgs: Parameters<typeof scene['showEffect']> = ['wisp', {
+					x: attacker.x + offset1 * stepX,
+					y: attacker.y + offset1 * stepY + tallerBy,
+					z: attacker.z + offset1 * stepZ,
+					scale: size[i % 2],
+					opacity: opct[(i + 1) % 2],
+					time: 0,
+				}, {
+					x: attacker.x + offset2 * stepX,
+					y: attacker.y + offset2 * stepY + tallerBy,
+					z: attacker.z + offset2 * stepZ,
+					scale: size[(i + 1) % 2],
+					opacity: opct[i % 2],
+					time: tick,
+				}, 'swing', i === 6 ? 'explode' : 'gone'];
+				wisp = wisp! ? scene.animateEffect(wisp, ...wispArgs) : scene.showEffect(...wispArgs);
+
+				scene.showEffect(projectileSprite, {
+					x: attacker.x + offset1 * stepX + projectileSpeed * ((i % 2) ? 2 : -2),
+					y: attacker.y + offset1 * stepY,
+					z: attacker.z + offset1 * stepZ,
+					opacity: 0.5,
+					time: i * tick,
+				}, {
+					x: attacker.x + offset1 * stepX + projectileSpeed * ((i % 2) ? 3 : -3),
+					y: attacker.y + offset1 * stepY - projectileSpeed,
+					z: attacker.behind(projectileSpeed) + offset1 * stepZ,
+					time: (i + 1) * tick,
+				}, 'ballistic', 'fade');
+				scene.showEffect(projectileSprite, {
+					x: attacker.x + offset1 * stepX + projectileSpeed * (((i + 1) % 2) ? 2 : -2),
+					y: attacker.y + offset1 * stepY,
+					z: attacker.z + offset1 * stepZ,
+					opacity: 0.5,
+					time: i * tick,
+				}, {
+					x: attacker.x + offset1 * stepX + projectileSpeed * (((i + 1) % 2) ? 3 : -3),
+					y: attacker.y + offset1 * stepY - projectileSpeed,
+					z: attacker.behind(projectileSpeed) + offset1 * stepZ,
+					time: (i + 1) * tick,
+				}, 'ballistic', 'fade');
+			}
+
+			// attacker movement
+			attacker.delay(tick * 2);
+			attacker.anim({
+				x: attacker.x + stepX * 4,
+				y: attacker.y + stepY * 4,
+				z: attacker.z + stepZ * 4,
+				time: tick * 7 / 3,
+			}, 'accel');
+			attacker.anim({
+				time: tick * 7 / 3 + 100,
+			}, 'ballistic2Back');
+			defender.delay(tick * 6 - 20);
+			defender.anim({
+				z: defender.behind(20),
+				time: 100,
+			}, 'swing');
+			defender.anim({
+				time: 300,
+			}, 'swing');
+		},
+	},
+	combattorque: {
+		anim(scene, [attacker, defender]) {
+			// rev up once in place, then flash twice more on the way there, and finally explode on contact
+			const size = [2, 3];
+			const opct = [0.3, 0.6];
+			const tick = 120;
+			const stepX = (defender.x - attacker.x) / 10;
+			const stepY = (defender.y - attacker.y) / 10;
+			const stepZ = (defender.z - attacker.z) / 10;
+			const tallerBy = 35;
+			const projectileSprite = 'fireball';
+			const projectileSpeed = 10;
+			// mimic attacker's acceleration; 1 + 2 + 3 + 4 = 10
+			const steps = [0, 0, 0, 1, 3, 6, 10, 12.5];
+			let ball: JQuery, wisp: JQuery;
+			for (let i = 0; i < 7; i++) {
+				let offset1 = steps[i];
+				let offset2 = steps[i + 1];
+
+				const ballArgs: Parameters<typeof scene['showEffect']> = ['flareball', {
+					x: attacker.x + offset1 * stepX,
+					y: attacker.y + offset1 * stepY + tallerBy,
+					z: attacker.z + offset1 * stepZ,
+					scale: size[i % 2],
+					opacity: opct[i % 2],
+					time: 0,
+				}, {
+					x: attacker.x + offset2 * stepX,
+					y: attacker.y + offset2 * stepY + tallerBy,
+					z: attacker.z + offset2 * stepZ,
+					scale: size[(i + 1) % 2],
+					opacity: opct[(i + 1) % 2],
+					time: tick,
+				}, 'swing', i === 6 ? 'explode' : 'gone', { filter: 'brightness(1.5)' }];
+				ball = ball! ? scene.animateEffect(ball, ...ballArgs) : scene.showEffect(...ballArgs);
+
+				const wispArgs: Parameters<typeof scene['showEffect']> = ['waterwisp', {
+					x: attacker.x + offset1 * stepX,
+					y: attacker.y + offset1 * stepY + tallerBy,
+					z: attacker.z + offset1 * stepZ,
+					scale: size[i % 2],
+					opacity: opct[(i + 1) % 2] * 0.75,
+					time: 0,
+				}, {
+					x: attacker.x + offset2 * stepX,
+					y: attacker.y + offset2 * stepY + tallerBy,
+					z: attacker.z + offset2 * stepZ,
+					scale: size[(i + 1) % 2],
+					opacity: opct[i % 2] * 0.75,
+					time: tick,
+				}, 'swing', i === 6 ? 'explode' : 'gone'];
+				wisp = wisp! ? scene.animateEffect(wisp, ...wispArgs) : scene.showEffect(...wispArgs);
+
+				scene.showEffect(projectileSprite, {
+					x: attacker.x + offset1 * stepX + projectileSpeed * ((i % 2) ? 2 : -2),
+					y: attacker.y + offset1 * stepY,
+					z: attacker.z + offset1 * stepZ,
+					opacity: 0.5,
+					time: i * tick,
+				}, {
+					x: attacker.x + offset1 * stepX + projectileSpeed * ((i % 2) ? 3 : -3),
+					y: attacker.y + offset1 * stepY - projectileSpeed,
+					z: attacker.behind(projectileSpeed) + offset1 * stepZ,
+					time: (i + 1) * tick,
+				}, 'ballistic', 'fade', { filter: 'brightness(1.5) hue-rotate(15deg)' });
+				scene.showEffect(projectileSprite, {
+					x: attacker.x + offset1 * stepX + projectileSpeed * (((i + 1) % 2) ? 2 : -2),
+					y: attacker.y + offset1 * stepY,
+					z: attacker.z + offset1 * stepZ,
+					opacity: 0.5,
+					time: i * tick,
+				}, {
+					x: attacker.x + offset1 * stepX + projectileSpeed * (((i + 1) % 2) ? 3 : -3),
+					y: attacker.y + offset1 * stepY - projectileSpeed,
+					z: attacker.behind(projectileSpeed) + offset1 * stepZ,
+					time: (i + 1) * tick,
+				}, 'ballistic', 'fade', { filter: 'brightness(1.5) hue-rotate(15deg)' });
+			}
+
+			// attacker movement
+			attacker.delay(tick * 2);
+			attacker.anim({
+				x: attacker.x + stepX * 4,
+				y: attacker.y + stepY * 4,
+				z: attacker.z + stepZ * 4,
+				time: tick * 7 / 3,
+			}, 'accel');
+			attacker.anim({
+				time: tick * 7 / 3 + 100,
+			}, 'ballistic2Back');
+			defender.delay(tick * 6 - 20);
+			defender.anim({
+				z: defender.behind(20),
+				time: 100,
+			}, 'swing');
+			defender.anim({
+				time: 300,
+			}, 'swing');
+		},
+	},
+	magicaltorque: {
+		anim(scene, [attacker, defender]) {
+			// rev up once in place, then flash twice more on the way there, and finally explode on contact
+			const size = [2, 3];
+			const opct = [0.3, 0.6];
+			const tick = 120;
+			const stepX = (defender.x - attacker.x) / 10;
+			const stepY = (defender.y - attacker.y) / 10;
+			const stepZ = (defender.z - attacker.z) / 10;
+			const tallerBy = 35;
+			const projectileSprite = 'shine';
+			const projectileSpeed = 10;
+			// mimic attacker's acceleration; 1 + 2 + 3 + 4 = 10
+			const steps = [0, 0, 0, 1, 3, 6, 10, 12.5];
+			let ball: JQuery, wisp: JQuery;
+			for (let i = 0; i < 7; i++) {
+				let offset1 = steps[i];
+				let offset2 = steps[i + 1];
+
+				const ballArgs: Parameters<typeof scene['showEffect']> = [i < 6 ? 'iceball' : 'mistball', {
+					x: attacker.x + offset1 * stepX,
+					y: attacker.y + offset1 * stepY + tallerBy,
+					z: attacker.z + offset1 * stepZ,
+					scale: size[i % 2],
+					opacity: opct[i % 2],
+					time: 0,
+				}, {
+					x: attacker.x + offset2 * stepX,
+					y: attacker.y + offset2 * stepY + tallerBy,
+					z: attacker.z + offset2 * stepZ,
+					scale: size[(i + 1) % 2],
+					opacity: opct[(i + 1) % 2],
+					time: tick,
+				}, 'swing', ...(i === 6 ? ['explode'] : ['gone', { filter: 'saturate(300%)' }]) as [string, JQuery.PlainObject]];
+				ball = ball! ? scene.animateEffect(ball, ...ballArgs) : scene.showEffect(...ballArgs);
+
+				const wispArgs: Parameters<typeof scene['showEffect']> = ['wisp', {
+					x: attacker.x + offset1 * stepX,
+					y: attacker.y + offset1 * stepY + tallerBy,
+					z: attacker.z + offset1 * stepZ,
+					scale: size[i % 2],
+					opacity: opct[(i + 1) % 2],
+					time: 0,
+				}, {
+					x: attacker.x + offset2 * stepX,
+					y: attacker.y + offset2 * stepY + tallerBy,
+					z: attacker.z + offset2 * stepZ,
+					scale: size[(i + 1) % 2],
+					opacity: opct[i % 2],
+					time: tick,
+				}, 'swing', i === 6 ? 'explode' : 'gone'];
+				wisp = wisp! ? scene.animateEffect(wisp, ...wispArgs) : scene.showEffect(...wispArgs);
+
+				scene.showEffect(projectileSprite, {
+					x: attacker.x + offset1 * stepX + projectileSpeed * ((i % 2) ? 2 : -2),
+					y: attacker.y + offset1 * stepY,
+					z: attacker.z + offset1 * stepZ,
+					scale: 0.5,
+					opacity: 0.5,
+					time: i * tick,
+				}, {
+					x: attacker.x + offset1 * stepX + projectileSpeed * ((i % 2) ? 3 : -3),
+					y: attacker.y + offset1 * stepY - projectileSpeed,
+					z: attacker.behind(projectileSpeed) + offset1 * stepZ,
+					time: (i + 1) * tick,
+				}, 'ballistic', 'fade', { filter: 'hue-rotate(90deg) saturate(300%)' });
+				scene.showEffect(projectileSprite, {
+					x: attacker.x + offset1 * stepX + projectileSpeed * (((i + 1) % 2) ? 2 : -2),
+					y: attacker.y + offset1 * stepY,
+					z: attacker.z + offset1 * stepZ,
+					scale: 0.5,
+					opacity: 0.5,
+					time: i * tick,
+				}, {
+					x: attacker.x + offset1 * stepX + projectileSpeed * (((i + 1) % 2) ? 3 : -3),
+					y: attacker.y + offset1 * stepY - projectileSpeed,
+					z: attacker.behind(projectileSpeed) + offset1 * stepZ,
+					time: (i + 1) * tick,
+				}, 'ballistic', 'fade', { filter: 'hue-rotate(90deg) saturate(300%)' });
+			}
+
+			// attacker movement
+			attacker.delay(tick * 2);
+			attacker.anim({
+				x: attacker.x + stepX * 4,
+				y: attacker.y + stepY * 4,
+				z: attacker.z + stepZ * 4,
+				time: tick * 7 / 3,
+			}, 'accel');
+			attacker.anim({
+				time: tick * 7 / 3 + 100,
+			}, 'ballistic2Back');
+			defender.delay(tick * 6 - 20);
+			defender.anim({
+				z: defender.behind(20),
+				time: 100,
+			}, 'swing');
+			defender.anim({
+				time: 300,
+			}, 'swing');
+		},
+	},
+	noxioustorque: {
+		anim(scene, [attacker, defender]) {
+			// rev up once in place, then flash twice more on the way there, and finally explode on contact
+			const size = [2, 3];
+			const opct = [0.3, 0.6];
+			const tick = 120;
+			const stepX = (defender.x - attacker.x) / 10;
+			const stepY = (defender.y - attacker.y) / 10;
+			const stepZ = (defender.z - attacker.z) / 10;
+			const tallerBy = 35;
+			const projectileSprite = 'bluefireball';
+			const projectileSpeed = 10;
+			// mimic attacker's acceleration; 1 + 2 + 3 + 4 = 10
+			const steps = [0, 0, 0, 1, 3, 6, 10, 12.5];
+			let ball: JQuery, wisp: JQuery;
+			for (let i = 0; i < 7; i++) {
+				let offset1 = steps[i];
+				let offset2 = steps[i + 1];
+
+				const ballArgs: Parameters<typeof scene['showEffect']> = ['mistball', {
+					x: attacker.x + offset1 * stepX,
+					y: attacker.y + offset1 * stepY + tallerBy,
+					z: attacker.z + offset1 * stepZ,
+					scale: size[i % 2],
+					opacity: opct[i % 2],
+					time: 0,
+				}, {
+					x: attacker.x + offset2 * stepX,
+					y: attacker.y + offset2 * stepY + tallerBy,
+					z: attacker.z + offset2 * stepZ,
+					scale: size[(i + 1) % 2],
+					opacity: opct[(i + 1) % 2],
+					time: tick,
+				}, 'swing', i === 6 ? 'explode' : ''];
+				ball = ball! ? scene.animateEffect(ball, ...ballArgs) : scene.showEffect(...ballArgs);
+
+				const wispArgs: Parameters<typeof scene['showEffect']> = ['waterwisp', {
+					x: attacker.x + offset1 * stepX,
+					y: attacker.y + offset1 * stepY + tallerBy,
+					z: attacker.z + offset1 * stepZ,
+					scale: size[i % 2],
+					opacity: opct[(i + 1) % 2],
+					time: 0,
+				}, {
+					x: attacker.x + offset2 * stepX,
+					y: attacker.y + offset2 * stepY + tallerBy,
+					z: attacker.z + offset2 * stepZ,
+					scale: size[(i + 1) % 2],
+					opacity: opct[i % 2],
+					time: tick,
+				}, 'swing', i === 6 ? 'explode' : '', { filter: 'brightness(1.5)' }];
+				wisp = wisp! ? scene.animateEffect(wisp, ...wispArgs) : scene.showEffect(...wispArgs);
+
+				scene.showEffect(projectileSprite, {
+					x: attacker.x + offset1 * stepX + projectileSpeed * ((i % 2) ? 2 : -2),
+					y: attacker.y + offset1 * stepY,
+					z: attacker.z + offset1 * stepZ,
+					opacity: 0.5,
+					time: i * tick,
+				}, {
+					x: attacker.x + offset1 * stepX + projectileSpeed * ((i % 2) ? 3 : -3),
+					y: attacker.y + offset1 * stepY - projectileSpeed,
+					z: attacker.behind(projectileSpeed) + offset1 * stepZ,
+					time: (i + 1) * tick,
+				}, 'ballistic', 'fade');
+				scene.showEffect(projectileSprite, {
+					x: attacker.x + offset1 * stepX + projectileSpeed * (((i + 1) % 2) ? 2 : -2),
+					y: attacker.y + offset1 * stepY,
+					z: attacker.z + offset1 * stepZ,
+					opacity: 0.5,
+					time: i * tick,
+				}, {
+					x: attacker.x + offset1 * stepX + projectileSpeed * (((i + 1) % 2) ? 3 : -3),
+					y: attacker.y + offset1 * stepY - projectileSpeed,
+					z: attacker.behind(projectileSpeed) + offset1 * stepZ,
+					time: (i + 1) * tick,
+				}, 'ballistic', 'fade');
+			}
+
+			// attacker movement
+			attacker.delay(tick * 2);
+			attacker.anim({
+				x: attacker.x + stepX * 4,
+				y: attacker.y + stepY * 4,
+				z: attacker.z + stepZ * 4,
+				time: tick * 7 / 3,
+			}, 'accel');
+			attacker.anim({
+				time: tick * 7 / 3 + 100,
+			}, 'ballistic2Back');
+			defender.delay(tick * 6 - 20);
+			defender.anim({
+				z: defender.behind(20),
+				time: 100,
+			}, 'swing');
+			defender.anim({
+				time: 300,
+			}, 'swing');
+		},
+	},
+	wickedtorque: {
+		anim(scene, [attacker, defender]) {
+			// rev up once in place, then flash twice more on the way there, and finally explode on contact
+			const size = [2, 3];
+			const opct = [0.3, 0.6];
+			const tick = 120;
+			const stepX = (defender.x - attacker.x) / 10;
+			const stepY = (defender.y - attacker.y) / 10;
+			const stepZ = (defender.z - attacker.z) / 10;
+			const tallerBy = 35;
+			const projectileSprite = 'fireball';
+			const projectileSpeed = 10;
+			// mimic attacker's acceleration; 1 + 2 + 3 + 4 = 10
+			const steps = [0, 0, 0, 1, 3, 6, 10, 12.5];
+
+			let ball: JQuery, wisp: JQuery;
+			for (let i = 0; i < 7; i++) {
+				let offset1 = steps[i];
+				let offset2 = steps[i + 1];
+
+				const ballArgs: Parameters<typeof scene['showEffect']> = ['flareball', {
+					x: attacker.x + offset1 * stepX,
+					y: attacker.y + offset1 * stepY + tallerBy,
+					z: attacker.z + offset1 * stepZ,
+					scale: size[i % 2],
+					opacity: opct[i % 2] * 1.5,
+					time: 0,
+				}, {
+					x: attacker.x + offset2 * stepX,
+					y: attacker.y + offset2 * stepY + tallerBy,
+					z: attacker.z + offset2 * stepZ,
+					scale: size[(i + 1) % 2],
+					opacity: opct[(i + 1) % 2] * 1.5,
+					time: tick,
+				}, 'swing', i === 6 ? 'explode' : '', { filter: 'hue-rotate(-45deg)' }];
+				ball = ball! ? scene.animateEffect(ball, ...ballArgs) : scene.showEffect(...ballArgs);
+
+				const wispArgs: Parameters<typeof scene['showEffect']> = ['blackwisp', {
+					x: attacker.x + offset1 * stepX,
+					y: attacker.y + offset1 * stepY + tallerBy,
+					z: attacker.z + offset1 * stepZ,
+					scale: size[i % 2],
+					opacity: 0.5,
+					time: 0,
+				}, {
+					x: attacker.x + offset2 * stepX,
+					y: attacker.y + offset2 * stepY + tallerBy,
+					z: attacker.z + offset2 * stepZ,
+					scale: size[(i + 1) % 2],
+					time: tick,
+				}, 'swing', i === 6 ? 'explode' : ''];
+				wisp = wisp! ? scene.animateEffect(wisp, ...wispArgs) : scene.showEffect(...wispArgs);
+
+				scene.showEffect(projectileSprite, {
+					x: attacker.x + offset1 * stepX + projectileSpeed * ((i % 2) ? 2 : -2),
+					y: attacker.y + offset1 * stepY,
+					z: attacker.z + offset1 * stepZ,
+					opacity: 0.5,
+					time: i * tick,
+				}, {
+					x: attacker.x + offset1 * stepX + projectileSpeed * ((i % 2) ? 3 : -3),
+					y: attacker.y + offset1 * stepY - projectileSpeed,
+					z: attacker.behind(projectileSpeed) + offset1 * stepZ,
+					time: (i + 1) * tick,
+				}, 'ballistic', 'fade', { filter: 'hue-rotate(-45deg)' });
+				scene.showEffect(projectileSprite, {
+					x: attacker.x + offset1 * stepX + projectileSpeed * (((i + 1) % 2) ? 2 : -2),
+					y: attacker.y + offset1 * stepY,
+					z: attacker.z + offset1 * stepZ,
+					opacity: 0.5,
+					time: i * tick,
+				}, {
+					x: attacker.x + offset1 * stepX + projectileSpeed * (((i + 1) % 2) ? 3 : -3),
+					y: attacker.y + offset1 * stepY - projectileSpeed,
+					z: attacker.behind(projectileSpeed) + offset1 * stepZ,
+					time: (i + 1) * tick,
+				}, 'ballistic', 'fade', { filter: 'hue-rotate(-45deg)' });
+			}
+
+			// attacker movement
+			attacker.delay(tick * 2);
+			attacker.anim({
+				x: attacker.x + stepX * 4,
+				y: attacker.y + stepY * 4,
+				z: attacker.z + stepZ * 4,
+				time: tick * 7 / 3,
+			}, 'accel');
+			attacker.anim({
+				time: tick * 7 / 3 + 100,
+			}, 'ballistic2Back');
+			defender.delay(tick * 6 - 20);
+			defender.anim({
+				z: defender.behind(20),
+				time: 100,
+			}, 'swing');
+			defender.anim({
+				time: 300,
+			}, 'swing');
+		},
+	},
+	tachyoncutter: {
+		anim(scene, [attacker, defender]) {
+			defender.delay(400);
+			defender.anim({
+				z: defender.behind(15),
+				time: 100,
+			}, 'swing');
+			defender.anim({
+				time: 200,
+			}, 'swing');
+			defender.anim({
+				z: defender.behind(20),
+				time: 100,
+			}, 'swing');
+			defender.anim({
+				time: 200,
+			}, 'swing');
+
+			scene.showEffect('waterwisp', {
+				x: attacker.leftof(-10),
+				y: attacker.y - 10,
+				z: attacker.z,
+				scale: 0.7,
+				opacity: 1,
+			}, {
+				y: attacker.y + 10,
+				scale: 1.4,
+				opacity: 0.2,
+				time: 300,
+			}, 'decel', 'fade');
+
+			scene.showEffect('sword', {
+				x: attacker.leftof(-10),
+				y: attacker.y - 10,
+				z: attacker.z,
+				scale: 0.5,
+				opacity: 1,
+			}, {
+				y: attacker.y + 10,
+				scale: 1,
+				opacity: 0.4,
+				time: 300,
+			}, 'decel', 'fade');
+
+			scene.showEffect('waterwisp', {
+				x: defender.x,
+				y: defender.y,
+				z: defender.z,
+				time: 500,
+				xscale: 1.2,
+				yscale: 0.4,
+				opacity: 0.8,
+			}, {
+				time: 720,
+				xscale: 1.4,
+				yscale: 0.6,
+				opacity: 0,
+			}, 'accel', 'explode', { rotate: '45deg' });
+
+			scene.showEffect('waterwisp', {
+				x: defender.x,
+				y: defender.y,
+				z: defender.z,
+				time: 730,
+				xscale: 1.2,
+				yscale: 0.4,
+				opacity: 0.8,
+			}, {
+				time: 930,
+				xscale: 1.4,
+				yscale: 0.6,
+				opacity: 0.4,
+			}, 'accel', 'explode', { rotate: '45deg' });
+
+			scene.showEffect('waterwisp', {
+				x: defender.x,
+				y: defender.y,
+				z: defender.z,
+				time: 730,
+				xscale: 1.2,
+				yscale: 0.4,
+				opacity: 0.8,
+			}, {
+				time: 930,
+				xscale: 1.4,
+				yscale: 0.6,
+				opacity: 0.4,
+			}, 'accel', 'explode', { rotate: '-45deg' });
+
+			scene.showEffect('leftslash', {
+				x: defender.x,
+				y: defender.y,
+				z: defender.z,
+				scale: 1.5,
+				opacity: 0.6,
+				time: 500,
+			}, {
+				scale: 2,
+				opacity: 0,
+				time: 720,
+			}, 'accel', 'fade', { filter: 'brightness(5)' });
+
+			scene.showEffect('leftslash', {
+				x: defender.x,
+				y: defender.y,
+				z: defender.z,
+				scale: 1.5,
+				opacity: 0.6,
+				time: 730,
+			}, {
+				scale: 2,
+				opacity: 0,
+				time: 930,
+			}, 'accel', 'fade', { filter: 'brightness(5)' });
+
+			scene.showEffect('rightslash', {
+				x: defender.x,
+				y: defender.y,
+				z: defender.z,
+				scale: 1.5,
+				opacity: 0.6,
+				time: 730,
+			}, {
+				scale: 2,
+				opacity: 0,
+				time: 930,
+			}, 'accel', 'fade', { filter: 'brightness(5)' });
+		},
+	},
+	ficklebeam: {
+		anim(scene, [attacker, defender]) {
+			scene.showEffect('electroball', {
+				x: attacker.x,
+				y: attacker.y,
+				z: attacker.behind(-30),
+				scale: 2,
+				opacity: 0.3,
+			}, {
+				scale: 0.3,
+				opacity: 1,
+				time: 300,
+			}, 'decel', 'fade');
+			scene.showEffect('electroball', {
+				x: attacker.x,
+				y: attacker.y,
+				z: attacker.behind(-30),
+				scale: 2,
+				opacity: 0.3,
+				time: 100,
+			}, {
+				scale: 0.5,
+				opacity: 0.6,
+				time: 400,
+			}, 'decel', 'fade');
+			scene.showEffect('electroball', {
+				x: attacker.x,
+				y: attacker.y,
+				z: attacker.behind(-30),
+				scale: 0.5,
+				opacity: 0.6,
+				time: 400,
+			}, {
+				time: 900,
+			}, 'accel', 'fade');
+			scene.showEffect('flareball', {
+				x: attacker.x,
+				y: attacker.y,
+				z: attacker.behind(-30),
+				scale: 0.4,
+				opacity: 0.4,
+				time: 400,
+			}, {
+				time: 900,
+			}, 'accel', 'fade');
+			for (let i = 0; i < 5; i++) {
+				scene.showEffect('electroball', {
+					x: attacker.x,
+					y: attacker.y,
+					z: attacker.behind(-30),
+					scale: 0.5,
+					opacity: 0.7,
+					time: 100 * i + 400,
+				}, {
+					x: defender.x,
+					y: defender.y,
+					z: defender.z,
+					opacity: 0.6,
+					time: 100 * i + 400 + 200,
+				}, 'linear', 'fade');
+				scene.showEffect('flareball', {
+					x: attacker.x,
+					y: attacker.y,
+					z: attacker.behind(-30),
+					scale: 0.4,
+					opacity: 0.5,
+					time: 100 * i + 400,
+				}, {
+					x: defender.x,
+					y: defender.y,
+					z: defender.z,
+					opacity: 0.4,
+					time: 100 * i + 400 + 200,
+				}, 'accel', 'fade');
+			}
+			defender.delay(600);
+			defender.anim({
+				z: defender.behind(5),
+				time: 50,
+			}, 'swing');
+			defender.anim({
+				time: 50,
+			}, 'swing');
+			defender.anim({
+				z: defender.behind(5),
+				time: 50,
+			}, 'swing');
+			defender.anim({
+				time: 50,
+			}, 'swing');
+			defender.anim({
+				z: defender.behind(5),
+				time: 50,
+			}, 'swing');
+			defender.anim({
+				time: 50,
+			}, 'swing');
+			defender.anim({
+				z: defender.behind(5),
+				time: 50,
+			}, 'swing');
+			defender.anim({
+				time: 150,
+			}, 'swing');
+		},
+	},
+	ficklebeamallout: {
+		anim(scene, [attacker, defender]) {
+			const xDist = 25;
+
+			const x = [1, -1];
+			for (let j = 0; j < 2; j++) {
+				scene.showEffect('electroball', {
+					x: attacker.x + xDist * x[j],
+					y: attacker.y,
+					z: attacker.behind(-30),
+					scale: 1.5,
+					opacity: 0.3,
+					time: 50 * j,
+				}, {
+					scale: 0.2,
+					opacity: 1,
+					time: 300 + 50 * j,
+				}, 'decel', 'fade');
+				scene.showEffect('electroball', {
+					x: attacker.x + xDist * x[j],
+					y: attacker.y,
+					z: attacker.behind(-30),
+					scale: 1.5,
+					opacity: 0.3,
+					time: 100 + 50 * j,
+				}, {
+					scale: 0.5,
+					opacity: 0.6,
+					time: 400 + 50 * j,
+				}, 'decel', 'fade');
+				scene.showEffect('electroball', {
+					x: attacker.x + xDist * x[j],
+					y: attacker.y,
+					z: attacker.behind(-30),
+					scale: 0.3,
+					opacity: 0.6,
+					time: 400 + 50 * j,
+				}, {
+					time: 900,
+				}, 'accel', 'fade');
+				scene.showEffect('flareball', {
+					x: attacker.x + xDist * x[j],
+					y: attacker.y,
+					z: attacker.behind(-30),
+					scale: 0.2,
+					opacity: 0.4,
+					time: 400 + 50 * j,
+				}, {
+					time: 900,
+				}, 'accel', 'fade');
+			}
+
+			scene.showEffect('electroball', {
+				x: attacker.x,
+				y: attacker.y,
+				z: attacker.behind(-30),
+				scale: 2,
+				opacity: 0.3,
+				time: 100,
+			}, {
+				scale: 0.3,
+				opacity: 1,
+				time: 400,
+			}, 'decel', 'fade');
+			scene.showEffect('electroball', {
+				x: attacker.x,
+				y: attacker.y,
+				z: attacker.behind(-30),
+				scale: 2,
+				opacity: 0.3,
+				time: 200,
+			}, {
+				scale: 0.5,
+				opacity: 0.6,
+				time: 500,
+			}, 'decel', 'fade');
+			scene.showEffect('electroball', {
+				x: attacker.x,
+				y: attacker.y,
+				z: attacker.behind(-30),
+				scale: 0.5,
+				opacity: 0.6,
+				time: 500,
+			}, {
+				time: 800,
+			}, 'accel', 'fade');
+			scene.showEffect('flareball', {
+				x: attacker.x,
+				y: attacker.y,
+				z: attacker.behind(-30),
+				scale: 0.4,
+				opacity: 0.4,
+				time: 500,
+			}, {
+				time: 800,
+			}, 'accel', 'fade');
+
+			for (let i = 0; i < 5; i++) {
+				scene.showEffect('electroball', {
+					x: attacker.x,
+					y: attacker.y,
+					z: attacker.behind(-30),
+					scale: 0.5,
+					opacity: 0.7,
+					time: 100 * i + 300,
+				}, {
+					x: defender.x,
+					y: defender.y,
+					z: defender.behind(30),
+					scale: 1.5,
+					opacity: 0.4,
+					time: 100 * i + 300 + 200,
+				}, 'linear', 'fade');
+				scene.showEffect('flareball', {
+					x: attacker.x,
+					y: attacker.y,
+					z: attacker.behind(-30),
+					scale: 0.4,
+					opacity: 0.4,
+					time: 100 * i + 300,
+				}, {
+					x: defender.x,
+					y: defender.y,
+					z: defender.behind(30),
+					scale: 1.2,
+					opacity: 0.2,
+					time: 100 * i + 300 + 200,
+				}, 'accel', 'fade');
+
+				for (let j = 0; j < 2; j++) {
+					scene.showEffect('electroball', {
+						x: attacker.x + xDist * x[j],
+						y: attacker.y,
+						z: attacker.behind(-30),
+						scale: 0.3,
+						opacity: 0.7,
+						time: 100 * i + 300,
+					}, {
+						x: defender.x,
+						y: defender.y,
+						z: defender.behind(30),
+						scale: 1.5,
+						opacity: 0,
+						time: 100 * i + 300 + 200,
+					}, 'linear', 'fade');
+					scene.showEffect('flareball', {
+						x: attacker.x + xDist * x[j],
+						y: attacker.y,
+						z: attacker.behind(-30),
+						scale: 0.2,
+						opacity: 0.5,
+						time: 100 * i + 300,
+					}, {
+						x: defender.x,
+						y: defender.y,
+						z: defender.behind(30),
+						scale: 1.2,
+						opacity: 0,
+						time: 100 * i + 300 + 200,
+					}, 'accel', 'fade');
+				}
+			}
+			defender.delay(500);
+			defender.anim({
+				z: defender.behind(10),
+				time: 50,
+			}, 'swing');
+			defender.anim({
+				time: 50,
+			}, 'swing');
+			defender.anim({
+				z: defender.behind(10),
+				time: 50,
+			}, 'swing');
+			defender.anim({
+				time: 50,
+			}, 'swing');
+			defender.anim({
+				z: defender.behind(10),
+				time: 50,
+			}, 'swing');
+			defender.anim({
+				time: 50,
+			}, 'swing');
+			defender.anim({
+				z: defender.behind(10),
+				time: 50,
+			}, 'swing');
+			defender.anim({
+				time: 150,
+			}, 'swing');
+		},
+	},
 	decapattack: {
 		anim(scene, [attacker, defender]) {
 			scene.backgroundEffect('#B84038', 700, 0.6);
@@ -37625,8 +38554,7 @@ export const BattleMoveAnims: AnimTable = {
 				time: 300,
 			}, 'decel', 'fade');
 
-			if (attacker.sp.shiny)
-			{
+			if (attacker.sp.shiny) {
 				scene.showEffect('iceball', {
 					x: attacker.x,
 					y: attacker.y - 20,
@@ -37670,9 +38598,7 @@ export const BattleMoveAnims: AnimTable = {
 					opacity: 0.2,
 					time: 1200,
 				}, 'linear', 'explode');
-			}
-			else
-			{
+			} else {
 				scene.showEffect('flareball', {
 					x: attacker.x,
 					y: attacker.y - 20,
@@ -37816,13 +38742,13 @@ export const BattleMoveAnims: AnimTable = {
 			scene.showEffect('blackwisp', {
 				x: attacker.x,
 				y: attacker.y,
-				z: attacker.z+50,
+				z: attacker.z + 50,
 				scale: 0.4,
 				opacity: 0,
 			}, {
 				x: attacker.leftof(100),
 				y: attacker.y,
-				z: attacker.z+50,
+				z: attacker.z + 50,
 				scale: 0.8,
 				opacity: 0.7,
 				time: 200,
@@ -37831,7 +38757,7 @@ export const BattleMoveAnims: AnimTable = {
 			scene.showEffect('blackwisp', {
 				x: attacker.leftof(100),
 				y: attacker.y,
-				z: attacker.z+50,
+				z: attacker.z + 50,
 				scale: 0.8,
 				opacity: 0.7,
 				time: 200,
@@ -38284,12 +39210,12 @@ export const BattleMoveAnims: AnimTable = {
 			scene.wait(500);
 
 			const coinTargets = [
-			{ x: defender.x + 30, y: defender.y + 20 }, 
-			{ x: defender.x - 30, y: defender.y + 20 },
-			{ x: defender.x + 20, y: defender.y - 25 }, 
-			{ x: defender.x - 20, y: defender.y - 25 }, 
-			{ x: defender.x + 10, y: defender.y + 10 }, 
-			{ x: defender.x - 10, y: defender.y + 10 }, 
+				{ x: defender.x + 30, y: defender.y + 20 },
+				{ x: defender.x - 30, y: defender.y + 20 },
+				{ x: defender.x + 20, y: defender.y - 25 },
+				{ x: defender.x - 20, y: defender.y - 25 },
+				{ x: defender.x + 10, y: defender.y + 10 },
+				{ x: defender.x - 10, y: defender.y + 10 },
 			];
 
 			for (let i = 0; i < 6; i++) {
@@ -38494,11 +39420,11 @@ export const BattleMoveAnims: AnimTable = {
 		anim(scene, [attacker]) {
 			scene.backgroundEffect('linear-gradient(#390000 30%, #B84038)', 1600, 0.4);
 			scene.backgroundEffect('#FFFFFF', 200, 1, 1600);
-			attacker.anim({x: attacker.x - 10, time: 200});
-			attacker.anim({x: attacker.x + 10, time: 300});
-			attacker.anim({x: attacker.x - 10, time: 150});
-			attacker.anim({x: attacker.x + 10, time: 150});
-			attacker.anim({x: attacker.x, time: 150});
+			attacker.anim({ x: attacker.x - 10, time: 200 });
+			attacker.anim({ x: attacker.x + 10, time: 300 });
+			attacker.anim({ x: attacker.x - 10, time: 150 });
+			attacker.anim({ x: attacker.x + 10, time: 150 });
+			attacker.anim({ x: attacker.x, time: 150 });
 			scene.showEffect('fireball', {
 				x: attacker.x + 40,
 				y: attacker.y,
@@ -38935,8 +39861,7 @@ export const BattleMoveAnims: AnimTable = {
 			}, 'linear', 'fade');
 			for (let i = 0; i < 3; i++) {
 				let mult = 1;
-				if (i === 1) { mult = 5 }
-				else if (i === 2) { mult = 3 }
+				if (i === 1) { mult = 5; } else if (i === 2) { mult = 3; }
 				scene.showEffect('shine', {
 					x: attacker.x + i * 10,
 					y: attacker.y,
@@ -39003,7 +39928,7 @@ export const BattleMoveAnims: AnimTable = {
 					z: attacker.z,
 					scale: 0.2,
 					opacity: 0.7,
-					time: 150
+					time: 150,
 				}, {
 					x: attacker.x + 30 * xf[i],
 					y: attacker.y + 15,
@@ -39035,7 +39960,7 @@ export const BattleMoveAnims: AnimTable = {
 	},
 	solarflare: {
 		anim(scene, [attacker, defender]) {
-			scene.backgroundEffect(`url('https://${Config.routes.psmain}/fx/weather-sunnyday.jpg')`, 1500, 0.5);
+			scene.backgroundEffect(`url('https://${Config.routes.client}/fx/weather-sunnyday.jpg')`, 1500, 0.5);
 			scene.showEffect('moon', {
 				x: attacker.x,
 				y: attacker.y,
@@ -39064,8 +39989,7 @@ export const BattleMoveAnims: AnimTable = {
 				opacity: 0.1,
 				time: 1100,
 			}, 'linear', 'fade');
-			if (attacker.sp.shiny)
-			{
+			if (attacker.sp.shiny) {
 				for (let i = 0; i < 4; i++) {
 					scene.showEffect('iceball', {
 						x: attacker.x,
@@ -39097,9 +40021,7 @@ export const BattleMoveAnims: AnimTable = {
 						time: 1100,
 					}, 'decel');
 				}
-			}
-			else
-			{
+			} else {
 				for (let i = 0; i < 4; i++) {
 					scene.showEffect('electroball', {
 						x: attacker.x,
@@ -39137,7 +40059,7 @@ export const BattleMoveAnims: AnimTable = {
 				z: defender.behind(20),
 				time: 100,
 			}, 'swing');
-				defender.anim({
+			defender.anim({
 				time: 300,
 			}, 'swing');
 		},
@@ -39201,6 +40123,183 @@ export const BattleMoveAnims: AnimTable = {
 			defender.anim({
 				time: 300,
 			}, 'swing');
+		},
+	},
+	venomousroar: {
+		anim(scene, [attacker, defender]) {
+			attacker.anim({
+				xscale: 0.6,
+				yscale: 1.2,
+				time: 200,
+			});
+			attacker.delay(150);
+			attacker.anim({
+				xscale: 1,
+				yscale: 1,
+				time: 150,
+			});
+
+			scene.showEffect('shadowball', {
+				x: attacker.x,
+				y: attacker.y,
+				z: attacker.z,
+				scale: 0,
+				opacity: 0.5,
+				time: 100,
+			}, {
+				z: attacker.behind(-50),
+				scale: 7,
+				opacity: 0,
+				time: 500,
+			}, 'linear');
+			scene.showEffect('shadowball', {
+				x: attacker.x,
+				y: attacker.y,
+				z: attacker.z,
+				scale: 0,
+				opacity: 0.5,
+				time: 250,
+			}, {
+				z: attacker.behind(-50),
+				scale: 7,
+				opacity: 0,
+				time: 700,
+			}, 'linear');
+			scene.showEffect('shadowball', {
+				x: attacker.x,
+				y: attacker.y,
+				z: attacker.z,
+				scale: 0,
+				opacity: 0.5,
+				time: 400,
+			}, {
+				z: attacker.behind(-50),
+				scale: 7,
+				opacity: 0,
+				time: 1100,
+			}, 'linear');
+
+			scene.showEffect('poisonwisp', {
+				x: defender.x + 40,
+				y: defender.y + 30,
+				z: defender.z,
+				scale: 0.8,
+				opacity: 0.5,
+				time: 600,
+			}, {
+				y: defender.y + 60,
+				opacity: 0,
+				time: 1000,
+			}, 'accel');
+			scene.showEffect('poisonwisp', {
+				x: defender.x - 40,
+				y: defender.y + 30,
+				z: defender.z,
+				scale: 0.8,
+				opacity: 0.5,
+				time: 800,
+			}, {
+				y: defender.y + 60,
+				opacity: 0,
+				time: 1200,
+			}, 'accel');
+			scene.showEffect('poisonwisp', {
+				x: defender.x,
+				y: defender.y + 40,
+				z: defender.z,
+				scale: 0.8,
+				opacity: 0.5,
+				time: 1000,
+			}, {
+				y: defender.y + 60,
+				opacity: 0,
+				time: 1400,
+			}, 'accel');
+		},
+	},
+	shadowbound: {
+		anim(scene, [attacker, defender]) {
+			scene.backgroundEffect('#550000', 250, 0.3);
+			scene.backgroundEffect('#000000', 250, 0.2, 1100);
+			scene.showEffect('shadowball', {
+				x: attacker.x,
+				y: attacker.y - 35,
+				z: attacker.z,
+				scale: 0.6,
+				opacity: 0.4,
+				time: 0,
+			}, {
+				x: attacker.x,
+				y: attacker.y - 35,
+				z: attacker.z,
+				scale: 1.2,
+				opacity: 0,
+				time: 1000,
+			}, 'decel');
+			scene.showEffect('shadowball', {
+				x: attacker.x,
+				y: attacker.y - 35,
+				z: attacker.z,
+				scale: 0.6,
+				opacity: 0.4,
+				time: 200,
+			}, {
+				x: defender.x,
+				y: defender.y - 35,
+				z: defender.z,
+				scale: 1.2,
+				opacity: 0,
+				time: 600,
+			}, 'decel');
+			scene.showEffect('shadowball', {
+				x: defender.x,
+				y: defender.y - 35,
+				z: defender.z,
+				scale: 0.6,
+				opacity: 0.4,
+				time: 600,
+			}, {
+				x: defender.x,
+				y: defender.y,
+				z: defender.z,
+				scale: 1.2,
+				opacity: 0,
+				time: 1000,
+			}, 'decel');
+
+			scene.showEffect('rightslash', {
+				x: defender.x,
+				y: defender.y,
+				z: defender.z,
+				scale: 1,
+				opacity: 0.5,
+				time: 800,
+			}, {
+				opacity: 1,
+				time: 1100,
+			}, 'linear', 'explode');
+			scene.showEffect('leftslash', {
+				x: defender.x,
+				y: defender.y,
+				z: defender.z,
+				scale: 1,
+				opacity: 0.5,
+				time: 800,
+			}, {
+				opacity: 1,
+				time: 1100,
+			}, 'linear', 'explode');
+			scene.showEffect('iceball', {
+				x: defender.x,
+				y: defender.y,
+				z: defender.z,
+				scale: 1,
+				opacity: 1,
+				time: 800,
+			}, {
+				opacity: 0.5,
+				time: 1100,
+			}, 'linear', 'explode');
 		},
 	},
 };
@@ -39603,17 +40702,17 @@ BattleMoveAnims['psyblade'] = { anim: BattleMoveAnims['psychocut'].anim };
 BattleMoveAnims['polarflare'] = { anim: BattleMoveAnims['torchsong'].anim };
 
 // POA Moves
-BattleMoveAnims['boxin'] ={anim: BattleMoveAnims['block'].anim};
-BattleMoveAnims['runtimeexception'] = {anim: BattleMoveAnims['shiftgear'].anim};
+BattleMoveAnims['boxin'] = { anim: BattleMoveAnims['block'].anim };
+BattleMoveAnims['runtimeexception'] = { anim: BattleMoveAnims['shiftgear'].anim };
 BattleMoveAnims['fibregraft'] = {
 	anim(scene, [attacker, defender]) {
 		BattleMoveAnims['focusenergy'].anim(scene, [attacker, attacker]);
 		BattleMoveAnims['wish'].anim(scene, [attacker, attacker]);
 	},
 };
-BattleMoveAnims['bloomsday'] = {anim: BattleMoveAnims['bloomdoom'].anim};
-BattleMoveAnims['deserttempest'] = {anim: BattleMoveAnims['powergem'].anim};
-BattleMoveAnims['bulwark'] = {anim: BattleMoveAnims['wideguard'].anim};
+BattleMoveAnims['bloomsday'] = { anim: BattleMoveAnims['bloomdoom'].anim };
+BattleMoveAnims['deserttempest'] = { anim: BattleMoveAnims['powergem'].anim };
+BattleMoveAnims['bulwark'] = { anim: BattleMoveAnims['wideguard'].anim };
 BattleMoveAnims['pixietrick'] = {
 	anim(scene, [attacker, defender]) {
 		BattleMoveAnims['wish'].anim(scene, [attacker, attacker]);
@@ -39632,20 +40731,20 @@ BattleMoveAnims['packin'] = {
 		BattleMoveAnims['aquaring'].anim(scene, [attacker, attacker]);
 	},
 };
-BattleMoveAnims['heal'] = {anim: BattleMoveAnims['healpulse'].anim};
-BattleMoveAnims['hyperheal'] = {anim: BattleMoveAnims['healpulse'].anim};
-BattleMoveAnims['fullheal'] = {anim: BattleMoveAnims['healpulse'].anim};
-BattleMoveAnims['foulstrike'] = {anim: BattleMoveAnims['behemothblade'].anim};
-BattleMoveAnims['sirensong'] = {anim: BattleMoveAnims['hypervoice'].anim};
-BattleMoveAnims['mindwipe'] = {anim: BattleMoveAnims['confusion'].anim};
-BattleMoveAnims['twingust'] = {anim: BattleMoveAnims['aeroblast'].anim};
+BattleMoveAnims['heal'] = { anim: BattleMoveAnims['healpulse'].anim };
+BattleMoveAnims['hyperheal'] = { anim: BattleMoveAnims['healpulse'].anim };
+BattleMoveAnims['fullheal'] = { anim: BattleMoveAnims['healpulse'].anim };
+BattleMoveAnims['foulstrike'] = { anim: BattleMoveAnims['behemothblade'].anim };
+BattleMoveAnims['sirensong'] = { anim: BattleMoveAnims['hypervoice'].anim };
+BattleMoveAnims['mindwipe'] = { anim: BattleMoveAnims['confusion'].anim };
+BattleMoveAnims['twingust'] = { anim: BattleMoveAnims['aeroblast'].anim };
 BattleMoveAnims['currencyflow'] = {
 	anim(scene, [attacker, defender]) {
 		BattleMoveAnims['payday'].anim(scene, [attacker, defender]);
 		BattleMoveAnims['earthpower'].anim(scene, [attacker, defender]);
 	},
 };
-BattleMoveAnims['rocketgrab'] = {anim: BattleMoveAnims['pursuit'].anim};
+BattleMoveAnims['rocketgrab'] = { anim: BattleMoveAnims['pursuit'].anim };
 BattleMoveAnims['jumpship'] = {
 	anim(scene, [attacker, defender]) {
 		BattleMoveAnims['recover'].anim(scene, [attacker, defender]);
@@ -39653,11 +40752,11 @@ BattleMoveAnims['jumpship'] = {
 		BattleMoveAnims['recover'].anim(scene, [attacker, defender]);
 	},
 };
-BattleMoveAnims['moltenglaze'] = {anim: BattleMoveAnims['tarshot'].anim};
-BattleMoveAnims['psychobarrage'] = {anim: BattleMoveAnims['astralbarrage'].anim};
-BattleMoveAnims['severingwind'] = {anim: BattleMoveAnims['aircutter'].anim};
-BattleMoveAnims['mindtrap'] = {anim: BattleMoveAnims['lockon'].anim};
-BattleMoveAnims['megatonslice'] = {anim: BattleMoveAnims['corkscrewcrash'].anim};
+BattleMoveAnims['moltenglaze'] = { anim: BattleMoveAnims['tarshot'].anim };
+BattleMoveAnims['psychobarrage'] = { anim: BattleMoveAnims['astralbarrage'].anim };
+BattleMoveAnims['severingwind'] = { anim: BattleMoveAnims['aircutter'].anim };
+BattleMoveAnims['mindtrap'] = { anim: BattleMoveAnims['lockon'].anim };
+BattleMoveAnims['megatonslice'] = { anim: BattleMoveAnims['corkscrewcrash'].anim };
 BattleMoveAnims['lycanpounce'] = {
 	anim(scene, [attacker, defender]) {
 		BattleMoveAnims['breakneckblitz'].anim(scene, [attacker, defender]);
@@ -39680,10 +40779,15 @@ BattleMoveAnims['lycanpounce'] = {
 		BattleMoveAnims['twinkletackle'].anim(scene, [attacker, defender]);
 	},
 };
-BattleMoveAnims['spudmortar'] = {anim: BattleMoveAnims['doomdesire'].anim};
+BattleMoveAnims['spudmortar'] = { anim: BattleMoveAnims['doomdesire'].anim };
+BattleMoveAnims['bloominggrace'] = {
+	anim: BattleMoveAnims['synthesis'].anim,
+	prepareAnim: BattleMoveAnims['geomancy'].prepareAnim,
+};
+BattleMoveAnims['flockshock'] = { anim: BattleMoveAnims['futuresight'].anim };
 
 // Insurgence Moves
-BattleMoveAnims['achillesheel'] = {anim: BattleMoveAnims['lowkick'].anim};
+BattleMoveAnims['achillesheel'] = { anim: BattleMoveAnims['lowkick'].anim };
 BattleMoveAnims['ancientroar'] = {
 	anim(scene, [attacker, defender]) {
 		BattleMoveAnims['hypervoice'].anim(scene, [attacker, defender]);
@@ -39702,21 +40806,21 @@ BattleMoveAnims['crystalrush'] = {
 		BattleMoveAnims['headsmash'].anim(scene, [attacker, defender]);
 	},
 };
-BattleMoveAnims['darkmatter'] = {anim: BattleMoveAnims['blackholeeclipse'].anim};
+BattleMoveAnims['darkmatter'] = { anim: BattleMoveAnims['blackholeeclipse'].anim };
 BattleMoveAnims['dracojet'] = {
 	anim(scene, [attacker, defender]) {
 		BattleMoveAnims['dragondance'].anim(scene, [attacker, attacker]);
 		BattleMoveAnims['aquajet'].anim(scene, [attacker, defender]);
 	},
 };
-BattleMoveAnims['dragonify'] = {anim: BattleMoveAnims['soak'].anim};
+BattleMoveAnims['dragonify'] = { anim: BattleMoveAnims['soak'].anim };
 BattleMoveAnims['drakonvoice'] = {
 	anim(scene, [attacker, defender]) {
 		BattleMoveAnims['spacialrend'].anim(scene, [attacker, defender]);
 		BattleMoveAnims['hypervoice'].anim(scene, [attacker, defender]);
 	},
 };
-BattleMoveAnims['jetstream'] = {anim: BattleMoveAnims['tailwind'].anim};
+BattleMoveAnims['jetstream'] = { anim: BattleMoveAnims['tailwind'].anim };
 BattleMoveAnims['lunarcannon'] = {
 	anim(scene, [attacker, defender]) {
 		BattleMoveAnims['darkpulse'].anim(scene, [attacker, defender]);
@@ -39724,37 +40828,37 @@ BattleMoveAnims['lunarcannon'] = {
 	},
 	prepareAnim: BattleMoveAnims['geomancy'].prepareAnim,
 };
-BattleMoveAnims['medusaray'] = {anim: BattleMoveAnims['glare'].anim};
+BattleMoveAnims['medusaray'] = { anim: BattleMoveAnims['glare'].anim };
 BattleMoveAnims['nanorepair'] = {
 	anim(scene, [attacker, defender]) {
 		BattleMoveAnims['shiftgear'].anim(scene, [attacker, attacker]);
 		BattleMoveAnims['recover'].anim(scene, [attacker, attacker]);
 	},
 };
-BattleMoveAnims['newmoon'] = {anim: BattleMoveAnims['raindance'].anim};
-BattleMoveAnims['retrograde'] = {anim: BattleMoveAnims['painsplit'].anim};
-BattleMoveAnims['spiritaway'] = {anim: BattleMoveAnims['skydrop'].anim};
-BattleMoveAnims['wildfire'] = {anim: BattleMoveAnims['incinerate'].anim};
-BattleMoveAnims['wormhole'] = {anim: BattleMoveAnims['dive'].anim};
-BattleMoveAnims['zombiestrike'] = {anim: BattleMoveAnims['shadowpunch'].anim};
+BattleMoveAnims['newmoon'] = { anim: BattleMoveAnims['raindance'].anim };
+BattleMoveAnims['retrograde'] = { anim: BattleMoveAnims['painsplit'].anim };
+BattleMoveAnims['spiritaway'] = { anim: BattleMoveAnims['skydrop'].anim };
+BattleMoveAnims['wildfire'] = { anim: BattleMoveAnims['incinerate'].anim };
+BattleMoveAnims['wormhole'] = { anim: BattleMoveAnims['dive'].anim };
+BattleMoveAnims['zombiestrike'] = { anim: BattleMoveAnims['shadowpunch'].anim };
 
 // Uranium Moves
-BattleMoveAnims['atomicpunch'] = {anim: BattleMoveAnims['shadowpunch'].anim};
-BattleMoveAnims['causticbreath'] = {anim: BattleMoveAnims['dragonbreath'].anim};
+BattleMoveAnims['atomicpunch'] = { anim: BattleMoveAnims['shadowpunch'].anim };
+BattleMoveAnims['causticbreath'] = { anim: BattleMoveAnims['dragonbreath'].anim };
 BattleMoveAnims['coralbreak'] = {
 	anim(scene, [attacker, defender]) {
 		BattleMoveAnims['shellsmash'].anim(scene, [attacker, attacker]);
 		BattleMoveAnims['scald'].anim(scene, [attacker, defender]);
 	},
 };
-BattleMoveAnims['drainlife'] = {anim: BattleMoveAnims['leechlife'].anim};
+BattleMoveAnims['drainlife'] = { anim: BattleMoveAnims['leechlife'].anim };
 BattleMoveAnims['expunge'] = {
 	anim(scene, [attacker, defender]) {
 		BattleMoveAnims['recover'].anim(scene, [defender, defender]);
 		BattleMoveAnims['poisongas'].anim(scene, [attacker, defender]);
 	},
 };
-BattleMoveAnims['fallout'] = {anim: BattleMoveAnims['raindance'].anim};
+BattleMoveAnims['fallout'] = { anim: BattleMoveAnims['raindance'].anim };
 BattleMoveAnims['fissionburst'] = {
 	anim(scene, [attacker, defender]) {
 		BattleMoveAnims['thousandwaves'].anim(scene, [attacker, defender]);
@@ -39792,26 +40896,26 @@ BattleMoveAnims['goldenfist'] = {
 		BattleMoveAnims['machpunch'].anim(scene, [attacker, defender]);
 	},
 };
-BattleMoveAnims['halflife'] = {anim: BattleMoveAnims['ruination'].anim};
-BattleMoveAnims['infernalblade'] = {anim: BattleMoveAnims['slash'].anim};
+BattleMoveAnims['halflife'] = { anim: BattleMoveAnims['ruination'].anim };
+BattleMoveAnims['infernalblade'] = { anim: BattleMoveAnims['slash'].anim };
 BattleMoveAnims['instantcrush'] = {
 	anim(scene, [attacker, defender]) {
 		BattleMoveAnims['hypervoice'].anim(scene, [attacker, defender]);
 		BattleMoveAnims['psychic'].anim(scene, [attacker, defender]);
 	},
 };
-BattleMoveAnims['laserpulse'] = {anim: BattleMoveAnims['triattack'].anim};
-BattleMoveAnims['metalcruncher'] = {anim: BattleMoveAnims['crunch'].anim};
-BattleMoveAnims['metalwhip'] = {anim: BattleMoveAnims['gyroball'].anim};
-BattleMoveAnims['nuclearslash'] = {anim: BattleMoveAnims['slash'].anim};
-BattleMoveAnims['nuclearwaste'] = {anim: BattleMoveAnims['toxic'].anim};
+BattleMoveAnims['laserpulse'] = { anim: BattleMoveAnims['triattack'].anim };
+BattleMoveAnims['metalcruncher'] = { anim: BattleMoveAnims['crunch'].anim };
+BattleMoveAnims['metalwhip'] = { anim: BattleMoveAnims['gyroball'].anim };
+BattleMoveAnims['nuclearslash'] = { anim: BattleMoveAnims['slash'].anim };
+BattleMoveAnims['nuclearwaste'] = { anim: BattleMoveAnims['toxic'].anim };
 BattleMoveAnims['nuclearwind'] = {
 	anim(scene, [attacker, defender]) {
 		BattleMoveAnims['whirlwind'].anim(scene, [attacker, defender]);
 		BattleMoveAnims['aircutter'].anim(scene, [attacker, defender]);
 	},
 };
-BattleMoveAnims['oceanswrath'] = {anim: BattleMoveAnims['originpulse'].anim};
+BattleMoveAnims['oceanswrath'] = { anim: BattleMoveAnims['originpulse'].anim };
 BattleMoveAnims['protonbeam'] = {
 	anim(scene, [attacker, defender]) {
 		BattleMoveAnims['hyperbeam'].prepareAnim;
@@ -39822,7 +40926,7 @@ BattleMoveAnims['quantumleap'] = {
 	anim: BattleMoveAnims['dive'].anim,
 	prepareAnim: BattleMoveAnims['shadowforce'].prepareAnim,
 };
-BattleMoveAnims['radioacid'] = {anim: BattleMoveAnims['acid'].anim};
-BattleMoveAnims['skyfall'] = {anim: BattleMoveAnims['bravebird'].anim};
-BattleMoveAnims['suddenstrike'] = {anim: BattleMoveAnims['shadowpunch'].anim};
-BattleMoveAnims['thunderstorm'] = {anim: BattleMoveAnims['raindance'].anim};
+BattleMoveAnims['radioacid'] = { anim: BattleMoveAnims['acid'].anim };
+BattleMoveAnims['skyfall'] = { anim: BattleMoveAnims['bravebird'].anim };
+BattleMoveAnims['suddenstrike'] = { anim: BattleMoveAnims['shadowpunch'].anim };
+BattleMoveAnims['thunderstorm'] = { anim: BattleMoveAnims['raindance'].anim };

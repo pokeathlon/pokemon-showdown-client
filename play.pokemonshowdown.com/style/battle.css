@@ -5,7 +5,7 @@ License: GPLv2
 
 */
 
-@import url(./battle-log.css?v10);
+@import url(./battle-log.css?v15.1);
 
 .battle {
 	position: absolute;
@@ -250,8 +250,9 @@ License: GPLv2
 .statbar span.psn,
 .statbar span.slp,
 .statbar span.par,
-.statbar spain.ptr,
-.statbar span.frz {
+.statbar span.ptr,
+.statbar span.frz,
+.statbar span.frb {
 	padding: 1px 2px;
 	border: 0;
 	border-radius: 3px;
@@ -273,6 +274,10 @@ License: GPLv2
 	color: #FFFFFF;
 }
 .statbar span.frz {
+	background: #009AA4;
+	color: #FFFFFF;
+}
+.statbar span.frb {
 	background: #009AA4;
 	color: #FFFFFF;
 }
@@ -356,7 +361,7 @@ License: GPLv2
 	float: left;
 }
 .flip,
-.leftbar .trainer div.trainersprite,
+.leftbar .trainer div.trainersprite:not(.noflip),
 .leftbar .teamicons span {
 	-moz-transform: scaleX(-1);
 	-webkit-transform: scaleX(-1);
@@ -539,6 +544,10 @@ License: GPLv2
 	background: #9AA400;
 }
 .battle .frzresult strong {
+	color: #FFFFFF;
+	background: #009AA4;
+}
+.battle .frbresult strong {
 	color: #FFFFFF;
 	background: #009AA4;
 }
@@ -768,6 +777,11 @@ License: GPLv2
 	}
 }
 
+.effectiveness-icon {
+	font-family: monospace;
+	font-size: 13px;
+	letter-spacing: 1px;
+}
 
 /*********************************************************
  * Tooltips
