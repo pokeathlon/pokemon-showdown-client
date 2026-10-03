@@ -41,6 +41,8 @@
 				buf = '<button disabled class="button">Loading...</button>';
 			} else if (app.user.get('named')) {
 				buf = '<span class="username" data-name="' + BattleLog.escapeHTML(name) + '"' + (away ? ' data-away="true"' : '') + (status ? 'data-status="' + BattleLog.escapeHTML(status) + '"' : '') + ' style="' + color + '"><i class="fa fa-user" style="color:' + (away ? '#888;' : '#779EC5') + '"></i> <span class="usernametext">' + BattleLog.escapeHTML(name) + '</span></span>';
+			} else if (Config.discordlogin) {
+				buf = '<button name="discord" class="button"><strong>Log in with Discord</strong></button>';
 			} else {
 				buf = '<button name="login" class="button">Choose name</button>';
 			}
@@ -49,6 +51,9 @@
 		},
 		login: function () {
 			app.addPopup(LoginPopup);
+		},
+		discord: function () {
+			app.user.discordRename();
 		},
 		openSounds: function () {
 			app.addPopup(SoundsPopup);
@@ -491,7 +496,7 @@
 				buf += '<p><input name="statustext" />';
 				buf += '<button class="button" name="editstatus"><i class="fa fa-pencil"></i></button></p>';
 			}
-			if (app.user.get('named')) {
+			if (app.user.get('named') && !Config.discordlogin) {
 				var registered = app.user.get('registered');
 				if (registered && (registered.userid === app.user.get('userid'))) {
 					buf += '<p><button class="button" name="changepassword">Password...</button></p>';
@@ -575,6 +580,8 @@
 			buf += '<hr />';
 			if (app.user.get('named')) {
 				buf += '<p class="buttonbar" style="text-align:right"><button name="login" class="button"><i class="fa fa-pencil"></i> Change name</button> <button name="logout" class="button"><i class="fa fa-power-off"></i> Log out</button></p>';
+			} else if (Config.discordlogin) {
+				buf += '<p class="buttonbar" style="text-align:right"><button name="discord" class="button"><strong>Log in with Discord</strong></button></p>';
 			} else {
 				buf += '<p class="buttonbar" style="text-align:right"><button name="login" class="button">Choose name</button></p>';
 			}
@@ -722,6 +729,10 @@
 		},
 		login: function () {
 			app.addPopup(LoginPopup);
+		},
+		discord: function () {
+			this.close();
+			app.user.discordRename();
 		},
 		register: function () {
 			app.addPopup(RegisterPopup);
@@ -925,6 +936,12 @@
 		}
 	});
 
+	var DISCORD_LOGIN_BUTTONBAR = '<p class="buttonbar"><button type="button" name="discord" class="button"><strong>Log in with Discord</strong></button> <button type="button" name="close" class="button">Cancel</button></p>';
+	var discordLogin = function () {
+		this.close();
+		app.user.discordRename();
+	};
+
 	var LoginPopup = this.LoginPopup = Popup.extend({
 		type: 'semimodal',
 		initialize: function (data) {
@@ -969,6 +986,14 @@
 				}
 			}
 
+			if (Config.discordlogin && !app.user.get('registered')) {
+				buf += '<p>Log in with Discord to play on this server.</p>';
+				buf += DISCORD_LOGIN_BUTTONBAR;
+				buf += '</form>';
+				this.$el.html(buf);
+				return;
+			}
+
 			var name = (data.name || '');
 			if (!name && app.user.get('named')) name = app.user.get('name');
 			buf += '<p><label class="label">Username: <small class="preview" style="' + BattleLog.hashColor(toUserid(name)) + '">(color)</small><input class="textbox autofocus" type="text" name="username" value="' + BattleLog.escapeHTML(name) + '" autocomplete="username"></label></p>';
@@ -989,6 +1014,7 @@
 			var css = BattleLog.hashColor(toUserid(name)).slice(6, -1);
 			preview.css('color', css);
 		},
+		discord: discordLogin,
 		force: function () {
 			var sourceEl = this.sourceEl;
 			this.close();
@@ -1118,6 +1144,8 @@
 				}
 			} else if (data.reason) {
 				buf += '<p>' + BattleLog.escapeHTML(data.reason) + '</p>';
+			} else if (data.special === '@discord') {
+				buf += '<p class="error">This name needs a Discord login.</p>';
 			} else {
 				buf += '<p class="error">The name you chose is registered.</p>';
 			}
@@ -1128,6 +1156,8 @@
 				buf += '<div id="g_id_onload" data-client_id="912270888098-jjnre816lsuhc5clj3vbcn4o2q7p4qvk.apps.googleusercontent.com" data-context="signin" data-ux_mode="popup" data-callback="gapiCallback" data-auto_prompt="false"></div>';
 				buf += '<div class="g_id_signin" data-type="standard" data-shape="pill" data-theme="filled_blue" data-text="continue_with" data-size="large" data-logo_alignment="left" data-auto_select="true" data-itp_support="true" style="width:fit-content;margin:0 auto">[loading Google log-in button]</div>';
 				buf += '<p class="buttonbar"><button name="close" class="button">Cancel</button></p>';
+			} else if (data.special === '@discord') {
+				buf += DISCORD_LOGIN_BUTTONBAR;
 			} else {
 				buf += '<p><label class="label">Password: <input class="textbox autofocus" type="password" name="password" autocomplete="current-password" style="width:173px"><button type="button" name="showPassword" aria-label="Show password" style="float:right;margin:-21px 0 10px;padding: 2px 6px" class="button"><i class="fa fa-eye"></i></button></label></p>';
 				buf += '<p class="buttonbar"><button type="submit" class="button"><strong>Log in</strong></button> <button type="button" name="close" class="button">Cancel</button></p>';
@@ -1153,6 +1183,7 @@
 				document.getElementsByTagName('head')[0].appendChild(script);
 			}
 		},
+		discord: discordLogin,
 		login: function () {
 			this.close();
 			app.addPopup(LoginPopup);

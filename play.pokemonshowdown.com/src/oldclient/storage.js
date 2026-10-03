@@ -502,7 +502,7 @@ Storage.initTestClient = function () {
 	Storage.whenTeamsLoaded.load();
 
 	var sid = null;
-	if (typeof POKEMON_SHOWDOWN_TESTCLIENT_KEY === 'string') {
+	if (typeof POKEMON_SHOWDOWN_TESTCLIENT_KEY === 'string' && location.host !== Config.loginserver) {
 		sid = POKEMON_SHOWDOWN_TESTCLIENT_KEY.replace(/\%2C/g, ',');
 	}
 
@@ -522,8 +522,8 @@ Storage.initTestClient = function () {
 				uri = Dex.resourcePrefix + uri.substr(1);
 			}
 
-			if (sid) {
-				data.sid = sid;
+			if (sid || Config.loginserver) {
+				if (sid) data.sid = sid;
 				get(uri, data, callback, type);
 			} else {
 				app.addPopup(ProxyPopup, { uri: uri, callback: callback });
@@ -538,8 +538,8 @@ Storage.initTestClient = function () {
 				uri = Dex.resourcePrefix + uri.substr(1);
 			}
 
-			if (sid) {
-				data.sid = sid;
+			if (sid || Config.loginserver) {
+				if (sid) data.sid = sid;
 				post(uri, data, callback, type);
 			} else {
 				var src = '<!DOCTYPE html><html><body><form action="' + BattleLog.escapeHTML(uri) + '" method="POST">';

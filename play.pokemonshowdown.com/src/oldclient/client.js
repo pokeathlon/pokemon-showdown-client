@@ -219,7 +219,7 @@ function toId() {
 		getActionPHP: function () {
 			var ret = '/~~' + Config.server.id + '/action.php';
 			if (Config.testclient) {
-				ret = 'https://' + Config.routes.client + ret;
+				ret = 'https://' + (Config.loginserver || Config.routes.client) + ret;
 			}
 			return (this.getActionPHP = function () {
 				return ret;
@@ -238,7 +238,7 @@ function toId() {
 		 *   `login:noresponse`
 		 *     triggered if the login server did not return a response
 		 */
-		finishRename: function (name, assertion) {
+		finishRename: function (name, assertion, registered) {
 			if (assertion.slice(0, 14).toLowerCase() === '<!doctype html') {
 				// some sort of MitM proxy; ignore it
 				var endIndex = assertion.indexOf('>');
@@ -254,11 +254,14 @@ function toId() {
 				this.trigger('login:authrequired', name);
 			} else if (assertion === ';;@gmail') {
 				this.trigger('login:authrequired', name, '@gmail');
+			} else if (assertion === ';;@discord') {
+				this.trigger('login:authrequired', name, '@discord');
 			} else if (assertion.substr(0, 2) === ';;') {
 				this.trigger('login:invalidname', name, assertion.substr(2));
 			} else if (assertion.indexOf('\n') >= 0 || !assertion) {
 				app.addPopupMessage("Something is interfering with our connection to the login server.");
 			} else {
+				if (registered) this.set('registered', registered);
 				app.trigger('loggedin');
 				app.send('/trn ' + name + ',0,' + assertion);
 			}
@@ -311,9 +314,6 @@ function toId() {
 					// success!
 					self.set('registered', data.curuser);
 					self.finishRename(name, data.assertion);
-
-					Storage.prefs('user', name);
-					Storage.prefs('pass', password);
 				} else {
 					// wrong password
 					if (special === '@gmail') {
@@ -328,6 +328,27 @@ function toId() {
 					});
 				}
 			}), 'text');
+		},
+		discordListening: false,
+		discordRename: function () {
+			var self = this;
+			var origin = Config.testclient ? 'https://' + (Config.loginserver || Config.routes.client) : location.origin;
+			if (!this.discordListening) {
+				this.discordListening = true;
+				window.addEventListener('message', function (event) {
+					if (event.origin !== origin) return;
+					if (!event.data || event.data.type !== 'discord-login') return;
+					self.finishRename(event.data.username, event.data.assertion, {
+						username: event.data.username,
+						userid: toUserid(event.data.username)
+					});
+				});
+			}
+			window.open(
+				origin + '/api/discord/login?challstr=' + encodeURIComponent(this.challstr) +
+				'&serverid=' + encodeURIComponent(Config.server.id),
+				'ps-discord-login', 'popup=1,width=500,height=750'
+			);
 		},
 		challstr: '',
 		receiveChallstr: function (challstr) {
@@ -345,33 +366,26 @@ function toId() {
 				 */
 				this.challstr = challstr;
 				var self = this;
-				self.loaded = true;
-				if (Storage.prefs('user') && Storage.prefs('pass')) {
-					self.passwordRename(Storage.prefs('user'), Storage.prefs('pass'));
-				} else {
-					app.topbar.updateUserbar();
-				}
-				// $.post(this.getActionPHP(), {
-				// 	act: 'upkeep',
-				// 	challstr: this.challstr
-				// }, Storage.safeJSON(function (data) {
-				// 	self.loaded = true;
-				// 	if (!data.username) {
-				// 		app.topbar.updateUserbar();
-				// 		return;
-				// 	}
+				$.post(this.getActionPHP(), {
+					act: 'upkeep',
+					challstr: this.challstr
+				}, Storage.safeJSON(function (data) {
+					self.loaded = true;
+					if (!data.username) {
+						app.topbar.updateUserbar();
+						return;
+					}
 
-				// 	// | , ; are not valid characters in names
-				// 	data.username = data.username.replace(/[\|,;]+/g, '');
+					data.username = data.username.replace(/[\|,;]+/g, '');
 
-				// 	if (data.loggedin) {
-				// 		self.set('registered', {
-				// 			username: data.username,
-				// 			userid: toUserid(data.username)
-				// 		});
-				// 	}
-				// 	self.finishRename(data.username, data.assertion);
-				// }), 'text');
+					if (data.loggedin) {
+						self.set('registered', {
+							username: data.username,
+							userid: toUserid(data.username)
+						});
+					}
+					self.finishRename(data.username, data.assertion);
+				}), 'text');
 			}
 		},
 		/**

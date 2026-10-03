@@ -58,6 +58,7 @@ export interface PSConfig {
 	translationCachebuster?: string;
 	whitelist?: string[];
 	testclient?: boolean;
+	discordlogin?: boolean;
 }
 export declare const Config: PSConfig;
 
