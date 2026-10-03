@@ -42,7 +42,7 @@
 			} else if (app.user.get('named')) {
 				buf = '<span class="username" data-name="' + BattleLog.escapeHTML(name) + '"' + (away ? ' data-away="true"' : '') + (status ? 'data-status="' + BattleLog.escapeHTML(status) + '"' : '') + ' style="' + color + '"><i class="fa fa-user" style="color:' + (away ? '#888;' : '#779EC5') + '"></i> <span class="usernametext">' + BattleLog.escapeHTML(name) + '</span></span>';
 			} else if (Config.discordlogin) {
-				buf = '<button name="discord" class="button"><strong>Log in with Discord</strong></button> <button name="challengeOnly" class="button">Challenge-only account</button>';
+				buf = '<button name="discord" class="button"><strong>Log in with Discord</strong></button>';
 			} else {
 				buf = '<button name="login" class="button">Choose name</button>';
 			}
@@ -54,9 +54,6 @@
 		},
 		discord: function () {
 			app.user.discordRename();
-		},
-		challengeOnly: function () {
-			app.addPopup(LoginPopup, { challengeOnly: true });
 		},
 		openSounds: function () {
 			app.addPopup(SoundsPopup);
@@ -989,7 +986,7 @@
 				}
 			}
 
-			if (Config.discordlogin && !app.user.get('registered') && !data.challengeOnly) {
+			if (Config.discordlogin && !app.user.get('registered')) {
 				buf += '<p>Log in with Discord to play on this server.</p>';
 				buf += DISCORD_LOGIN_BUTTONBAR;
 				buf += '</form>';
