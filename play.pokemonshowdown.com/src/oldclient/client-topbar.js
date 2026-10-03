@@ -42,7 +42,7 @@
 			} else if (app.user.get('named')) {
 				buf = '<span class="username" data-name="' + BattleLog.escapeHTML(name) + '"' + (away ? ' data-away="true"' : '') + (status ? 'data-status="' + BattleLog.escapeHTML(status) + '"' : '') + ' style="' + color + '"><i class="fa fa-user" style="color:' + (away ? '#888;' : '#779EC5') + '"></i> <span class="usernametext">' + BattleLog.escapeHTML(name) + '</span></span>';
 			} else if (Config.discordlogin) {
-				buf = '<button name="discord" class="button"><strong>Log in with Discord</strong></button>';
+				buf = '<button name="discord" class="button"><strong>Log in with Discord</strong></button> <button name="challengeOnly" class="button"><strong>Play challenge-only</strong></button>';
 			} else {
 				buf = '<button name="login" class="button">Choose name</button>';
 			}
@@ -54,6 +54,9 @@
 		},
 		discord: function () {
 			app.user.discordRename();
+		},
+		challengeOnly: function () {
+			app.user.challengeOnlyRename();
 		},
 		openSounds: function () {
 			app.addPopup(SoundsPopup);
@@ -581,7 +584,7 @@
 			if (app.user.get('named')) {
 				buf += '<p class="buttonbar" style="text-align:right"><button name="login" class="button"><i class="fa fa-pencil"></i> Change name</button> <button name="logout" class="button"><i class="fa fa-power-off"></i> Log out</button></p>';
 			} else if (Config.discordlogin) {
-				buf += '<p class="buttonbar" style="text-align:right"><button name="discord" class="button"><strong>Log in with Discord</strong></button></p>';
+				buf += '<p class="buttonbar" style="text-align:right"><button name="discord" class="button"><strong>Log in with Discord</strong></button> <button name="challengeOnly" class="button"><strong>Play challenge-only</strong></button></p>';
 			} else {
 				buf += '<p class="buttonbar" style="text-align:right"><button name="login" class="button">Choose name</button></p>';
 			}
@@ -733,6 +736,10 @@
 		discord: function () {
 			this.close();
 			app.user.discordRename();
+		},
+		challengeOnly: function () {
+			this.close();
+			app.user.challengeOnlyRename();
 		},
 		register: function () {
 			app.addPopup(RegisterPopup);
@@ -936,10 +943,14 @@
 		}
 	});
 
-	var DISCORD_LOGIN_BUTTONBAR = '<p class="buttonbar"><button type="button" name="discord" class="button"><strong>Log in with Discord</strong></button> <button type="button" name="close" class="button">Cancel</button></p>';
+	var DISCORD_LOGIN_BUTTONBAR = '<p class="buttonbar"><button type="button" name="discord" class="button"><strong>Log in with Discord</strong></button> <button type="button" name="challengeOnly" class="button"><strong>Play challenge-only</strong></button> <button type="button" name="close" class="button">Cancel</button></p>';
 	var discordLogin = function () {
 		this.close();
 		app.user.discordRename();
+	};
+	var challengeOnlyLogin = function () {
+		this.close();
+		app.user.challengeOnlyRename();
 	};
 
 	var LoginPopup = this.LoginPopup = Popup.extend({
@@ -1015,6 +1026,7 @@
 			preview.css('color', css);
 		},
 		discord: discordLogin,
+		challengeOnly: challengeOnlyLogin,
 		force: function () {
 			var sourceEl = this.sourceEl;
 			this.close();
@@ -1184,6 +1196,7 @@
 			}
 		},
 		discord: discordLogin,
+		challengeOnly: challengeOnlyLogin,
 		login: function () {
 			this.close();
 			app.addPopup(LoginPopup);

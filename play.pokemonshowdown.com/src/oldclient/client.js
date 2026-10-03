@@ -350,6 +350,18 @@ function toId() {
 				'ps-discord-login', 'popup=1,width=500,height=750'
 			);
 		},
+		challengeOnlyRename: function () {
+			var seed = Storage.prefs('challengeonly');
+			if (!seed) {
+				var bytes = new Uint8Array(16);
+				window.crypto.getRandomValues(bytes);
+				seed = Array.prototype.map.call(bytes, function (byte) {
+					return ('0' + byte.toString(16)).slice(-2);
+				}).join('');
+				Storage.prefs('challengeonly', seed);
+			}
+			app.send('/challengeonly ' + seed);
+		},
 		challstr: '',
 		receiveChallstr: function (challstr) {
 			if (challstr) {
@@ -372,6 +384,7 @@ function toId() {
 				}, Storage.safeJSON(function (data) {
 					self.loaded = true;
 					if (!data.username) {
+						if (Storage.prefs('challengeonly')) self.challengeOnlyRename();
 						app.topbar.updateUserbar();
 						return;
 					}
@@ -399,6 +412,7 @@ function toId() {
 
 			Storage.prefs('user', false);
 			Storage.prefs('pass', false);
+			Storage.prefs('challengeonly', null);
 
 			app.send('/logout');
 			app.trigger('init:socketclosed', "You have been logged out and disconnected.<br /><br />If you wanted to change your name while staying connected, use the 'Change Name' button or the '/nick' command.", false);
