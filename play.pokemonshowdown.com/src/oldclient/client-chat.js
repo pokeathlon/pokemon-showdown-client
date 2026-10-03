@@ -1939,13 +1939,9 @@
 			buf += '<li class="userlist-count" id="' + this.room.id + '-userlist-users" style="text-align:center;padding:2px 0">';
 			buf += '<small id="' + this.room.id + '-usercount-users">' + usersString + '</small></li>';
 
-			if (this.room.id == "lobby") {
-				buf += '<li id="' + this.room.id + '-userlist-queue" style="background: rgba(0, 0, 0, 0.45);height: unset;padding: 2px;">';
-				for (var format in app.roomsData.ladderSearches) {
-					buf += '<p style="font-size: 7pt;"><b style="' + BattleLog.hashColor(format) + ';text-shadow: 1px 1px black;">' + format.split(']').slice(1).join(']') + ':</b> ' + app.roomsData.ladderSearches[format] + '</p>';
-				}
-				buf += '</li>';
-				setInterval(() => this.updateLadderSearches(), 5 * 1000);
+			if (this.room.id === 'lobby') {
+				buf += '<li id="' + this.room.id + '-userlist-queue" style="background: rgba(0, 0, 0, 0.45);height: unset;padding: 2px;">' + this.ladderSearchesHTML() + '</li>';
+				if (!this.ladderSearchesTimer) this.ladderSearchesTimer = setInterval(this.updateLadderSearches.bind(this), 5 * 1000);
 			}
 
 			var users = [];
@@ -1991,12 +1987,15 @@
 			var users = Math.max(this.room.userCount.users || 0, this.room.userCount.globalUsers || 0);
 			$('#' + this.room.id + '-usercount-users').html('' + users + (users === 1 ? ' user' : ' users'));
 		},
-		updateLadderSearches: function () {
+		ladderSearchesHTML: function () {
 			var buf = '';
 			for (var format in app.roomsData.ladderSearches) {
 				buf += '<p style="font-size: 7pt;"><b style="' + BattleLog.hashColor(format) + ';text-shadow: 1px 1px black;">' + format.split(']').slice(1).join(']') + ':</b> ' + app.roomsData.ladderSearches[format] + '</p>';
 			}
-			$('#' + this.room.id + '-userlist-queue').html(buf);
+			return buf;
+		},
+		updateLadderSearches: function () {
+			$('#' + this.room.id + '-userlist-queue').html(this.ladderSearchesHTML());
 		},
 		add: function (userid) {
 			$('#' + this.room.id + '-userlist-user-' + userid).remove();

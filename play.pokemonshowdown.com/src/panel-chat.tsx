@@ -146,6 +146,16 @@ export class ChatRoom extends PSRoom {
 			if (`${args[2]} `.startsWith('/challenge ')) {
 				this.updateChallenge(args[1], args[2].slice(11));
 				return;
+			} else if (args[2].startsWith('/warn ')) {
+				const reason = args[2].replace('/warn ', '');
+				PS.join(`rules-warn` as RoomID, {
+					args: {
+						type: 'warn',
+						message: reason?.trim() || undefined,
+					},
+					parentElem: null,
+				});
+				return;
 			}
 			// falls through
 		case 'c:':
@@ -385,6 +395,7 @@ export class ChatRoom extends PSRoom {
 			this.challenged = null;
 			this.teamSent = null;
 			this.update(null);
+			this.sendDirect(`/reject ${target}`);
 		},
 		'clear'() {
 			this.log?.reset();
@@ -572,6 +583,7 @@ export class ChatRoom extends PSRoom {
 		'play'() {
 			if (!this.battle) return this.errorReply(TL`You are not in a battle`);
 			if (this.battle.atQueueEnd) {
+				if (this.battle.ended) this.battle.isReplay = true;
 				this.battle.reset();
 			}
 			this.battle.play();

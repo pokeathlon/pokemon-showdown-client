@@ -2090,5 +2090,6 @@ PS.addRoomType(
 	PopupPanel,
 	RoomTabListPanel,
 	BattleOptionsPanel,
-	BattleTimerPanel
+	BattleTimerPanel,
+	RulesPanel
 );

@@ -58,7 +58,6 @@ export interface PSConfig {
 	translationCachebuster?: string;
 	whitelist?: string[];
 	testclient?: boolean;
-	discordlogin?: boolean;
 }
 export declare const Config: PSConfig;
 
@@ -352,16 +351,21 @@ export interface Team {
 	name: string;
 	format: ID;
 	folder: string;
-	/** note that this can be wrong if .uploaded?.loaded === false */
+	/** Note that this can be wrong if `.uploaded?.notLoaded` */
 	packedTeam: string;
 	/** The icon cache must be cleared (to `null`) whenever `packedTeam` is modified */
 	iconCache: preact.ComponentChildren;
+	/** Used in roomids (`team-[key]`) to refer to the team. Always persists within
+	  * a single session, but not always between refreshes. As long as a team still
+		* exists, pointers to a Team are equivalent to a key. */
 	key: string;
-	/** `uploaded` will only exist if you're logged into the correct account. otherwise teamid is still tracked */
 	isBox: boolean;
+	/** uploaded team ID. will not exist for teams that are not uploaded. tracked locally */
 	teamid?: number;
+	/** `uploaded` will only exist if you're logged into the correct account. otherwise teamid is still tracked */
 	uploaded?: {
 		teamid: number,
+		/** Promise = loading. */
 		notLoaded: boolean | Promise<void>,
 		/** password, if private. null = public, undefined = unknown, not loaded yet */
 		private?: string | null,
@@ -1193,8 +1197,14 @@ export class PSRoom extends PSStreamModel<Args | null> implements RoomOptions {
 			this.title = args[1];
 			PS.update();
 			break;
+		} case 'notify': {
+			const [, title, body, toHighlight] = args;
+			if (toHighlight && !ChatRoom.getHighlight(toHighlight, this.id)) break;
+			this.notify({ title, body });
+			break;
 		} case 'tempnotify': {
 			const [, id, title, body, toHighlight] = args;
+			if (toHighlight && !ChatRoom.getHighlight(toHighlight, this.id)) break;
 			this.notify({ title, body, id });
 			break;
 		} case 'tempnotifyoff': {
@@ -2071,14 +2081,16 @@ export const PS = new class extends PSModel {
 		this.addRoom({
 			id: 'rooms' as RoomID,
 			title: "Rooms",
-		}, true);
+			autofocus: false,
+		});
 		this.rightPanel = this.rooms['rooms']!;
 
 		if (this.newsHTML) {
 			this.addRoom({
 				id: 'news' as RoomID,
 				title: "News",
-			}, true);
+				autofocus: false,
+			});
 		}
 
 		// Create rooms before /autojoin is sent to the server
@@ -2686,8 +2698,15 @@ export const PS = new class extends PSModel {
 	}
 	/**
 	 * Low-level add room. You usually want `join`.
+	 *
+	 * By default, focuses the room after adding it. (`options.autofocus = false` to suppress)
+	 *
+	 * By default, when autofocusing, closes popups that aren't the parent of the added room.
+	 * (`options.autoclosePopups = false` to suppress)
 	 */
-	addRoom(options: RoomOptions, noFocus = false) {
+	addRoom(options: RoomOptions & { autoclosePopups?: boolean, autofocus?: boolean }) {
+		options.autofocus ??= true;
+		options.autoclosePopups ??= options.autofocus;
 		// support hardcoded PM room-IDs
 		if (options.id.startsWith('challenge-')) {
 			this.requestNotifications();
@@ -2730,7 +2749,7 @@ export const PS = new class extends PSModel {
 			}
 			return preexistingRoom;
 		}
-		if (!noFocus) {
+		if (options.autoclosePopups) {
 			let parentPopup = parentRoom;
 			if ((options.parentElem as HTMLButtonElement)?.name === 'closeRoom') {
 				// We want to close all popups above the parent element.
@@ -2746,13 +2765,13 @@ export const PS = new class extends PSModel {
 		this.rooms[room.id] = room;
 		const location = room.location;
 		room.location = null!;
-		this.moveRoom(room, location, noFocus);
+		this.moveRoom(room, location, !options.autofocus);
 		if (options.backlog) {
 			for (const args of options.backlog) {
 				room.receiveLine(args);
 			}
 		}
-		if (!noFocus) room.focusNextUpdate = true;
+		if (options.autofocus) room.focusNextUpdate = true;
 		return room;
 	}
 	hideRightRoom() {
@@ -2941,6 +2960,7 @@ export const PS = new class extends PSModel {
 		this.closePopupsAbove(null, skipUpdate);
 	}
 	closePopupsAbove(room: PSRoom | null | undefined, skipUpdate?: boolean) {
+		if (!this.popups.length) return;
 		// a while-loop may be simpler, but the loop invariant is very hard to prove
 		// and any bugs (opening a popup while leaving a room) could lead to an infinite loop
 		// a for-loop doesn't have that problem

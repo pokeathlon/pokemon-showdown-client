@@ -152,6 +152,9 @@ class RoomsPanel extends PSRoomPanel {
 					languageRooms.push(room);
 				} else if (room.privacy === 'hidden') {
 					hiddenRooms.push(room);
+				} else if (room.spotlight) {
+					spotLightLabel = room.spotlight;
+					spotLightRooms.push(room);
 				} else if (room.section === 'Official') {
 					officialRooms.push(room);
 				} else {
