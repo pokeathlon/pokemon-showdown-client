@@ -2036,8 +2036,6 @@
 				text += '<strong><em style="' + color + '">' + BattleLog.escapeHTML(user.name) + '</em></strong>';
 			} else if (details.type === 'staff') {
 				text += '<strong style="' + color + '">' + BattleLog.escapeHTML(user.name) + '</strong>';
-			} else if (details.type === 'punishment') {
-				text += '<span>punished user</span>';
 			} else {
 				text += '<span style="' + color + '">' + BattleLog.escapeHTML(user.name) + '</span>';
 			}
