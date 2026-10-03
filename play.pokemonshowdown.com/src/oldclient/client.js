@@ -219,7 +219,7 @@ function toId() {
 		getActionPHP: function () {
 			var ret = '/~~' + Config.server.id + '/action.php';
 			if (Config.testclient) {
-				ret = 'https://' + (Config.loginserver || Config.routes.client) + ret;
+				ret = 'https://' + Config.routes.client + ret;
 			}
 			return (this.getActionPHP = function () {
 				return ret;
@@ -332,7 +332,7 @@ function toId() {
 		discordListening: false,
 		discordRename: function () {
 			var self = this;
-			var origin = Config.testclient ? 'https://' + (Config.loginserver || Config.routes.client) : location.origin;
+			var origin = Config.testclient ? 'https://' + Config.routes.client : location.origin;
 			if (!this.discordListening) {
 				this.discordListening = true;
 				window.addEventListener('message', function (event) {
