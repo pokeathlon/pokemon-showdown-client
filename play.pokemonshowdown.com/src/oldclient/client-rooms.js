@@ -168,9 +168,7 @@
 			);
 			this.$('.roomlist').last().html(
 				(otherRooms.length ? otherRooms.sort(this.compareRooms).map(this.renderRoomBtn).join("") : '') +
-				(hiddenRooms.length && this.showMoreRooms ? hiddenRooms.sort(this.compareRooms).map(this.renderRoomBtn).join("") : '')
-			);
-			this.$('.roomlist').last().html(
+				(hiddenRooms.length && this.showMoreRooms ? hiddenRooms.sort(this.compareRooms).map(this.renderRoomBtn).join("") : '') +
 				`<div><a href="https://discord.com/invite/vsEN6mzuNj" target="_blank" class="blocklink"><small style="float:right">(2800+ members)</small><strong><i class="fa fa-comments-o"></i> Discord<br></strong><small>The Pok&eacute;athlon Discord.</small></a></div>`
 			);
 		},

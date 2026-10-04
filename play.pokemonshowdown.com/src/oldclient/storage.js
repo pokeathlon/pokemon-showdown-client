@@ -780,11 +780,10 @@ Storage.packTeam = function (team) {
 		if (buf) buf += ']';
 
 		// name
-		let fusionData = Dex.getFusionData(set);
-		if (fusionData.nickname !== '' && (!set.name || toID(set.name) === toID(set.species))) {
-			set.name = fusionData.nickname;
-		}
-		buf += set.name || set.species;
+		var name = set.name;
+		var fusionNickname = Dex.getFusionData(set).nickname;
+		if (fusionNickname && (!name || toID(name) === toID(set.species))) name = fusionNickname;
+		buf += name || set.species;
 
 		// species
 		var id = toID(set.species);

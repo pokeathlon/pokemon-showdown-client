@@ -43,7 +43,7 @@ export class ModifiableValue {
 				(pokemon?.innates || [])
 					.concat((serverPokemon as any)?.innates || []);
 			for (const innate of activeInnates) {
-				if (!(innate in this.abilityNames)) {
+				if (!this.abilityNames.includes(this.battle.dex.abilities.get(innate).name)) {
 					this.abilityNames.push(this.battle.dex.abilities.get(innate).name);
 				}
 			}
@@ -768,7 +768,7 @@ export class BattleTooltips {
 			let called;
 			if (this.battle.gen > 5) {
 				if (item.id === 'fieldcleats') {
-					called = 'Tri Attack';
+					called = this.battle.dex.moves.get('Tri Attack');
 				} else if (this.battle.hasPseudoWeather('Electric Terrain')) {
 					called = this.battle.dex.moves.get('Thunderbolt');
 				} else if (this.battle.hasPseudoWeather('Grassy Terrain')) {
@@ -974,8 +974,8 @@ export class BattleTooltips {
 
 			if (clientPokemon?.volatiles.formechange) {
 				const forme = TL(this.battle.dex.species.get(clientPokemon.volatiles.formechange[1]));
-				const fusion = clientPokemon.volatiles.transform[5] ? '/' + TL(this.battle.dex.species.get(clientPokemon.volatiles.transform[5])) : '';
 				if (clientPokemon.volatiles.transform) {
+					const fusion = clientPokemon.volatiles.transform[5] ? '/' + TL(this.battle.dex.species.get(clientPokemon.volatiles.transform[5])) : '';
 					text += `<small>${TL`(Transformed into ${forme + fusion})`}</small><br />`;
 				} else {
 					text += `<small>${TL`(Changed forme: ${forme})`}</small><br />`;
@@ -1309,8 +1309,8 @@ export class BattleTooltips {
 		}
 
 		if (item === 'dandelight' && (speciesName === 'Delcatty-Orion' || fusionSpecies === 'Delcatty-Orion')) {
-			stats.def *= Math.floor(1.25);
-			stats.spd *= Math.floor(1.25);
+			stats.def = Math.floor(stats.def * 1.25);
+			stats.spd = Math.floor(stats.spd * 1.25);
 		}
 
 		if (item === 'sharpcoral' && (['Cubone-Orion', 'Marowak-Orion'].includes(speciesName) || ['Cubone-Orion', 'Marowak-Orion'].includes(fusionSpecies))) {
@@ -1328,13 +1328,13 @@ export class BattleTooltips {
 		}
 
 		if (item === 'voidheart' && (speciesName === 'Volbeat-Orion' || fusionSpecies === 'Volbeat-Orion')) {
-			stats.def *= Math.floor(1.5);
-			stats.atk *= Math.floor(1.5);
+			stats.def = Math.floor(stats.def * 1.5);
+			stats.atk = Math.floor(stats.atk * 1.5);
 		}
 
 		if (item === 'voidheart' && (speciesName === 'Illumise-Orion' || fusionSpecies === 'Illumise-Orion')) {
-			stats.spa *= Math.floor(1.5);
-			stats.spd *= Math.floor(1.5);
+			stats.spa = Math.floor(stats.spa * 1.5);
+			stats.spd = Math.floor(stats.spd * 1.5);
 		}
 		// check abilities other than Guts and Quick Feet
 		// check items other than light ball, thick club, metal/quick powder
@@ -1430,7 +1430,7 @@ export class BattleTooltips {
 							if (!ally || ally.fainted) continue;
 							let allyAbility = this.getAllyAbility(ally);
 							if (allyAbility === 'Winter Gift' && (ally.getSpecies().baseSpecies === 'Cherrim-Orion' || this.battle.gen <= 4)) {
-								stats.atk = Math.floor(stats.spa * 1.5);
+								stats.atk = Math.floor(stats.atk * 1.5);
 								stats.spd = Math.floor(stats.spd * 1.5);
 							}
 						}
@@ -2062,7 +2062,7 @@ export class BattleTooltips {
 		}
 		if (move.flags.bite && value.abilityModify(0, 'Spectral Jaws')) category = 'Special';
 
-		if (this.battle.rules['Physical Special Split Mod']) {
+		if (this.battle.rules['Physical Special Split Mod'] && category !== 'Status') {
 			const special = ['Fire', 'Water', 'Grass', 'Electric', 'Psychic', 'Ice', 'Dragon', 'Dark', 'Fairy', 'Nuclear', 'Cosmic'];
 			special.includes(moveType) ? category = 'Special' : category = 'Physical';
 		}
@@ -2876,7 +2876,7 @@ export class BattleTooltips {
 		if (move.category === 'Physical') {
 			if (value.tryAbility("Strange Anatomy")) value.set(Math.max(move.basePower - (5 * pokemon.strangeAnatomyTurns), 0), `${5 * pokemon.strangeAnatomyTurns} BP lost from Strange Anatomy`);
 		}
-		if (this.battle.mySide.sideConditions['scatteredcoins']) {
+		if (pokemon.side.sideConditions['scatteredcoins']) {
 			value.abilityModify(1.3, 'Money Equals Power')
 		}
 		if (pokemon.volatiles[move.category.toLowerCase()]) {
@@ -3267,10 +3267,9 @@ export class BattleTooltips {
 				const species = dex.species.get(speciesForme);
 				if (species.exists && species.abilities) {
 					abilityData.possibilities = Object.values(species.abilities);
-					if (this.battle.rules['Frantic Fusions Mod']) {
-						const fusionSpecies = dex.species.get(clientPokemon.name);
-					} else if (this.battle.rules['Infinite Fusion Mod'] && clientPokemon.fusion) {
-						const fusionSpecies = dex.species.get(clientPokemon.fusion);
+					const isFranticFusions = this.battle.rules['Frantic Fusions Mod'];
+					if (isFranticFusions || (this.battle.rules['Infinite Fusion Mod'] && clientPokemon.fusion)) {
+						const fusionSpecies = dex.species.get(isFranticFusions ? clientPokemon.name : clientPokemon.fusion);
 						if (fusionSpecies.exists && fusionSpecies.name !== species.name) {
 							for (const newAbility of Object.values(fusionSpecies.abilities)) {
 								if (abilityData.possibilities.includes(newAbility)) continue;
@@ -3289,7 +3288,7 @@ export class BattleTooltips {
 			if (abilityData.abilities.length === 0)
 				abilityData.abilities = [abilityData.ability, ...((serverPokemon as any)?.innates || [])];
 			if (abilityData.baseAbilities.length === 0)
-				abilityData.abilities = [abilityData.baseAbility, ...((serverPokemon as any)?.baseInnates || [])];
+				abilityData.baseAbilities = [abilityData.baseAbility, ...((serverPokemon as any)?.baseInnates || [])];
 		}
 		if (abilityData.abilities.length === 0) abilityData.abilities = [abilityData.ability];
 		return abilityData;
@@ -3308,12 +3307,12 @@ export class BattleTooltips {
 			if (ability) {
 				if (abilityData.abilities.length > 1) {
 					text = '<small>Abilities:</small> ' + abilityData.abilities.map(ability => TL(this.battle.dex.abilities.get(ability))).join(' / ');
-				} else text = `<small>${TL.label(TL`Ability`)}:</small>` + TL(this.battle.dex.abilities.get(ability));
+				} else text = `<small>${TL.label(TL`Ability`)}</small>` + TL(this.battle.dex.abilities.get(ability));
 			}
 		} else {
 			if (abilityData.ability) {
 				const isPlural = abilityData.abilities.length > 1;
-				const beginningText = isPlural ? '<small>Abilities:</small> ' : `<small>${TL.label(TL`Ability`)}:</small>`;
+				const beginningText = isPlural ? '<small>Abilities:</small> ' : `<small>${TL.label(TL`Ability`)}</small>`;
 				const abilitiesText = abilityData.abilities.map(ability => TL(this.battle.dex.abilities.get(ability))).join(' / ');
 				text = beginningText + abilitiesText;
 				if (abilityData.baseAbility) {
