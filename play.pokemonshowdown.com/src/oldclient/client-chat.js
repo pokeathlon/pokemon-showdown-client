@@ -1932,6 +1932,10 @@
 	var UserList = this.UserList = Backbone.View.extend({
 		initialize: function (options) {
 			this.room = options.room;
+			if (this.room.id === 'lobby') {
+				this.listenTo(app, 'response:ladderqueue', this.updateLadderSearches);
+				app.send('/cmd ladderqueue');
+			}
 		},
 		events: {
 			'click .userlist-count': 'toggleUserlist'
@@ -1945,7 +1949,6 @@
 
 			if (this.room.id === 'lobby') {
 				buf += '<li id="' + this.room.id + '-userlist-queue" style="background: rgba(0, 0, 0, 0.45);height: unset;padding: 2px;">' + this.ladderSearchesHTML() + '</li>';
-				if (!this.ladderSearchesTimer) this.ladderSearchesTimer = setInterval(this.updateLadderSearches.bind(this), 5 * 1000);
 			}
 
 			var users = [];
@@ -1993,12 +1996,14 @@
 		},
 		ladderSearchesHTML: function () {
 			var buf = '';
-			for (var format in app.roomsData.ladderSearches) {
-				buf += '<p style="font-size: 7pt;"><b style="' + BattleLog.hashColor(format) + ';text-shadow: 1px 1px black;">' + format.split(']').slice(1).join(']') + ':</b> ' + app.roomsData.ladderSearches[format] + '</p>';
+			for (var formatid in this.ladderQueue) {
+				var format = window.BattleFormats && BattleFormats[formatid] ? BattleFormats[formatid].name : formatid;
+				buf += '<p style="font-size: 7pt;"><b style="' + BattleLog.hashColor(format) + ';text-shadow: 1px 1px black;">' + BattleLog.escapeHTML(format.replace(/^\[[^\]]*\] /, '')) + ':</b> ' + this.ladderQueue[formatid] + '</p>';
 			}
 			return buf;
 		},
-		updateLadderSearches: function () {
+		updateLadderSearches: function (ladderQueue) {
+			this.ladderQueue = ladderQueue;
 			$('#' + this.room.id + '-userlist-queue').html(this.ladderSearchesHTML());
 		},
 		add: function (userid) {
@@ -2019,7 +2024,7 @@
 					return;
 				}
 			}
-			$(this.constructItem(userid)).insertAfter($(users[right ? right : 1]));
+			$(this.constructItem(userid)).insertAfter($(users[right]));
 		},
 		remove: function (userid) {
 			$('#' + this.room.id + '-userlist-user-' + userid).remove();
@@ -2052,6 +2057,7 @@
 			var id = elem.id.substr(this.room.id.length + 1);
 			switch (id) {
 			case 'userlist-users':
+			case 'userlist-queue':
 				return -1; // `elem` comes first
 			case 'userlist-empty':
 			case 'userlist-unregistered':

@@ -1292,6 +1292,13 @@
 			this.selectType = data.selectType;
 			this.$form = this.sourceEl.closest('form');
 			if (!this.selectType) this.selectType = (this.$form.data('search') ? 'search' : 'challenge');
+			if (this.selectType === 'search') {
+				this.listenTo(app, 'response:ladderqueue', function (ladderQueue) {
+					this.ladderQueue = ladderQueue;
+					this.update();
+				});
+				app.send('/cmd ladderqueue');
+			}
 
 			var html = '<p><ul class="popupmenu"><li><input name="search" placeholder="Search formats" value="' + this.search + '" class="textbox autofocus" autocomplete="off" />';
 			html += '</li></ul></p><span name="formats">';
@@ -1304,6 +1311,9 @@
 			var curFormat = data.format;
 			var bufs = [];
 			var curBuf = 0;
+			var ladderQueue = this.ladderQueue || {};
+			var totalSearches = 0;
+			for (var i in ladderQueue) totalSearches += ladderQueue[i];
 			if (this.selectType === 'watch' && !this.search) {
 				bufs[1] = '<li><button name="selectFormat" value="" class="option' + (curFormat === '' ? ' cur' : '') + '">(All formats)</button></li>';
 			}
@@ -1323,7 +1333,8 @@
 				var formatName = BattleLog.escapeFormat(BattleFormats[i].id);
 				bufs[1] += (
 					'<li><button name="selectFormat" value="' + i +
-					'" class="option' + (curFormat === i ? ' cur' : '') + '">' + formatName +
+					'" class="option' + (curFormat === i ? ' cur' : '') + '"' +
+					(ladderQueue[i] ? ' style="background:hsl(120,' + Math.round(100 * ladderQueue[i] / totalSearches) + '%,30%);color:#FFF"' : '') + '>' + formatName +
 					'<i class="fa fa-star" style="float: right; color: #FFD700; text-shadow: 0 0 1px #000;"></i></button></li>'
 				);
 			}
@@ -1354,7 +1365,8 @@
 				var formatName = BattleLog.escapeFormat(format.id);
 				bufs[curBuf] += (
 					'<li><button name="selectFormat" value="' + i +
-					'" class="option' + (curFormat === i ? ' cur' : '') + '">' + formatName +
+					'" class="option' + (curFormat === i ? ' cur' : '') + '"' +
+					(ladderQueue[i] ? ' style="background:hsl(120,' + Math.round(100 * ladderQueue[i] / totalSearches) + '%,30%);color:#FFF"' : '') + '>' + formatName +
 					'<i class="fa fa-star subtle" style="float: right;"></i></button></li>'
 				);
 			}
