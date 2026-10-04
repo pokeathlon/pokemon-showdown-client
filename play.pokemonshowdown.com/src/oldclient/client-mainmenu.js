@@ -713,26 +713,25 @@
 			var $searchForm = $('.mainmenu button.big').closest('form');
 			var $formatButton = $searchForm.find('button[name=format]');
 			var $teamButton = $searchForm.find('button[name=team]');
-			if (!this.searching || $.isArray(this.searching) && !this.searching.length) {
-				var format = $formatButton.val();
-				var teamIndex = $teamButton.val();
-				$formatButton.replaceWith(this.renderFormats(format));
-				$teamButton.replaceWith(this.renderTeams(format, teamIndex));
+			var format = $formatButton.val();
+			var teamIndex = $teamButton.val();
+			$formatButton.replaceWith(this.renderFormats(format));
+			$teamButton.replaceWith(this.renderTeams(format, teamIndex));
 
-				$searchForm.find('button.big').html('<strong>Battle!</strong><br /><small>Find a random opponent</small>').removeClass('disabled');
-				$searchForm.find('p.cancel').remove();
-			} else {
-				$formatButton.addClass('preselected')[0].disabled = true;
-				$teamButton.addClass('preselected')[0].disabled = true;
-				$searchForm.find('button.big').html('<strong><i class="fa fa-refresh fa-spin"></i> Searching...</strong>').addClass('disabled');
+			$searchForm.find('button.big').html('<strong>Battle!</strong><br /><small>Find a random opponent</small>').removeClass('disabled');
+			$searchForm.find('p.cancel, p.searching').remove();
+			if (this.searching && !($.isArray(this.searching) && !this.searching.length)) {
+				$searchForm.find('button.big small').text('Search multiple formats');
+				var buf = '<p class="searching"><label class="label">Searching:</label>';
 				var searchEntries = $.isArray(this.searching) ? this.searching : [this.searching];
 				for (var i = 0; i < searchEntries.length; i++) {
 					var format = searchEntries[i].format || searchEntries[i];
+					buf += '<button name="cancelSearch" value="' + BattleLog.escapeHTML(format) + '" class="button" style="width:100%;margin-bottom:2px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis"><i class="fa fa-refresh fa-spin"></i> ' + BattleLog.escapeHTML(BattleLog.formatName(format).replace(/^\[[^\]]*\] /, '')) + ' <i class="fa fa-times-circle"></i></button>';
 					if (format.substr(0, 4) === 'gen5' && !Dex.loadedSpriteData['bw']) {
 						Dex.loadSpriteData('bw');
-						break;
 					}
 				}
+				$searchForm.prepend(buf + '</p>');
 			}
 
 			var $searchGroup = $searchForm.closest('.menugroup');
@@ -1131,6 +1130,10 @@
 			var format = $formatButton.val();
 			var teamIndex = $teamButton.val();
 			var team = null;
+			if ($.isArray(this.searching) && this.searching.indexOf(format) >= 0) {
+				app.addPopupMessage("You're already searching for a " + BattleLog.formatName(format) + " battle.");
+				return;
+			}
 			if (Storage.teams[teamIndex]) team = Storage.teams[teamIndex];
 			if (!window.BattleFormats[format].team && (teamIndex === '' || !team)) {
 				if (Storage.teams) {
@@ -1144,19 +1147,18 @@
 			$formatButton.addClass('preselected')[0].disabled = true;
 			$teamButton.addClass('preselected')[0].disabled = true;
 			$searchForm.find('button.big').html('<strong><i class="fa fa-refresh fa-spin"></i> Connecting...</strong>').addClass('disabled');
-			$searchForm.append('<p class="cancel buttonbar"><button name="cancelSearch" class="button">Cancel</button></p>');
+			$searchForm.append('<p class="cancel buttonbar"><button name="cancelSearch" value="' + BattleLog.escapeHTML(format) + '" class="button">Cancel</button></p>');
 
 			var self = this;
-			app.sendTeam(team, function () {
-				self.searchDelay = setTimeout(function () {
+			self.searchDelay = setTimeout(function () {
+				app.sendTeam(team, function () {
 					app.send(self.adjustPrivacy($privacyCheckbox.is(':checked')) + '/search ' + format);
-				}, 3000);
-			});
+				});
+			}, 3000);
 		},
-		cancelSearch: function () {
+		cancelSearch: function (format) {
 			clearTimeout(this.searchDelay);
-			app.send('/cancelsearch');
-			this.searching = false;
+			app.send('/cancelsearch ' + format);
 			this.updateSearch();
 		},
 		finduser: function () {
