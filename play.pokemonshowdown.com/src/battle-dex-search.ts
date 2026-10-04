@@ -941,10 +941,12 @@ abstract class BattleTypedSearch<T extends SearchType> {
 		let table = BattleTeambuilderTable;
 		if (this.formatType?.startsWith('bdsp')) table = table['gen8bdsp'];
 		if (this.formatType === 'letsgo') table = table['gen7letsgo'];
+		if (this.formatType === 'bw1') table = table['gen5bw1'];
 		if (['gen9infinitefusion', 'gen7infinitefusion', 'gen7infinitefusionhoenn', 'gen9pokeathlon', 'gen9insurgence', 'gen6insurgence', 'gen9uranium', 'gen6uranium', 'gen9infinity', 'gen6infinity', 'gen9mariomon', 'gen9chaos', 'gen9chaosmayhem', 'gen9chaosfusion', 'gen9soulstones'].includes(this.dex.modid)) table = table[this.dex.modid];
 		if (this.formatType === 'rs') table = table['gen3rs'];
 		if (this.formatType === 'frlg') table = table['gen3frlg'];
 		if (this.formatType === 'champions') table = table['champions'];
+		if (this.formatType === 'natdexchampions') table = table['natdexchampions'];
 		if (speciesid in table.learnsets || speciesid in BattleTeambuilderTable.learnsets) return speciesid;
 		const species = this.dex.species.get(speciesid);
 		if (!species.exists) return '' as ID;
@@ -1012,10 +1014,12 @@ abstract class BattleTypedSearch<T extends SearchType> {
 			let table = BattleTeambuilderTable;
 			if (this.formatType?.startsWith('bdsp')) table = table['gen8bdsp'];
 			if (this.formatType === 'letsgo') table = table['gen7letsgo'];
+			if (this.formatType === 'bw1') table = table['gen5bw1'];
 			if (['gen9infinitefusion', 'gen7infinitefusion', 'gen7infinitefusionhoenn', 'gen9pokeathlon', 'gen9insurgence', 'gen6insurgence', 'gen9uranium', 'gen6uranium', 'gen9infinity', 'gen6infinity', 'gen9mariomon', 'gen9chaos', 'gen9chaosmayhem', 'gen9chaosfusion', 'gen9soulstones'].includes(this.dex.modid)) table = table[this.dex.modid];
 			if (this.formatType === 'rs') table = table['gen3rs'];
 			if (this.formatType === 'frlg') table = table['gen3frlg'];
 			if (this.formatType === 'champions') table = table['champions'];
+			if (this.formatType === 'natdexchampions') table = table['natdexchampions'];
 			let learnset = table.learnsets[learnsetid] || BattleTeambuilderTable.learnsets[learnsetid];
 			const eggMovesOnly = this.eggMovesOnly(learnsetid, speciesid);
 			if (learnset && (moveid in learnset) && (!this.format.startsWith('tradebacks') ? learnset[moveid].includes(genChar) :
@@ -1184,6 +1188,8 @@ class BattlePokemonSearch extends BattleTypedSearch<'pokemon'> {
 			table = table['gen8' + this.formatType];
 		} else if (this.formatType === 'letsgo') {
 			table = table['gen7letsgo'];
+		} else if (this.formatType === 'bw1') {
+			table = table['gen5bw1'];
 		} else if (format === 'mariomonvgc') {
 			table = table['gen9mariomonvgc'];
 			isVGCOrBS = true;
@@ -1245,7 +1251,7 @@ class BattlePokemonSearch extends BattleTypedSearch<'pokemon'> {
 		) {
 			tierSet = tierSet.slice(slices.Uber);
 		} else if (isVGCOrBS || (isHackmons && dex.gen === 9 && !this.formatType)) {
-			if (format.endsWith('series13') || isHackmons) {
+			if (format.endsWith('series13') || format.endsWith('regj') || isHackmons) {
 				// Show Mythicals
 			} else if (
 				format === 'vgc2010' || format === 'vgc2016' || format.startsWith('vgc2019') ||
@@ -1548,6 +1554,8 @@ class BattleItemSearch extends BattleTypedSearch<'item'> {
 		let table = BattleTeambuilderTable;
 		if (this.formatType?.startsWith('bdsp')) {
 			table = table['gen8bdsp'];
+		} else if (this.formatType === 'bw1') {
+			table = table['gen5bw1'];
 		} else if (this.table) {
 			table = table[this.table.includes('doubles') ? this.table.replace('doubles', '') : this.table];
 		} else if (this.formatType === 'rs') {
@@ -2011,6 +2019,24 @@ class BattleMoveSearch extends BattleTypedSearch<'move'> {
 					if (!this.formatType?.includes('natdex') && move.isNonstandard === "Past") {
 						continue;
 					}
+					if (
+						this.formatType?.startsWith('dlc1') &&
+						BattleTeambuilderTable['gen8dlc1']?.nonstandardMoves.includes(moveid)
+					) {
+						continue;
+					}
+					if (
+						this.formatType?.includes('predlc') &&
+						BattleTeambuilderTable['gen9predlc']?.nonstandardMoves.includes(moveid)
+					) {
+						continue;
+					}
+					if (
+						this.formatType?.includes('svdlc1') &&
+						BattleTeambuilderTable['gen9dlc1']?.nonstandardMoves.includes(moveid)
+					) {
+						continue;
+					}
 					if (moves.includes(moveid)) continue;
 					moves.push(moveid);
 					if (moveid === 'sketch') sketch = true;
@@ -2294,30 +2320,42 @@ class BattleMoveSearch extends BattleTypedSearch<'move'> {
 				if (move.isZ || move.isMax || (move.isNonstandard && move.isNonstandard !== 'Unobtainable')) continue;
 
 				const speciesTypes: string[] = [];
+				const moveTypes: string[] = [];
+				for (let i = dex.gen; i >= species.gen && i >= move.gen; i--) {
+					const genDex = Dex.forGen(i);
+					moveTypes.push(genDex.moves.get(move.name).type);
 
-				const pokemon = dex.species.get(species.name);
-				let baseSpecies = dex.species.get(pokemon.changesFrom || pokemon.name);
-				if (!pokemon.battleOnly) speciesTypes.push(...pokemon.types);
-				let prevo = pokemon.prevo;
-				while (prevo) {
-					const prevoSpecies = dex.species.get(prevo);
-					speciesTypes.push(...prevoSpecies.types);
-					prevo = prevoSpecies.prevo;
-				}
-				if (pokemon.battleOnly && typeof pokemon.battleOnly === 'string') {
-					species = dex.species.get(pokemon.battleOnly);
-				}
-				const excludedForme = (s: Dex.Species) => [
-					'Alola', 'Alola-Totem', 'Galar', 'Galar-Zen', 'Hisui', 'Paldea', 'Paldea-Combat', 'Paldea-Blaze', 'Paldea-Aqua',
-				].includes(s.forme);
-				if (baseSpecies.otherFormes && !['Wormadam', 'Urshifu'].includes(baseSpecies.baseSpecies)) {
-					if (!excludedForme(species)) speciesTypes.push(...baseSpecies.types);
-					for (const formeName of baseSpecies.otherFormes) {
-						const forme = dex.species.get(formeName);
-						if (!forme.battleOnly && !excludedForme(forme)) speciesTypes.push(...forme.types);
+					const pokemon = genDex.species.get(species.name);
+					let baseSpecies = genDex.species.get(pokemon.changesFrom || pokemon.name);
+					if (!pokemon.battleOnly) speciesTypes.push(...pokemon.types);
+					let prevo = pokemon.prevo;
+					while (prevo) {
+						const prevoSpecies = genDex.species.get(prevo);
+						speciesTypes.push(...prevoSpecies.types);
+						prevo = prevoSpecies.prevo;
+					}
+					if (pokemon.battleOnly && typeof pokemon.battleOnly === 'string') {
+						species = dex.species.get(pokemon.battleOnly);
+					}
+					const excludedForme = (s: Dex.Species) => [
+						'Alola', 'Alola-Totem', 'Galar', 'Galar-Zen', 'Hisui', 'Paldea', 'Paldea-Combat', 'Paldea-Blaze', 'Paldea-Aqua',
+					].includes(s.forme);
+					if (baseSpecies.otherFormes && !['Wormadam', 'Urshifu'].includes(baseSpecies.baseSpecies)) {
+						if (!excludedForme(species)) speciesTypes.push(...baseSpecies.types);
+						for (const formeName of baseSpecies.otherFormes) {
+							const forme = dex.species.get(formeName);
+							if (!forme.battleOnly && !excludedForme(forme)) speciesTypes.push(...forme.types);
+						}
 					}
 				}
-				if (speciesTypes.includes(move.type)) moves.push(id);
+				let valid = false;
+				for (let type of moveTypes) {
+					if (speciesTypes.includes(type)) {
+						valid = true;
+						break;
+					}
+				}
+				if (valid) moves.push(id);
 			}
 		}
 

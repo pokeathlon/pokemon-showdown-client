@@ -32,7 +32,7 @@ Storage.bg = {
 	changeCount: 0,
 	// futureproofing in case we ever add more?
 	// because doing this once was annoying
-	MENU_BUTTONS: 6,
+	MENU_BUTTONS: 7,
 	set: function (bgUrl, bgid, noSave) {
 		if (!this.load(bgUrl, bgid)) {
 			this.extractMenuColors(bgUrl, bgid, noSave);
@@ -787,7 +787,7 @@ Storage.packTeam = function (team) {
 
 		// species
 		var id = toID(set.species);
-		buf += '|' + (toID(set.name || set.species) === id ? '' : id);
+		buf += '|' + (toID(name || set.species) === id ? '' : id);
 
 		// item
 		buf += '|' + toID(set.item);
@@ -916,6 +916,11 @@ Storage.fastUnpackTeam = function (buf) {
 		j = buf.indexOf('|', i);
 		set.nature = buf.substring(i, j);
 		if (set.nature === 'undefined') set.nature = undefined;
+		if (set.nature) {
+			// BattleNatures is case sensitive, so if we don't do this
+			// sometimes stuff breaks. goody.
+			set.nature = set.nature.charAt(0).toUpperCase() + set.nature.slice(1);
+		}
 		i = j + 1;
 
 		// evs
@@ -1037,6 +1042,11 @@ Storage.unpackTeam = function (buf) {
 		j = buf.indexOf('|', i);
 		set.nature = buf.substring(i, j);
 		if (set.nature === 'undefined') set.nature = undefined;
+		if (set.nature) {
+			// BattleNatures is case sensitive, so if we don't do this
+			// sometimes stuff breaks. goody.
+			set.nature = set.nature.charAt(0).toUpperCase() + set.nature.slice(1);
+		}
 		i = j + 1;
 
 		// evs

@@ -163,12 +163,20 @@
 			}
 
 			this.$('.roomlist').first().html(
-				(officialRooms.length ? officialRooms.sort(this.compareRooms).map(this.renderRoomBtn).join("") : '') +
-				(spotlightRooms.length ? spotlightRooms.sort(this.compareRooms).map(this.renderRoomBtn).join("") : '')
+				(officialRooms.length ?
+					officialRooms.sort(this.compareRooms).map(this.renderRoomBtn).join("") : ''
+				) +
+				(spotlightRooms.length ?
+					spotlightRooms.sort(this.compareRooms).map(this.renderRoomBtn).join("") : ''
+				)
 			);
 			this.$('.roomlist').last().html(
-				(otherRooms.length ? otherRooms.sort(this.compareRooms).map(this.renderRoomBtn).join("") : '') +
-				(hiddenRooms.length && this.showMoreRooms ? hiddenRooms.sort(this.compareRooms).map(this.renderRoomBtn).join("") : '') +
+				(otherRooms.length ?
+					otherRooms.sort(this.compareRooms).map(this.renderRoomBtn).join("") : ''
+				) +
+				(hiddenRooms.length && this.showMoreRooms ?
+					hiddenRooms.sort(this.compareRooms).map(this.renderRoomBtn).join("") : ''
+				) +
 				`<div><a href="https://discord.com/invite/vsEN6mzuNj" target="_blank" class="blocklink"><small style="float:right">(2800+ members)</small><strong><i class="fa fa-comments-o"></i> Discord<br></strong><small>The Pok&eacute;athlon Discord.</small></a></div>`
 			);
 		},
