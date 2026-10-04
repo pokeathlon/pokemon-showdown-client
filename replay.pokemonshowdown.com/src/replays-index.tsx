@@ -246,7 +246,6 @@ export class SearchPanel extends preact.Component<{ id: string, user: PSReplays[
 					</p>}
 				</form>
 			</section>
-			{!activelySearching && <FeaturedReplays />}
 			{!activelySearching && <section class="section">
 				<h1>Recent replays</h1>
 				<ul class="linklist">

@@ -248,11 +248,11 @@ https://replay.pokemonshowdown.com/gen7randomdoublesbattle-865046831.log
 
 	<header>
 		<div class="nav-wrapper"><ul class="nav">
-			<li><a class="button nav-first" href="//pokemonshowdown.com/"><img src="//pokemonshowdown.com/images/pokemonshowdownbeta.png" srcset="//pokemonshowdown.com/images/pokemonshowdownbeta.png 1x, //pokemonshowdown.com/images/pokemonshowdownbeta@2x.png 2x" alt="Pok&eacute;mon Showdown" width="146" height="44" /> Home</a></li>
+			<li><a class="button nav-first" href="//pokemonshowdown.com/"><img src="//pokemonshowdown.com/images/pokemonshowdownbeta.png" srcset="//home.pokeathlon.com/images/pokemonshowdownbeta.png 1x, //home.pokeathlon.com/images/pokemonshowdownbeta@2x.png 2x" alt="Pok&eacute;mon Showdown" width="146" height="44" /> Home</a></li>
 			<li><a class="button" href="//pokemonshowdown.com/dex/">Pok&eacute;dex</a></li>
 			<li><a class="button cur" href="/">Replay</a></li>
-			<li><a class="button purplebutton" href="//smogon.com/dex/" target="_blank">Strategy</a></li>
-			<li><a class="button nav-last purplebutton" href="//smogon.com/forums/" target="_blank">Forum</a></li>
+			<li><a class="button purplebutton" href="https://pokeathlon.wiki.gg/" target="_blank">Strategy</a></li>
+			<li><a class="button nav-last purplebutton" href="https://discord.gg/AY9UmkTKuh" target="_blank">Forum</a></li>
 			<li><a class="button greenbutton nav-first nav-last" href="//play.pokemonshowdown.com/">Play</a></li>
 		</ul></div>
 	</header>
@@ -281,6 +281,12 @@ https://replay.pokemonshowdown.com/gen7randomdoublesbattle-865046831.log
 <script defer src="//play.pokemonshowdown.com/data/abilities.js?a7"></script>
 <script defer src="//play.pokemonshowdown.com/data/items.js?a7"></script>
 <script defer src="//play.pokemonshowdown.com/data/teambuilder-tables.js?a7"></script>
+<script defer src="//play.pokemonshowdown.com/data/aliases.js?a7"></script>
+<script defer src="//play.pokemonshowdown.com/data/formats.js?a7"></script>
+<script defer src="//play.pokemonshowdown.com/data/fusion-index.js?a7"></script>
+<script defer src="//play.pokemonshowdown.com/data/fusion-credits.js?a7"></script>
+<script defer src="//play.pokemonshowdown.com/data/fangame-credits.js?a7"></script>
+<script defer src="//play.pokemonshowdown.com/data/poa-credits.js?a7"></script>
 <script defer src="//play.pokemonshowdown.com/js/battle-tooltips.js?a7"></script>
 <script defer src="//play.pokemonshowdown.com/js/battle.js?a7"></script>
 
