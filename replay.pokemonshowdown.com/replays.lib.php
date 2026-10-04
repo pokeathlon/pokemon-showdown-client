@@ -53,25 +53,25 @@ class Replays {
 	function edit($replay) {
 		if ($replay['private'] === 3) {
 			$replay['private'] = 3;
-			$res = $this->db->prepare("UPDATE replays SET private = 3, password = NULL WHERE id = ? LIMIT 1");
+			$res = $this->db->prepare("UPDATE replays SET private = 3, password = NULL WHERE id = ?");
 			$res->execute([$replay['id']]);
 			$res = $this->db->prepare("UPDATE replayplayers SET private = 3, password = NULL WHERE id = ?");
 			$res->execute([$replay['id']]);
 		} else if ($replay['private'] === 2) {
 			$replay['private'] = 1;
 			$replay['password'] = NULL;
-			$res = $this->db->prepare("UPDATE replays SET private = 1, password = NULL WHERE id = ? LIMIT 1");
+			$res = $this->db->prepare("UPDATE replays SET private = 1, password = NULL WHERE id = ?");
 			$res->execute([$replay['id']]);
 			$res = $this->db->prepare("UPDATE replayplayers SET private = 1, password = NULL WHERE id = ?");
 			$res->execute([$replay['id']]);
 		} else if ($replay['private']) {
 			if (!$replay['password']) $replay['password'] = $this->genPassword();
-			$res = $this->db->prepare("UPDATE replays SET private = 1, password = ? WHERE id = ? LIMIT 1");
+			$res = $this->db->prepare("UPDATE replays SET private = 1, password = ? WHERE id = ?");
 			$res->execute([$replay['password'], $replay['id']]);
 			$res = $this->db->prepare("UPDATE replayplayers SET private = 1, password = ? WHERE id = ?");
 			$res->execute([$replay['password'], $replay['id']]);
 		} else {
-			$res = $this->db->prepare("UPDATE replays SET private = 0, password = NULL WHERE id = ? LIMIT 1");
+			$res = $this->db->prepare("UPDATE replays SET private = 0, password = NULL WHERE id = ?");
 			$res->execute([$replay['id']]);
 			$res = $this->db->prepare("UPDATE replayplayers SET private = 0, password = NULL WHERE id = ?");
 			$res->execute([$replay['id']]);
@@ -95,7 +95,7 @@ class Replays {
 			if ($player[0] === '!') $player = substr($player, 1);
 		}
 
-		$res = $this->db->prepare("UPDATE replays SET views = views + 1 WHERE id = ? LIMIT 1");
+		$res = $this->db->prepare("UPDATE replays SET views = views + 1 WHERE id = ?");
 		$res->execute([$id]);
 
 		$replay['safe_inputlog'] = (
