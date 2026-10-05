@@ -615,7 +615,7 @@ export class DexSearch {
 				const categoryName = TL.tag[fId] || category;
 				buf.push(['header', TL`${categoryName} moves`]);
 				for (let id in BattleMovedex) {
-					if (BattleMovedex[id].category === category) {
+					if (this.typedSearch!.filter(['move', id as ID], [['category', category]])) {
 						(illegal && id in illegal ? illegalBuf : buf).push(['move', id as ID]);
 					}
 				}
@@ -710,29 +710,27 @@ abstract class BattleTypedSearch<T extends SearchType> {
 			this.dex = Dex;
 		}
 
-		if (formatName in window.Formats) {
-			let info = window.Formats[formatName];
-			if ('mod' in info) {
-				this.dex = Dex.mod(info.mod);
-				if (info.mod.includes('infinitefusion') || info.mod.includes('pokeathlon') || info.mod.includes('insurgence') || info.mod.includes('uranium') || info.mod.includes('infinity') || info.mod.includes('mariomon') || info.mod.includes('chaos') || info.mod.includes('soulstones')) {
-					this.formatType = 'natdex';
-					if (info.gameType === 'doubles') {
-						format = 'doublesubers' as ID;
-						if (info.banlist.includes('DUber')) format = 'doublesou' as ID;
-						if (info.ruleset.includes('Flat Rules')) format = 'mariomonvgc' as ID;
-						if (info.ruleset.includes('Flat Rules') && info.mod === 'gen9pokeathlon') format = 'pokeathlonvgc' as ID;
-						this.table = info.mod + (info.mod.includes('pokeathlon') && (info.ruleTable.includes('standardnatdex') || info.ruleTable.includes('natdexmod')) ? 'natdex' : '') + 'doubles';
-					} else {
-						format = 'ag' as ID;
-						if (info.banlist.includes('ND AG') || info.banlist.includes('AG')) format = 'ubers' as ID;
-						if (info.banlist.includes('ND Uber') || info.banlist.includes('Uber')) format = 'ou' as ID;
-						if (info.banlist.includes('ND OU') || info.banlist.includes('OU')) format = 'uu' as ID;
-						if (info.ruleset.includes('Little Cup')) format = 'lc' as ID;
-						this.table = info.mod + (info.mod.includes('pokeathlon') && (info.ruleTable.includes('standardnatdex') || info.ruleTable.includes('natdexmod')) ? 'natdex' : '');
-					}
-					if (formatName.includes('aaa')) format = format + 'aaa' as ID;
-					if (info.ruleTable.includes('chaosstabmonsmovelegality')) format = format + 'stabmons' as ID;
+		const info = window.Formats?.[formatName];
+		if (info?.mod) {
+			this.dex = Dex.mod(info.mod);
+			if (info.mod.includes('infinitefusion') || info.mod.includes('pokeathlon') || info.mod.includes('insurgence') || info.mod.includes('uranium') || info.mod.includes('infinity') || info.mod.includes('mariomon') || info.mod.includes('chaos') || info.mod.includes('soulstones')) {
+				this.formatType = 'natdex';
+				if (info.gameType === 'doubles') {
+					format = 'doublesubers' as ID;
+					if (info.banlist.includes('DUber')) format = 'doublesou' as ID;
+					if (info.ruleset.includes('Flat Rules')) format = 'mariomonvgc' as ID;
+					if (info.ruleset.includes('Flat Rules') && info.mod === 'gen9pokeathlon') format = 'pokeathlonvgc' as ID;
+					this.table = info.mod + (info.mod.includes('pokeathlon') && (info.ruleTable.includes('standardnatdex') || info.ruleTable.includes('natdexmod')) ? 'natdex' : '') + 'doubles';
+				} else {
+					format = 'ag' as ID;
+					if (info.banlist.includes('ND AG') || info.banlist.includes('AG')) format = 'ubers' as ID;
+					if (info.banlist.includes('ND Uber') || info.banlist.includes('Uber')) format = 'ou' as ID;
+					if (info.banlist.includes('ND OU') || info.banlist.includes('OU')) format = 'uu' as ID;
+					if (info.ruleset.includes('Little Cup')) format = 'lc' as ID;
+					this.table = info.mod + (info.mod.includes('pokeathlon') && (info.ruleTable.includes('standardnatdex') || info.ruleTable.includes('natdexmod')) ? 'natdex' : '');
 				}
+				if (formatName.includes('aaa')) format = `${format}aaa` as ID;
+				if (info.ruleTable.includes('chaosstabmonsmovelegality')) format = `${format}stabmons` as ID;
 			}
 		}
 
@@ -942,7 +940,7 @@ abstract class BattleTypedSearch<T extends SearchType> {
 		if (this.formatType?.startsWith('bdsp')) table = table['gen8bdsp'];
 		if (this.formatType === 'letsgo') table = table['gen7letsgo'];
 		if (this.formatType === 'bw1') table = table['gen5bw1'];
-		if (['gen9infinitefusion', 'gen7infinitefusion', 'gen7infinitefusionhoenn', 'gen9pokeathlon', 'gen9insurgence', 'gen6insurgence', 'gen9uranium', 'gen6uranium', 'gen9infinity', 'gen6infinity', 'gen9mariomon', 'gen9chaos', 'gen9chaosmayhem', 'gen9chaosfusion', 'gen9soulstones'].includes(this.dex.modid)) table = table[this.dex.modid];
+		if (this.table) table = table[this.dex.modid];
 		if (this.formatType === 'rs') table = table['gen3rs'];
 		if (this.formatType === 'frlg') table = table['gen3frlg'];
 		if (this.formatType === 'champions') table = table['champions'];
@@ -1015,7 +1013,7 @@ abstract class BattleTypedSearch<T extends SearchType> {
 			if (this.formatType?.startsWith('bdsp')) table = table['gen8bdsp'];
 			if (this.formatType === 'letsgo') table = table['gen7letsgo'];
 			if (this.formatType === 'bw1') table = table['gen5bw1'];
-			if (['gen9infinitefusion', 'gen7infinitefusion', 'gen7infinitefusionhoenn', 'gen9pokeathlon', 'gen9insurgence', 'gen6insurgence', 'gen9uranium', 'gen6uranium', 'gen9infinity', 'gen6infinity', 'gen9mariomon', 'gen9chaos', 'gen9chaosmayhem', 'gen9chaosfusion', 'gen9soulstones'].includes(this.dex.modid)) table = table[this.dex.modid];
+			if (this.table) table = table[this.dex.modid];
 			if (this.formatType === 'rs') table = table['gen3rs'];
 			if (this.formatType === 'frlg') table = table['gen3frlg'];
 			if (this.formatType === 'champions') table = table['champions'];
@@ -1456,30 +1454,28 @@ class BattleAbilitySearch extends BattleTypedSearch<'ability'> {
 	getBaseResults(): SearchRow[] {
 		if (!this.species) return this.getDefaultResults();
 		const format = this.format;
-		const dex = this.dex;
-		const isFusion = (this.set?.fusion && dex.species.get(this.set?.fusion).exists);
 		const isHackmons = (format.includes('hackmons') || format.endsWith('bh'));
 		const isAAA = (format === 'almostanyability' || format.includes('aaa'));
+		const dex = this.dex;
 		let species = dex.species.get(this.species);
-		let abilitySet: SearchRow[] = [['header', TL`Abilities`]];
-
 		const fusionSpecies = dex.species.get(this.set?.fusion || '');
+		let abilitySet: SearchRow[] = [['header', TL`Abilities`]];
 
 		if (species.isMega) {
 			abilitySet.unshift(['html', `Will be <strong>${species.abilities['0']}</strong> after Mega Evolving.`]);
 			species = dex.species.get(species.baseSpecies);
 		}
 		abilitySet.push(['ability', toID(species.abilities['0'])]);
-		if (isFusion && !Object.values(species.abilities).includes(fusionSpecies.abilities['0'])) abilitySet.push(['ability', toID(fusionSpecies.abilities['0'])]);
+		if (fusionSpecies.exists && !Object.values(species.abilities).includes(fusionSpecies.abilities['0'])) abilitySet.push(['ability', toID(fusionSpecies.abilities['0'])]);
 		if (species.abilities['1']) {
 			abilitySet.push(['ability', toID(species.abilities['1'])]);
 		}
-		if (isFusion && fusionSpecies.abilities['1'] && !Object.values(species.abilities).includes(fusionSpecies.abilities['1'])) abilitySet.push(['ability', toID(fusionSpecies.abilities['1'])]);
+		if (fusionSpecies.exists && fusionSpecies.abilities['1'] && !Object.values(species.abilities).includes(fusionSpecies.abilities['1'])) abilitySet.push(['ability', toID(fusionSpecies.abilities['1'])]);
 		if (species.abilities['H']) {
 			abilitySet.push(['header', TL`Hidden Ability`]);
 			abilitySet.push(['ability', toID(species.abilities['H'])]);
 		}
-		if (isFusion && fusionSpecies.abilities['H'] && !Object.values(species.abilities).includes(fusionSpecies.abilities['H'])) {
+		if (fusionSpecies.exists && fusionSpecies.abilities['H'] && !Object.values(species.abilities).includes(fusionSpecies.abilities['H'])) {
 			if (!species.abilities['H']) abilitySet.push(['header', TL`Hidden Ability`]);
 			abilitySet.push(['ability', toID(fusionSpecies.abilities['H'])]);
 		}
@@ -1487,7 +1483,7 @@ class BattleAbilitySearch extends BattleTypedSearch<'ability'> {
 			abilitySet.push(['header', TL`Special Event Ability`]);
 			abilitySet.push(['ability', toID(species.abilities['S'])]);
 		}
-		if (isFusion && fusionSpecies.abilities['S'] && !Object.values(species.abilities).includes(fusionSpecies.abilities['S'])) {
+		if (fusionSpecies.exists && fusionSpecies.abilities['S'] && !Object.values(species.abilities).includes(fusionSpecies.abilities['S'])) {
 			if (!species.abilities['S']) abilitySet.push(['header', TL`Special Event Ability`]);
 			abilitySet.push(['ability', toID(fusionSpecies.abilities['S'])]);
 		}
@@ -1553,7 +1549,7 @@ class BattleItemSearch extends BattleTypedSearch<'item'> {
 		} else if (this.formatType === 'bw1') {
 			table = table['gen5bw1'];
 		} else if (this.table) {
-			table = table[this.table.includes('doubles') ? this.table.replace('doubles', '') : this.table];
+			table = table[this.table.replace('doubles', '')];
 		} else if (this.formatType === 'rs') {
 			table = table['gen3rs'];
 		} else if (this.formatType === 'frlg') {
@@ -1598,7 +1594,7 @@ class BattleItemSearch extends BattleTypedSearch<'item'> {
 		for (const row of results) {
 			if (row[0] !== 'item') continue;
 			const item = this.dex.items.get(row[1]);
-			if (item.itemUser?.includes(speciesName) || (['Light Ball', 'Thick Club', 'Deep Sea Tooth', 'Deep Sea Scale', 'Metal Powder', 'Quick Powder', 'Leek', 'Stick', 'Lucky Punch'].includes(this.dex.items.get(row[1]).name) && this.dex.items.get(row[1]).itemUser?.includes(this.set?.fusion || ''))) speciesSpecific.push(row);
+			if (item.itemUser?.includes(speciesName) || (['Light Ball', 'Thick Club', 'Deep Sea Tooth', 'Deep Sea Scale', 'Metal Powder', 'Quick Powder', 'Leek', 'Stick', 'Lucky Punch'].includes(item.name) && item.itemUser?.includes(this.set?.fusion || ''))) speciesSpecific.push(row);
 			if (abilityItem === item.id) abilitySpecific.push(row);
 		}
 		if (speciesSpecific.length) {
@@ -1891,7 +1887,6 @@ class BattleMoveSearch extends BattleTypedSearch<'move'> {
 		case 'zapcannon':
 			return abilityid === 'noguard' || (dex.gen < 4 && !moves.includes('thunderwave'));
 
-		// PoA Changes
 		case 'lunarcannon':
 			return ['noctem', 'shadowdance', 'clairvoyance'].includes(abilityid) || itemid === 'powerherb';
 		case 'wildfire':
@@ -1905,8 +1900,7 @@ class BattleMoveSearch extends BattleTypedSearch<'move'> {
 		case 'shockbombs':
 			return abilityid === 'skilllink' || abilityid === 'technician' || itemid === 'loadeddice';
 		case 'fling':
-			return itemid === 'boomerang';
-
+			return this.isDoubles || itemid === 'boomerang';
 		}
 
 		if (this.isDoubles && BattleMoveSearch.GOOD_DOUBLES_MOVES.includes(id)) {
@@ -1927,7 +1921,7 @@ class BattleMoveSearch extends BattleTypedSearch<'move'> {
 		if (id === 'skydrop') return true;
 		// strong moves
 		if (move.flags['charge']) {
-			return (itemid === 'powerherb' || abilityid === 'clairvoyance');
+			return itemid === 'powerherb' || abilityid === 'clairvoyance' || abilityid === 'hiddenambush';
 		}
 		if (move.flags['recharge']) {
 			return itemid === 'vigorherb';
@@ -1936,9 +1930,6 @@ class BattleMoveSearch extends BattleTypedSearch<'move'> {
 			return true;
 		}
 		if (move.flags['bullet'] && abilityid === 'cannoneer') {
-			return true;
-		}
-		if (move.flags['charge'] && abilityid === 'hiddenambush') {
 			return true;
 		}
 		return !BattleMoveSearch.BAD_STRONG_MOVES.includes(id);
@@ -1955,14 +1946,15 @@ class BattleMoveSearch extends BattleTypedSearch<'move'> {
 		'belch', 'burnup', 'crushclaw', 'dragonrush', 'dreameater', 'eggbomb', 'firepledge', 'flyingpress', 'futuresight', 'grasspledge', 'hyperbeam', 'hyperfang', 'hyperspacehole', 'jawlock', 'landswrath', 'megakick', 'megapunch', 'mistyexplosion', 'muddywater', 'nightdaze', 'pollenpuff', 'rockclimb', 'selfdestruct', 'shelltrap', 'skyuppercut', 'slam', 'strength', 'submission', 'synchronoise', 'takedown', 'thrash', 'uproar', 'waterpledge',
 	] as ID[] as readonly ID[];
 	static readonly GOOD_DOUBLES_MOVES = [
-		'allyswitch', 'bulldoze', 'coaching', 'electroweb', 'faketears', 'fling', 'followme', 'healpulse', 'helpinghand', 'junglehealing', 'lifedew', 'lunarblessing', 'muddywater', 'pollenpuff', 'psychup', 'ragepowder', 'safeguard', 'skillswap', 'snipeshot', 'wideguard', 'decorate', 'snarl', 'firewall',
+		'allyswitch', 'bulldoze', 'coaching', 'electroweb', 'faketears', 'fling', 'followme', 'healpulse', 'helpinghand', 'junglehealing', 'lifedew', 'lunarblessing', 'muddywater', 'pollenpuff', 'psychup', 'ragepowder', 'safeguard', 'skillswap', 'snipeshot', 'wideguard', 'decorate', 'snarl',
+		'firewall',
 	] as ID[] as readonly ID[];
 	getBaseResults() {
 		if (!this.species) return this.getDefaultResults();
 		const dex = this.dex;
 		let species = dex.species.get(this.species);
 		const format = this.format;
-		const isFusion = (this.set?.fusion && dex.species.get(this.set?.fusion).exists);
+		const fusionSpecies = dex.species.get(this.set?.fusion || '');
 		const isHackmons = (format.includes('hackmons') || format.endsWith('bh'));
 		const isSTABmons = (format.includes('stabmons') || format === 'staaabmons');
 		const isTradebacks = format.includes('tradebacks');
@@ -1988,7 +1980,7 @@ class BattleMoveSearch extends BattleTypedSearch<'move'> {
 		if (this.formatType?.startsWith('ssdlc1')) lsetTable = lsetTable['gen8dlc1'];
 		if (this.formatType?.startsWith('predlc')) lsetTable = lsetTable['gen9predlc'];
 		if (this.formatType?.startsWith('svdlc1')) lsetTable = lsetTable['gen9dlc1'];
-		if (['gen9infinitefusion', 'gen7infinitefusion', 'gen7infinitefusionhoenn', 'gen9pokeathlon', 'gen9insurgence', 'gen6insurgence', 'gen9uranium', 'gen6uranium', 'gen9infinity', 'gen6infinity', 'gen9mariomon', 'gen9chaos', 'gen9chaosmayhem', 'gen9chaosfusion', 'gen9soulstones'].includes(this.dex.modid)) lsetTable = lsetTable[this.dex.modid];
+		if (this.table) lsetTable = lsetTable[this.dex.modid];
 		while (learnsetid) {
 			let learnset = lsetTable.learnsets[learnsetid] || BattleTeambuilderTable.learnsets[learnsetid];
 			if (learnset) {
@@ -2045,8 +2037,8 @@ class BattleMoveSearch extends BattleTypedSearch<'move'> {
 			learnsetid = this.nextLearnsetid(learnsetid, species.id, true);
 		}
 
-		if (isFusion) {
-			learnsetid = this.firstLearnsetid(toID(this.set?.fusion));
+		if (fusionSpecies.exists) {
+			learnsetid = this.firstLearnsetid(fusionSpecies.id);
 			while (learnsetid) {
 				let learnset = lsetTable.learnsets[learnsetid] || BattleTeambuilderTable.learnsets[learnsetid];
 				if (learnset) {
@@ -2057,15 +2049,8 @@ class BattleMoveSearch extends BattleTypedSearch<'move'> {
 						if (regionBornLegality && !learnsetEntry.includes(minGenCode[dex.gen])) {
 							continue;
 						}
-						const currentSpecies = dex.species.get(learnsetid);
-						const originalSpecies = dex.species.get(species.id);
-						let nextSpecies = this.nextLearnsetid(species.id, species.id);
-						while (nextSpecies) {
-							if (nextSpecies === learnsetid) break;
-							nextSpecies = this.nextLearnsetid(nextSpecies, species.id);
-						}
 						if (
-							currentSpecies.baseSpecies !== originalSpecies.baseSpecies && !nextSpecies &&
+							this.eggMovesOnly(learnsetid, fusionSpecies.id) &&
 							(!learnsetEntry.includes('e') || dex.gen !== 9)
 						) {
 							continue;
@@ -2079,7 +2064,6 @@ class BattleMoveSearch extends BattleTypedSearch<'move'> {
 						if (this.formatType !== 'natdex' && move.isNonstandard === "Past") {
 							continue;
 						}
-
 						if (moves.includes(moveid)) continue;
 						moves.push(moveid);
 						if (moveid === 'sketch') sketch = true;
@@ -2090,30 +2074,29 @@ class BattleMoveSearch extends BattleTypedSearch<'move'> {
 						}
 					}
 				}
-				learnsetid = this.nextLearnsetid(learnsetid, toID(this.set?.fusion), true);
+				learnsetid = this.nextLearnsetid(learnsetid, fusionSpecies.id, true);
 			}
-
-			let fusionSpecies = dex.species.get(this.set?.fusion || '');
 
 			let allCombinations: string[][] = [];
 			let fusionLine: string[] = [fusionSpecies.name];
 			let speciesLine: string[] = [species.name];
 
-			if (fusionSpecies.isMega && fusionSpecies.baseSpecies) fusionLine.push(fusionSpecies.baseSpecies);
-			if (fusionSpecies.changesFrom) fusionLine.push(fusionSpecies.changesFrom);
+			if (typeof fusionSpecies.changesFrom === 'string') fusionLine.push(fusionSpecies.changesFrom);
 			if (fusionSpecies.prevo) fusionLine.push(fusionSpecies.prevo);
-			if (this.dex.species.get(fusionSpecies.prevo).prevo) fusionLine.push(this.dex.species.get(fusionSpecies.prevo).prevo);
+			if (dex.species.get(fusionSpecies.prevo).prevo) fusionLine.push(dex.species.get(fusionSpecies.prevo).prevo);
 
-			if (species.isMega && species.baseSpecies) speciesLine.push(species.baseSpecies);
-			if (species.changesFrom) speciesLine.push(species.changesFrom);
+			if (typeof species.changesFrom === 'string') speciesLine.push(species.changesFrom);
 			if (species.prevo) speciesLine.push(species.prevo);
-			if (this.dex.species.get(species.prevo).prevo) speciesLine.push(this.dex.species.get(species.prevo).prevo);
+			if (dex.species.get(species.prevo).prevo) speciesLine.push(dex.species.get(species.prevo).prevo);
 
 			for (let head of fusionLine) {
 				for (let body of speciesLine) {
-					allCombinations.push(...[[head, body], [body, head]]);
+					allCombinations.push([head, body], [body, head]);
 				}
 			}
+
+			let tutorMoves = (dex.modid.includes('pokeathlon') || dex.modid.includes('chaos')) ?
+				{ ...BattleTeambuilderTable.fusionMoves, ...BattleTeambuilderTable.PoAfusionMoves } : BattleTeambuilderTable.fusionMoves;
 
 			for (const combination of allCombinations) {
 				const combination_head = dex.species.get(combination[0]);
@@ -2121,18 +2104,6 @@ class BattleMoveSearch extends BattleTypedSearch<'move'> {
 
 				const typesSet: string[] = Dex.getFusionTypes(combination_head.types, combination_body.types);
 
-				let tutorMoves = (this.dex.modid.includes('pokeathlon') || this.dex.modid.includes("chaos")) ? { ...fusionMoves, ...PoAfusionMoves } : fusionMoves;
-
-				for (let id in mysteryGiftMoves) {
-					let data = mysteryGiftMoves[id];
-					for (let possibleSource of data) {
-						let canLearn = true;
-						if ("mysteryGift" in possibleSource) {
-							if (!possibleSource["mysteryGift"].includes(combination_head.id) && !possibleSource["mysteryGift"].includes(combination_body.id)) canLearn = false;
-						}
-						if (canLearn && !moves.includes(id) && !mgMoves.includes(id)) mgMoves.push(id);
-					}
-				}
 				for (let id in tutorMoves) {
 					let data = tutorMoves[id];
 					for (let possibleSource of data) {
@@ -2158,112 +2129,12 @@ class BattleMoveSearch extends BattleTypedSearch<'move'> {
 			}
 		}
 
-		for (let id in mysteryGiftMoves) {
-			let data = mysteryGiftMoves[id];
-			for (let possibleSource of data) {
-				let canLearn = true;
-				if ("mysteryGift" in possibleSource) {
-					if (!possibleSource["mysteryGift"].includes(dex.species.get(species.id).id)) canLearn = false;
-				}
-				if (canLearn && !moves.includes(id) && !mgMoves.includes(id)) mgMoves.push(id);
-			}
-		}
-
-		if (isFusion) {
-			learnsetid = this.firstLearnsetid(toID(this.set?.fusion));
-			while (learnsetid) {
-				let learnset = lsetTable.learnsets[learnsetid] || BattleTeambuilderTable.learnsets[learnsetid];
-				if (learnset) {
-					for (let moveid in learnset) {
-						let learnsetEntry = learnset[moveid];
-						const move = dex.moves.get(moveid);
-						const minGenCode: { [gen: number]: string } = { 6: 'p', 7: 'q', 8: 'g', 9: 'a' };
-						if (regionBornLegality && !learnsetEntry.includes(minGenCode[dex.gen])) {
-							continue;
-						}
-						if (
-							!learnsetEntry.includes(gen) &&
-							(!isTradebacks ? true : !(move.gen <= dex.gen && learnsetEntry.includes(`${dex.gen + 1}`)))
-						) {
-							continue;
-						}
-						if (this.formatType !== 'natdex' && move.isNonstandard === "Past") {
-							continue;
-						}
-						if (moves.includes(moveid)) continue;
-						moves.push(moveid);
-						if (moveid === 'sketch') sketch = true;
-						if (moveid === 'hiddenpower') {
-							moves.push(
-								'hiddenpowerbug', 'hiddenpowerdark', 'hiddenpowerdragon', 'hiddenpowerelectric', 'hiddenpowerfighting', 'hiddenpowerfire', 'hiddenpowerflying', 'hiddenpowerghost', 'hiddenpowergrass', 'hiddenpowerground', 'hiddenpowerice', 'hiddenpowerpoison', 'hiddenpowerpsychic', 'hiddenpowerrock', 'hiddenpowersteel', 'hiddenpowerwater'
-							);
-						}
-					}
-				}
-				learnsetid = this.nextLearnsetid(learnsetid, toID(this.set?.fusion));
-			}
-
-			let fusionSpecies = dex.species.get(this.set?.fusion || '');
-
-			let allCombinations: string[][] = [];
-			let fusionLine: string[] = [fusionSpecies.name];
-			let speciesLine: string[] = [species.name];
-
-			if (fusionSpecies.isMega && fusionSpecies.baseSpecies) fusionLine.push(fusionSpecies.baseSpecies);
-			if (fusionSpecies.changesFrom) fusionLine.push(fusionSpecies.changesFrom);
-			if (fusionSpecies.prevo) fusionLine.push(fusionSpecies.prevo);
-			if (this.dex.species.get(fusionSpecies.prevo).prevo) fusionLine.push(this.dex.species.get(fusionSpecies.prevo).prevo);
-
-			if (species.isMega && species.baseSpecies) speciesLine.push(species.baseSpecies);
-			if (species.changesFrom) speciesLine.push(species.changesFrom);
-			if (species.prevo) speciesLine.push(species.prevo);
-			if (this.dex.species.get(species.prevo).prevo) speciesLine.push(this.dex.species.get(species.prevo).prevo);
-
-			for (let head of fusionLine) {
-				for (let body of speciesLine) {
-					allCombinations.push(...[[head, body], [body, head]]);
-				}
-			}
-
-			for (const combination of allCombinations) {
-				const combination_head = dex.species.get(combination[0]);
-				const combination_body = dex.species.get(combination[1]);
-
-				const typesSet: string[] = Dex.getFusionTypes(combination_head.types, combination_body.types);
-
-				let tutorMoves = (this.dex.modid.includes('pokeathlon') || this.dex.modid.includes("chaos")) ? { ...fusionMoves, ...PoAfusionMoves } : fusionMoves;
-
-				for (let id in mysteryGiftMoves) {
-					let data = mysteryGiftMoves[id];
-					for (let possibleSource of data) {
-						let canLearn = true;
-						if ("mysteryGift" in possibleSource) {
-							if (!possibleSource["mysteryGift"].includes(combination_head.id) && !possibleSource["mysteryGift"].includes(combination_body.id)) canLearn = false;
-						}
-						if (canLearn && !moves.includes(id) && !mgMoves.includes(id)) mgMoves.push(id);
-					}
-				}
-				for (let id in tutorMoves) {
-					let data = tutorMoves[id];
-					for (let possibleSource of data) {
-						let canLearn = true;
-						if ("fusion" in possibleSource) {
-							if (!possibleSource["fusion"].includes(combination_head.id) && !possibleSource["fusion"].includes(combination_body.id)) canLearn = false;
-						}
-						if ("type" in possibleSource) {
-							for (let type of possibleSource["type"]) {
-								if (!typesSet.includes(type)) canLearn = false;
-							}
-						}
-						if ("learns" in possibleSource) {
-							let canLearnReqMove = false;
-							for (let reqMove of possibleSource["learns"]) {
-								if (this.canLearn(combination_head.id, reqMove as ID) || this.canLearn(combination_body.id, reqMove as ID)) canLearnReqMove = true;
-							}
-							if (!canLearnReqMove) canLearn = false;
-						}
-						if (canLearn && !moves.includes(id) && !expertMoves.includes(id)) expertMoves.push(id);
-					}
+		if (!dex.modid.includes('pokeathlon') && !dex.modid.includes('chaos')) {
+			for (let id in BattleTeambuilderTable.mysteryGiftMoves) {
+				let data = BattleTeambuilderTable.mysteryGiftMoves[id];
+				for (let possibleSource of data) {
+					if (!possibleSource["mysteryGift"].includes(species.id) && !possibleSource["mysteryGift"].includes(fusionSpecies.id)) continue;
+					if (!moves.includes(id) && !mgMoves.includes(id)) mgMoves.push(id);
 				}
 			}
 		}
@@ -2351,7 +2222,7 @@ class BattleMoveSearch extends BattleTypedSearch<'move'> {
 				expertFusionMoves.push(['move', id as ID]);
 			}
 		}
-		if (mgMoves?.length) {
+		if (mgMoves.length) {
 			mgDisplayMoves.push(['header', "Mystery Gift Moves"]);
 			for (const id of mgMoves) {
 				mgDisplayMoves.push(['move', id as ID]);
@@ -2402,7 +2273,7 @@ class BattleMoveSearch extends BattleTypedSearch<'move'> {
 				} else if (value === 'Multihit') {
 					if (!move.multihit) return false;
 				} else if (value === 'Secondary') {
-					if (!move.secondaries || move.secondaries.length === 0) return false;
+					if (!move.secondaries?.length) return false;
 				} else if (value === 'Recoil') {
 					if (!move.recoil && !move.hasCrashDamage) return false;
 				} else if (value === 'Spread') {
@@ -2508,117 +2379,3 @@ class BattleTypeSearch extends BattleTypedSearch<'type'> {
 		throw new Error("invalid sortcol");
 	}
 }
-
-const mysteryGiftMoves: { [key: string]: { [key: string]: string[] }[] } = {
-	"rapidspin": [{ "mysteryGift": ["carbink"] }],
-};
-const fusionMoves: { [key: string]: { [key: string]: string[] }[] } = {
-	"attackorder": [{ "fusion": ["beedrill"] }],
-	"pollenpuff": [{ "fusion": ["butterfree", "celebi", "parasect", "vileplume", "breloom"] }],
-	"lunge": [{ "fusion": ["spinarak", "ariados", "joltik", "galvantula", "venomoth", "volcarona", "pinsir", "parasect", "ledian", "doduo", "dodrio", "stantler"] }],
-	"defendorder": [{ "fusion": ["beedrill"] }],
-	"healorder": [{ "fusion": ["beedrill"] }],
-	"powder": [{ "fusion": ["butterfree", "venomoth", "volcarona", "parasect", "breloom"] }],
-	"tailglow": [{ "fusion": ["mareep", "flaaffy", "ampharos", "lanturn", "zekrom", "reshiram"] }],
-	"darkestlariat": [{ "fusion": ["snorlax", "regigigas", "poliwrath", "machamp", "electivire", "dusknoir", "swampert", "krookodile", "golurk"] }],
-	"partingshot": [{ "fusion": ["meowth", "persian", "sandile", "krokorok", "krookodile", "umbreon"] }],
-	"topsyturvy": [{ "fusion": ["hitmontop", "wobbuffet"] }],
-	"zingzap": [{ "fusion": ["pichu", "pikachu", "raichu", "voltorb", "electrode"] }, { "fusion": ["sandslash", "golem"], "type": ["Electric"] }],
-	"paraboliccharge": [{ "fusion": ["pichu", "pikachu", "raichu", "magnemite", "magneton", "magnezone", "mareep", "flaaffy", "ampharos", "elekid", "electabuzz", "electivire", "zapdos", "chinchou", "lanturn", "raikou", "klink", "klang", "klinklang", "rotom", "stunfisk"] }],
-	"electrify": [{ "fusion": ["klink", "klang", "klinklang"] }, { "type": ["Electric"] }],
-	"aromaticmist": [{ "fusion": ["weezing", "bulbasaur", "ivysaur", "venusaur", "chikorita", "bayleef", "meganium", "gloom", "vileplume", "bellossom", "roselia", "roserade"] }],
-	"floralhealing": [{ "fusion": ["sunflora", "bellossom", "roselia", "roserade"] }],
-	"secretsword": [{ "fusion": ["honedge", "doublade", "aegislash", "gallade", "farfetchd", "absol", "bisharp", "kingambit"] }],
-	"matblock": [{ "fusion": ["machop", "machoke", "machamp", "tyrogue", "hitmonlee", "hitmonchan", "hitmontop"] }],
-	"mindblown": [{ "fusion": ["voltorb", "electrode", "exeggutor"] }],
-	"shelltrap": [{ "fusion": ["magcargo", "forretress"] }],
-	"heatcrash": [{ "fusion": ["blaziken", "reshiram", "groudon", "charizard", "golurk", "regigigas", "rhydon", "rhyperior", "snorlax"] }],
-	"shadowbone": [{ "fusion": ["marowak"], "type": ["Ghost"] }],
-	"spiritshackle": [{ "fusion": ["banette", "spiritomb", "dusknoir", "shedinja", "cofagrigus"] }],
-	"trickortreat": [{ "fusion": ["gastly", "haunter", "gengar", "mimikyu", "zorua", "zoroark"] }, { "type": ["Grass", "Ghost"] }],
-	"tropkick": [{ "fusion": ["hitmonlee", "hitmontop", "roserade"] }, { "type": ["Grass", "Fighting"] }],
-	"strengthsap": [{ "fusion": ["oddish", "gloom", "vileplume", "bellossom", "hoppip", "skiploom", "jumpluff", "bellsprout", "weepinbell", "victreebel", "paras", "parasect", "drifblim", "breloom"] }],
-	"icehammer": [{ "type": ["Ice"], "learns": ["crabhammer", "woodhammer"] }],
-	"multiattack": [{ "fusion": ["arceus", "mew", "genesect"] }],
-	"instruct": [{ "fusion": ["chimchar", "monferno", "infernape", "kadabra", "alakazam", "slowking"] }],
-	"psychicterrain": [{ "type": ["Psychic"] }],
-	"mistyterrain": [{ "type": ["Fairy"] }],
-	"speedswap": [{ "fusion": ["pikachu", "raichu", "abra", "kadabra", "alakazam", "porygon", "porygon2", "porygonz", "mewtwo", "mew", "joltik", "galvantula"] }],
-	"sparklingaria": [{ "fusion": ["jynx", "jigglypuff", "wigglytuff"], "type": ["Water"] }, { "fusion": ["lapras"] }],
-
-	// second tutor
-	"hyperspacefury": [{ "fusion": ["giratina", "palkia", "dialga", "arceus"] }],
-	"coreenforcer": [{ "fusion": ["giratina", "palkia", "dialga", "rayquaza"] }],
-	"plasmafists": [{ "fusion": ["electabuzz", "electivire", "zekrom"] }, { "fusion": ["rotom"], "learns": ["thunderpunch"] }],
-	"lightofruin": [{ "fusion": ["arceus", "mew", "celebi", "jirachi"] }],
-	"fleurcannon": [{ "fusion": ["gardevoir", "gallade", "sylveon", "wigglytuff"] }],
-	"naturesmadness": [{ "fusion": ["celebi", "kyogre", "groudon", "absol"] }],
-	"geomancy": [{ "fusion": ["celebi"] }],
-	"vcreate": [{ "fusion": ["entei", "hooh", "typhlosion"] }],
-	"magmastorm": [{ "fusion": ["magcargo", "typhlosion", "magmortar", "magmar", "entei", "groudon"] }, { "learns": ["eruption"] }],
-	"searingshot": [{ "fusion": ["magmortar"] }],
-	"oblivionwing": [{ "fusion": ["murkrow", "honchkrow"] }, { "type": ["Dark", "Flying"] }],
-	"moongeistbeam": [{ "fusion": ["cleffa", "clefairy", "clefable"], "type": ["Dark"] }, { "fusion": ["darkrai", "misdreavus", "mismagius"] }],
-	"spectralthief": [{ "fusion": ["haunter", "gengar", "banette", "giratina", "honedge", "doublade", "aegislash"] }],
-	"seedflare": [{ "fusion": ["jumpluff", "sunflora"] }],
-	"landswrath": [{ "fusion": ["groudon"] }],
-	"thousandarrows": [{ "fusion": ["sandslash", "jolteon", "ferrothorn"], "type": ["Ground"] }],
-	"thousandwaves": [{ "fusion": ["stunfisk", "quagsire", "swampert"] }],
-	"freezeshock": [{ "fusion": ["kyurem", "articuno"], "type": ["Electric"] }],
-	"iceburn": [{ "fusion": ["kyurem", "articuno"], "type": ["Fire"] }],
-	"happyhour": [{ "fusion": ["meowth", "jirachi", "delibird", "munchlax", "snorlax", "pikachu", "raichu"] }],
-	"holdhands": [{ "fusion": ["charmander", "bulbasaur", "squirtle", "pikachu", "togepi"] }],
-	"sunsteelstrike": [{ "fusion": ["charizard", "volcarona", "flareon", "ninetales", "entei", "hooh", "rapidash"], "type": ["Steel"] }],
-	"doubleironbash": [{ "type": ["Steel"], "learns": ["doubleslap"] }],
-	"steameruption": [{ "type": ["Water"], "learns": ["eruption"] }],
-};
-const PoAfusionMoves: { [key: string]: { [key: string]: string[] }[] } = { // Preexisting IF keys are overridden, so need to readd here
-	"zapcannon": [{ "fusion": ["silretro"], "learns": ["inferno"] }],
-	"retroblast": [{ "learns": ["thunderbolt"], "type": ["Rock"] }],
-	"superheatedcrash": [{ "learns": ["flareblitz", "heatcrash"], "type": ["Water"] }],
-	"stoneaxe": [{ "fusion": ["kleavordelta"], "type": ["Rock"] }],
-	"floatyfall": [{ "fusion": ["tofagrif"], "learns": ["gravity"] }],
-	"thunderouskick": [{ "fusion": ["sekrilon"], "learns": ["thunder"] }],
-	"heatcrash": [{ "fusion": ["omecha"], "type": ["Fire"] }],
-	"syrupbomb": [{ "fusion": ["mochimechi"], "type": ["Grass"] }],
-	"shadowpunch": [{ "fusion": ["hoppyre"], "type": ["Fighting"] }],
-	"saltcure": [{ "fusion": ["mosster"], "learns": ["smellingsalts"] }],
-	"pyropounce": [{ "learns": ["bounce"], "type": ["Fire"] }],
-	"riftjump": [{ "learns": ["bounce"], "type": ["Electric"] }],
-	"purify": [{ "fusion": ["pestri"] }],
-	"mistyexplosion": [{ "fusion": ["furumo"] }],
-	"heatwave": [{ "fusion": ["snowiibay"] }],
-	"mindwipe": [{ "learns": ["haze"], "type": ["Psychic"] }],
-	"surgingstrikes": [{ "fusion": ["crayzigater"] }],
-	"infernalparade": [{ "fusion": ["calobera"], "type": ["Fire"] }],
-	"accelerock": [{ "fusion": ["crenibex"] }],
-	"chillyreception": [{ "fusion": ["heracrosssubarctic"], "learns": ["yawn"] }],
-	"luminacrash": [{ "fusion": ["anneliark"] }],
-	"esperwing": [{ "fusion": ["twinova"] }],
-	"pollenpuff": [{ "fusion": ["butterfree", "celebi", "parasect", "parashukado", "vileplume", "breloom"] }],
-	"lunge": [{ "fusion": ["spinarak", "ariados", "joltik", "galvantula", "venomoth", "volcarona", "pinsir", "parasect", "parashukado", "ledian", "doduo", "dodrio", "stantler"] }],
-	"powder": [{ "fusion": ["butterfree", "venomoth", "volcarona", "parasect", "parashukado", "breloom"] }],
-	"strengthsap": [{ "fusion": ["sweepdol", "oddish", "gloom", "vileplume", "bellossom", "hoppip", "skiploom", "jumpluff", "bellsprout", "weepinbell", "victreebel", "paras", "parasect", "parashukado", "drifblim", "breloom"] }],
-	"ruination": [{ "fusion": ["catastropede"] }],
-	"clangoroussoul": [{ "fusion": ["hydroupa"] }],
-	"earthpower": [{ "fusion": ["magnegauss"] }],
-	"spudmortar": [{ "learns": ["energyball"], "type": ["Electric", "Ground"] }],
-	"phantasmalgust": [{ "learns": ["hurricane"], "type": ["Ghost"] }],
-	"venomousroar": [{ "learns": ["roar"], "type": ["Poison"] }],
-	"severingwind": [{ "learns": ["slash"], "type": ["Flying"] }],
-	"healorder": [{ "fusion": ["nestitan", "beedrill"], "type": ["Bug"] }],
-	"topsyturvy": [{ "fusion": ["pandiz", "hitmontop", "wobbuffet"] }],
-	"pixietrick": [{ "type": ["Dark", "Fairy"] }],
-	"magmastorm": [{ "fusion": ["saturoceras", "magcargo", "typhlosion", "magmortar", "magmar", "entei", "groudon"] }, { "learns": ["eruption"] }],
-	"pheroblast": [{ "type": ["Bug"] }],
-	"meltdown": [{ "learns": ["explosion", "selfdestruct"], "type": ["Fire"] }],
-	"throwingknives": [{ "learns": ["rockblast", "bulletseed"], "type": ["Steel"] }],
-	"shockbombs": [{ "learns": ["rockblast", "bulletseed"], "type": ["Electric"] }],
-	"boulderbash": [{ "learns": ["doublehit"], "type": ["Rock"] }],
-	"heavycleave": [{ "learns": ["cut"], "type": ["Steel"] }],
-	"cometstrike": [{ "type": ["Rock"] }],
-	"spiritsiphon": [{ "learns": ["gigadrain", "drainingkiss"], "type": ["Ghost"] }],
-	"ceaselessedge": [{ "fusion": ["cloudinyte"] }],
-	"skypierce": [{ "learns": ["sacredsword"], "type": ["Flying"] }],
-	"wringout": [{ "fusion": ["sauphozoa"], "learns": ["coil"] }],
-};

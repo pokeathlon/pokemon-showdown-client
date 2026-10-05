@@ -1546,6 +1546,11 @@ process.stdout.write("Building `data/teambuilder-tables.js`... ");
 		}
 	}
 
+	const rulesets = requireNoCache('../caches/pokemon-showdown/dist/data/rulesets.js');
+	BattleTeambuilderTable.mysteryGiftMoves = rulesets.mysteryGiftMoves;
+	BattleTeambuilderTable.fusionMoves = rulesets.fusionMoves;
+	BattleTeambuilderTable.PoAfusionMoves = rulesets.PoAfusionMoves;
+
 	for (const id of [
 		'gen1stadium', 'gen2stadium2', 'gen3rs', 'gen3frlg', 'gen5bw1', 'gen7letsgo', 'gen8bdsp', 'gen8bdspdoubles', 'gen8dlc1',
 		'gen8dlc1doubles', 'gen8metronome', 'gen9dlc1', 'gen9dlc1doubles', 'gen9predlc', 'gen9predlcdoubles', 'gen9metronome',
