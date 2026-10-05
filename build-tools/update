@@ -102,7 +102,7 @@ let compiledFiles = 0;
 const compileOpts = Object.assign(eval('(' + fs.readFileSync('.babelrc') + ')'), {
 	babelrc: false,
 	incremental: true,
-	ignore: ['play.pokemonshowdown.com/src/battle-animations.js', 'play.pokemonshowdown.com/src/battle-animations-moves.js', 'play.pokemonshowdown.com/src/battle-split-names.js'],
+	ignore: ['play.pokemonshowdown.com/src/battle-animations.js', 'play.pokemonshowdown.com/src/battle-animations-moves.js'],
 });
 if (process.argv[2] === 'full') {
 	delete compileOpts.ignore;
@@ -131,6 +131,7 @@ try {
 	compiledFiles += await compiler.compileToFile(
 		[
 			'play.pokemonshowdown.com/src/battle-dex.ts',
+			'play.pokemonshowdown.com/src/battle-split-names.ts',
 			'play.pokemonshowdown.com/src/battle-teams.ts',
 			'play.pokemonshowdown.com/src/battle-dex-data.ts',
 			'play.pokemonshowdown.com/src/battle-log.ts',
@@ -146,7 +147,7 @@ try {
 
 if (!compileOpts.ignore) {
 	compiledFiles += await compiler.compileToFile(
-		['play.pokemonshowdown.com/src/battle-animations.ts', 'play.pokemonshowdown.com/src/battle-animations-moves.ts', 'play.pokemonshowdown.com/src/battle-split-names.ts'],
+		['play.pokemonshowdown.com/src/battle-animations.ts', 'play.pokemonshowdown.com/src/battle-animations-moves.ts'],
 		'play.pokemonshowdown.com/data/graphics.js',
 		compileOpts
 	);

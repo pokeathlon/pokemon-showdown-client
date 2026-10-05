@@ -286,7 +286,6 @@ https://replay.pokemonshowdown.com/gen7randomdoublesbattle-865046831.log
 <script defer src="//play.pokemonshowdown.com/data/fusion-index.js?a7"></script>
 <script defer src="//play.pokemonshowdown.com/data/fusion-credits.js?a7"></script>
 <script defer src="//play.pokemonshowdown.com/data/fangame-credits.js?a7"></script>
-<script defer src="//play.pokemonshowdown.com/data/poa-credits.js?a7"></script>
 <script defer src="//play.pokemonshowdown.com/js/battle-tooltips.js?a7"></script>
 <script defer src="//play.pokemonshowdown.com/js/battle.js?a7"></script>
 

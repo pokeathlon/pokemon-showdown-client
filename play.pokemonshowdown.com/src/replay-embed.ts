@@ -56,7 +56,6 @@ requireScript('https://play.pokeathlon.com/js/battle-tooltips.js?a7');
 requireScript('https://play.pokeathlon.com/js/battle.js?a7');
 requireScript('https://play.pokeathlon.com/data/fusion-index.js?a7');
 requireScript('https://play.pokeathlon.com/data/fusion-credits.js?a7');
-requireScript('https://play.pokeathlon.com/data/poa-credits.js?a7');
 requireScript('https://play.pokeathlon.com/data/fangame-credits.js?a7');
 requireScript('https://play.pokeathlon.com/data/formats.js?a7');
 
