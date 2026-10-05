@@ -272,10 +272,7 @@ License: GPLv2
 	background: #AA77AA;
 	color: #FFFFFF;
 }
-.statbar span.frz {
-	background: #009AA4;
-	color: #FFFFFF;
-}
+.statbar span.frz,
 .statbar span.frb {
 	background: #009AA4;
 	color: #FFFFFF;
@@ -542,10 +539,7 @@ License: GPLv2
 	color: #FFFFFF;
 	background: #9AA400;
 }
-.battle .frzresult strong {
-	color: #FFFFFF;
-	background: #009AA4;
-}
+.battle .frzresult strong,
 .battle .frbresult strong {
 	color: #FFFFFF;
 	background: #009AA4;
