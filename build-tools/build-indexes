@@ -42,7 +42,7 @@ Dex.includeData();
 Dex.includeModData();
 
 const usedMods = [];
-Dex.formats.all().map(format => {
+Dex.formats.all().forEach(format => {
 	if (!usedMods.includes(format.mod)) usedMods.push(format.mod);
 });
 for (const mod of usedMods) {

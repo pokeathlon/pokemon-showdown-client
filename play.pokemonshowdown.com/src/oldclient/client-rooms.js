@@ -143,7 +143,6 @@
 				});
 			}
 
-			var spotlightLabel = '';
 			var spotlightRooms = [];
 			var officialRooms = [];
 			var otherRooms = [];
@@ -152,7 +151,6 @@
 				var roomData = allRooms[i];
 				if (roomData.spotlight) {
 					spotlightRooms.push(roomData);
-					spotlightLabel = roomData.spotlight;
 				} else if (roomData.section === 'Official') {
 					officialRooms.push(roomData);
 				} else if (roomData.privacy === 'hidden') {
@@ -177,7 +175,7 @@
 				(hiddenRooms.length && this.showMoreRooms ?
 					hiddenRooms.sort(this.compareRooms).map(this.renderRoomBtn).join("") : ''
 				) +
-				`<div><a href="https://discord.com/invite/vsEN6mzuNj" target="_blank" class="blocklink"><small style="float:right">(2800+ members)</small><strong><i class="fa fa-comments-o"></i> Discord<br></strong><small>The Pok&eacute;athlon Discord.</small></a></div>`
+				'<div><a href="https://discord.com/invite/vsEN6mzuNj" target="_blank" class="blocklink"><small style="float:right">(2800+ members)</small><strong><i class="fa fa-comments-o"></i> Discord<br></strong><small>The Pok&eacute;athlon Discord.</small></a></div>'
 			);
 		},
 		roomlist: function () {

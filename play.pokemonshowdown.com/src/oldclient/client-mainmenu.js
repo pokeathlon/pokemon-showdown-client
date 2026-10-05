@@ -1285,7 +1285,7 @@
 				this.open = Storage.prefs('openformats') || {
 					"Infinite Fusion: Regional Dex": true, "Infinite Fusion: Doubles": true, "Infinite Fusion: National Dex": true, "Infinite Fusion: Extras": true, "Draft": false,
 					"Super Mariomon!": true, "Insurgence Formats": true, "Uranium Formats": true, "Infinity Formats": true, "Soulstones Formats": true,
-					"Pokéathlon: Full Dex": true, "Pokéathlon: Gen 2": true, "Pokéathlon: Gen 1": true, "Pokéathlon: Doubles": true, "Pokéathlon: Extras": true, "Chaos": true, "Chaos: Extras": true,
+					"Pokéathlon: Full Dex": true, "Pokéathlon: Gen 2": true, "Pokéathlon: Gen 1": true, "Pokéathlon: Doubles": true, "Pokéathlon: Extras": true, "Chaos": true, "Chaos: Extras": true
 				};
 			}
 			if (!this.starred) this.starred = Storage.prefs('starredformats') || {};

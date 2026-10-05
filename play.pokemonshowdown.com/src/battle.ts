@@ -521,8 +521,8 @@ export class Pokemon implements PokemonDetails, PokemonHealth {
 		let types: readonly Dex.TypeName[];
 		if (this.fusion) {
 
-			const fusionSpecies = Dex.mod('gen9infinitefusion').species.get(this.fusion);
-			const species = Dex.mod('gen9infinitefusion').species.get(this.speciesForme);
+			const fusionSpecies = Dex.mod('gen9infinitefusion' as ID).species.get(this.fusion);
+			const species = Dex.mod('gen9infinitefusion' as ID).species.get(this.speciesForme);
 
 			let speciesTypes = species.types;
 			let fusionTypes = fusionSpecies.types;
@@ -530,11 +530,11 @@ export class Pokemon implements PokemonDetails, PokemonHealth {
 			if (speciesTypes.length === 2 && speciesTypes.includes('Flying') && speciesTypes.includes('Normal')) speciesTypes = ['Flying'];
 			if (fusionTypes.length === 2 && fusionTypes.includes('Flying') && fusionTypes.includes('Normal')) fusionTypes = ['Flying'];
 
-			const typesSet = new Set([speciesTypes[0]]);
+			const typesSet = [speciesTypes[0]];
 			const bonusType = fusionTypes[fusionTypes.length - 1];
-			typesSet.add(bonusType);
-			if (fusionTypes.length === 2 && typesSet.size === 1) typesSet.add(fusionTypes[0]);
-			return [Array.from(typesSet), ''];
+			if (!typesSet.includes(bonusType)) typesSet.push(bonusType);
+			if (fusionTypes.length === 2 && typesSet.length === 1) typesSet.push(fusionTypes[0]);
+			return [typesSet, ''];
 		}
 		if (!preterastallized && this.terastallized && this.terastallized !== 'Stellar') {
 			types = [this.terastallized as Dex.TypeName];
@@ -922,7 +922,7 @@ export class Side {
 		this.battle.lastMove = 'switch-in';
 		const effect = Dex.getEffect(kwArgs.from);
 		if (['batonpass', 'zbatonpass', 'shedtail', 'grabandgo'].includes(effect.id)) {
-			pokemon.copyVolatileFrom(this.lastPokemon!, effect.id === 'shedtail' ? 'shedtail' : effect.id ==='batonpass' ? 'batonpass': 'grabandgo');
+			pokemon.copyVolatileFrom(this.lastPokemon!, effect.id === 'shedtail' ? 'shedtail' : effect.id === 'batonpass' ? 'batonpass' : 'grabandgo');
 		} else if (this.battle.tier.includes(`Relay Race`) && !effect.id) {
 			if (this.lastPokemon && !this.lastPokemon.fainted) pokemon.copyVolatileFrom(this.lastPokemon, 'batonpass');
 		}

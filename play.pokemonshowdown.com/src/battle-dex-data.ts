@@ -1337,7 +1337,7 @@ export class Move implements Effect {
 	readonly noPPBoosts: boolean;
 	readonly status: string;
 	readonly secondaries: readonly any[] | null;
-	readonly selfSwitch: any | null;
+	readonly selfSwitch: any;
 	readonly num: number;
 
 	constructor(id: ID, name: string, data: any) {

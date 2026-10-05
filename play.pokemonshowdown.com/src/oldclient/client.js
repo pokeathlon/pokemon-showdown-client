@@ -355,8 +355,8 @@ function toId() {
 			if (!seed) {
 				var bytes = new Uint8Array(16);
 				window.crypto.getRandomValues(bytes);
-				seed = Array.prototype.map.call(bytes, function (byte) {
-					return ('0' + byte.toString(16)).slice(-2);
+				seed = Array.prototype.map.call(bytes, function (b) {
+					return ('0' + b.toString(16)).slice(-2);
 				}).join('');
 				Storage.prefs('challengeonly', seed);
 			}

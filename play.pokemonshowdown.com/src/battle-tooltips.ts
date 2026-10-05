@@ -559,6 +559,11 @@ export class BattleTooltips {
 		Fairy: "Twinkle Tackle",
 		Stellar: "",
 		"???": "",
+		Crystal: "",
+		Nuclear: "",
+		Cosmic: "",
+		Light: "",
+		Sound: "",
 	};
 
 	static maxMoveTable: { [type in Dex.TypeName]: string } = {
@@ -582,6 +587,11 @@ export class BattleTooltips {
 		Fairy: "Max Starfall",
 		Stellar: "",
 		"???": "",
+		Crystal: "",
+		Nuclear: "",
+		Cosmic: "",
+		Light: "",
+		Sound: "",
 	};
 
 	getMaxMoveFromType(type: Dex.TypeName, gmaxMove?: string | Dex.Move) {
@@ -1231,7 +1241,7 @@ export class BattleTooltips {
 				stats.spa = Math.floor(stats.spa * 1.5);
 			} else if (this.battle.gen < 2 && pokemon.status === 'brn') {
 				stats.atk = Math.floor(stats.atk * 0.5);
-			}else if (this.battle.gen < 2 && pokemon.status === 'frb') {
+			} else if (this.battle.gen < 2 && pokemon.status === 'frb') {
 				stats.spa = Math.floor(stats.spa * 0.5);
 			}
 
@@ -1316,7 +1326,6 @@ export class BattleTooltips {
 		if (item === 'sharpcoral' && (['Cubone-Orion', 'Marowak-Orion'].includes(speciesName) || ['Cubone-Orion', 'Marowak-Orion'].includes(fusionSpecies))) {
 			stats.atk *= 2;
 		}
-
 
 		if (item === 'sharpcoral' && (['Omanyte-Orion', 'Omastar-Orion'].includes(speciesName) || ['Omanyte-Orion', 'Omastar-Orion'].includes(fusionSpecies))) {
 			stats.spa *= 2;
@@ -1950,7 +1959,7 @@ export class BattleTooltips {
 				}
 			}
 		}
-		if (move.id === 'terrainpulse' && pokemon.isGrounded(serverPokemon) && item.id != 'fieldcleats') {
+		if (move.id === 'terrainpulse' && pokemon.isGrounded(serverPokemon) && item.id !== 'fieldcleats') {
 			if (this.battle.hasPseudoWeather('Electric Terrain')) {
 				moveType = 'Electric';
 			} else if (this.battle.hasPseudoWeather('Grassy Terrain')) {
@@ -2521,7 +2530,7 @@ export class BattleTooltips {
 	getMoveBasePower(move: Dex.Move, moveType: Dex.TypeName, value: ModifiableValue, target: Pokemon | null = null) {
 		const pokemon = value.pokemon;
 		const serverPokemon = value.serverPokemon;
-		let item = this.battle.dex.items.get(serverPokemon.item);
+		const heldItem = this.battle.dex.items.get(serverPokemon.item);
 
 		// apply modifiers for moves that depend on the actual stats
 		const modifiedStats = this.calculateModifiedStats(pokemon, serverPokemon);
@@ -2645,13 +2654,13 @@ export class BattleTooltips {
 		if (move.id === 'hydrosteam') {
 			value.weatherModify(1.5, 'Sunny Day');
 		}
-		if (move.id === 'psyblade' && this.battle.hasPseudoWeather('Electric Terrain') && item.id != 'fieldcleats') {
+		if (move.id === 'psyblade' && this.battle.hasPseudoWeather('Electric Terrain') && heldItem.id !== 'fieldcleats') {
 			value.modify(1.5, 'Electric Terrain');
 		}
-		if (move.id === 'mistbarrage' && this.battle.hasPseudoWeather('Misty Terrain') && item.id != 'fieldcleats') {
+		if (move.id === 'mistbarrage' && this.battle.hasPseudoWeather('Misty Terrain') && heldItem.id !== 'fieldcleats') {
 			value.modify(1.5, 'Misty Terrain');
 		}
-		if (move.id === 'terrainpulse' && pokemon.isGrounded(serverPokemon) && item.id != 'fieldcleats') {
+		if (move.id === 'terrainpulse' && pokemon.isGrounded(serverPokemon) && heldItem.id !== 'fieldcleats') {
 			if (
 				this.battle.hasPseudoWeather('Electric Terrain') ||
 				this.battle.hasPseudoWeather('Grassy Terrain') ||
@@ -2877,17 +2886,17 @@ export class BattleTooltips {
 			if (value.tryAbility("Strange Anatomy")) value.set(Math.max(move.basePower - (5 * pokemon.strangeAnatomyTurns), 0), `${5 * pokemon.strangeAnatomyTurns} BP lost from Strange Anatomy`);
 		}
 		if (pokemon.side.sideConditions['scatteredcoins']) {
-			value.abilityModify(1.3, 'Money Equals Power')
+			value.abilityModify(1.3, 'Money Equals Power');
 		}
 		if (pokemon.volatiles[move.category.toLowerCase()]) {
-			value.abilityModify(1.3, "Dual Mastery")
+			value.abilityModify(1.3, "Dual Mastery");
 		}
 
 		if (this.battle.dex.modid === 'gen9soulstones') {
 			if (move.id === 'magnitude') value.set(pokemon.level, 'BP equal to level');
 			if (move.secondaries) {
 				for (const secondary of move.secondaries) {
-					if (secondary.chance) value.abilityModify(1 - secondary.chance/100, "Serene Grace")
+					if (secondary.chance) value.abilityModify(1 - secondary.chance / 100, "Serene Grace");
 				}
 			}
 		}
@@ -2939,15 +2948,15 @@ export class BattleTooltips {
 		if ((this.battle.hasPseudoWeather('Electric Terrain') && moveType === 'Electric') ||
 			(this.battle.hasPseudoWeather('Grassy Terrain') && moveType === 'Grass') ||
 			(this.battle.hasPseudoWeather('Psychic Terrain') && moveType === 'Psychic')) {
-			if (pokemon.isGrounded(serverPokemon) && item.id != 'fieldcleats') {
+			if (pokemon.isGrounded(serverPokemon) && heldItem.id !== 'fieldcleats') {
 				value.modify((this.battle.gen > 7 || this.battle.dex.modid === 'gen9soulstones') ? 1.3 : 1.5, 'Terrain boost');
 			}
-		} else if (this.battle.hasPseudoWeather('Misty Terrain') && moveType === 'Dragon' && move.id != 'mistbarrage' && item.id != 'fieldcleats') {
+		} else if (this.battle.hasPseudoWeather('Misty Terrain') && moveType === 'Dragon' && move.id !== 'mistbarrage' && heldItem.id !== 'fieldcleats') {
 			if (target ? target.isGrounded() : true) {
 				value.modify(0.5, 'Misty Terrain + grounded target');
 			}
 		} else if (
-			this.battle.hasPseudoWeather('Grassy Terrain') && ['earthquake', 'bulldoze', 'magnitude', 'terraforce', 'anvilsmash', 'webwrecker'].includes(move.id) && item.id != 'fieldcleats'
+			this.battle.hasPseudoWeather('Grassy Terrain') && ['earthquake', 'bulldoze', 'magnitude', 'terraforce', 'anvilsmash', 'webwrecker'].includes(move.id) && heldItem.id !== 'fieldcleats'
 		) {
 			if (target ? target.isGrounded() : true) {
 				value.modify(0.5, 'Grassy Terrain + grounded target');
@@ -2956,18 +2965,18 @@ export class BattleTooltips {
 		if (
 			move.id === 'expandingforce' &&
 			this.battle.hasPseudoWeather('Psychic Terrain') &&
-			pokemon.isGrounded(serverPokemon) && item.id != 'fieldcleats' &&
+			pokemon.isGrounded(serverPokemon) && heldItem.id !== 'fieldcleats' &&
 			this.battle.dex.modid === 'gen9soulstones'
 		) {
 			value.modify(1.3, 'Expanding Force + Psychic Terrain boost');
 		} else if (
 			move.id === 'expandingforce' &&
 			this.battle.hasPseudoWeather('Psychic Terrain') &&
-			pokemon.isGrounded(serverPokemon) && item.id != 'fieldcleats'
+			pokemon.isGrounded(serverPokemon) && heldItem.id !== 'fieldcleats'
 		) {
 			value.modify(1.5, 'Expanding Force + Psychic Terrain boost');
 		}
-		if (move.id === 'mistyexplosion' && this.battle.hasPseudoWeather('Misty Terrain') && item.id != 'fieldcleats') {
+		if (move.id === 'mistyexplosion' && this.battle.hasPseudoWeather('Misty Terrain') && heldItem.id !== 'fieldcleats') {
 			value.modify(1.5, 'Misty Explosion + Misty Terrain boost');
 		}
 		if (move.id === 'risingvoltage' && this.battle.hasPseudoWeather('Electric Terrain') && target?.isGrounded() && this.battle.dex.modid === 'gen9soulstones') {
@@ -3205,7 +3214,7 @@ export class BattleTooltips {
 
 		return value;
 	}
-	getPokemonTypes(pokemon: Pokemon | ServerPokemon, preterastallized = false): readonly TypeName[] {
+	getPokemonTypes(pokemon: Pokemon | ServerPokemon, preterastallized = false): readonly Dex.TypeName[] {
 
 		if (pokemon.fusion) {
 
@@ -3218,11 +3227,11 @@ export class BattleTooltips {
 			if (speciesTypes.length === 2 && speciesTypes.includes('Flying') && speciesTypes.includes('Normal')) speciesTypes = ['Flying'];
 			if (fusionTypes.length === 2 && fusionTypes.includes('Flying') && fusionTypes.includes('Normal')) fusionTypes = ['Flying'];
 
-			const typesSet = new Set([speciesTypes[0] as TypeName]);
+			const typesSet = [speciesTypes[0]];
 			const bonusType = fusionTypes[fusionTypes.length - 1];
-			typesSet.add(bonusType as TypeName);
-			if (fusionTypes.length === 2 && typesSet.size === 1) typesSet.add(fusionTypes[0]);
-			return Array.from(typesSet);
+			if (!typesSet.includes(bonusType)) typesSet.push(bonusType);
+			if (fusionTypes.length === 2 && typesSet.length === 1) typesSet.push(fusionTypes[0]);
+			return typesSet;
 		}
 
 		if (!(pokemon as Pokemon).getTypes) {
@@ -3306,7 +3315,7 @@ export class BattleTooltips {
 			const ability = abilityData.baseAbility || abilityData.ability;
 			if (ability) {
 				if (abilityData.abilities.length > 1) {
-					text = '<small>Abilities:</small> ' + abilityData.abilities.map(ability => TL(this.battle.dex.abilities.get(ability))).join(' / ');
+					text = '<small>Abilities:</small> ' + abilityData.abilities.map(name => TL(this.battle.dex.abilities.get(name))).join(' / ');
 				} else text = `<small>${TL.label(TL`Ability`)}</small>` + TL(this.battle.dex.abilities.get(ability));
 			}
 		} else {

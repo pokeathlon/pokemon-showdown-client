@@ -1053,7 +1053,6 @@ abstract class BattleTypedSearch<T extends SearchType> {
 			this.formatType === 'predlcdoubles' ? 'gen9predlcdoubles' :
 			this.formatType === 'svdlc1' ? 'gen9dlc1' :
 			this.formatType === 'svdlc1doubles' ? 'gen9dlc1doubles' :
-			this.formatType === 'svdlc1natdex' ? 'gen9dlc1natdex' :
 			this.table ? this.table :
 			this.formatType === 'natdex' ? `gen${gen}natdex` :
 			this.formatType === 'stadium' ? `gen${gen}stadium${gen > 1 ? gen : ''}` :
@@ -1464,10 +1463,7 @@ class BattleAbilitySearch extends BattleTypedSearch<'ability'> {
 		let species = dex.species.get(this.species);
 		let abilitySet: SearchRow[] = [['header', TL`Abilities`]];
 
-		let fusionSpecies;
-		if (isFusion) {
-			fusionSpecies = dex.species.get(this.set?.fusion);
-		}
+		const fusionSpecies = dex.species.get(this.set?.fusion || '');
 
 		if (species.isMega) {
 			abilitySet.unshift(['html', `Will be <strong>${species.abilities['0']}</strong> after Mega Evolving.`]);
@@ -1480,19 +1476,19 @@ class BattleAbilitySearch extends BattleTypedSearch<'ability'> {
 		}
 		if (isFusion && fusionSpecies.abilities['1'] && !Object.values(species.abilities).includes(fusionSpecies.abilities['1'])) abilitySet.push(['ability', toID(fusionSpecies.abilities['1'])]);
 		if (species.abilities['H']) {
-			abilitySet.push(['header', `Hidden Abilities`]);
+			abilitySet.push(['header', TL`Hidden Ability`]);
 			abilitySet.push(['ability', toID(species.abilities['H'])]);
 		}
 		if (isFusion && fusionSpecies.abilities['H'] && !Object.values(species.abilities).includes(fusionSpecies.abilities['H'])) {
-			if (!species.abilities['H']) abilitySet.push(['header', "Hidden Abilities"]);
+			if (!species.abilities['H']) abilitySet.push(['header', TL`Hidden Ability`]);
 			abilitySet.push(['ability', toID(fusionSpecies.abilities['H'])]);
 		}
 		if (species.abilities['S']) {
-			abilitySet.push(['header', `Special Event Abilities`]);
+			abilitySet.push(['header', TL`Special Event Ability`]);
 			abilitySet.push(['ability', toID(species.abilities['S'])]);
 		}
 		if (isFusion && fusionSpecies.abilities['S'] && !Object.values(species.abilities).includes(fusionSpecies.abilities['S'])) {
-			if (!species.abilities['S']) abilitySet.push(['header', "Special Event Abilities"]);
+			if (!species.abilities['S']) abilitySet.push(['header', TL`Special Event Ability`]);
 			abilitySet.push(['ability', toID(fusionSpecies.abilities['S'])]);
 		}
 		if (isAAA || format.includes('metronomebattle') || isHackmons) {
@@ -1602,7 +1598,7 @@ class BattleItemSearch extends BattleTypedSearch<'item'> {
 		for (const row of results) {
 			if (row[0] !== 'item') continue;
 			const item = this.dex.items.get(row[1]);
-			if (item.itemUser?.includes(speciesName) || (['Light Ball', 'Thick Club', 'Deep Sea Tooth', 'Deep Sea Scale', 'Metal Powder', 'Quick Powder', 'Leek', 'Stick', 'Lucky Punch'].includes(this.dex.items.get(row[1]).name) && this.dex.items.get(row[1]).itemUser?.includes(this.set?.fusion))) speciesSpecific.push(row);
+			if (item.itemUser?.includes(speciesName) || (['Light Ball', 'Thick Club', 'Deep Sea Tooth', 'Deep Sea Scale', 'Metal Powder', 'Quick Powder', 'Leek', 'Stick', 'Lucky Punch'].includes(this.dex.items.get(row[1]).name) && this.dex.items.get(row[1]).itemUser?.includes(this.set?.fusion || ''))) speciesSpecific.push(row);
 			if (abilityItem === item.id) abilitySpecific.push(row);
 		}
 		if (speciesSpecific.length) {
@@ -1966,7 +1962,6 @@ class BattleMoveSearch extends BattleTypedSearch<'move'> {
 		const dex = this.dex;
 		let species = dex.species.get(this.species);
 		const format = this.format;
-		const modId = this.dex.modid;
 		const isFusion = (this.set?.fusion && dex.species.get(this.set?.fusion).exists);
 		const isHackmons = (format.includes('hackmons') || format.endsWith('bh'));
 		const isSTABmons = (format.includes('stabmons') || format === 'staaabmons');
@@ -2077,7 +2072,7 @@ class BattleMoveSearch extends BattleTypedSearch<'move'> {
 						}
 						if (
 							!learnsetEntry.includes(gen) &&
-							(!isTradebacks ? true : !(move.gen <= dex.gen && learnsetEntry.includes('' + (dex.gen + 1))))
+							(!isTradebacks ? true : !(move.gen <= dex.gen && learnsetEntry.includes(`${dex.gen + 1}`)))
 						) {
 							continue;
 						}
@@ -2098,7 +2093,7 @@ class BattleMoveSearch extends BattleTypedSearch<'move'> {
 				learnsetid = this.nextLearnsetid(learnsetid, toID(this.set?.fusion), true);
 			}
 
-			let fusionSpecies = dex.species.get(this.set?.fusion);
+			let fusionSpecies = dex.species.get(this.set?.fusion || '');
 
 			let allCombinations: string[][] = [];
 			let fusionLine: string[] = [fusionSpecies.name];
@@ -2130,10 +2125,10 @@ class BattleMoveSearch extends BattleTypedSearch<'move'> {
 				if (speciesTypes.length === 2 && speciesTypes.includes('Flying') && speciesTypes.includes('Normal')) speciesTypes = ['Flying'];
 				if (fusionTypes.length === 2 && fusionTypes.includes('Flying') && fusionTypes.includes('Normal')) fusionTypes = ['Flying'];
 
-				const typesSet = new Set([speciesTypes[0]]);
+				const typesSet: string[] = [speciesTypes[0]];
 				const bonusType = this.dex.types.get(fusionTypes[fusionTypes.length - 1]);
-				if (bonusType.exists) typesSet.add(bonusType.name);
-				if (fusionTypes.length === 2 && typesSet.size === 1) typesSet.add(fusionTypes[0]);
+				if (bonusType.exists && !typesSet.includes(bonusType.name)) typesSet.push(bonusType.name);
+				if (fusionTypes.length === 2 && typesSet.length === 1) typesSet.push(fusionTypes[0]);
 
 				let tutorMoves = (this.dex.modid.includes('pokeathlon') || this.dex.modid.includes("chaos")) ? { ...fusionMoves, ...PoAfusionMoves } : fusionMoves;
 
@@ -2156,7 +2151,7 @@ class BattleMoveSearch extends BattleTypedSearch<'move'> {
 						}
 						if ("type" in possibleSource) {
 							for (let type of possibleSource["type"]) {
-								if (!typesSet.has(type)) canLearn = false;
+								if (!typesSet.includes(type)) canLearn = false;
 							}
 						}
 						if ("learns" in possibleSource) {
@@ -2197,7 +2192,7 @@ class BattleMoveSearch extends BattleTypedSearch<'move'> {
 						}
 						if (
 							!learnsetEntry.includes(gen) &&
-							(!isTradebacks ? true : !(move.gen <= dex.gen && learnsetEntry.includes('' + (dex.gen + 1))))
+							(!isTradebacks ? true : !(move.gen <= dex.gen && learnsetEntry.includes(`${dex.gen + 1}`)))
 						) {
 							continue;
 						}
@@ -2217,7 +2212,7 @@ class BattleMoveSearch extends BattleTypedSearch<'move'> {
 				learnsetid = this.nextLearnsetid(learnsetid, toID(this.set?.fusion));
 			}
 
-			let fusionSpecies = dex.species.get(this.set?.fusion);
+			let fusionSpecies = dex.species.get(this.set?.fusion || '');
 
 			let allCombinations: string[][] = [];
 			let fusionLine: string[] = [fusionSpecies.name];
@@ -2249,10 +2244,10 @@ class BattleMoveSearch extends BattleTypedSearch<'move'> {
 				if (speciesTypes.length === 2 && speciesTypes.includes('Flying') && speciesTypes.includes('Normal')) speciesTypes = ['Flying'];
 				if (fusionTypes.length === 2 && fusionTypes.includes('Flying') && fusionTypes.includes('Normal')) fusionTypes = ['Flying'];
 
-				const typesSet = new Set([speciesTypes[0]]);
+				const typesSet: string[] = [speciesTypes[0]];
 				const bonusType = this.dex.types.get(fusionTypes[fusionTypes.length - 1]);
-				if (bonusType.exists) typesSet.add(bonusType.name);
-				if (fusionTypes.length === 2 && typesSet.size === 1) typesSet.add(fusionTypes[0]);
+				if (bonusType.exists && !typesSet.includes(bonusType.name)) typesSet.push(bonusType.name);
+				if (fusionTypes.length === 2 && typesSet.length === 1) typesSet.push(fusionTypes[0]);
 
 				let tutorMoves = (this.dex.modid.includes('pokeathlon') || this.dex.modid.includes("chaos")) ? { ...fusionMoves, ...PoAfusionMoves } : fusionMoves;
 
@@ -2275,7 +2270,7 @@ class BattleMoveSearch extends BattleTypedSearch<'move'> {
 						}
 						if ("type" in possibleSource) {
 							for (let type of possibleSource["type"]) {
-								if (!typesSet.has(type)) canLearn = false;
+								if (!typesSet.includes(type)) canLearn = false;
 							}
 						}
 						if ("learns" in possibleSource) {

@@ -1725,12 +1725,12 @@ export class BattleLog {
 		);
 	}
 	static hideForm(input: string) {
-		let filters = ["-Orion"]
+		let filters = ["-Orion"];
 		for (const filter of filters) {
 			if (input.includes(filter)) {
-				return input.replace(filter, '')
+				return input.replace(filter, '');
 			} else {
-				return input
+				return input;
 			}
 		}
 	}

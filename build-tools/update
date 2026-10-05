@@ -281,7 +281,6 @@ fs.writeFileSync('play.pokemonshowdown.com/caches/index-new.html', preactIndexCo
 fs.writeFileSync('play.pokemonshowdown.com/caches/crossprotocol.html', crossprotocolContents);
 fs.writeFileSync('play.pokemonshowdown.com/js/replay-embed.js', replayEmbedContents);
 
-
 let replaysContents = fs.readFileSync('replay.pokemonshowdown.com/index.php', UTF8);
 replaysContents = replaysContents.replace('<?php', "<?php\n\nchdir(dirname(__DIR__));");
 replaysContents = cachebust(replaysContents, 'replay.pokemonshowdown.com');

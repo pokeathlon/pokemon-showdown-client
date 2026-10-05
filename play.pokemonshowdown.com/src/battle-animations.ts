@@ -607,7 +607,7 @@ export class BattleScene implements BattleSceneStub {
 
 				const marioMusic = Object.keys(BattleMusicMario);
 				let bgm = marioMusic[this.numericId % marioMusic.length];
-				if (!this.bgm || (this.bgm && this.bgm.url != bgm)) this.message(`\u266b <i>${BattleMusicMario[bgm].title}</i> - <b>${BattleMusicMario[bgm].composer}</b> \u266b`);
+				if (!this.bgm || (this.bgm && this.bgm.url !== bgm)) this.message(`\u266b <i>${BattleMusicMario[bgm].title}</i> - <b>${BattleMusicMario[bgm].composer}</b> \u266b`);
 				this.bgm = BattleSound.loadBgm(bgm, BattleMusicMario[bgm].loopstart, BattleMusicMario[bgm].loopend, this.bgm);
 
 			} else if (gen <= 1) bg = 'fx/bg-gen1.png?';
@@ -905,8 +905,8 @@ export class BattleScene implements BattleSceneStub {
 				textBuf += pokemon.speciesForme;
 				let url = spriteData.url;
 				// if (this.paused) url.replace('/xyani', '/xy').replace('.gif', '.png');
-				buf += '<img src="' + url + '" width="' + spriteData.w + '" height="' + spriteData.h + '" style="image-rendering:pixelated;position:absolute;top:' + Math.floor(y - spriteData.h / 2) + 'px;left:' + Math.floor(x - spriteData.w / 2) + 'px"' + (spriteData.flip ? ' class="flip" ' : '') + '/>';
-				buf2 += '<div style="position:absolute;top:' + (y + 45) + 'px;left:' + (x - 40) + 'px;width:80px;font-size:10px;text-align:center;color:#FFF;">';
+				buf += `<img src="${url}" width="${spriteData.w}" height="${spriteData.h}" style="image-rendering:pixelated;position:absolute;top:${Math.floor(y - spriteData.h / 2)}px;left:${Math.floor(x - spriteData.w / 2)}px"${spriteData.flip ? ' class="flip"' : ''} />`;
+				buf2 += `<div style="position:absolute;top:${y + 45}px;left:${x - 40}px;width:80px;font-size:10px;text-align:center;color:#FFF;">`;
 				const gender = pokemon.gender;
 				if (gender === 'M' || gender === 'F') {
 					buf2 += `<img src="${Dex.fxPrefix}gender-${gender.toLowerCase()}.png" alt="${gender}" width="7" height="10" class="pixelated" style="margin-bottom:-1px" /> `;
@@ -1949,7 +1949,7 @@ export class Sprite {
 		if (spriteData) {
 			sp = spriteData;
 			let rawHTML = sp.rawHTML ||
-				'<img src="' + sp.url + '" style="display:none;position:absolute"' + (sp.pixelated ? ' class="pixelated' + (sp.flip ? ' flip' : '') + '"' : '') + ' />';
+				`<img src="${sp.url!}" style="display:none;position:absolute"${sp.pixelated ? ` class="pixelated${sp.flip ? ' flip' : ''}"` : ''} />`;
 			this.$el = $(rawHTML);
 		} else {
 			sp = {
@@ -2153,7 +2153,7 @@ export class PokemonSprite extends Sprite {
 		retribution4: ['Retribution: 4', 'good'],
 		retribution5: ['Retribution: 5', 'good'],
 		physical: null,
-		special: null
+		special: null,
 	};
 	forme = '';
 	cryurl: string | undefined = undefined;
@@ -2383,7 +2383,7 @@ export class PokemonSprite extends Sprite {
 		if (this.$el) {
 			this.$el.stop(true, false);
 			this.$el.remove();
-			const $newEl = $('<img src="' + this.sp.url + '" style="display:none;position:absolute"' + (this.sp.pixelated ? ' class="pixelated' + (this.sp.flip ? ' flip' : '') + '"' : '') + ' />');
+			const $newEl = $(`<img src="${this.sp.url!}" style="display:none;position:absolute"${this.sp.pixelated ? ` class="pixelated${this.sp.flip ? ' flip' : ''}"` : ''} />`);
 			this.$el = $newEl;
 		}
 
@@ -2982,7 +2982,7 @@ export class PokemonSprite extends Sprite {
 		let buf = '<div class="statbar' + (this.isFrontSprite ? ' lstatbar' : ' rstatbar') + this.getClassForPosition(pokemon.slot) + '" style="display: none">';
 		const ignoreNick = this.isFrontSprite && (this.scene.battle.ignoreOpponent || this.scene.battle.ignoreNicks);
 		buf += `<strong>${BattleLog.escapeHTML(ignoreNick ? pokemon.speciesForme : pokemon.name)}`;
-		if (pokemon.fusion || pokemon.getSpecies().tags.includes('Infinite Fusion')) {
+		if (pokemon.fusion || pokemon.getSpecies().eggGroups.includes('Infinite Fusion')) {
 			buf += ` <img src="https://play.pokeathlon.com/fx/fused.png" alt="Fused" style="vertical-align:text-bottom;" height="16" width="16" />`;
 		}
 		const gender = pokemon.gender;
@@ -3076,7 +3076,7 @@ export class PokemonSprite extends Sprite {
 			status += '<span class="frz">FRZ</span> ';
 		} else if (pokemon.status === 'frb') {
 			status += '<span class="frb">FRB</span> ';
-		} 
+		}
 		if (pokemon.terastallized) {
 			status += `<img src="https://play.pokeathlon.com/fx/types/${encodeURIComponent(pokemon.terastallized)}.png" alt="${pokemon.terastallized}" class="pixelated" /> `;
 		} else if (pokemon.volatiles.typechange?.[1]) {
@@ -3482,7 +3482,7 @@ const BattleBackdropsFive = [
 	'bg-icecave.png',
 	'bg-route.png',
 ];
-const BattleBackdrops = [
+export const BattleBackdrops = [
 	'bg-aquacordetown.jpg',
 	'bg-beach.jpg',
 	'bg-city.jpg',

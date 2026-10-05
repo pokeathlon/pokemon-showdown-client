@@ -299,10 +299,10 @@
 		var id = toID(pokemon.name);
 		if (Search.urlRoot) attrs += ' href="' + Search.urlRoot + 'pokemon/' + id + '" data-target="push"';
 
-		let banned = false;
+		var banned = false;
 		if (this.format && this.format in window.Formats) {
-			let format = window.Formats[this.format];
-			if (format.ruleTable.includes('-pokemon:' + pokemon.id) || format.ruleTable.includes('-basepokemon:' + toID(pokemon.baseSpecies))) banned = true; 
+			var format = window.Formats[this.format];
+			if (format.ruleTable.includes('-pokemon:' + pokemon.id) || format.ruleTable.includes('-basepokemon:' + toID(pokemon.baseSpecies))) banned = true;
 		}
 
 		var buf = '<li class="' + (banned ? 'banned' : 'result') + '"><a' + attrs + ' data-entry="pokemon|' + BattleLog.escapeHTML(pokemon.name) + '">';
@@ -482,13 +482,13 @@
 		if (!item) return '<li class="result">Unrecognized item</li>';
 		var id = toID(item.name);
 		if (Search.urlRoot) attrs += ' href="' + Search.urlRoot + 'items/' + id + '" data-target="push"';
-		
-		let banned = false;
+
+		var banned = false;
 		if (this.format && this.format in window.Formats) {
-			let format = window.Formats[this.format];
-			if (format.ruleTable.includes('-item:' + item.id)) banned = true; 
+			var format = window.Formats[this.format];
+			if (format.ruleTable.includes('-item:' + item.id)) banned = true;
 		}
-		
+
 		var buf = '<li class="' + (banned ? 'banned' : 'result') + '"><a' + attrs + ' data-entry="item|' + BattleLog.escapeHTML(item.name) + '">';
 
 		// icon
@@ -522,12 +522,12 @@
 		var id = toID(ability.name);
 		if (Search.urlRoot) attrs += ' href="' + Search.urlRoot + 'abilities/' + id + '" data-target="push"';
 
-		let banned = false;
+		var banned = false;
 		if (this.format && this.format in window.Formats) {
-			let format = window.Formats[this.format];
-			if (format.ruleTable.includes('-ability:' + ability.id)) banned = true; 
+			var format = window.Formats[this.format];
+			if (format.ruleTable.includes('-ability:' + ability.id)) banned = true;
 		}
-		
+
 		var buf = '<li class="' + (banned ? 'banned' : 'result') + '"><a' + attrs + ' data-entry="ability|' + BattleLog.escapeHTML(ability.name) + '">';
 
 		// name
@@ -555,9 +555,9 @@
 		var id = toID(move.name);
 		if (Search.urlRoot) attrs += ' href="' + Search.urlRoot + 'moves/' + id + '" data-target="push"';
 
-		let banned = false;
+		var banned = false;
 		if (this.format && this.format in window.Formats) {
-			let format = window.Formats[this.format];
+			var format = window.Formats[this.format];
 			if (format.ruleTable.includes('-move:' + move.id)) banned = true;
 		}
 

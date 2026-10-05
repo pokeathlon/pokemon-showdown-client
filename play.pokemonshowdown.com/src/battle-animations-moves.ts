@@ -39870,7 +39870,11 @@ export const BattleMoveAnims: AnimTable = {
 			}, 'linear', 'fade');
 			for (let i = 0; i < 3; i++) {
 				let mult = 1;
-				if (i === 1) { mult = 5; } else if (i === 2) { mult = 3; }
+				if (i === 1) {
+					mult = 5;
+				} else if (i === 2) {
+					mult = 3;
+				}
 				scene.showEffect('shine', {
 					x: attacker.x + i * 10,
 					y: attacker.y,
@@ -40876,7 +40880,6 @@ BattleMoveAnims['fissionburst'] = {
 };
 BattleMoveAnims['flameimpact'] = {
 	anim(scene, [attacker, defender]) {
-		BattleMoveAnims['shadowforce'].prepareAnim;
 		BattleMoveAnims['flamecharge'].anim(scene, [attacker, defender]);
 	},
 };
@@ -40927,7 +40930,6 @@ BattleMoveAnims['nuclearwind'] = {
 BattleMoveAnims['oceanswrath'] = { anim: BattleMoveAnims['originpulse'].anim };
 BattleMoveAnims['protonbeam'] = {
 	anim(scene, [attacker, defender]) {
-		BattleMoveAnims['hyperbeam'].prepareAnim;
 		BattleMoveAnims['hyperbeam'].anim(scene, [attacker, defender]);
 	},
 };

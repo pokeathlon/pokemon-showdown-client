@@ -1277,7 +1277,7 @@
 		},
 		renderSet: function (set, i) {
 			var baseFormat = this.curTeam.format;
-			//if (baseFormat.substr(-5) === 'draft') baseFormat = baseFormat.substr(0, baseFormat.length - 5);
+			// if (baseFormat.substr(-5) === 'draft') baseFormat = baseFormat.substr(0, baseFormat.length - 5);
 			// window.Formats includes "draft" in its keys, eliminating this causes it to not find the format, and fail to display fusion/2abil
 			var species = this.curTeam.dex.species.get(set.species);
 			var isChampions = baseFormat.includes('champions');
@@ -1290,15 +1290,15 @@
 			var isFusion = (
 				baseFormat in window.Formats &&
 				window.Formats[baseFormat].ruleTable.includes('infinitefusionmod') &&
-				!species.tags.includes("Infinite Fusion")
+				!species.eggGroups.includes("Infinite Fusion")
 			);
 			var isDA = (
 				baseFormat in window.Formats &&
 				window.Formats[baseFormat].ruleTable.includes('doubleabilitymod')
 			);
 
-			let fusionData = Dex.getFusionData(set);
-			let FangameCredit = Dex.getFangameCredit(set);
+			var fusionData = Dex.getFusionData(set);
+			var FangameCredit = Dex.getFangameCredit(set);
 			var buf = '<li value="' + i + '">';
 			if (!set.species) {
 				if (this.deletedSet) {
@@ -1316,7 +1316,7 @@
 			buf += '<label>Nickname</label><input type="text" name="nickname" class="textbox" value="' + BattleLog.escapeHTML(set.name || '') + '" placeholder="' + (fusionData.nickname !== '' ? fusionData.nickname : BattleLog.escapeHTML(species.baseSpecies)) + '" />';
 			buf += '</div>';
 			var spriteData = Dex.getTeambuilderSpriteData(set, this.curTeam.dex);
-			buf += '<div ' + (fusionData.credit !== '' ? 'title="Sprite by: ' + BattleLog.escapeHTML(fusionData.credit) : (FangameCredit ? 'title="Concept by: ' + BattleLog.escapeHTML(FangameCredit[0]) + ', Sprite by: ' +  BattleLog.escapeHTML(FangameCredit[1]) : ''));
+			buf += '<div ' + (fusionData.credit !== '' ? 'title="Sprite by: ' + BattleLog.escapeHTML(fusionData.credit) : (FangameCredit ? 'title="Concept by: ' + BattleLog.escapeHTML(FangameCredit[0]) + ', Sprite by: ' + BattleLog.escapeHTML(FangameCredit[1]) : ''));
 			buf += '" class="setchart' + (spriteData.pixelated ? ' pixelated' : '') + '" style="' + Dex.getTeambuilderSprite(set, this.curTeam.dex) + ';">';
 
 			// icon
@@ -1334,7 +1334,7 @@
 			if (isFusion) {
 				buf += '<div class="setcell setcell-fusion"><label>Fusion/Body</label><input type="text" name="fusion" class="textbox chartinput rainbow" value="' + BattleLog.escapeHTML(set.fusion) + '" autocomplete="off" />';
 				buf += '<button class="closebutton" name="deleteFusion" aria-label="Delete" style="position:absolute;top: -1px;right: 1px;"><i class="fa fa-times-circle"></i></button></div>';
-			} 
+			}
 			// details
 			buf += '<div class="setcol setcol-details"><div class="setrow">';
 			buf += '<div class="setcell setcell-details"><label>Details</label><button class="textbox setdetails" tabindex="-1" name="details">';
@@ -1392,20 +1392,19 @@
 
 			if (isFusion && set.fusion && this.curTeam.dex.species.get(set.fusion).exists) {
 
-				const fusionSpecies = this.curTeam.dex.species.get(set.fusion);
-				
-				let speciesTypes = types;
-				let fusionTypes = fusionSpecies.types;
+				var fusionSpecies = this.curTeam.dex.species.get(set.fusion);
+
+				var speciesTypes = types;
+				var fusionTypes = fusionSpecies.types;
 
 				if (speciesTypes.length === 2 && speciesTypes.includes('Flying') && speciesTypes.includes('Normal')) speciesTypes = ['Flying'];
 				if (fusionTypes.length === 2 && fusionTypes.includes('Flying') && fusionTypes.includes('Normal')) fusionTypes = ['Flying'];
 
-				const typesSet = new Set([speciesTypes[0]]);
-				const bonusType = fusionTypes[fusionTypes.length - 1];
-				
-				typesSet.add(bonusType);
-				if (fusionTypes.length === 2 && typesSet.size === 1) typesSet.add(fusionTypes[0]);
-				types = Array.from(typesSet);
+				var bonusType = fusionTypes[fusionTypes.length - 1];
+
+				types = [speciesTypes[0]];
+				if (bonusType !== speciesTypes[0]) types.push(bonusType);
+				if (fusionTypes.length === 2 && types.length === 1) types.push(fusionTypes[0]);
 			}
 
 			if (types) {
@@ -1413,7 +1412,6 @@
 			}
 			buf += '</div>';
 
-			console.log(set);
 			if (isDA) buf += '<div style="margin-top:-2px;" class="setcell setcell-ability"><label>Abilities</label><input type="text" name="ability" class="textbox chartinput" value="' + BattleLog.escapeHTML(set.ability) + '" autocomplete="off" /><input type="text" name="ability2" class="textbox chartinput" value="' + BattleLog.escapeHTML(set.ability2) + '" autocomplete="off" /></div>';
 
 			buf += '</div>';
@@ -1433,8 +1431,8 @@
 			buf += '</div>';
 
 			// stats
-			let newBST = 0;
-			Object.values(this.getBaseStats(set)).forEach(item => {newBST += item;});
+			var newBST = 0;
+			Object.values(this.getBaseStats(set)).forEach(function (item) { newBST += item; });
 
 			buf += '<div class="setcol setcol-stats"><div class="setrow"><label>Stats</label><button class="textbox setstats" name="stats">';
 			buf += '<span class="statrow statrow-head"><label>' + newBST + '</label> <span class="statgraph"></span> <em>' + (isChampions ? 'Points' : !isLetsGo ? 'EV' : 'AV') + '</em></span>';
@@ -1809,10 +1807,12 @@
 		},
 		swapFusion: function (i, button) {
 			i = +($(button).closest('li').attr('value'));
-			let curChartName, curChartType;
+			var curChartName, curChartType;
 
 			if (this.curSetList[i].fusion) {
-				[this.curSetList[i].species, this.curSetList[i].fusion] = [this.curSetList[i].fusion, this.curSetList[i].species];
+				var fusion = this.curSetList[i].fusion;
+				this.curSetList[i].fusion = this.curSetList[i].species;
+				this.curSetList[i].species = fusion;
 				this.curSetList[i].name = '';
 				this.curSetList[i].altsprite = '';
 			}
@@ -1828,13 +1828,14 @@
 			this.update();
 
 			if (this.curSet) {
-				[this.curChartName, this.curChartType] = [curChartName, curChartType];
+				this.curChartName = curChartName;
+				this.curChartType = curChartType;
 				this.updateChart();
 			}
 		},
 		deleteFusion: function (i, button) {
 			i = +($(button).closest('li').attr('value'));
-			let curChartName, curChartType;
+			var curChartName, curChartType;
 
 			if (this.curSetList[i].fusion) {
 				this.curSetList[i].fusion = null;
@@ -1852,7 +1853,8 @@
 			this.update();
 
 			if (this.curSet) {
-				[this.curChartName, this.curChartType] = [curChartName, curChartType];
+				this.curChartName = curChartName;
+				this.curChartType = curChartType;
 				this.updateChart();
 			}
 		},
@@ -2126,7 +2128,7 @@
 					buf += '<button disabled class="addpokemon" aria-label="Add Pok&eacute;mon"><i class="fa fa-plus"></i></button> ';
 					isAdd = true;
 				} else if (i === this.curSetLoc) {
-					let fusionData = Dex.getFusionData(set);
+					var fusionData = Dex.getFusionData(set);
 					buf += '<button disabled class="pokemon">' + pokemonicon + BattleLog.escapeHTML(set.name || (fusionData.nickname !== '' ? fusionData.nickname : this.curTeam.dex.species.get(set.species).baseSpecies) || '<i class="fa fa-plus"></i>') + '</button> ';
 				} else {
 					buf += '<button name="selectPokemon" value="' + i + '" class="pokemon">' + pokemonicon + BattleLog.escapeHTML(set.name || Dex.getFusionData(set).nickname || this.curTeam.dex.species.get(set.species).baseSpecies) + '</button> ';
@@ -2171,8 +2173,8 @@
 			var isLC = baseFormat.startsWith('lc') || baseFormat.endsWith('lc');
 
 			// stat cell
-			let newBST = 0;
-			Object.values(this.getBaseStats(set)).forEach(item => {newBST += item;});
+			var newBST = 0;
+			Object.values(this.getBaseStats(set)).forEach(function (item) { newBST += item; });
 
 			var buf = '<span class="statrow statrow-head"><label>' + newBST + '</label> <span class="statgraph"></span> <em>' + (usesStatPoints ? 'Points' : supportsEVs ? 'EV' : 'AV') + '</em></span>';
 			var defaultEV = (this.curTeam.gen > 2 ? 0 : 252);
@@ -2770,7 +2772,7 @@
 		},
 		totalEVs: function (set, overrideStat, overrideVal) {
 			var total = 0;
-			var stats = {hp: 1, atk: 1, def: 1, spa: 1, spd: 1, spe: 1};
+			var stats = { hp: 1, atk: 1, def: 1, spa: 1, spd: 1, spe: 1 };
 			for (var stat in stats) {
 				if (!this.countsEVStat(stat)) continue;
 				total += stat === overrideStat ? overrideVal : (set.evs[stat] || 0);
@@ -3258,16 +3260,7 @@
 				i = +$(e.currentTarget).closest('li').attr('value');
 				set = this.curSetList[i];
 			}
-			app.addPopup(AltSpritePopup, {curSet: set, index: i, room: this});
-		},
-		altSprite: function (e) {
-			var set = this.curSet;
-			var i = 0;
-			if (!set) {
-				i = +$(e.currentTarget).closest('li').attr('value');
-				set = this.curSetList[i];
-			}
-			app.addPopup(AltSpritePopup, {curSet: set, index: i, room: this});
+			app.addPopup(AltSpritePopup, { curSet: set, index: i, room: this });
 		},
 
 		/*********************************************************
@@ -3790,9 +3783,10 @@
 					if (format && format.teambuilderLevel) {
 						set.level = format.teambuilderLevel;
 					} if (this.curTeam.format in window.Formats) {
-						for (var rule of window.Formats[this.curTeam.format].ruleset) {
-							if (rule.includes('Default Level')) {
-								set.level = Number(rule.split(' = ')[1]);
+						var ruleset = window.Formats[this.curTeam.format].ruleset;
+						for (var j = 0; j < ruleset.length; j++) {
+							if (ruleset[j].includes('Default Level')) {
+								set.level = Number(ruleset[j].split(' = ')[1]);
 							}
 						}
 					}
@@ -3886,16 +3880,16 @@
 
 		getBaseStats: function (set) {
 			var species = this.curTeam.dex.species.get(set.species);
-			var baseStatsFusion = {'hp': 0, 'atk': 0, 'def': 0, 'spa': 0, 'spd': 0, 'spe': 0};
+			var baseStatsFusion = { 'hp': 0, 'atk': 0, 'def': 0, 'spa': 0, 'spd': 0, 'spe': 0 };
 			var baseStats = species.baseStats;
-			
-			if (this.curTeam.format.includes('averagemons')) return {'hp': 100, 'atk': 100, 'def': 100, 'spa': 100, 'spd': 100, 'spe': 100};
+
+			if (this.curTeam.format.includes('averagemons')) return { 'hp': 100, 'atk': 100, 'def': 100, 'spa': 100, 'spd': 100, 'spe': 100 };
 
 			if (set.fusion && this.curTeam.dex.species.get(set.fusion).exists) {
-				const fusionSpecies = this.curTeam.dex.species.get(set.fusion);
-				for (const stat in baseStatsFusion) {
-					if (stat === 'hp' || stat === 'spa' || stat === 'spd') baseStatsFusion[stat] = Math.floor((baseStats[stat] * 2/3) + (fusionSpecies.baseStats[stat] * 1/3));
-					if (stat === 'atk' || stat === 'def' || stat === 'spe') baseStatsFusion[stat] = Math.floor((baseStats[stat] * 1/3) + (fusionSpecies.baseStats[stat] * 2/3));
+				var fusionSpecies = this.curTeam.dex.species.get(set.fusion);
+				for (var stat in baseStatsFusion) {
+					if (stat === 'hp' || stat === 'spa' || stat === 'spd') baseStatsFusion[stat] = Math.floor((baseStats[stat] * 2 / 3) + (fusionSpecies.baseStats[stat] * 1 / 3));
+					if (stat === 'atk' || stat === 'def' || stat === 'spe') baseStatsFusion[stat] = Math.floor((baseStats[stat] * 1 / 3) + (fusionSpecies.baseStats[stat] * 2 / 3));
 				}
 				return baseStatsFusion;
 			}
@@ -3991,11 +3985,11 @@
 				var spriteDim = 'width: ' + spriteSize + 'px; height: ' + spriteSize + 'px;';
 				var resize = (data.h ? 'background-size:' + data.h + 'px;' : '');
 				buf += '<button name="setForm" value="' + form + '" style="';
-				if (species.tags.includes('Insurgence')) {
+				if (species.eggGroups.includes('Insurgence')) {
 					buf += 'background-image: url(https://play.pokeathlon.com/sprites/fangame-sprites/insurgence/front/' + baseid + toID(formid) + '.png); width: 120px; height: 120px; background-size: 120px;" class="option';
-				} else if (species.tags.includes('Pokeathlon')) {
+				} else if (species.eggGroups.includes('Pokeathlon')) {
 					buf += 'background-image: url(https://play.pokeathlon.com/sprites/fangame-sprites/pokeathlon/front/' + baseid + toID(formid) + '.gif); width: 120px; height: 120px; background-size: 120px;" class="option';
-				} else if (species.tags.includes('Uranium')) {
+				} else if (species.eggGroups.includes('Uranium')) {
 					buf += 'background-image: url(https://play.pokeathlon.com/sprites/fangame-sprites/uranium/front/' + baseid + toID(formid) + '.png); width: 120px; height: 120px; background-size: 120px;" class="option';
 				} else {
 					buf += 'background-image: url(' + Dex.resourcePrefix + data.spriteDir + '/' + spriteid + '.png); ' + spriteDim + resize + '" class="option';
@@ -4032,10 +4026,8 @@
 			this.room = data.room;
 			this.curSet = data.curSet;
 			this.chartIndex = data.index;
-			var species = this.room.curTeam.dex.species.get(this.curSet.species);
-			var fusionData = Dex.getFusionData(this.curSet)
-			var alts = [''];
-			alts.push(...fusionData.alts.split(''));
+			var fusionData = Dex.getFusionData(this.curSet);
+			var alts = [''].concat(fusionData.alts.split(''));
 			var extension = fusionData.extension;
 			if (this.curSet.altsprite) extension = extension.slice(0, -1);
 			var spriteSize = 144;
@@ -4047,20 +4039,19 @@
 
 			var altCount = alts.length;
 			for (var i = 0; i < altCount; i++) {
-				let alt = extension + alts[i];
+				var alt = extension + alts[i];
 				var offset = '-' + (((i - 1) % 7) * spriteSize) + 'px -' + (Math.floor((i - 1) / 7) * spriteSize) + 'px';
 				buf += '<button name="setSprite" value="' + alts[i] + '"  style="';
 				buf += 'background-position:' + offset + '; background: url(https://play.pokeathlon.com/sprites/fusion-sprites/' + alt + '.png) no-repeat; ' + spriteDim + ' background-size: 144px 144px;"';
-				buf +=  (alts[i] === this.curSet.altsprite ? ' class="cur"' : '') + '></button>';
+				buf += (alts[i] === this.curSet.altsprite ? ' class="cur"' : '') + '></button>';
 			}
 			buf += '</div>';
 
 			var height = Math.ceil(altCount / 7);
 			var width = Math.ceil(altCount / height);
-			this.$el.html(buf).css({'max-width': (4 + spriteSize) * width, 'height': 42 + (4 + spriteSize) * height});
+			this.$el.html(buf).css({ 'max-width': (4 + spriteSize) * width, 'height': 42 + (4 + spriteSize) * height });
 		},
 		setSprite: function (altsprite) {
-			var species = Dex.species.get(this.curSet.species);
 			if (altsprite.length) {
 				this.curSet.altsprite = altsprite;
 			} else {

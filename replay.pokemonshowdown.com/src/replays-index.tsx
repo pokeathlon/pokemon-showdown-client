@@ -256,7 +256,7 @@ export class SearchPanel extends preact.Component<{ id: string, user: PSReplays[
 	}
 }
 
-class FeaturedReplays extends preact.Component {
+export class FeaturedReplays extends preact.Component {
 	moreFun = false;
 	moreCompetitive = false;
 	showMoreFun = (e: Event) => {
