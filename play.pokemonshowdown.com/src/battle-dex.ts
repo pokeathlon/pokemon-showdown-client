@@ -976,7 +976,7 @@ export const Dex = new class implements ModdedDex {
 		}
 
 		if (fusionData.extension !== '') {
-			spriteData.url = 'https://play.pokeathlon.com/sprites/fusion-sprites/' + fusionData.extension + '.png';
+			spriteData.url = Dex.resourcePrefix + 'sprites/fusion-sprites/' + fusionData.extension + '.png';
 			spriteData.pixelated = true;
 			spriteData.gen = 5;
 			if (!spriteData.isFrontSprite) spriteData.flip = true;
@@ -985,11 +985,11 @@ export const Dex = new class implements ModdedDex {
 
 		for (let fangame of ["Infinite Fusion", "Pokeathlon", "Insurgence", "Uranium", "Infinity", "Mariomon", "Soulstones"]) {
 			if (species.eggGroups.includes(fangame)) {
-				if (species.eggGroups.includes("Digimon")) spriteData.url = 'https://play.pokeathlon.com/sprites/fangame-sprites/infinity/digimon/' + (spriteData.isFrontSprite ? 'front' : 'back') + (spriteData.shiny ? '-shiny' : '') + '/' + species.id + '.png';
+				if (species.eggGroups.includes("Digimon")) spriteData.url = Dex.resourcePrefix + 'sprites/fangame-sprites/infinity/digimon/' + (spriteData.isFrontSprite ? 'front' : 'back') + (spriteData.shiny ? '-shiny' : '') + '/' + species.id + '.png';
 				else if (species.eggGroups.includes("Mariomon") && (Dex.afdMode || options.afd)) {
-					spriteData.url = 'https://play.pokeathlon.com/sprites/fangame-sprites/mariomon/afd-front' + (spriteData.shiny ? '-shiny' : '') + '/' + species.id + '.gif';
+					spriteData.url = Dex.resourcePrefix + 'sprites/fangame-sprites/mariomon/afd-front' + (spriteData.shiny ? '-shiny' : '') + '/' + species.id + '.gif';
 					if (!spriteData.isFrontSprite) spriteData.flip = true;
-				} else spriteData.url = 'https://play.pokeathlon.com/sprites/fangame-sprites/' + toID(fangame) + '/' + (!["Infinite Fusion"].includes(fangame) ? (spriteData.isFrontSprite ? 'front' : 'back') + (spriteData.shiny ? '-shiny' : '') + '/' : '') + species.id + (["Pokeathlon", "Uranium"].includes(fangame) ? '.gif' : '.png');
+				} else spriteData.url = Dex.resourcePrefix + 'sprites/fangame-sprites/' + toID(fangame) + '/' + (!["Infinite Fusion"].includes(fangame) ? (spriteData.isFrontSprite ? 'front' : 'back') + (spriteData.shiny ? '-shiny' : '') + '/' : '') + species.id + (["Pokeathlon", "Uranium"].includes(fangame) ? '.gif' : '.png');
 				spriteData.pixelated = true;
 				spriteData.gen = 5;
 				if (fangame === "Mariomon") {
@@ -1178,41 +1178,41 @@ export const Dex = new class implements ModdedDex {
 		}
 		let num = this.getPokemonIconNum(id, pokemon?.gender === 'F', facingLeft);
 
-		let fusion = pokemon?.fusion ? toID(pokemon.fusion) : '';
-		let species = Dex.species.get(id);
+		let top = Math.floor(num / 12) * 30;
+		let left = (num % 12) * 40;
+		let fainted = ((pokemon as Pokemon | ServerPokemon)?.fainted ?
+			`;opacity:.3;filter:grayscale(100%) brightness(.5)` : ``);
 
-		let fainted = ((pokemon as Pokemon | ServerPokemon)?.fainted ? `;opacity:.3;filter:grayscale(100%) brightness(.5)` : ``);
+		const fusion = pokemon?.fusion ? toID(pokemon.fusion) : '';
+		const species = Dex.species.get(id);
 
 		if (species.eggGroups.includes("Infinite Fusion")) {
-			return `image-rendering:pixelated;animation: rainbowshadow ${((Math.random() * 2) + 2)}s infinite;background:transparent url(https://play.pokeathlon.com/sprites/fangame-sprites/infinitefusion/iconsprites/${id}.png) no-repeat scroll ${fainted}`;
+			return `image-rendering:pixelated;animation: rainbowshadow ${((Math.random() * 2) + 2)}s infinite;background:transparent url(${Dex.resourcePrefix}sprites/fangame-sprites/infinitefusion/iconsprites/${id}.png) no-repeat scroll ${fainted}`;
 		}
 
 		if (species.eggGroups.includes("Pokeathlon")) {
-			return `image-rendering:pixelated;background:transparent url(https://play.pokeathlon.com/sprites/fangame-sprites/pokeathlon/iconsprites/${id}.png) no-repeat scroll ${fainted}`;
+			return `image-rendering:pixelated;background:transparent url(${Dex.resourcePrefix}sprites/fangame-sprites/pokeathlon/iconsprites/${id}.png) no-repeat scroll ${fainted}`;
 		}
 
 		if (species.eggGroups.includes("Insurgence")) {
-			return `image-rendering:pixelated;background:transparent url(https://play.pokeathlon.com/sprites/fangame-sprites/insurgence/iconsprites/${id}.png) no-repeat scroll ${fainted}`;
+			return `image-rendering:pixelated;background:transparent url(${Dex.resourcePrefix}sprites/fangame-sprites/insurgence/iconsprites/${id}.png) no-repeat scroll ${fainted}`;
 		}
 
 		if (species.eggGroups.includes("Uranium")) {
-			return `image-rendering:pixelated;background:transparent;background-image:url(https://play.pokeathlon.com/sprites/fangame-sprites/uranium/iconsprites/${id}.gif);background-repeat:no-repeat;background-position:4px -1px;background-size:32px;${fainted}`;
+			return `image-rendering:pixelated;background:transparent;background-image:url(${Dex.resourcePrefix}sprites/fangame-sprites/uranium/iconsprites/${id}.gif);background-repeat:no-repeat;background-position:4px -1px;background-size:32px;${fainted}`;
 		}
 
 		if (species.eggGroups.includes("Infinity")) {
-			return `image-rendering:pixelated;background:transparent url(https://play.pokeathlon.com/sprites/fangame-sprites/infinity/iconsprites/${id}.png) no-repeat scroll ${fainted}`;
+			return `image-rendering:pixelated;background:transparent url(${Dex.resourcePrefix}sprites/fangame-sprites/infinity/iconsprites/${id}.png) no-repeat scroll ${fainted}`;
 		}
 
 		if (species.eggGroups.includes("Mariomon")) {
-			// return `image-rendering:pixelated;background-image:url(https://play.pokeathlon.com/sprites/fangame-sprites/mariomon/front/${id}.png);background-position:5px 0px;background-repeat:no-repeat;background-size:30px;${fainted}`;
-			return `image-rendering:pixelated;background:transparent;background-image:url(https://play.pokeathlon.com/sprites/fangame-sprites/mariomon/iconsprites/${id}.gif);background-repeat:no-repeat;background-position:4px -1px;${fainted}`;
+			return `image-rendering:pixelated;background:transparent;background-image:url(${Dex.resourcePrefix}sprites/fangame-sprites/mariomon/iconsprites/${id}.gif);background-repeat:no-repeat;background-position:4px -1px;${fainted}`;
 		}
 
 		if (species.eggGroups.includes("Soulstones")) {
-			return `image-rendering:pixelated;background:transparent url(https://play.pokeathlon.com/sprites/fangame-sprites/soulstones/iconsprites/${id}.png);background-repeat:no-repeat;background-position:4px -1px;background-size:32px;${fainted}`;
+			return `image-rendering:pixelated;background:transparent url(${Dex.resourcePrefix}sprites/fangame-sprites/soulstones/iconsprites/${id}.png);background-repeat:no-repeat;background-position:4px -1px;background-size:32px;${fainted}`;
 		}
-		let top = Math.floor(num / 12) * 30;
-		let left = (num % 12) * 40;
 		return `image-rendering:pixelated;${fusion.length ? `animation: rainbowshadow ${(Math.random() * 2) + 2}s infinite;` : ''}background:transparent url(${Dex.resourcePrefix}sprites/pokemonicons-sheet.png?v22) no-repeat scroll -${left}px -${top}px${fainted}`;
 	}
 
@@ -1299,13 +1299,13 @@ export const Dex = new class implements ModdedDex {
 
 		const fusionData = this.getFusionData(pokemon);
 		if (fusionData.extension !== '') {
-			let url = 'https://play.pokeathlon.com/sprites/fusion-sprites/' + fusionData.extension + '.png';
+			const url = Dex.resourcePrefix + 'sprites/fusion-sprites/' + fusionData.extension + '.png';
 			return `background-image:url(${url});background-position:${data.x}px ${data.y}px;background-repeat:no-repeat;background-size:100px;image-rendering:pixelated`;
 		}
 		for (let fangame of ["Infinite Fusion", "Pokeathlon", "Insurgence", "Uranium", "Infinity", "Mariomon", "Soulstones"]) {
 			if (Dex.species.get(pokemon.species).eggGroups.includes(fangame)) {
-				let url = 'https://play.pokeathlon.com/sprites/fangame-sprites/' + toID(fangame) + (!["Infinite Fusion"].includes(fangame) ? '/front' + shiny : '') + '/' + toID(pokemon.species) + (["Pokeathlon", "Uranium"].includes(fangame) ? '.gif' : '.png');
-				if (Dex.species.get(pokemon.species).eggGroups.includes('Digimon')) url = 'https://play.pokeathlon.com/sprites/fangame-sprites/infinity/digimon/front' + shiny + '/' + toID(pokemon.species) + '.png';
+				let url = Dex.resourcePrefix + 'sprites/fangame-sprites/' + toID(fangame) + (!["Infinite Fusion"].includes(fangame) ? '/front' + shiny : '') + '/' + toID(pokemon.species) + (["Pokeathlon", "Uranium"].includes(fangame) ? '.gif' : '.png');
+				if (Dex.species.get(pokemon.species).eggGroups.includes('Digimon')) url = Dex.resourcePrefix + 'sprites/fangame-sprites/infinity/digimon/front' + shiny + '/' + toID(pokemon.species) + '.png';
 				return `background-image:url(${url});background-position:${data.x}px ${data.y}px;background-repeat:no-repeat;background-size:100px;image-rendering:pixelated`;
 			}
 		}
@@ -1317,12 +1317,12 @@ export const Dex = new class implements ModdedDex {
 		let num = 0;
 		if (typeof item === 'string' && window.BattleItems) item = window.BattleItems[toID(item)];
 		if (item?.spritenum) num = item.spritenum;
-		if (num === -1) return 'background:transparent url(https://play.pokeathlon.com/sprites/fangame-sprites/insurgence/items/' + item.id + '.png) center/24px';
-		if (num === -2) return 'background:transparent url(https://play.pokeathlon.com/sprites/fangame-sprites/uranium/items/' + item.id + '.png) center/24px';
-		if (num === -3) return 'background:transparent url(https://play.pokeathlon.com/sprites/fangame-sprites/pokeathlon/items/' + item.id + '.png) center/24px';
-		if (num === -4) return 'background:transparent url(https://play.pokeathlon.com/sprites/fangame-sprites/infinity/items/' + item.id + '.png) center/24px';
-		if (num === -5) return 'background:transparent url(https://play.pokeathlon.com/sprites/fangame-sprites/mariomon/items/' + item.id + '.png) center/24px';
-		if (num === -6) return 'background:transparent url(https://play.pokeathlon.com/sprites/fangame-sprites/soulstones/items/' + item.id + '.png) center/24px';
+		if (num === -1) return 'background:transparent url(' + Dex.resourcePrefix + 'sprites/fangame-sprites/insurgence/items/' + item.id + '.png) center/24px';
+		if (num === -2) return 'background:transparent url(' + Dex.resourcePrefix + 'sprites/fangame-sprites/uranium/items/' + item.id + '.png) center/24px';
+		if (num === -3) return 'background:transparent url(' + Dex.resourcePrefix + 'sprites/fangame-sprites/pokeathlon/items/' + item.id + '.png) center/24px';
+		if (num === -4) return 'background:transparent url(' + Dex.resourcePrefix + 'sprites/fangame-sprites/infinity/items/' + item.id + '.png) center/24px';
+		if (num === -5) return 'background:transparent url(' + Dex.resourcePrefix + 'sprites/fangame-sprites/mariomon/items/' + item.id + '.png) center/24px';
+		if (num === -6) return 'background:transparent url(' + Dex.resourcePrefix + 'sprites/fangame-sprites/soulstones/items/' + item.id + '.png) center/24px';
 
 		let top = Math.floor(num / 16) * 24;
 		let left = (num % 16) * 24;
@@ -1331,10 +1331,10 @@ export const Dex = new class implements ModdedDex {
 
 	getTypeIcon(type: string | null, b?: boolean) { // b is just for utilichart.js
 		type = this.types.get(type).name;
-		if (!type || type === '???') type = 'notype';
-		let sanitizedType = type.replace(/\?/g, '%3f');
+		if (!type) type = '???';
+		let sanitizedType = type === '???' ? 'notype' : type;
 		const alt = BattleLog.escapeHTML(TL.type[toID(type)] || type);
-		return `<img src="https://play.pokeathlon.com/fx/types/${sanitizedType}.png" alt="${alt}" height="14" width="32" class="pixelated${b ? ' b' : ''}" />`;
+		return `<img src="${Dex.fxPrefix}types/${sanitizedType}.png" alt="${alt}" height="14" width="32" class="pixelated${b ? ' b' : ''}" />`;
 	}
 
 	getCategoryIcon(category: string | null) {
@@ -1378,7 +1378,7 @@ export const Dex = new class implements ModdedDex {
 	getFusionData(pokemon: any) {
 		const alphabet = 'abcdefghijklmnopqrstuvwxyz';
 
-		let fusionData = {
+		const fusionData = {
 			extension: '',
 			credit: '',
 			nickname: '',
@@ -1396,37 +1396,35 @@ export const Dex = new class implements ModdedDex {
 		const body_species_all = Dex.species.get(pokemon.fusion);
 
 		if (head_species_all.id !== body_species_all.id && toID(head_species_all.baseSpecies) in SplitNames && toID(body_species_all.baseSpecies) in SplitNames) {
-			let head_name = SplitNames[toID(head_species_all.baseSpecies)][0];
+			const head_name = SplitNames[toID(head_species_all.baseSpecies)][0];
 			let body_name = SplitNames[toID(body_species_all.baseSpecies)][1];
 
 			if (head_name.endsWith('-') || head_name.endsWith(' ')) {
 				body_name = body_name.replace(' ', '').replace('-', '');
 				body_name = body_name[0].toUpperCase() + body_name.slice(1);
-			} if (head_name.endsWith(body_name.charAt(0))) body_name = body_name.slice(1);
+			}
+			if (head_name.endsWith(body_name.charAt(0))) body_name = body_name.slice(1);
 
 			fusionData.nickname = head_name + body_name;
 		}
 
 		if (
-			dex.species.get(pokemon.fusion).exists && dex.species.get((pokemon.speciesForme || pokemon.species)) &&
-			dex.species.get(pokemon.fusion).isNonstandard !== "Custom" && dex.species.get((pokemon.speciesForme || pokemon.species)).isNonstandard !== "Custom"
+			head_species.exists && body_species.exists &&
+			head_species.isNonstandard !== "Custom" && body_species.isNonstandard !== "Custom" &&
+			head_species.num > 0 && body_species.num > 0
 		) {
-			if (head_species.num > 0 && body_species.num > 0) {
-				let head_num = head_species.num.toString();
-				let body_num = body_species.num.toString();
-
-				let extension = head_num + '.' + body_num;
-				const FusionIndex = window.BattleFusionIndex;
-				if (head_num.toString() in FusionIndex && FusionIndex[head_num].includes(body_num.toString())) {
-					for (let sprite of FusionIndex[head_num]) {
-						if (alphabet.includes(sprite.slice(-1)) &&
-							sprite.slice(0, -1) === body_num.toString() &&
-							!fusionData.alts.includes(sprite.slice(-1))) fusionData.alts += sprite.slice(-1);
-					}
-					fusionData.extension = extension;
-					if (pokemon.altsprite && FusionIndex[head_num].includes(body_num.toString() + pokemon.altsprite)) fusionData.extension += pokemon.altsprite;
-					if (fusionData.extension in window.FusionCredit) fusionData.credit = window.FusionCredit[fusionData.extension];
+			const head_num = head_species.num.toString();
+			const body_num = body_species.num.toString();
+			const FusionIndex = window.BattleFusionIndex;
+			if (head_num in FusionIndex && FusionIndex[head_num].includes(body_num)) {
+				for (const sprite of FusionIndex[head_num]) {
+					if (alphabet.includes(sprite.slice(-1)) &&
+						sprite.slice(0, -1) === body_num &&
+						!fusionData.alts.includes(sprite.slice(-1))) fusionData.alts += sprite.slice(-1);
 				}
+				fusionData.extension = head_num + '.' + body_num;
+				if (pokemon.altsprite && FusionIndex[head_num].includes(body_num + pokemon.altsprite)) fusionData.extension += pokemon.altsprite;
+				if (fusionData.extension in window.FusionCredit) fusionData.credit = window.FusionCredit[fusionData.extension];
 			}
 		}
 		return fusionData;

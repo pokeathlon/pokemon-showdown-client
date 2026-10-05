@@ -40192,7 +40192,7 @@ export const BattleMoveAnims: AnimTable = {
 				time: 1100,
 			}, 'linear');
 
-			scene.showEffect('poisonwisp', {
+			scene.showEffect('purplewisp', {
 				x: defender.x + 40,
 				y: defender.y + 30,
 				z: defender.z,
@@ -40204,7 +40204,7 @@ export const BattleMoveAnims: AnimTable = {
 				opacity: 0,
 				time: 1000,
 			}, 'accel');
-			scene.showEffect('poisonwisp', {
+			scene.showEffect('purplewisp', {
 				x: defender.x - 40,
 				y: defender.y + 30,
 				z: defender.z,
@@ -40216,7 +40216,7 @@ export const BattleMoveAnims: AnimTable = {
 				opacity: 0,
 				time: 1200,
 			}, 'accel');
-			scene.showEffect('poisonwisp', {
+			scene.showEffect('purplewisp', {
 				x: defender.x,
 				y: defender.y + 40,
 				z: defender.z,

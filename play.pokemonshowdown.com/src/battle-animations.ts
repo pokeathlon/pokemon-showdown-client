@@ -152,7 +152,7 @@ export class BattleScene implements BattleSceneStub {
 		this.$battle = $('<div class="innerbattle"></div>');
 		this.$frame.append(this.$battle);
 
-		this.$bg = $('<div class="backdrop pixelated" style="background-image:url(https://play.pokeathlon.com/' + this.backdropImage + ');display:block;opacity:0.8"></div>');
+		this.$bg = $('<div class="backdrop pixelated" style="background-image:url(' + Dex.resourcePrefix + this.backdropImage + ');display:block;opacity:0.8"></div>');
 		this.$terrain = $('<div class="weather"></div>');
 		this.$weather = $('<div class="weather"></div>');
 		this.$bgEffect = $('<div></div>');
@@ -606,10 +606,9 @@ export class BattleScene implements BattleSceneStub {
 				bg = marioBGs[this.numericId % marioBGs.length];
 
 				const marioMusic = Object.keys(BattleMusicMario);
-				let bgm = marioMusic[this.numericId % marioMusic.length];
-				if (!this.bgm || (this.bgm && this.bgm.url !== bgm)) this.message(`\u266b <i>${BattleMusicMario[bgm].title}</i> - <b>${BattleMusicMario[bgm].composer}</b> \u266b`);
+				const bgm = marioMusic[this.numericId % marioMusic.length];
+				if (this.bgm?.url !== bgm) this.message(`\u266b <i>${BattleMusicMario[bgm].title}</i> - <b>${BattleMusicMario[bgm].composer}</b> \u266b`);
 				this.bgm = BattleSound.loadBgm(bgm, BattleMusicMario[bgm].loopstart, BattleMusicMario[bgm].loopend, this.bgm);
-
 			} else if (gen <= 1) bg = 'fx/bg-gen1.png?';
 			else if (gen <= 2) bg = 'fx/bg-gen2.png?';
 			else if (gen <= 3) bg = `fx/${BattleBackdropsThree[this.numericId % BattleBackdropsThree.length]}?`;
@@ -619,7 +618,7 @@ export class BattleScene implements BattleSceneStub {
 
 		this.backdropImage = bg;
 		if (this.$bg) {
-			this.$bg.css('background-image', `url(https://play.pokeathlon.com/${this.backdropImage})`);
+			this.$bg.css('background-image', `url(${Dex.resourcePrefix}${this.backdropImage})`);
 		}
 	}
 
@@ -1615,7 +1614,7 @@ export class BattleScene implements BattleSceneStub {
 
 	typeAnim(pokemon: Pokemon, types: string) {
 		const result = BattleLog.escapeHTML(types).split('/').map(type =>
-			'<img src="https://play.pokeathlon.com/fx/types/' + type + '.png" alt="' + type + '" class="pixelated" />'
+			`<img src="${Dex.fxPrefix}types/${encodeURIComponent(type)}.png" alt="${type}" class="pixelated" />`
 		).join(' ');
 		this.resultAnim(pokemon, result, 'neutral');
 	}
@@ -2983,7 +2982,7 @@ export class PokemonSprite extends Sprite {
 		const ignoreNick = this.isFrontSprite && (this.scene.battle.ignoreOpponent || this.scene.battle.ignoreNicks);
 		buf += `<strong>${BattleLog.escapeHTML(ignoreNick ? pokemon.speciesForme : pokemon.name)}`;
 		if (pokemon.fusion || pokemon.getSpecies().eggGroups.includes('Infinite Fusion')) {
-			buf += ` <img src="https://play.pokeathlon.com/fx/fused.png" alt="Fused" style="vertical-align:text-bottom;" height="16" width="16" />`;
+			buf += ` <img src="${Dex.fxPrefix}fused.png" alt="Fused" style="vertical-align:text-bottom;" height="16" width="16" />`;
 		}
 		const gender = pokemon.gender;
 		if (gender === 'M' || gender === 'F') {
@@ -2999,7 +2998,7 @@ export class PokemonSprite extends Sprite {
 			buf += ` <img src="${Dex.resourcePrefix}sprites/misc/${symbol}.png" alt="${symbol}" style="vertical-align:text-bottom;" />`;
 		}
 		if (pokemon.terastallized) {
-			buf += ` <img src="https://play.pokeathlon.com/fx/types/Tera${pokemon.terastallized}.png" alt="Tera-${pokemon.terastallized}" style="vertical-align:text-bottom;" height="16" width="16" />`;
+			buf += ` <img src="${Dex.fxPrefix}types/Tera${pokemon.terastallized}.png" alt="Tera-${pokemon.terastallized}" style="vertical-align:text-bottom;" height="16" width="16" />`;
 		}
 
 		buf += `</strong><div class="hpbar"><div class="hptext"></div><div class="hptextborder"></div><div class="prevhp"><div class="hp"></div></div><div class="status"></div>`;
@@ -3078,21 +3077,21 @@ export class PokemonSprite extends Sprite {
 			status += '<span class="frb">FRB</span> ';
 		}
 		if (pokemon.terastallized) {
-			status += `<img src="https://play.pokeathlon.com/fx/types/${encodeURIComponent(pokemon.terastallized)}.png" alt="${pokemon.terastallized}" class="pixelated" /> `;
+			status += `<img src="${Dex.fxPrefix}types/${encodeURIComponent(pokemon.terastallized)}.png" alt="${pokemon.terastallized}" class="pixelated" /> `;
 		} else if (pokemon.volatiles.typechange?.[1]) {
 			const types = pokemon.volatiles.typechange[1].split('/');
 			for (const type of types) {
-				status += '<img src="https://play.pokeathlon.com/fx/types/' + encodeURIComponent(type) + '.png" alt="' + type + '" class="pixelated" /> ';
+				status += '<img src="' + Dex.fxPrefix + 'types/' + encodeURIComponent(type) + '.png" alt="' + type + '" class="pixelated" /> ';
 			}
 		} else if (pokemon.fusion) {
 			const types = pokemon.getTypes()[0];
 			for (const type of types) {
-				status += '<img src="https://play.pokeathlon.com/fx/types/' + encodeURIComponent(type) + '.png" alt="' + type + '" class="pixelated" /> ';
+				status += '<img src="' + Dex.fxPrefix + 'types/' + encodeURIComponent(type) + '.png" alt="' + type + '" class="pixelated" /> ';
 			}
 		}
 		if (pokemon.volatiles.typeadd) {
 			const type = pokemon.volatiles.typeadd[1];
-			status += '+<img src="https://play.pokeathlon.com/fx/types/' + type + '.png" alt="' + type + '" class="pixelated" /> ';
+			status += '+<img src="' + Dex.fxPrefix + 'types/' + type + '.png" alt="' + type + '" class="pixelated" /> ';
 		}
 		for (const stat in pokemon.boosts) {
 			if (pokemon.boosts[stat]) {
@@ -3445,9 +3444,10 @@ const BattleEffects: { [k: string]: SpriteData } = {
 	},
 };
 (() => {
+	if (!window.Dex || !Dex.resourcePrefix) return;
 	for (const id in BattleEffects) {
 		if (!BattleEffects[id].url) continue;
-		BattleEffects[id].url = 'https://play.pokeathlon.com/fx/' + BattleEffects[id].url;
+		BattleEffects[id].url = Dex.fxPrefix + BattleEffects[id].url;
 	}
 })();
 const BattleBackdropsThree = [
