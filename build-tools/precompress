@@ -1,0 +1,119 @@
+#!/usr/bin/env node
+'use strict';
+
+const fs = require('node:fs');
+const fsp = require('node:fs/promises');
+const path = require('node:path');
+const zlib = require('node:zlib');
+const { promisify } = require('node:util');
+
+const brotli = promisify(zlib.brotliCompress);
+const gzip = promisify(zlib.gzip);
+
+process.chdir(path.join(__dirname, '..'));
+
+const args = process.argv.slice(2);
+const force = args.includes('--force');
+const jobsArg = args.find(a => a.startsWith('--jobs='));
+const JOBS = jobsArg ? Math.max(1, parseInt(jobsArg.slice(7), 10)) : 2;
+let dirs = args.filter(a => !a.startsWith('--'));
+if (!dirs.length) dirs = ['play.pokemonshowdown.com/data', 'play.pokemonshowdown.com/js'];
+
+const EXTENSIONS = new Set(['.js', '.css', '.svg', '.html']);
+const MIN_SIZE = 1000;
+const ENCODINGS = [
+	{
+		ext: '.br',
+		compress: (buf) => brotli(buf, { params: {
+			[zlib.constants.BROTLI_PARAM_MODE]: zlib.constants.BROTLI_MODE_TEXT,
+			[zlib.constants.BROTLI_PARAM_QUALITY]: 11,
+			[zlib.constants.BROTLI_PARAM_LGWIN]: 24,
+			[zlib.constants.BROTLI_PARAM_SIZE_HINT]: buf.length,
+		} }),
+	},
+	{ ext: '.gz', compress: (buf) => gzip(buf, { level: 9 }) },
+];
+const COMPRESSED_EXTS = ENCODINGS.map(e => e.ext);
+const TMP_RE = /\.(br|gz)\.tmp-\d+$/;
+
+function walk(dir, out = []) {
+	for (const ent of fs.readdirSync(dir, { withFileTypes: true })) {
+		const p = path.join(dir, ent.name);
+		if (ent.isDirectory()) walk(p, out);
+		else if (ent.isFile()) out.push(p);
+	}
+	return out;
+}
+
+function wanted(file, st) {
+	return EXTENSIONS.has(path.extname(file)) && st.size >= MIN_SIZE;
+}
+
+function sameMtime(a, b) {
+	return Math.abs(a.mtimeMs - b.mtimeMs) < 1;
+}
+
+async function main() {
+	const files = dirs.flatMap(d => walk(d));
+	const stats = new Map(files.map(f => [f, fs.statSync(f)]));
+
+	let pruned = 0;
+	for (const file of files) {
+		if (TMP_RE.test(file)) {
+			fs.rmSync(file, { force: true });
+			continue;
+		}
+		const enc = COMPRESSED_EXTS.find(ext => file.endsWith(ext));
+		if (!enc) continue;
+		const src = file.slice(0, -enc.length);
+		const srcSt = stats.get(src);
+		if (force || !srcSt || !wanted(src, srcSt) || !sameMtime(srcSt, stats.get(file))) {
+			fs.rmSync(file, { force: true });
+			stats.delete(file);
+			pruned++;
+		}
+	}
+
+	const todo = [];
+	for (const file of files) {
+		if (TMP_RE.test(file) || COMPRESSED_EXTS.some(ext => file.endsWith(ext))) continue;
+		const st = stats.get(file);
+		if (!wanted(file, st)) continue;
+		for (const enc of ENCODINGS) {
+			if (!stats.has(file + enc.ext)) todo.push({ file, st, enc });
+		}
+	}
+	todo.sort((a, b) => b.st.size - a.st.size);
+
+	let done = 0;
+	let bytesIn = 0;
+	let bytesOut = 0;
+	const t0 = Date.now();
+	async function worker() {
+		for (let job; (job = todo.shift());) {
+			const { file, st, enc } = job;
+			const buf = await fsp.readFile(file);
+			const now = await fsp.stat(file);
+			if (!sameMtime(now, st) || now.size !== buf.length) continue;
+			const out = await enc.compress(buf);
+			const dest = file + enc.ext;
+			const tmp = `${dest}.tmp-${process.pid}`;
+			await fsp.writeFile(tmp, out);
+			await fsp.utimes(tmp, st.atime, st.mtime);
+			await fsp.rename(tmp, dest);
+			done++;
+			bytesIn += buf.length;
+			bytesOut += out.length;
+		}
+	}
+	await Promise.all(Array.from({ length: JOBS }, worker));
+
+	const mb = n => (n / 1048576).toFixed(1);
+	console.log(`precompress: pruned ${pruned}, wrote ${done} ` +
+		`(${mb(bytesIn)} MB -> ${mb(bytesOut)} MB) in ${((Date.now() - t0) / 1000).toFixed(1)}s`);
+}
+
+main().catch(err => {
+	console.error(err);
+	process.exit(1);
+});

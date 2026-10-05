@@ -84,3 +84,4 @@ if (full) {
 }
 
 execSync(`node ./build-tools/update` + full, options);
+execSync(`node ./build-tools/precompress`, options);
