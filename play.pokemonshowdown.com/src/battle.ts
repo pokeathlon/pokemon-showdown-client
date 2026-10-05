@@ -137,9 +137,6 @@ export class Pokemon implements PokemonDetails, PokemonHealth {
 		this.searchid = data.searchid;
 
 		this.sprite = side.battle.scene.addPokemonSprite(this);
-
-		this.innates = data.innates;
-		this.baseInnates = data.baseInnates;
 	}
 
 	isActive() {
@@ -519,17 +516,14 @@ export class Pokemon implements PokemonDetails, PokemonHealth {
 	}
 	getTypes(serverPokemon?: ServerPokemon, preterastallized = false): [readonly Dex.TypeName[], Dex.TypeName | ''] {
 		let types: readonly Dex.TypeName[];
-		if (this.fusion) {
-			const fusionSpecies = Dex.mod('gen9infinitefusion' as ID).species.get(this.fusion);
-			const species = Dex.mod('gen9infinitefusion' as ID).species.get(this.speciesForme);
-			return [Dex.getFusionTypes(species.types, fusionSpecies.types), ''];
-		}
 		if (!preterastallized && this.terastallized && this.terastallized !== 'Stellar') {
 			types = [this.terastallized as Dex.TypeName];
 		} else if (this.volatiles.typechange) {
 			types = this.volatiles.typechange[1].split('/');
 		} else if (this.moddedType.length) {
 			types = this.moddedType;
+		} else if (this.fusion) {
+			types = Dex.getFusionTypes(this.getSpecies(serverPokemon).types, this.side.battle.dex.species.get(this.fusion).types);
 		} else {
 			types = this.getSpecies(serverPokemon).types;
 		}
@@ -1063,8 +1057,6 @@ export interface PokemonDetails {
 	fusion: string;
 	altsprite: string;
 	searchid: string;
-	innates?: string[];
-	baseInnates?: string[];
 }
 export interface PokemonHealth {
 	hp: number;
@@ -1102,6 +1094,8 @@ export interface ServerPokemon extends PokemonDetails, PokemonHealth {
 	teraType: string;
 	/** falsy if the pokemon is not terastallized, otherwise it is the Tera Type of the Pokemon */
 	terastallized: string;
+	innates?: string[];
+	baseInnates?: string[];
 }
 
 export class Battle {
@@ -3397,15 +3391,9 @@ export class Battle {
 		output.gender = '';
 		output.ident = (!isTeamPreview ? pokemonid : '');
 		output.searchid = (!isTeamPreview ? `${pokemonid}|${details}` : '');
-		output.innates = [];
-		output.baseInnates = [];
 		let splitDetails = details.split(', ');
-		if (splitDetails[splitDetails.length - 1].startsWith('innates: ')) {
-			output.innates = splitDetails[splitDetails.length - 1].slice(9).split('-');
-			splitDetails.pop();
-		}
-		if (splitDetails[splitDetails.length - 1].startsWith('baseInnates: ')) {
-			output.baseInnates = splitDetails[splitDetails.length - 1].slice(13).split('-');
+		if (splitDetails[splitDetails.length - 1].startsWith('tera:')) {
+			output.terastallized = splitDetails[splitDetails.length - 1].slice(5);
 			splitDetails.pop();
 		}
 		if (splitDetails[splitDetails.length - 1].startsWith('alt: ')) {
@@ -3414,10 +3402,6 @@ export class Battle {
 		}
 		if (splitDetails[splitDetails.length - 1].startsWith('fusion: ')) {
 			output.fusion = splitDetails[splitDetails.length - 1].slice(8);
-			splitDetails.pop();
-		}
-		if (splitDetails[splitDetails.length - 1].startsWith('tera:')) {
-			output.terastallized = splitDetails[splitDetails.length - 1].slice(5);
 			splitDetails.pop();
 		}
 		if (splitDetails[splitDetails.length - 1] === 'shiny') {
