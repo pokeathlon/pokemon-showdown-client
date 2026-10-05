@@ -3215,23 +3215,10 @@ export class BattleTooltips {
 		return value;
 	}
 	getPokemonTypes(pokemon: Pokemon | ServerPokemon, preterastallized = false): readonly Dex.TypeName[] {
-
 		if (pokemon.fusion) {
-
 			const fusionSpecies = Dex.mod('gen9infinitefusion' as ID).species.get(pokemon.fusion);
 			const species = Dex.mod('gen9infinitefusion' as ID).species.get(pokemon.speciesForme);
-
-			let speciesTypes = species.types;
-			let fusionTypes = fusionSpecies.types;
-
-			if (speciesTypes.length === 2 && speciesTypes.includes('Flying') && speciesTypes.includes('Normal')) speciesTypes = ['Flying'];
-			if (fusionTypes.length === 2 && fusionTypes.includes('Flying') && fusionTypes.includes('Normal')) fusionTypes = ['Flying'];
-
-			const typesSet = [speciesTypes[0]];
-			const bonusType = fusionTypes[fusionTypes.length - 1];
-			if (!typesSet.includes(bonusType)) typesSet.push(bonusType);
-			if (fusionTypes.length === 2 && typesSet.length === 1) typesSet.push(fusionTypes[0]);
-			return typesSet;
+			return Dex.getFusionTypes(species.types, fusionSpecies.types);
 		}
 
 		if (!(pokemon as Pokemon).getTypes) {

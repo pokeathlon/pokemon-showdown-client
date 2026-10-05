@@ -1166,7 +1166,6 @@ export const Dex = new class implements ModdedDex {
 		}
 
 		let id = toID(pokemon);
-
 		if (!pokemon || typeof pokemon === 'string') pokemon = null;
 		// @ts-expect-error safe, but too lazy to cast
 		if (pokemon?.speciesForme) id = toID(pokemon.speciesForme);
@@ -1364,6 +1363,16 @@ export const Dex = new class implements ModdedDex {
 			this.pokeballs.push(data.name);
 		}
 		return this.pokeballs;
+	}
+
+	getFusionTypes(headTypes: readonly Dex.TypeName[], bodyTypes: readonly Dex.TypeName[]) {
+		if (headTypes.length === 2 && headTypes.includes('Flying') && headTypes.includes('Normal')) headTypes = ['Flying'];
+		if (bodyTypes.length === 2 && bodyTypes.includes('Flying') && bodyTypes.includes('Normal')) bodyTypes = ['Flying'];
+		const types = [headTypes[0]];
+		const bonusType = bodyTypes[bodyTypes.length - 1];
+		if (!types.includes(bonusType)) types.push(bonusType);
+		if (bodyTypes.length === 2 && types.length === 1) types.push(bodyTypes[0]);
+		return types;
 	}
 
 	getFusionData(pokemon: any) {

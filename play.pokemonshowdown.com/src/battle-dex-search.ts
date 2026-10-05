@@ -2119,16 +2119,7 @@ class BattleMoveSearch extends BattleTypedSearch<'move'> {
 				const combination_head = dex.species.get(combination[0]);
 				const combination_body = dex.species.get(combination[1]);
 
-				let speciesTypes = combination_head.types;
-				let fusionTypes = combination_body.types;
-
-				if (speciesTypes.length === 2 && speciesTypes.includes('Flying') && speciesTypes.includes('Normal')) speciesTypes = ['Flying'];
-				if (fusionTypes.length === 2 && fusionTypes.includes('Flying') && fusionTypes.includes('Normal')) fusionTypes = ['Flying'];
-
-				const typesSet: string[] = [speciesTypes[0]];
-				const bonusType = this.dex.types.get(fusionTypes[fusionTypes.length - 1]);
-				if (bonusType.exists && !typesSet.includes(bonusType.name)) typesSet.push(bonusType.name);
-				if (fusionTypes.length === 2 && typesSet.length === 1) typesSet.push(fusionTypes[0]);
+				const typesSet: string[] = Dex.getFusionTypes(combination_head.types, combination_body.types);
 
 				let tutorMoves = (this.dex.modid.includes('pokeathlon') || this.dex.modid.includes("chaos")) ? { ...fusionMoves, ...PoAfusionMoves } : fusionMoves;
 
@@ -2238,16 +2229,7 @@ class BattleMoveSearch extends BattleTypedSearch<'move'> {
 				const combination_head = dex.species.get(combination[0]);
 				const combination_body = dex.species.get(combination[1]);
 
-				let speciesTypes = combination_head.types;
-				let fusionTypes = combination_body.types;
-
-				if (speciesTypes.length === 2 && speciesTypes.includes('Flying') && speciesTypes.includes('Normal')) speciesTypes = ['Flying'];
-				if (fusionTypes.length === 2 && fusionTypes.includes('Flying') && fusionTypes.includes('Normal')) fusionTypes = ['Flying'];
-
-				const typesSet: string[] = [speciesTypes[0]];
-				const bonusType = this.dex.types.get(fusionTypes[fusionTypes.length - 1]);
-				if (bonusType.exists && !typesSet.includes(bonusType.name)) typesSet.push(bonusType.name);
-				if (fusionTypes.length === 2 && typesSet.length === 1) typesSet.push(fusionTypes[0]);
+				const typesSet: string[] = Dex.getFusionTypes(combination_head.types, combination_body.types);
 
 				let tutorMoves = (this.dex.modid.includes('pokeathlon') || this.dex.modid.includes("chaos")) ? { ...fusionMoves, ...PoAfusionMoves } : fusionMoves;
 
