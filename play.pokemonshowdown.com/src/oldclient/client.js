@@ -350,6 +350,21 @@ function toId() {
 				'ps-discord-login', 'popup=1,width=500,height=750'
 			);
 		},
+		codeRename: function (code) {
+			var self = this;
+			$.post(this.getActionPHP(), {
+				act: 'discord/code',
+				code: code,
+				challstr: this.challstr
+			}, Storage.safeJSON(function (data) {
+				if (data && data.curuser && data.curuser.loggedin) {
+					self.set('registered', data.curuser);
+					self.finishRename(data.curuser.username, data.assertion);
+				} else {
+					app.addPopupMessage(data.actionerror || "That login code is invalid or expired.");
+				}
+			}), 'text');
+		},
 		challengeOnlyRename: function () {
 			var seed = Storage.prefs('challengeonly');
 			if (!seed) {
