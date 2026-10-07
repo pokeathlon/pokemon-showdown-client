@@ -1154,8 +1154,8 @@ Storage.packedTeamNames = function (buf) {
 Storage.packedTeamIcons = function (buf) {
 	if (!buf) return '<em>(empty team)</em>';
 
-	return this.packedTeamNames(buf).map(function (species) {
-		return '<span class="picon" style="' + Dex.getPokemonIcon(species) + '"><span style="font-size:0px">' + toID(species) + '</span></span>';
+	return this.unpackTeam(buf).map(function (set) {
+		return '<span class="picon" style="' + Dex.getPokemonIcon(set) + '"><span style="font-size:0px">' + toID(set.species) + '</span></span>';
 	}).join('');
 };
 
