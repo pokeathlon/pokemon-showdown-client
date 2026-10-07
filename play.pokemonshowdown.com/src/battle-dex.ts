@@ -1183,37 +1183,48 @@ export const Dex = new class implements ModdedDex {
 		let fainted = ((pokemon as Pokemon | ServerPokemon)?.fainted ?
 			`;opacity:.3;filter:grayscale(100%) brightness(.5)` : ``);
 
-		const fusion = pokemon?.fusion ? toID(pokemon.fusion) : '';
-		const species = Dex.species.get(id);
+		const backgrounds = [id, pokemon?.fusion ? toID(pokemon.fusion) : ''].filter(Boolean).map(iconId => {
+			const species = Dex.species.get(iconId);
 
-		if (species.eggGroups.includes("Infinite Fusion")) {
-			return `image-rendering:pixelated;animation: rainbowshadow ${((Math.random() * 2) + 2)}s infinite;background:transparent url(${Dex.resourcePrefix}sprites/fangame-sprites/infinitefusion/iconsprites/${id}.png) no-repeat scroll ${fainted}`;
-		}
+			if (species.eggGroups.includes("Infinite Fusion")) {
+				return `transparent url(${Dex.resourcePrefix}sprites/fangame-sprites/infinitefusion/iconsprites/${iconId}.png) no-repeat scroll`;
+			}
 
-		if (species.eggGroups.includes("Pokeathlon")) {
-			return `image-rendering:pixelated;background:transparent url(${Dex.resourcePrefix}sprites/fangame-sprites/pokeathlon/iconsprites/${id}.png) no-repeat scroll ${fainted}`;
-		}
+			if (species.eggGroups.includes("Pokeathlon")) {
+				return `transparent url(${Dex.resourcePrefix}sprites/fangame-sprites/pokeathlon/iconsprites/${iconId}.png) no-repeat scroll`;
+			}
 
-		if (species.eggGroups.includes("Insurgence")) {
-			return `image-rendering:pixelated;background:transparent url(${Dex.resourcePrefix}sprites/fangame-sprites/insurgence/iconsprites/${id}.png) no-repeat scroll ${fainted}`;
-		}
+			if (species.eggGroups.includes("Insurgence")) {
+				return `transparent url(${Dex.resourcePrefix}sprites/fangame-sprites/insurgence/iconsprites/${iconId}.png) no-repeat scroll`;
+			}
 
-		if (species.eggGroups.includes("Uranium")) {
-			return `image-rendering:pixelated;background:transparent;background-image:url(${Dex.resourcePrefix}sprites/fangame-sprites/uranium/iconsprites/${id}.gif);background-repeat:no-repeat;background-position:4px -1px;background-size:32px;${fainted}`;
-		}
+			if (species.eggGroups.includes("Uranium")) {
+				return `transparent url(${Dex.resourcePrefix}sprites/fangame-sprites/uranium/iconsprites/${iconId}.gif) no-repeat 4px -1px / 32px`;
+			}
 
-		if (species.eggGroups.includes("Infinity")) {
-			return `image-rendering:pixelated;background:transparent url(${Dex.resourcePrefix}sprites/fangame-sprites/infinity/iconsprites/${id}.png) no-repeat scroll ${fainted}`;
-		}
+			if (species.eggGroups.includes("Infinity")) {
+				return `transparent url(${Dex.resourcePrefix}sprites/fangame-sprites/infinity/iconsprites/${iconId}.png) no-repeat scroll`;
+			}
 
-		if (species.eggGroups.includes("Mariomon")) {
-			return `image-rendering:pixelated;background:transparent;background-image:url(${Dex.resourcePrefix}sprites/fangame-sprites/mariomon/iconsprites/${id}.gif);background-repeat:no-repeat;background-position:4px -1px;${fainted}`;
-		}
+			if (species.eggGroups.includes("Mariomon")) {
+				return `transparent url(${Dex.resourcePrefix}sprites/fangame-sprites/mariomon/iconsprites/${iconId}.gif) no-repeat 4px -1px`;
+			}
 
-		if (species.eggGroups.includes("Soulstones")) {
-			return `image-rendering:pixelated;background:transparent url(${Dex.resourcePrefix}sprites/fangame-sprites/soulstones/iconsprites/${id}.png);background-repeat:no-repeat;background-position:4px -1px;background-size:32px;${fainted}`;
+			if (species.eggGroups.includes("Soulstones")) {
+				return `transparent url(${Dex.resourcePrefix}sprites/fangame-sprites/soulstones/iconsprites/${iconId}.png) no-repeat 4px -1px / 32px`;
+			}
+
+			if (iconId !== id) {
+				num = this.getPokemonIconNum(iconId as ID, false, facingLeft);
+				top = Math.floor(num / 12) * 30;
+				left = (num % 12) * 40;
+			}
+			return `transparent url(${Dex.resourcePrefix}sprites/pokemonicons-sheet.png?v22) no-repeat scroll -${left}px -${top}px`;
+		});
+		if (backgrounds.length > 1) {
+			return `image-rendering:pixelated;--picon-head:${backgrounds[0]};--picon-body:${backgrounds[1]}${fainted}`;
 		}
-		return `image-rendering:pixelated;${fusion.length ? `animation: rainbowshadow ${(Math.random() * 2) + 2}s infinite;` : ''}background:transparent url(${Dex.resourcePrefix}sprites/pokemonicons-sheet.png?v22) no-repeat scroll -${left}px -${top}px${fainted}`;
+		return `image-rendering:pixelated;background:${backgrounds[0]}${fainted}`;
 	}
 
 	getTeambuilderSpriteData(pokemon: any, dex: ModdedDex = Dex): TeambuilderSpriteData {

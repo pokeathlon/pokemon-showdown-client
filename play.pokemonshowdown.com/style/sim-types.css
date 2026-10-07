@@ -840,3 +840,17 @@
 			#e79 340deg 360deg
 		);
 }
+[style*="--picon-head"]::before,
+[style*="--picon-head"]::after {
+	content: "";
+	display: block;
+	width: 40px;
+	height: 30px;
+	background: var(--picon-head);
+	clip-path: inset(0 50% 0 0);
+}
+[style*="--picon-head"]::after {
+	margin-top: -30px;
+	background: var(--picon-body);
+	clip-path: inset(0 0 0 50%);
+}

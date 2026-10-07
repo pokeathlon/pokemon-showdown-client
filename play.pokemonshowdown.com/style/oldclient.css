@@ -3307,10 +3307,6 @@ p.or:after {
 	animation: rainbow 2.5s linear;
 	animation-iteration-count: infinite;
 }
-.rainbowshadow{
-	animation: rainbowshadow 2.5s linear;
-	animation-iteration-count: infinite;
-}
 @keyframes rainbow{
 	100%, 0% {
 		color: rgb(205,50,50);
@@ -3348,21 +3344,6 @@ p.or:after {
 	91% {
 		color: rgb(205,50,77);
 	}
-}
-
-@keyframes rainbowshadow {
-	100%, 0% { filter: drop-shadow(0px 0px 2px rgb(205,50,50)) }
-	8% { filter: drop-shadow(0px 0px 2px rgb(205,77,50)) }
-	16% { filter: drop-shadow(0px 0px 2px rgb(205,205,50)) }
-	25% { filter: drop-shadow(0px 0px 2px rgb(77,205,50)) }
-	33% { filter: drop-shadow(0px 0px 2px rgb(50,205,50)) }
-	41% { filter: drop-shadow(0px 0px 2px rgb(50,205,77)) }
-	50% { filter: drop-shadow(0px 0px 2px rgb(50,205,205)) }
-	58% { filter: drop-shadow(0px 0px 2px rgb(50,77,205)) }
-	66% { filter: drop-shadow(0px 0px 2px rgb(50,50,205)) }
-	75% { filter: drop-shadow(0px 0px 2px rgb(77,50,205)) }
-	83% { filter: drop-shadow(0px 0px 2px rgb(205,50,205)) }
-	91% { filter: drop-shadow(0px 0px 2px rgb(205,50,77)) }
 }
 
 .menugroup p:has(.mainmenu7) {

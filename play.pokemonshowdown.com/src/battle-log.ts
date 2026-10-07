@@ -1631,7 +1631,8 @@ export class BattleLog {
 
 					if (iconType === 'pokemon') {
 						setAttrib('class', 'picon' + (className ? ' ' + className : ''));
-						unsanitizedStyle = Dex.getPokemonIcon(iconValue);
+						unsanitizedStyle = Dex.getPokemonIcon(getAttrib('fusion') ?
+							{ species: iconValue, fusion: getAttrib('fusion') } as any : iconValue);
 					} else if (iconType === 'item') {
 						setAttrib('class', 'itemicon' + (className ? ' ' + className : ''));
 						unsanitizedStyle = Dex.getItemIcon(iconValue);

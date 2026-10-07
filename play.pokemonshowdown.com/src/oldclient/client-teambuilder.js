@@ -2118,7 +2118,7 @@
 				.attr('style', Dex.getTeambuilderSprite(set, this.curTeam.dex))
 				.toggleClass('pixelated', !!Dex.getTeambuilderSpriteData(set, this.curTeam.dex).pixelated);
 
-			this.$('.pokemonicon-' + this.curSetLoc).css('background', Dex.getPokemonIcon(set).substr(11));
+			this.$('.pokemonicon-' + this.curSetLoc).attr('style', Dex.getPokemonIcon(set));
 
 			var item = this.curTeam.dex.items.get(set.item);
 			if (item.id) {
