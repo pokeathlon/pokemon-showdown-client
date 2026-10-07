@@ -1222,7 +1222,7 @@ export const Dex = new class implements ModdedDex {
 			return `transparent url(${Dex.resourcePrefix}sprites/pokemonicons-sheet.png?v22) no-repeat scroll -${left}px -${top}px`;
 		});
 		if (backgrounds.length > 1) {
-			return `image-rendering:pixelated;--picon-head:${backgrounds[0]};--picon-body:${backgrounds[1]}${fainted}`;
+			return `image-rendering:pixelated;background:${backgrounds[0]};--picon-head:${backgrounds[0]};--picon-body:${backgrounds[1]}${fainted}`;
 		}
 		return `image-rendering:pixelated;background:${backgrounds[0]}${fainted}`;
 	}

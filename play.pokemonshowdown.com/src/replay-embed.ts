@@ -37,6 +37,7 @@ linkStyle('https://play.pokemonshowdown.com/style/font-awesome.css?');
 linkStyle('https://play.pokeathlon.com/style/battle.css?a7');
 linkStyle('https://play.pokeathlon.com/style/replay.css?a7');
 linkStyle('https://play.pokeathlon.com/style/utilichart.css?a7');
+linkStyle('https://play.pokeathlon.com/style/sim-types.css?a7');
 
 requireScript('https://play.pokeathlon.com/js/lib/ps-polyfill.js');
 requireScript('https://play.pokeathlon.com/config/config.js?a7');

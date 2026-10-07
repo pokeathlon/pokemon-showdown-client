@@ -843,6 +843,9 @@
 :where([style*="--picon-head"]) {
 	position: relative;
 }
+[style*="--picon-head"] {
+	background: none !important;
+}
 [style*="--picon-head"]::before,
 [style*="--picon-head"]::after {
 	content: "";
