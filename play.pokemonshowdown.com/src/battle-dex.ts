@@ -27,7 +27,7 @@ import type * as DexData from "./battle-dex-data";
 import type { Teams } from "./battle-teams";
 import { Config } from "./client-main";
 import { BattleLog } from "./battle-log";
-import { SplitNames } from './battle-split-names';
+import { getFusionName } from '../../caches/pokemon-showdown/data/split-names';
 
 export declare namespace Dex {
 	/* eslint-disable @typescript-eslint/no-shadow */
@@ -1406,17 +1406,8 @@ export const Dex = new class implements ModdedDex {
 		const head_species_all = Dex.species.get((pokemon.speciesForme || pokemon.species));
 		const body_species_all = Dex.species.get(pokemon.fusion);
 
-		if (head_species_all.id !== body_species_all.id && toID(head_species_all.baseSpecies) in SplitNames && toID(body_species_all.baseSpecies) in SplitNames) {
-			const head_name = SplitNames[toID(head_species_all.baseSpecies)][0];
-			let body_name = SplitNames[toID(body_species_all.baseSpecies)][1];
-
-			if (head_name.endsWith('-') || head_name.endsWith(' ')) {
-				body_name = body_name.replace(' ', '').replace('-', '');
-				body_name = body_name[0].toUpperCase() + body_name.slice(1);
-			}
-			if (head_name.endsWith(body_name.charAt(0))) body_name = body_name.slice(1);
-
-			fusionData.nickname = head_name + body_name;
+		if (head_species_all.id !== body_species_all.id) {
+			fusionData.nickname = getFusionName(toID(head_species_all.baseSpecies), toID(body_species_all.baseSpecies));
 		}
 
 		if (

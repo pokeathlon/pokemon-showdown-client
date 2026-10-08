@@ -131,7 +131,7 @@ try {
 	compiledFiles += await compiler.compileToFile(
 		[
 			'play.pokemonshowdown.com/src/battle-dex.ts',
-			'play.pokemonshowdown.com/src/battle-split-names.ts',
+			'caches/pokemon-showdown/data/split-names.ts',
 			'play.pokemonshowdown.com/src/battle-teams.ts',
 			'play.pokemonshowdown.com/src/battle-dex-data.ts',
 			'play.pokemonshowdown.com/src/battle-log.ts',
