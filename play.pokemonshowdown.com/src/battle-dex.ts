@@ -542,7 +542,7 @@ export const Dex = new class implements ModdedDex {
 			dex = Dex.mod('gen8bdsp' as ID);
 		}
 		if (dex.gen === 9 && formatid.includes('champions')) {
-			dex = Dex.mod('champions' as ID);
+			dex = Dex.mod((window.Formats?.[toID(format)]?.mod || 'champions') as ID);
 		}
 		return dex;
 	}
@@ -1460,8 +1460,8 @@ export class ModdedDex {
 	constructor(modid: ID) {
 		this.modid = modid;
 		let gen = parseInt(modid.charAt(3), 10);
-		if (this.modid === 'champions') gen = 9;
-		if ((modid !== 'champions' && !modid.startsWith('gen')) || !gen) throw new Error("Unsupported modid");
+		if (this.modid.startsWith('champions')) gen = 9;
+		if ((!modid.startsWith('champions') && !modid.startsWith('gen')) || !gen) throw new Error("Unsupported modid");
 		this.gen = gen;
 	}
 	text: ClientDexText = {
