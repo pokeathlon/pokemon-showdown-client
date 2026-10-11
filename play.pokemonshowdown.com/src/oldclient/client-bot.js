@@ -12,6 +12,7 @@
 		room: null,
 		overrides: null,
 		botTeamIndex: -1,
+		analyses: {},
 		times: [[1000, "Quick"], [3000, "Normal"], [10000, "Strong"]],
 		post: function (message) {
 			if (!this.frame) {
@@ -44,6 +45,10 @@
 				Bot.post({type: 'choosing', room: data.room, value: Bot.choosing(data.room)});
 				break;
 			case 'decided':
+				if (data.analysis && Storage.prefs('botanalysis') !== false) {
+					if (!Bot.analyses[data.room]) Bot.analyses[data.room] = [];
+					Bot.analyses[data.room].push(data);
+				}
 				if (data.iterations && data.time > 250) {
 					var speed = data.iterations / data.time * 1000;
 					var previous = Storage.prefs('botspeed');
@@ -113,6 +118,58 @@
 		report: function (message) {
 			if (this.popup) return this.update(message);
 			app.addPopupMessage("Bot: " + message);
+		},
+		renderAnalysis: function (data) {
+			var analysis = data.analysis;
+			var tree = analysis.tree;
+			var iterations = analysis.iterations || 1;
+			var count = function (n) { return Math.round(n).toLocaleString('en-US'); };
+			var percent = function (n, total) { return (total ? Math.round(100 * n / total) : 0) + '%'; };
+			var byVisits = function (a, b) { return b.n - a.n; };
+			var options = analysis.options.slice().sort(byVisits);
+			var foe = analysis.foe.slice().sort(byVisits);
+			var total = 0;
+			var foeTotal = 0;
+			var entropy = 0;
+			var chosen = data.choice;
+			for (var i = 0; i < options.length; i++) total += options[i].n;
+			for (var j = 0; j < foe.length; j++) foeTotal += foe[j].n;
+			for (var k = 0; k < options.length; k++) {
+				if (options[k].n) entropy -= options[k].n / total * Math.log(options[k].n / total);
+				if (options[k].choice === data.choice) chosen = options[k].label;
+			}
+			var turns = (tree.turns / iterations).toFixed(1);
+			var scoreTitle = analysis.relative ?
+				"Average score of the positions the search reached after this choice: 0.5 means no change from the position it was deciding in, above 0.5 better for the bot, below worse." :
+				"Average score of the positions the search reached after this choice, from 0 (the bot loses) to 1 (the bot wins).";
+
+			var buf = '<div class="infobox"><details><summary title="What the bot\'s search did before choosing this turn. Click for depth, breadth and how it rated each choice.">';
+			buf += '<strong>Bot, turn ' + data.turn + ':</strong> ' + BattleLog.escapeHTML(chosen) + ' &middot; ' + count(analysis.iterations) + ' iterations in ' + (analysis.time / 1000).toFixed(1) + ' s &middot; ' + turns + ' turns deep on average</summary>';
+			buf += '<p title="An iteration plays the battle forward from now, choosing for both sides, until it reaches a position the search hasn\'t seen before, the depth limit or the end of the battle, and scores the position it ends on. Turns are full turns; decisions also count switch-ins after a faint or a pivot move.">';
+			buf += '<strong>Depth:</strong> each iteration played ' + turns + ' turns ahead on average (' + (tree.plies / iterations).toFixed(1) + ' decisions), at most ' + tree.deepest + ' of the ' + analysis.depth + '-turn limit. ' + percent(tree.full, iterations) + ' of iterations reached the limit or the end of the battle.</p>';
+			var levels = [];
+			for (var m = 0; m < tree.levels.length; m++) levels.push((m + 1) + ': ' + count(tree.levels[m]));
+			buf += '<p title="The search keeps one tree per guess of your hidden information (your unrevealed Pok&eacute;mon, moves, items and spreads). Each position is one combination of both sides\' choices from the one before it. Few positions far ahead means the search only looked deep along its main lines.">';
+			buf += '<strong>Breadth:</strong> ' + count(tree.nodes) + ' positions in ' + analysis.guesses + ' trees, one per guess of your team. Positions by decisions ahead: ' + levels.join(' &middot; ') + '. ';
+			buf += '<span title="The number of equally tried choices that would spread the iterations as evenly as they were actually spread (e to the power of the entropy of the shares). Close to the number of choices means the search could hardly tell them apart; close to 1 means it settled on one.">Its ' + options.length + ' choices got iterations like ' + Math.exp(entropy).toFixed(1) + ' equally tried ones.</span></p>';
+			buf += '<table style="border-collapse:collapse;margin:4px 0"><tr><th style="text-align:left;padding-right:12px">Its choice</th><th style="padding-right:12px" title="Share of the iterations that started with this choice. The bot plays the most tried choice.">Tried</th><th title="' + scoreTitle + '">Score</th></tr>';
+			for (var n = 0; n < options.length; n++) {
+				var option = options[n];
+				var label = BattleLog.escapeHTML(option.label);
+				buf += '<tr><td style="padding-right:12px">' + (option.choice === data.choice ? '<strong>' + label + '</strong>' : label) + '</td>';
+				buf += '<td style="text-align:right;padding-right:12px" title="' + count(option.n) + ' iterations">' + percent(option.n, total) + '</td>';
+				buf += '<td style="text-align:right" title="' + scoreTitle + '">' + (option.n ? (option.w / option.n).toFixed(3) : '-') + '</td></tr>';
+			}
+			buf += '</table>';
+			if (foe.length) {
+				var expected = [];
+				for (var q = 0; q < foe.length; q++) {
+					expected.push('<span title="' + count(foe[q].n) + ' iterations">' + BattleLog.escapeHTML(foe[q].label) + ' ' + percent(foe[q].n, foeTotal) + '</span>');
+				}
+				buf += '<p title="The search chooses for you too, picking what looks best for you in each line, so these shares are how often it expected each of your choices. Switches to Pok&eacute;mon you haven\'t shown yet are grouped together."><strong>What it expected from you:</strong> ' + expected.join(', ') + '</p>';
+			}
+			buf += '</details></div>';
+			return buf;
 		}
 	};
 	window.addEventListener('message', Bot.receive);
@@ -196,6 +253,7 @@
 			'change input, select': 'change',
 			'input input[name=filter]': 'filter',
 			'change input[name=changedOnly]': 'filter',
+			'change input[name=analysis]': 'toggleAnalysis',
 			'click label[data-explain]': 'explain'
 		},
 		initialize: function () {
@@ -249,8 +307,9 @@
 			var ponder = this.find('ponder');
 			buf += '<p data-row="ponder" title="' + this.renderTitle(ponder) + '"><input type="checkbox" data-key="ponder" data-view="switch"' + (this.value('ponder') ? ' checked' : '') + ' /> ';
 			buf += this.renderLabel(ponder, "Keep thinking during my turn") + ', for up to ' + this.renderNumber(ponder, 'width:56px') + ' seconds ' + this.renderReset(ponder) + '</p>';
+			buf += '<p title="After each turn plays out, add a line to the battle log with how many iterations the bot\'s search ran, how many turns ahead and how widely it looked, how it rated each of its choices and what it expected from you. It only appears once the turn is over, so it never gives away the bot\'s choice."><label><input type="checkbox" name="analysis"' + (Storage.prefs('botanalysis') !== false ? ' checked' : '') + ' /> Show what the bot\'s search did after each turn</label></p>';
 
-			buf += '<h3 title="Each of these multiplies how much a part of the position counts when the bot scores the positions it looks ahead to. The middle is the tuned default.">What the bot cares about</h3>';
+			buf += '<h3 title="Each of these multiplies how much a part of the position counts when the bot scores the positions it looks ahead to. The middle is the default.">What the bot cares about</h3>';
 			buf += '<table style="border-spacing:0 2px;margin:4px 0">';
 			var weights = this.basics().filter(function (setting) { return setting.key.indexOf('weights.') === 0; });
 			for (var j = 0; j < weights.length; j++) {
@@ -649,6 +708,9 @@
 			}
 			this.set(key, value);
 		},
+		toggleAnalysis: function (e) {
+			Storage.prefs('botanalysis', $(e.currentTarget).is(':checked') ? null : false);
+		},
 		explain: function (e) {
 			e.preventDefault();
 			e.stopImmediatePropagation();
@@ -710,6 +772,24 @@
 			}});
 		}
 	});
+
+	var add = BattleRoom.prototype.add;
+	BattleRoom.prototype.add = function (data) {
+		var pending = Bot.analyses[this.id];
+		if (pending && pending.length && data && data.substr(0, 9) !== '|request|') {
+			var lines = data.split('\n');
+			for (var i = 0; i < lines.length; i++) {
+				if (!/^\|(turn|win|tie)(\||$)/.test(lines[i])) continue;
+				var raw = [];
+				for (var j = 0; j < pending.length; j++) raw.push('|raw|' + Bot.renderAnalysis(pending[j]));
+				Array.prototype.splice.apply(lines, [i, 0].concat(raw));
+				Bot.analyses[this.id] = [];
+				data = lines.join('\n');
+				break;
+			}
+		}
+		return add.apply(this, arguments.length > 1 ? [data].concat(Array.prototype.slice.call(arguments, 1)) : [data]);
+	};
 
 	var sendDecision = BattleRoom.prototype.sendDecision;
 	BattleRoom.prototype.sendDecision = function () {
