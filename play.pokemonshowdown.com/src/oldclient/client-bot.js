@@ -139,14 +139,24 @@
 				if (options[k].choice === data.choice) chosen = options[k].label;
 			}
 			var turns = (tree.turns / iterations).toFixed(1);
-			var scoreTitle = analysis.relative ?
-				"Average score of the positions the search reached after this choice: 0.5 means no change from the position it was deciding in, above 0.5 better for the bot, below worse." :
-				"Average score of the positions the search reached after this choice, from 0 (the bot loses) to 1 (the bot wins).";
+			var played = (tree.playoutTurns / iterations).toFixed(1);
+			var scoreTitle = "Average result of the battles the search played out after this choice: 1 is a win, 0 a loss, 0.5 a tie. A battle stopped at the turn cap counts as the bot's share of the HP left on both sides.";
 
 			var buf = '<div class="infobox"><details><summary title="What the bot\'s search did before choosing this turn. Click for depth, breadth and how it rated each choice.">';
-			buf += '<strong>Bot, turn ' + data.turn + ':</strong> ' + BattleLog.escapeHTML(chosen) + ' &middot; ' + count(analysis.iterations) + ' iterations in ' + (analysis.time / 1000).toFixed(1) + ' s &middot; ' + turns + ' turns deep on average</summary>';
-			buf += '<p title="An iteration plays the battle forward from now, choosing for both sides, until it reaches a position the search hasn\'t seen before, the depth limit or the end of the battle, and scores the position it ends on. Turns are full turns; decisions also count switch-ins after a faint or a pivot move.">';
-			buf += '<strong>Depth:</strong> each iteration played ' + turns + ' turns ahead on average (' + (tree.plies / iterations).toFixed(1) + ' decisions), at most ' + tree.deepest + ' of the ' + analysis.depth + '-turn limit. ' + percent(tree.full, iterations) + ' of iterations reached the limit or the end of the battle.</p>';
+			buf += '<strong>Bot, turn ' + data.turn + ':</strong> ' + BattleLog.escapeHTML(chosen) + ' &middot; ' + count(analysis.iterations) + ' iterations in ' + (analysis.time / 1000).toFixed(1) + ' s &middot; ' + played + ' turns played out on average</summary>';
+			buf += '<p title="An iteration follows the search tree, choosing for both sides, until it reaches a position the tree hasn\'t seen before, then plays the rest of the battle out. Turns are full turns; decisions also count switch-ins after a faint or a pivot move.">';
+			buf += '<strong>Depth:</strong> each iteration followed the tree ' + turns + ' turns ahead on average (' + (tree.plies / iterations).toFixed(1) + ' decisions, at most ' + tree.deepest + ' turns), then played ' + played + ' more turns ' + (analysis.playout === 'random' ? 'with random choices' : 'with each side using its most damaging move') + '. ';
+			buf += (tree.capped ? count(tree.capped) + ' (' + percent(tree.capped, iterations) + ') stopped at the ' + analysis.cap + '-turn cap and the rest reached the end of the battle.' : 'Every one reached the end of the battle before the ' + analysis.cap + '-turn cap.') + '</p>';
+			if (tree.cheap) {
+				var shifts = [];
+				for (var key in tree.correction) {
+					var entry = tree.correction[key];
+					if (entry.n) shifts.push(Math.abs(entry.sum / entry.n));
+				}
+				var shift = shifts.length ? shifts.reduce(function (a, b) { return a + b; }) / shifts.length : 0;
+				buf += '<p title="The fast model plays turns with numbers measured from the exact sim. Some playouts are also played exactly from the same position, and the average difference for each choice corrects the fast results.">';
+				buf += '<strong>Playouts:</strong> ' + count(tree.cheap) + ' in the fast model and ' + count(tree.exact) + ' in the exact sim; the exact ones differed from the fast ones by ' + shift.toFixed(3) + ' on average.</p>';
+			}
 			var levels = [];
 			for (var m = 0; m < tree.levels.length; m++) levels.push((m + 1) + ': ' + count(tree.levels[m]));
 			buf += '<p title="The search keeps one tree per guess of your hidden information (your unrevealed Pok&eacute;mon, moves, items and spreads). Each position is one combination of both sides\' choices from the one before it. Few positions far ahead means the search only looked deep along its main lines.">';
@@ -262,7 +272,6 @@
 			this.curFormat = Storage.prefs('botformat') || app.rooms[''].curFormat || 'gen7ifrandombattle';
 			this.data = null;
 			this.open = {};
-			this.zeros = {};
 			this.query = '';
 			this.changedOnly = false;
 			this.wasFiltering = false;
@@ -309,29 +318,8 @@
 			buf += this.renderLabel(ponder, "Keep thinking during my turn") + ', for up to ' + this.renderNumber(ponder, 'width:56px') + ' seconds ' + this.renderReset(ponder) + '</p>';
 			buf += '<p title="After each turn plays out, add a line to the battle log with how many iterations the bot\'s search ran, how many turns ahead and how widely it looked, how it rated each of its choices and what it expected from you. It only appears once the turn is over, so it never gives away the bot\'s choice."><label><input type="checkbox" name="analysis"' + (Storage.prefs('botanalysis') !== false ? ' checked' : '') + ' /> Show what the bot\'s search did after each turn</label></p>';
 
-			buf += '<h3 title="Each of these multiplies how much a part of the position counts when the bot scores the positions it looks ahead to. The middle is the default.">What the bot cares about</h3>';
-			buf += '<table style="border-spacing:0 2px;margin:4px 0">';
-			var weights = this.basics().filter(function (setting) { return setting.key.indexOf('weights.') === 0; });
-			for (var j = 0; j < weights.length; j++) {
-				var weight = weights[j];
-				buf += '<tr data-row="' + BattleLog.escapeHTML(weight.key) + '" title="' + this.renderTitle(weight) + '"><th style="text-align:right;font-weight:normal;padding-right:8px;width:min(230px,40vw)">' + this.renderLabel(weight) + '</th>';
-				buf += '<td style="white-space:nowrap"><small>Less</small> <input type="range" data-key="' + BattleLog.escapeHTML(weight.key) + '" data-view="factor" min="-2" max="2" step="0.05" value="' + this.display(weight, 'factor') + '" style="width:140px;max-width:26vw;vertical-align:middle" /> <small>More</small> ';
-				buf += '<small data-factor="' + BattleLog.escapeHTML(weight.key) + '" style="color:#888">' + this.factorText(weight) + '</small> ' + this.renderReset(weight) + '</td></tr>';
-			}
-			buf += '</table>';
-
-			var gimmicks = this.basics().filter(function (setting) { return setting.key.indexOf('gimmicks.') === 0; });
-			if (gimmicks.length) {
-				buf += '<h3>Gimmicks <small style="font-weight:normal">in ' + BattleLog.escapeFormat(this.curFormat) + '</small></h3>';
-				buf += this.renderBlocks(gimmicks);
-			}
-
-			buf += '<h3>Guessing your team</h3>';
-			buf += this.renderTable([this.find('guess')]);
-
-			buf += '<details data-open="advanced"' + (this.open.advanced ? ' open' : '') + ' style="margin-top:12px"><summary title="Every other setting, for fine-tuning how the bot searches, guesses your team and scores positions."><h3 style="display:inline">Advanced</h3> <small style="color:#888" data-gist="advanced"></small></summary>';
+			buf += '<details data-open="advanced"' + (this.open.advanced ? ' open' : '') + ' style="margin-top:12px"><summary title="Every other setting, for fine-tuning how the bot searches and guesses your team."><h3 style="display:inline">Advanced</h3> <small style="color:#888" data-gist="advanced"></small></summary>';
 			buf += '<div data-advanced>';
-			buf += '<p>Format: ' + this.renderFormat() + ' <small>(the conditions below, and the gimmicks above, depend on it)</small></p>';
 			buf += '<p><input type="search" name="filter" class="textbox" placeholder="Filter settings" value="' + BattleLog.escapeHTML(this.query) + '" title="Show only settings whose name contains this." /> ';
 			buf += '<label title="Show only settings changed from their defaults."><input type="checkbox" name="changedOnly"' + (this.changedOnly ? ' checked' : '') + ' /> Changed only</label> ';
 			buf += '<button class="button" name="expandAll" title="Open every section and group.">Expand all</button> <button class="button" name="collapseAll" title="Close every section and group, back to one line each.">Collapse all</button></p>';
@@ -341,7 +329,6 @@
 				if (!groups.length) continue;
 				buf += '<details data-open="section:' + BattleLog.escapeHTML(section.section) + '"' + (this.open['section:' + section.section] ? ' open' : '') + '>';
 				buf += '<summary title="' + BattleLog.escapeHTML(section.title) + '"><strong>' + BattleLog.escapeHTML(section.section) + '</strong> <small style="color:#888" data-gist="section:' + BattleLog.escapeHTML(section.section) + '"></small></summary>';
-				if (section.section === 'Scoring') buf += '<p style="margin-left:16px"><small>Percentages are a share of what one healthy Pokémon is worth, after the multipliers in What the bot cares about.</small></p>';
 				if (groups.length === 1) groups[0] = $.extend({}, groups[0], {single: true});
 				for (var m = 0; m < groups.length; m++) {
 					var group = groups[m];
@@ -363,17 +350,6 @@
 			this.updateSpeed();
 			this.applyView();
 		},
-		basics: function () {
-			var all = [];
-			for (var i = 0; i < this.data.schema.length; i++) {
-				var group = this.data.schema[i];
-				if (group.bot && group.bot !== 'mcts') continue;
-				for (var j = 0; j < group.settings.length; j++) {
-					if (group.settings[j].basic && !group.settings[j].hidden) all.push(group.settings[j]);
-				}
-			}
-			return all;
-		},
 		groups: function (section) {
 			var groups = [];
 			for (var i = 0; i < this.data.schema.length; i++) {
@@ -385,19 +361,7 @@
 			return groups;
 		},
 		renderGroup: function (group) {
-			var ranges = group.settings.filter(function (setting) { return setting.type === 'range'; });
-			var hasSelect = group.settings.some(function (setting) { return setting.type === 'select'; });
-			if (!group.kind && (hasSelect || ranges.length < 6)) return this.renderBlocks(group.settings);
-			var buf = '<div style="columns:200px;column-gap:24px;margin:4px 0">';
-			for (var i = 0; i < ranges.length; i++) {
-				var setting = ranges[i];
-				var zero = ranges.length > 12 && setting.default === 0;
-				buf += '<div data-row="' + BattleLog.escapeHTML(setting.key) + '"' + (zero ? ' data-zero="' + BattleLog.escapeHTML(group.group) + '"' : '') + ' title="' + this.renderTitle(setting) + '" style="break-inside:avoid;padding:1px 0">';
-				buf += this.renderNumber(setting, 'width:56px') + this.renderUnit(setting) + ' ' + this.renderLabel(setting) + ' ' + this.renderReset(setting) + '</div>';
-			}
-			buf += '</div>';
-			if (ranges.length > 12) buf += '<p data-zeros="' + BattleLog.escapeHTML(group.group) + '"><button class="button" name="showZeros" value="' + BattleLog.escapeHTML(group.group) + '" title="Show the settings in this group that are at 0, where they don\'t count."></button></p>';
-			return buf + this.renderBlocks(group.settings.filter(function (setting) { return setting.type !== 'range'; }));
+			return this.renderBlocks(group.settings);
 		},
 		renderBlocks: function (settings) {
 			var buf = '';
@@ -466,7 +430,6 @@
 		},
 		renderUnit: function (setting) {
 			var view = this.view(setting);
-			if (view === 'percent') return '<small>%</small>';
 			if (view === 'seconds') return ' <small>s</small>';
 			return '';
 		},
@@ -495,59 +458,28 @@
 			if (setting.type === 'select') return setting.options[value];
 			if (setting.type === 'checkbox') return value ? 'on' : 'off';
 			var view = this.view(setting);
-			if (view === 'percent') return this.round(this.toView(setting, view, value)) + '% of a healthy Pokémon';
 			if (view === 'seconds') return value / 1000 + ' seconds';
 			return '' + value;
 		},
 		view: function (setting) {
 			if (setting.key === 'time' || setting.key === 'ponder') return 'seconds';
-			if (setting.per && this.unit(setting)) return 'percent';
 			return 'raw';
 		},
-		unit: function (setting) {
-			var healthy = this.value('weights.pokemon') * (this.value('alive') + this.value('hp'));
-			if (!healthy) return 0;
-			return 100 * this.value('weights.' + setting.per) / healthy;
-		},
-		round: function (value) {
-			return Math.round(value * 10) / 10;
-		},
 		step: function (setting, view) {
-			if (view === 'percent') return 0.1;
 			if (view === 'seconds') return setting.key === 'time' ? 0.1 : 1;
 			return setting.step;
 		},
 		toView: function (setting, view, raw) {
 			if (view === 'seconds') return raw / 1000;
-			if (view === 'percent') return this.round(raw * this.unit(setting));
-			if (view === 'factor') {
-				if (raw <= 0) return -2;
-				var x = raw > setting.default ? 2 * Math.log(raw / setting.default) / Math.log(setting.max / setting.default) : Math.log(raw / setting.default) / Math.LN2;
-				return Math.max(-2, Math.min(2, Math.round(x * 20) / 20));
-			}
 			return raw;
 		},
 		fromView: function (setting, view, shown) {
 			var raw = shown;
 			if (view === 'seconds') raw = Math.round(shown * 1000);
-			if (view === 'percent') {
-				if (this.toView(setting, view, setting.default) === this.round(shown)) return setting.default;
-				raw = Math.round(shown / this.unit(setting) * 10000) / 10000;
-			}
-			if (view === 'factor') {
-				if (Math.abs(shown) < 0.025) return setting.default;
-				raw = shown <= -2 ? 0 : Math.round(setting.default * (shown > 0 ? Math.pow(setting.max / setting.default, shown / 2) : Math.pow(2, shown)) * 100) / 100;
-			}
 			return Math.max(setting.min, Math.min(setting.max, raw));
 		},
 		display: function (setting, view) {
 			return this.toView(setting, view, this.value(setting.key));
-		},
-		factorText: function (setting) {
-			var value = this.value(setting.key);
-			if (value === setting.default) return 'tuned';
-			if (!value) return 'ignored';
-			return '×' + Math.round(value / setting.default * 100) / 100;
 		},
 		gist: function (settings, keys) {
 			var self = this;
@@ -589,11 +521,7 @@
 		},
 		refresh: function (key) {
 			var self = this;
-			var keys = [key];
-			if (key === 'alive' || key === 'hp' || key.indexOf('weights.') === 0) {
-				this.$('input[data-view=percent]').each(function () { keys.push($(this).attr('data-key')); });
-			}
-			keys.forEach(function (key) {
+			[key].forEach(function (key) {
 				var setting = self.find(key);
 				if (!setting) return;
 				self.$('input[data-key="' + key + '"], select[data-key="' + key + '"]').each(function () {
@@ -609,7 +537,6 @@
 					$(this).html(self.changed(setting) ? '<em>' + text + '</em>' : text);
 				});
 				self.$('button[name=resetSetting][value="' + key + '"]').css('display', self.changed(setting) ? '' : 'none');
-				self.$('[data-factor="' + key + '"]').text(self.factorText(setting));
 			});
 			if (key === 'time') {
 				this.updateSpeed();
@@ -627,23 +554,12 @@
 			var self = this;
 			var query = toID(this.query);
 			var filtering = this.filtering();
-			var zeros = {};
 			var $advanced = this.$('[data-advanced]');
 			$advanced.find('[data-row]').each(function () {
 				var setting = self.find($(this).attr('data-row'));
-				var zero = $(this).attr('data-zero');
-				var hidden = zero && !filtering && !self.zeros[zero] && self.value(setting.key) === 0;
-				if (hidden) zeros[zero] = (zeros[zero] || 0) + 1;
 				var shown = (!query || toID(setting.label).indexOf(query) >= 0 || toID(setting.key).indexOf(query) >= 0) &&
-					(!self.changedOnly || self.changed(setting)) && !hidden;
+					(!self.changedOnly || self.changed(setting));
 				this.style.display = shown ? '' : 'none';
-			});
-			$advanced.find('[data-zeros]').each(function () {
-				var group = $(this).attr('data-zeros');
-				var count = zeros[group] || 0;
-				var rest = $(this).prev().children().filter(function () { return this.style.display !== 'none'; }).length;
-				this.style.display = count ? '' : 'none';
-				$(this).find('button').text('Show ' + count + (rest ? ' more' : '') + ' at 0');
 			});
 			$($advanced.find('details').get().reverse()).each(function () {
 				var visible = $(this).find('[data-row]').filter(function () { return this.style.display !== 'none'; }).length;
@@ -758,10 +674,6 @@
 				this.open = open;
 				self.open[$(this).attr('data-open')] = open;
 			});
-		},
-		showZeros: function (group) {
-			this.zeros[group] = true;
-			this.applyView();
 		},
 		format: function (format, button) {
 			var self = this;
