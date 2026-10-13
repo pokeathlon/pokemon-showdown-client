@@ -2118,6 +2118,7 @@ export class PokemonSprite extends Sprite {
 		wrap: ['Wrap', 'bad'],
 		thornprison: ['Thorn Prison', 'bad'],
 		sandsnare: ['Sand Snare', 'bad'],
+		oceanswrath: ['Oceans Wrath', 'bad'],
 		// Gen 1-2
 		mist: ['Mist', 'good'],
 		// Gen 1
