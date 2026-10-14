@@ -63,14 +63,10 @@
 			case 'bench':
 				if (data.speed) Storage.prefs('botspeed', Math.round(data.speed));
 				if (data.search) Bot.shape(data.search, 1);
-				var known = Bot.device(data.format);
-				if (data.device) {
-					var devices = $.extend({}, Storage.prefs('botdevice'));
-					devices[data.format] = Math.round(data.device);
-					Storage.prefs('botdevice', devices);
-				}
+				var known = Bot.device();
+				if (data.device) Storage.prefs('botdevice', Math.round(data.device));
 				if (Bot.room) Bot.room.measuring = false;
-				if (Bot.room && data.device && Math.round(data.device) !== known && Bot.room.curFormat === data.format) Bot.post({type: 'schema', format: data.format, speed: Bot.device(data.format)});
+				if (Bot.room && data.device && Math.round(data.device) !== known) Bot.post({type: 'schema', format: Bot.room.curFormat, speed: Bot.device()});
 				if (Bot.room) Bot.room.updateSpeed();
 				break;
 			case 'battle':
@@ -102,7 +98,7 @@
 				if (!key) return self.report("This server doesn't allow bots.");
 				self.post({
 					type: 'start', url: (Config.server.port === 443 || Config.server.https ? 'wss' : 'ws') + '://' + Config.server.host + ':' + Config.server.port + Config.sockjsprefix + '/websocket',
-					owner: app.user.get('userid'), key: key, format: format, team: botTeam ? Storage.getPackedTeam(botTeam) : '', settings: self.settings(), speed: self.device(format), ask: true
+					owner: app.user.get('userid'), key: key, format: format, team: botTeam ? Storage.getPackedTeam(botTeam) : '', settings: self.settings(), speed: self.device(), ask: true
 				});
 			});
 			app.send('/cmd pokeathlete');
@@ -142,8 +138,8 @@
 			var previous = Storage.prefs('botsearch');
 			Storage.prefs('botsearch', previous && weight < 1 ? {turns: previous.turns * (1 - weight) + search.turns * weight, horizon: previous.horizon * (1 - weight) + search.horizon * weight} : search);
 		},
-		device: function (format) {
-			return (Storage.prefs('botdevice') || {})[format] || 0;
+		device: function () {
+			return +Storage.prefs('botdevice') || 0;
 		},
 		save: function (fromRoom) {
 			var self = this;
@@ -282,7 +278,12 @@
 			this.team(team, button);
 		},
 		settings: function () {
+			Storage.prefs('botformat', this.$('button[name=format]').val());
 			this.close();
+			if (Bot.room) {
+				Bot.room.curFormat = Storage.prefs('botformat');
+				Bot.room.update();
+			}
 			app.tryJoinRoom('botsettings');
 		},
 		submit: function () {
@@ -323,7 +324,7 @@
 		update: function () {
 			this.data = null;
 			this.$el.html('<div class="pad"><h2>Bot settings</h2><p><em>Loading the bot...</em></p></div>');
-			Bot.post({type: 'schema', format: this.curFormat, speed: Bot.device(this.curFormat)});
+			Bot.post({type: 'schema', format: this.curFormat, speed: Bot.device()});
 		},
 		load: function (data) {
 			if (data.format !== this.curFormat) return;
@@ -558,7 +559,7 @@
 			this.measuring = true;
 			this.updateSpeed();
 			this.benched = this.costs();
-			Bot.post({type: 'bench', format: this.curFormat, settings: Bot.settings(), speed: Bot.device(this.curFormat), reference: full});
+			Bot.post({type: 'bench', format: this.curFormat, settings: Bot.settings(), speed: Bot.device(), reference: full});
 		},
 		change: function (e) {
 			var $input = $(e.currentTarget);
