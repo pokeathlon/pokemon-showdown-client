@@ -633,10 +633,10 @@
 		return add.apply(this, arguments.length > 1 ? [data].concat(Array.prototype.slice.call(arguments, 1)) : [data]);
 	};
 
-	var sendDecision = BattleRoom.prototype.sendDecision;
-	BattleRoom.prototype.sendDecision = function () {
-		sendDecision.apply(this, arguments);
-		if (Bot.frame) Bot.post({type: 'choosing', room: this.id, value: false});
+	var send = BattleRoom.prototype.send;
+	BattleRoom.prototype.send = function (data) {
+		send.apply(this, arguments);
+		if (Bot.frame && /^\/(choose|guess|move|mv|attack|switch|sw|team)(\s|\||$)/i.test(data)) Bot.post({type: 'choosing', room: this.id, value: false});
 	};
 
 	var tryJoinRoom = App.prototype.tryJoinRoom;
