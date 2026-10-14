@@ -2209,7 +2209,7 @@ function toId() {
 			if (this.dismissingSource && $(data.sourceEl)[0] === this.dismissingSource) return;
 			while (this.popups.length) {
 				var prevPopup = this.popups[this.popups.length - 1];
-				if (data.sourcePopup === prevPopup) {
+				if (data.sourcePopup === prevPopup || prevPopup.$el.has(data.sourceEl).length) {
 					break;
 				}
 				var sourceEl = prevPopup.sourceEl ? prevPopup.sourceEl[0] : null;
