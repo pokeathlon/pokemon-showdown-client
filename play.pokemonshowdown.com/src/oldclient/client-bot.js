@@ -197,13 +197,14 @@
 			if (chosen) {
 				buf += '<details style="margin:4px 0"><summary><strong>Choices:</strong> ' + BattleLog.escapeHTML(chosen.label) + ' &middot; tried ' + percent(chosen.n, total) + ' &middot; score ' + score(chosen) + '</summary>';
 				var mixed = analysis.method === 'oos' && analysis.strategy;
-				buf += '<table style="border-collapse:collapse;margin:4px 0"><tr><th style="text-align:left;padding-right:12px">Bot</th><th style="text-align:left;padding-right:12px">Tried</th><th>Score</th>' + (mixed ? '<th style="padding-left:12px">Chance</th>' : '') + '</tr>';
+				var priors = analysis.priors;
+				buf += '<table style="border-collapse:collapse;margin:4px 0"><tr><th style="text-align:left;padding-right:12px">Bot</th><th style="text-align:left;padding-right:12px">Tried</th><th>Score</th>' + (mixed ? '<th style="padding-left:12px">Chance</th>' : '') + (priors ? '<th style="padding-left:12px">Prior</th>' : '') + '</tr>';
 				for (var n = 0; n < options.length; n++) {
 					var option = options[n];
 					var label = BattleLog.escapeHTML(option.label);
 					buf += '<tr><td style="padding-right:12px">' + (option === chosen ? '<strong>' + label + '</strong>' : label) + '</td>';
 					buf += '<td style="padding-right:12px;white-space:nowrap"><span style="display:inline-block;height:8px;width:' + Math.max(1, Math.round(80 * option.n / (total || 1))) + 'px;background:currentColor;opacity:.45;vertical-align:middle"></span> ' + percent(option.n, total) + '</td>';
-					buf += '<td style="text-align:right">' + score(option) + '</td>' + (mixed ? '<td style="text-align:right;padding-left:12px">' + percent(mixed[option.choice] || 0, 1) + '</td>' : '') + '</tr>';
+					buf += '<td style="text-align:right">' + score(option) + '</td>' + (mixed ? '<td style="text-align:right;padding-left:12px">' + percent(mixed[option.choice] || 0, 1) + '</td>' : '') + (priors ? '<td style="text-align:right;padding-left:12px">' + percent(priors[option.choice] || 0, 1) + '</td>' : '') + '</tr>';
 				}
 				buf += '</table></details>';
 			}
