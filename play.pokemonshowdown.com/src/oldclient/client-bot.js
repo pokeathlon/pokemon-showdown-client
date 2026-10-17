@@ -42,6 +42,7 @@
 				break;
 			case 'schema':
 				if (Bot.room) Bot.room.load(data);
+				if (Bot.popup) Bot.popup.load(data);
 				break;
 			case 'thinking':
 				Bot.post({type: 'choosing', room: data.room, value: Bot.choosing(data.room)});
@@ -122,6 +123,8 @@
 				delete this.overrides.infer;
 				delete this.overrides.evStep;
 				delete this.overrides.particles;
+				delete this.overrides.method;
+				delete this.overrides.worlds;
 			}
 			return this.overrides;
 		},
@@ -155,6 +158,20 @@
 		choosing: function (id) {
 			var room = app.rooms[id];
 			return !!(room && room.request && !room.request.wait && !(room.choice && room.choice.waiting) && !room.battleEnded);
+		},
+		battle: function (format, team, botTeam) {
+			var self = this;
+			var own = Storage.teams[team];
+			var bots = Storage.teams[botTeam];
+			if (!app.user.get('named')) return app.addPopup(LoginPopup);
+			if (!window.BattleFormats[format].team && (!own || !bots)) return this.update("Pick a team for yourself and for the bot.");
+			this.botTeamIndex = +botTeam;
+			if (bots && bots.teamid && !bots.loaded) {
+				return app.loadTeam(bots, function () {
+					self.start(format, own, bots);
+				});
+			}
+			this.start(format, own, bots);
 		},
 		update: function (status) {
 			if (this.popup) this.popup.$('.status').text(status);
@@ -231,28 +248,7 @@
 	};
 	window.addEventListener('message', Bot.receive);
 
-	var BotPopup = this.BotPopup = Popup.extend({
-		type: 'semimodal',
-		initialize: function () {
-			Bot.popup = this;
-			var format = app.rooms[''].curFormat;
-			var buf = '<form class="battleform">';
-			buf += '<p><label class="label">Format:</label>' + app.rooms[''].renderFormats(format) + '</p>';
-			var team = app.rooms[''].renderTeams(format);
-			buf += '<p><label class="label">Your team:</label>' + team + '</p>';
-			buf += '<p><label class="label">Bot\'s team:</label>' + this.renderBotTeam(format, $(team).val()) + '</p>';
-			buf += '<p class="status"></p>';
-			buf += '<p class="buttonbar" style="margin-top:12px"><button type="submit" class="button"><strong>Battle!</strong></button> <button type="button" name="settings" class="button"><i class="fa fa-cog"></i> Bot settings</button> <button type="button" name="close" class="button">Cancel</button></p>';
-			buf += '</form>';
-			this.$el.html(buf);
-		},
-		remove: function () {
-			if (Bot.popup === this) {
-				Bot.popup = null;
-				Bot.pending = null;
-			}
-			Popup.prototype.remove.apply(this, arguments);
-		},
+	var BotControls = {
 		renderBotTeam: function (format, team) {
 			var teamIndex = Bot.botTeamIndex;
 			var teams = Storage.teams || [];
@@ -266,165 +262,11 @@
 			}
 			return app.rooms[''].renderTeams(format, teamIndex).replace('name="team"', 'name="botTeam"');
 		},
-		format: function (format, button) {
-			var self = this;
-			app.addPopup(FormatPopup, {format: format, sourceEl: button, selectType: 'challenge', onselect: function (format) {
-				self.$('button[name=team]').replaceWith(app.rooms[''].renderTeams(format));
-				Bot.botTeamIndex = -1;
-				self.$('button[name=botTeam]').replaceWith(self.renderBotTeam(format, self.$('button[name=team]').val()));
-			}});
-		},
 		team: function (team, button) {
 			app.addPopup(TeamPopup, {team: team, format: this.$('button[name=format]').val(), sourceEl: button, folderToggleOn: true, folderNotExpanded: []});
 		},
 		botTeam: function (team, button) {
 			this.team(team, button);
-		},
-		settings: function () {
-			Storage.prefs('botformat', this.$('button[name=format]').val());
-			this.close();
-			if (Bot.room) {
-				Bot.room.curFormat = Storage.prefs('botformat');
-				Bot.room.update();
-			}
-			app.tryJoinRoom('botsettings');
-		},
-		submit: function () {
-			var format = this.$('button[name=format]').val();
-			var team = Storage.teams[this.$('button[name=team]').val()];
-			var botTeam = Storage.teams[this.$('button[name=botTeam]').val()];
-			if (!app.user.get('named')) return app.addPopup(LoginPopup);
-			if (!window.BattleFormats[format].team && (!team || !botTeam)) return Bot.update("Pick a team for yourself and for the bot.");
-			Bot.botTeamIndex = +this.$('button[name=botTeam]').val();
-			if (botTeam && botTeam.teamid && !botTeam.loaded) {
-				return app.loadTeam(botTeam, function () {
-					Bot.start(format, team, botTeam);
-				});
-			}
-			Bot.start(format, team, botTeam);
-		}
-	});
-
-	var BotSettingsRoom = this.BotSettingsRoom = Room.extend({
-		type: 'botsettings',
-		title: 'Bot settings',
-		events: {
-			'input input': 'change',
-			'change input, select': 'change',
-			'change input[name=analysis]': 'toggleAnalysis'
-		},
-		initialize: function () {
-			Bot.room = this;
-			this.$el.addClass('ps-room-light').addClass('scrollable');
-			this.curFormat = Storage.prefs('botformat') || app.rooms[''].curFormat || 'gen7ifrandombattle';
-			this.data = null;
-			this.update();
-		},
-		destroy: function () {
-			if (Bot.room === this) Bot.room = null;
-			Room.prototype.destroy.apply(this, arguments);
-		},
-		update: function () {
-			this.data = null;
-			this.$el.html('<div class="pad"><h2>Bot settings</h2><p><em>Loading the bot...</em></p></div>');
-			Bot.post({type: 'schema', format: this.curFormat, speed: Bot.device()});
-		},
-		load: function (data) {
-			if (data.format !== this.curFormat) return;
-			var fresh = !this.data;
-			if (!fresh && JSON.stringify(data) === JSON.stringify(this.data)) return;
-			this.data = data;
-			this.benched = this.costs();
-			this.render();
-			if (fresh && $.isEmptyObject(Bot.battles)) this.measure(true);
-		},
-		renderFormat: function () {
-			return '<button class="select formatselect" name="format" value="' + BattleLog.escapeHTML(this.curFormat) + '">' + BattleLog.escapeFormat(this.curFormat) + '</button>';
-		},
-		render: function () {
-			var data = this.data;
-			var buf = '<div class="pad"><h2>Bot settings <small data-saved style="color:#888;font-size:9pt;font-weight:normal"></small></h2>';
-			if (data.error) {
-				this.$el.html(buf + '<p>Format: ' + this.renderFormat() + '</p><p class="message-error">' + BattleLog.escapeHTML(data.error) + '</p></div>');
-				return;
-			}
-
-			buf += '<p><label><input type="checkbox" name="analysis"' + (Storage.prefs('botanalysis') !== false ? ' checked' : '') + ' /> Show what the bot\'s search did after each turn</label></p>';
-			buf += '<h3>Strength</h3>';
-			buf += '<div style="margin-left:16px">' + this.renderTable([this.find('time'), this.find('threads')]);
-			if (this.value('threads') !== data.threads) buf += '<p><small style="color:#888">Threads after your battle: ' + this.value('threads') + '</small></p>';
-			buf += '</div>';
-
-			for (var k = 0; k < data.sections.length; k++) {
-				var groups = this.groups(data.sections[k]);
-				for (var m = 0; m < groups.length; m++) {
-					buf += '<h3>' + BattleLog.escapeHTML(groups.length === 1 ? data.sections[k].section : groups[m].group) + '</h3><div style="margin-left:16px">' + this.renderBlocks(groups[m].settings) + '</div>';
-				}
-			}
-			buf += '<div style="margin-left:16px;margin-top:16px"><table data-speed style="border-spacing:0 2px;margin:4px 0;width:100%;table-layout:fixed;color:#888"></table></div>';
-			buf += '<p style="margin-top:16px"><button class="button" name="resetAll">Reset to defaults</button></p>';
-			buf += '</div>';
-			this.$el.html(buf);
-			this.updateSpeed();
-		},
-		groups: function (section) {
-			var groups = [];
-			for (var i = 0; i < this.data.schema.length; i++) {
-				var group = this.data.schema[i];
-				if (section.groups.indexOf(group.group) < 0 || (group.bot && group.bot !== 'mcts')) continue;
-				var settings = group.settings.filter(function (setting) { return !setting.basic && !setting.hidden; });
-				if (settings.length) groups.push($.extend({}, group, {settings: settings}));
-			}
-			return groups;
-		},
-		renderBlocks: function (settings) {
-			var buf = '';
-			var rows = [];
-			for (var i = 0; i < settings.length; i++) {
-				var run = 1;
-				while (settings[i].type === 'select' && i + run < settings.length && settings[i + run].type === 'select' &&
-					JSON.stringify(settings[i + run].options) === JSON.stringify(settings[i].options)) run++;
-				if (run < 2) {
-					rows.push(settings[i]);
-					continue;
-				}
-				if (rows.length) buf += this.renderTable(rows);
-				rows = [];
-				buf += '<div style="columns:250px;column-gap:24px;margin:4px 0">';
-				for (var j = i; j < i + run; j++) {
-					buf += '<div data-row="' + BattleLog.escapeHTML(settings[j].key) + '" style="break-inside:avoid;padding:1px 0">';
-					buf += this.renderSelect(settings[j], 'width:100px') + ' ' + this.renderLabel(settings[j]) + ' ' + this.renderReset(settings[j]) + '</div>';
-				}
-				buf += '</div>';
-				i += run - 1;
-			}
-			if (rows.length) buf += this.renderTable(rows);
-			return buf;
-		},
-		renderTable: function (settings) {
-			var buf = '<table style="border-spacing:0 2px;margin:4px 0;width:100%;table-layout:fixed">';
-			for (var i = 0; i < settings.length; i++) {
-				var setting = settings[i];
-				var key = BattleLog.escapeHTML(setting.key);
-				buf += '<tr data-row="' + key + '"><th style="text-align:right;font-weight:normal;padding-right:8px;width:min(230px,30vw)">' + this.renderLabel(setting) + '</th><td style="white-space:nowrap">';
-				if (setting.type === 'select') {
-					buf += this.renderSelect(setting, 'max-width:48vw');
-				} else if (setting.type === 'checkbox') {
-					buf += '<input type="checkbox" data-key="' + key + '"' + (this.value(setting.key) ? ' checked' : '') + ' />';
-				} else {
-					buf += '<input type="range" data-key="' + key + '" data-view="' + this.view(setting) + '"' + this.renderRange(setting) + ' style="width:140px;max-width:30vw;vertical-align:middle" /> ' + this.renderNumber(setting, 'width:64px') + this.renderUnit(setting);
-				}
-				buf += ' ' + this.renderReset(setting) + '</td></tr>';
-			}
-			return buf + '</table>';
-		},
-		renderSelect: function (setting, style) {
-			var value = '' + this.value(setting.key);
-			var buf = '<select class="button" data-key="' + BattleLog.escapeHTML(setting.key) + '" style="' + style + '">';
-			for (var option in setting.options) {
-				buf += '<option value="' + BattleLog.escapeHTML(option) + '"' + (option === value ? ' selected' : '') + '>' + BattleLog.escapeHTML(setting.options[option]) + '</option>';
-			}
-			return buf + '</select>';
 		},
 		renderLabel: function (setting, text) {
 			var label = BattleLog.escapeHTML(text || setting.label);
@@ -489,24 +331,6 @@
 		display: function (setting, view) {
 			return this.toView(setting, view, this.value(setting.key));
 		},
-		updateSpeed: function () {
-			if (!this.data || this.data.error) return;
-			var speed = Storage.prefs('botspeed');
-			var search = Storage.prefs('botsearch');
-			var guesses = this.value('determinizations');
-			var rows = [['Speed', this.measuring ? 'Measuring...' : 'Not measured']];
-			if (!this.measuring && speed && search) {
-				rows = [['Routes per guess', '~' + (Math.round(speed * this.value('time') / 1000 / guesses / 10) * 10).toLocaleString()], ['Branching depth', search.turns.toFixed(1) + ' turns'], ['Look-ahead', search.horizon.toFixed(1) + ' turns'], ['Simulated turns', '~' + (Math.round(speed * this.value('time') / 1000 * search.horizon / 1000) * 1000).toLocaleString()]];
-			}
-			this.$('[data-speed]').html(rows.map(function (row) {
-				return '<tr><th style="text-align:right;font-weight:normal;padding-right:8px;width:min(230px,30vw)">' + row[0] + '</th><td>' + row[1] + '</td></tr>';
-			}).join(''));
-		},
-		costs: function () {
-			var settings = $.extend({}, Bot.settings());
-			delete settings.time;
-			return JSON.stringify(settings);
-		},
 		refresh: function (key) {
 			var self = this;
 			[key].forEach(function (key) {
@@ -526,7 +350,7 @@
 				});
 				self.$('button[name=resetSetting][value="' + key + '"]').css('display', self.changed(setting) ? '' : 'none');
 			});
-			if (key === 'time') this.updateSpeed();
+			if (key === 'time' && this.updateSpeed) this.updateSpeed();
 		},
 		set: function (key, value) {
 			var overrides = Bot.settings();
@@ -540,29 +364,8 @@
 			} else {
 				target[last] = value;
 			}
-			Bot.save(true);
+			Bot.save(this === Bot.room);
 			this.refresh(key);
-		},
-		saved: function () {
-			var $saved = this.$('[data-saved]').text('Saved');
-			clearTimeout(this.savedTimer);
-			this.savedTimer = setTimeout(function () {
-				$saved.text('');
-			}, 1500);
-			if (this.costs() === this.benched || !$.isEmptyObject(Bot.battles)) return;
-			var self = this;
-			this.measuring = true;
-			this.updateSpeed();
-			clearTimeout(this.benchTimer);
-			this.benchTimer = setTimeout(function () {
-				self.measure(false);
-			}, 600);
-		},
-		measure: function (full) {
-			this.measuring = true;
-			this.updateSpeed();
-			this.benched = this.costs();
-			Bot.post({type: 'bench', format: this.curFormat, settings: Bot.settings(), speed: Bot.device(), reference: full});
 		},
 		change: function (e) {
 			var $input = $(e.currentTarget);
@@ -597,13 +400,251 @@
 			Bot.reload();
 			if (this.data) this.render();
 		},
-		toggleAnalysis: function (e) {
-			Storage.prefs('botanalysis', $(e.currentTarget).is(':checked') ? null : false);
-		},
 		resetSetting: function (key) {
 			if (!this.data || !this.find(key)) return;
 			if (key === 'threads') return this.setThreads(this.data.available);
 			this.set(key, undefined);
+		}
+	};
+
+	var BotPopup = this.BotPopup = Popup.extend($.extend({}, BotControls, {
+		type: 'semimodal',
+		events: {
+			'input input': 'change',
+			'change input': 'change'
+		},
+		initialize: function (data) {
+			Bot.popup = this;
+			this.fromSettings = !!data.fromSettings;
+			var format = this.fromSettings ? Bot.room.curFormat : app.rooms[''].curFormat;
+			var buf = '<form class="battleform">';
+			buf += '<p><label class="label">Format:</label>' + app.rooms[''].renderFormats(format) + '</p>';
+			var team = app.rooms[''].renderTeams(format);
+			buf += '<p><label class="label">Your team:</label>' + team + '</p>';
+			buf += '<p><label class="label">Bot\'s team:</label>' + this.renderBotTeam(format, $(team).val()) + '</p>';
+			if (!this.fromSettings) buf += '<div class="strength"></div>';
+			buf += '<p class="status"></p>';
+			buf += '<p class="buttonbar" style="margin-top:12px"><button type="submit" class="button"><strong>Battle!</strong></button> ' + (this.fromSettings ? '' : '<button type="button" name="settings" class="button"><i class="fa fa-cog"></i> Bot settings</button> ') + '<button type="button" name="close" class="button">Cancel</button></p>';
+			buf += '</form>';
+			this.$el.html(buf);
+			if (!this.fromSettings) this.update(app.rooms[''].curFormat);
+		},
+		remove: function () {
+			if (Bot.popup === this) {
+				Bot.popup = null;
+				Bot.pending = null;
+			}
+			Popup.prototype.remove.apply(this, arguments);
+		},
+		update: function (format) {
+			this.curFormat = format;
+			this.data = null;
+			this.$('.strength').html('<p><em>Loading the bot...</em></p>');
+			Bot.post({type: 'schema', format: format, speed: Bot.device()});
+		},
+		load: function (data) {
+			if (data.format !== this.curFormat) return;
+			this.data = data;
+			this.render();
+		},
+		render: function () {
+			if (this.data.error) return this.$('.strength').html('<p class="message-error">' + BattleLog.escapeHTML(this.data.error) + '</p>');
+			var buf = '';
+			var settings = [this.find('time'), this.find('threads')];
+			for (var i = 0; i < settings.length; i++) {
+				var setting = settings[i];
+				buf += '<p data-row="' + BattleLog.escapeHTML(setting.key) + '"><span class="label">' + this.renderLabel(setting, setting.label + ':') + '</span>';
+				buf += '<input type="range" data-key="' + BattleLog.escapeHTML(setting.key) + '" data-view="' + this.view(setting) + '"' + this.renderRange(setting) + ' style="width:110px;vertical-align:middle" /> ';
+				buf += this.renderNumber(setting, 'width:52px') + this.renderUnit(setting) + ' ' + this.renderReset(setting) + '</p>';
+			}
+			if (this.value('threads') !== this.data.threads) buf += '<p><small style="color:#888">Threads after your battle: ' + this.value('threads') + '</small></p>';
+			this.$('.strength').html(buf);
+		},
+		format: function (format, button) {
+			var self = this;
+			app.addPopup(FormatPopup, {format: format, sourceEl: button, selectType: 'challenge', onselect: function (format) {
+				self.$('button[name=team]').replaceWith(app.rooms[''].renderTeams(format));
+				Bot.botTeamIndex = -1;
+				self.$('button[name=botTeam]').replaceWith(self.renderBotTeam(format, self.$('button[name=team]').val()));
+				if (!self.fromSettings) self.update(format);
+			}});
+		},
+		settings: function () {
+			Storage.prefs('botformat', this.$('button[name=format]').val());
+			this.close();
+			if (Bot.room) {
+				Bot.room.curFormat = Storage.prefs('botformat');
+				Bot.room.update();
+			}
+			app.tryJoinRoom('botsettings');
+		},
+		submit: function () {
+			Bot.battle(this.$('button[name=format]').val(), this.$('button[name=team]').val(), this.$('button[name=botTeam]').val());
+		}
+	}));
+
+	var BotSettingsRoom = this.BotSettingsRoom = Room.extend($.extend({}, BotControls, {
+		type: 'botsettings',
+		title: 'Bot settings',
+		events: {
+			'input input': 'change',
+			'change input, select': 'change',
+			'change input[name=analysis]': 'toggleAnalysis'
+		},
+		initialize: function () {
+			Bot.room = this;
+			this.$el.addClass('ps-room-light').addClass('scrollable');
+			this.curFormat = Storage.prefs('botformat') || app.rooms[''].curFormat || 'gen7ifrandombattle';
+			this.data = null;
+			this.update();
+		},
+		destroy: function () {
+			if (Bot.room === this) Bot.room = null;
+			Room.prototype.destroy.apply(this, arguments);
+		},
+		update: function () {
+			this.data = null;
+			this.$el.html('<div class="pad"><h2>Bot settings</h2><p><em>Loading the bot...</em></p></div>');
+			Bot.post({type: 'schema', format: this.curFormat, speed: Bot.device()});
+		},
+		load: function (data) {
+			if (data.format !== this.curFormat) return;
+			var fresh = !this.data;
+			if (!fresh && JSON.stringify(data) === JSON.stringify(this.data)) return;
+			this.data = data;
+			this.benched = this.costs();
+			this.render();
+			if (fresh && $.isEmptyObject(Bot.battles)) this.measure(true);
+		},
+		renderFormat: function () {
+			return '<button class="select formatselect" name="format" value="' + BattleLog.escapeHTML(this.curFormat) + '">' + BattleLog.escapeFormat(this.curFormat) + '</button>';
+		},
+		render: function () {
+			var data = this.data;
+			var buf = '<div class="pad"><h2>Bot settings <small data-saved style="color:#888;font-size:9pt;font-weight:normal"></small></h2>';
+			if (data.error) {
+				this.$el.html(buf + '<p>Format: ' + this.renderFormat() + '</p><p class="message-error">' + BattleLog.escapeHTML(data.error) + '</p></div>');
+				return;
+			}
+
+			buf += '<p><label><input type="checkbox" name="analysis"' + (Storage.prefs('botanalysis') !== false ? ' checked' : '') + ' /> Show what the bot\'s search did after each turn</label></p>';
+			buf += '<h3>Strength</h3>';
+			buf += '<div style="margin-left:16px">' + this.renderTable([this.find('time'), this.find('threads')]);
+			if (this.value('threads') !== data.threads) buf += '<p><small style="color:#888">Threads after your battle: ' + this.value('threads') + '</small></p>';
+			buf += '</div>';
+
+			for (var k = 0; k < data.sections.length; k++) {
+				var groups = this.groups(data.sections[k]);
+				for (var m = 0; m < groups.length; m++) {
+					buf += '<h3>' + BattleLog.escapeHTML(groups.length === 1 ? data.sections[k].section : groups[m].group) + '</h3><div style="margin-left:16px">' + this.renderBlocks(groups[m].settings) + '</div>';
+				}
+			}
+			buf += '<div style="margin-left:16px;margin-top:16px"><table data-speed style="border-spacing:0 2px;margin:4px 0;width:100%;table-layout:fixed;color:#888"></table></div>';
+			buf += '<p style="margin-top:16px"><button class="button" name="battle"><strong>Battle!</strong></button> <button class="button" name="resetAll">Reset to defaults</button></p>';
+			buf += '</div>';
+			this.$el.html(buf);
+			this.updateSpeed();
+		},
+		groups: function (section) {
+			var groups = [];
+			for (var i = 0; i < this.data.schema.length; i++) {
+				var group = this.data.schema[i];
+				if (section.groups.indexOf(group.group) < 0 || (group.bot && group.bot !== 'mcts')) continue;
+				var settings = group.settings.filter(function (setting) { return !setting.basic && !setting.hidden; });
+				if (settings.length) groups.push($.extend({}, group, {settings: settings}));
+			}
+			return groups;
+		},
+		renderBlocks: function (settings) {
+			var buf = '';
+			var rows = [];
+			for (var i = 0; i < settings.length; i++) {
+				var run = 1;
+				while (settings[i].type === 'select' && i + run < settings.length && settings[i + run].type === 'select' &&
+					JSON.stringify(settings[i + run].options) === JSON.stringify(settings[i].options)) run++;
+				if (run < 2) {
+					rows.push(settings[i]);
+					continue;
+				}
+				if (rows.length) buf += this.renderTable(rows);
+				rows = [];
+				buf += '<div style="columns:250px;column-gap:24px;margin:4px 0">';
+				for (var j = i; j < i + run; j++) {
+					buf += '<div data-row="' + BattleLog.escapeHTML(settings[j].key) + '" style="break-inside:avoid;padding:1px 0">';
+					buf += this.renderSelect(settings[j], 'width:100px') + ' ' + this.renderLabel(settings[j]) + ' ' + this.renderReset(settings[j]) + '</div>';
+				}
+				buf += '</div>';
+				i += run - 1;
+			}
+			if (rows.length) buf += this.renderTable(rows);
+			return buf;
+		},
+		renderTable: function (settings) {
+			var buf = '<table style="border-spacing:0 2px;margin:4px 0;width:100%;table-layout:fixed">';
+			for (var i = 0; i < settings.length; i++) {
+				var setting = settings[i];
+				var key = BattleLog.escapeHTML(setting.key);
+				buf += '<tr data-row="' + key + '"><th style="text-align:right;font-weight:normal;padding-right:8px;width:min(230px,30vw)">' + this.renderLabel(setting) + '</th><td style="white-space:nowrap">';
+				if (setting.type === 'select') {
+					buf += this.renderSelect(setting, 'max-width:48vw');
+				} else if (setting.type === 'checkbox') {
+					buf += '<input type="checkbox" data-key="' + key + '"' + (this.value(setting.key) ? ' checked' : '') + ' />';
+				} else {
+					buf += '<input type="range" data-key="' + key + '" data-view="' + this.view(setting) + '"' + this.renderRange(setting) + ' style="width:140px;max-width:30vw;vertical-align:middle" /> ' + this.renderNumber(setting, 'width:64px') + this.renderUnit(setting);
+				}
+				buf += ' ' + this.renderReset(setting) + '</td></tr>';
+			}
+			return buf + '</table>';
+		},
+		renderSelect: function (setting, style) {
+			var value = '' + this.value(setting.key);
+			var buf = '<select class="button" data-key="' + BattleLog.escapeHTML(setting.key) + '" style="' + style + '">';
+			for (var option in setting.options) {
+				buf += '<option value="' + BattleLog.escapeHTML(option) + '"' + (option === value ? ' selected' : '') + '>' + BattleLog.escapeHTML(setting.options[option]) + '</option>';
+			}
+			return buf + '</select>';
+		},
+		updateSpeed: function () {
+			if (!this.data || this.data.error) return;
+			var speed = Storage.prefs('botspeed');
+			var search = Storage.prefs('botsearch');
+			var guesses = this.value('determinizations');
+			var rows = [['Speed', this.measuring ? 'Measuring...' : 'Not measured']];
+			if (!this.measuring && speed && search) {
+				rows = [['Routes per guess', '~' + (Math.round(speed * this.value('time') / 1000 / guesses / 10) * 10).toLocaleString()], ['Branching depth', search.turns.toFixed(1) + ' turns'], ['Look-ahead', search.horizon.toFixed(1) + ' turns'], ['Simulated turns', '~' + (Math.round(speed * this.value('time') / 1000 * search.horizon / 1000) * 1000).toLocaleString()]];
+			}
+			this.$('[data-speed]').html(rows.map(function (row) {
+				return '<tr><th style="text-align:right;font-weight:normal;padding-right:8px;width:min(230px,30vw)">' + row[0] + '</th><td>' + row[1] + '</td></tr>';
+			}).join(''));
+		},
+		costs: function () {
+			var settings = $.extend({}, Bot.settings());
+			delete settings.time;
+			return JSON.stringify(settings);
+		},
+		saved: function () {
+			var $saved = this.$('[data-saved]').text('Saved');
+			clearTimeout(this.savedTimer);
+			this.savedTimer = setTimeout(function () {
+				$saved.text('');
+			}, 1500);
+			if (this.costs() === this.benched || !$.isEmptyObject(Bot.battles)) return;
+			var self = this;
+			this.measuring = true;
+			this.updateSpeed();
+			clearTimeout(this.benchTimer);
+			this.benchTimer = setTimeout(function () {
+				self.measure(false);
+			}, 600);
+		},
+		measure: function (full) {
+			this.measuring = true;
+			this.updateSpeed();
+			this.benched = this.costs();
+			Bot.post({type: 'bench', format: this.curFormat, settings: Bot.settings(), speed: Bot.device(), reference: full});
+		},
+		toggleAnalysis: function (e) {
+			Storage.prefs('botanalysis', $(e.currentTarget).is(':checked') ? null : false);
 		},
 		resetAll: function () {
 			Bot.overrides = {};
@@ -616,8 +657,11 @@
 				self.curFormat = format;
 				self.update();
 			}});
+		},
+		battle: function () {
+			app.addPopup(BotPopup, {fromSettings: true});
 		}
-	});
+	}));
 
 	var add = BattleRoom.prototype.add;
 	BattleRoom.prototype.add = function (data) {
