@@ -79,6 +79,12 @@
 			case 'error':
 				Bot.report(data.split('\n')[0]);
 				break;
+			case 'rename':
+				if (Bot.battles[data.from]) Bot.battles[data.room] = Bot.battles[data.from];
+				if (Bot.analyses[data.from]) Bot.analyses[data.room] = Bot.analyses[data.from];
+				delete Bot.battles[data.from];
+				delete Bot.analyses[data.from];
+				break;
 			case 'end':
 				delete Bot.battles[data.room];
 				Bot.reload();
