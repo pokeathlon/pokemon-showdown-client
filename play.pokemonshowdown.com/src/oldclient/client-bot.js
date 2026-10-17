@@ -192,11 +192,11 @@
 			buf += row('Look-ahead', (tree.playoutTurns / iterations).toFixed(1) + ' turns');
 			buf += row('Simulated turns', count(tree.playoutTurns));
 			buf += row('At turn cap', percent(tree.capped, iterations) + ' (cap ' + analysis.cap + ')');
-			if (analysis.method && analysis.method !== 'mcts') buf += row('Method', analysis.method === 'oos' ? 'Online outcome sampling' : 'Minimax');
+			if (analysis.method === 'oos') buf += row('Method', 'Online outcome sampling');
 			buf += '</table>';
 			if (chosen) {
 				buf += '<details style="margin:4px 0"><summary><strong>Choices:</strong> ' + BattleLog.escapeHTML(chosen.label) + ' &middot; tried ' + percent(chosen.n, total) + ' &middot; score ' + score(chosen) + '</summary>';
-				var mixed = analysis.pick === 'mixed' && analysis.strategy;
+				var mixed = analysis.method === 'oos' && analysis.strategy;
 				buf += '<table style="border-collapse:collapse;margin:4px 0"><tr><th style="text-align:left;padding-right:12px">Bot</th><th style="text-align:left;padding-right:12px">Tried</th><th>Score</th>' + (mixed ? '<th style="padding-left:12px">Chance</th>' : '') + '</tr>';
 				for (var n = 0; n < options.length; n++) {
 					var option = options[n];
@@ -367,12 +367,11 @@
 			this.updateSpeed();
 		},
 		groups: function (section) {
-			var self = this;
 			var groups = [];
 			for (var i = 0; i < this.data.schema.length; i++) {
 				var group = this.data.schema[i];
-				if (section.groups.indexOf(group.group) < 0 || (group.bot && group.bot !== 'mcts') || !this.active(group)) continue;
-				var settings = group.settings.filter(function (setting) { return !setting.basic && !setting.hidden && self.active(setting); });
+				if (section.groups.indexOf(group.group) < 0 || (group.bot && group.bot !== 'mcts')) continue;
+				var settings = group.settings.filter(function (setting) { return !setting.basic && !setting.hidden; });
 				if (settings.length) groups.push($.extend({}, group, {settings: settings}));
 			}
 			return groups;
@@ -446,30 +445,6 @@
 		},
 		renderReset: function (setting) {
 			return '<button class="button" name="resetSetting" value="' + BattleLog.escapeHTML(setting.key) + '" style="padding:0 4px;font-size:8pt' + (this.changed(setting) ? '' : ';display:none') + '"><i class="fa fa-undo"></i></button>';
-		},
-		active: function (item) {
-			var self = this;
-			var all = function (when) {
-				for (var key in when) {
-					if (when[key].indexOf(self.value(key)) < 0) return false;
-				}
-				return true;
-			};
-			if (!item.when) return true;
-			return $.isArray(item.when) ? item.when.some(all) : all(item.when);
-		},
-		conditional: function (key) {
-			var mentions = function (when) {
-				return !!when && ($.isArray(when) ? when.some(function (part) { return key in part; }) : key in when);
-			};
-			for (var i = 0; i < this.data.schema.length; i++) {
-				var group = this.data.schema[i];
-				if (mentions(group.when)) return true;
-				for (var j = 0; j < group.settings.length; j++) {
-					if (mentions(group.settings[j].when)) return true;
-				}
-			}
-			return false;
 		},
 		find: function (key) {
 			if (key === 'threads') {
@@ -565,7 +540,6 @@
 				target[last] = value;
 			}
 			Bot.save(true);
-			if (this.conditional(key)) return this.render();
 			this.refresh(key);
 		},
 		saved: function () {
