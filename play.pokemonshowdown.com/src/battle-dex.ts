@@ -1460,8 +1460,8 @@ export class ModdedDex {
 	constructor(modid: ID) {
 		this.modid = modid;
 		let gen = parseInt(modid.charAt(3), 10);
-		if (this.modid.startsWith('champions')) gen = 9;
-		if ((!modid.startsWith('champions') && !modid.startsWith('gen')) || !gen) throw new Error("Unsupported modid");
+		if (modid.startsWith('champions')) gen = 9;
+		if ((!modid.startsWith('champions') && !modid.startsWith('gen')) || !gen) throw new Error("Unsupported modid: " + modid);
 		this.gen = gen;
 	}
 	text: ClientDexText = {
@@ -1498,8 +1498,9 @@ export class ModdedDex {
 				}
 			}
 			if (this.modid !== `gen${this.gen}`) {
-				const table = window.BattleTeambuilderTable[this.modid];
-				if (id in table.overrideMoveData) {
+				const tempModid = this.modid in window.BattleTeambuilderTable ? this.modid : this.modid + 'vgc';
+				const table = window.BattleTeambuilderTable[tempModid];
+				if (table.overrideMoveData !== undefined && id in table.overrideMoveData) {
 					Object.assign(data, table.overrideMoveData[id]);
 				}
 			}
@@ -1531,8 +1532,9 @@ export class ModdedDex {
 				}
 			}
 			if (this.modid !== `gen${this.gen}`) {
-				const table = window.BattleTeambuilderTable[this.modid];
-				if (id in table.overrideItemData) {
+				const tempModid = this.modid in window.BattleTeambuilderTable ? this.modid : this.modid + 'vgc';
+				const table = window.BattleTeambuilderTable[tempModid];
+				if (table.overrideItemData !== undefined && id in table.overrideItemData) {
 					Object.assign(data, table.overrideItemData[id]);
 				}
 			}
@@ -1561,8 +1563,9 @@ export class ModdedDex {
 				}
 			}
 			if (this.modid !== `gen${this.gen}`) {
-				const table = window.BattleTeambuilderTable[this.modid];
-				if (id in table.overrideAbilityData) {
+				const tempModid = this.modid in window.BattleTeambuilderTable ? this.modid : this.modid + 'vgc';
+				const table = window.BattleTeambuilderTable[tempModid];
+				if (table.overrideAbilityData !== undefined && id in table.overrideAbilityData) {
 					Object.assign(data, table.overrideAbilityData[id]);
 				}
 			}
@@ -1594,8 +1597,10 @@ export class ModdedDex {
 				}
 			}
 			if (this.modid !== `gen${this.gen}`) {
-				const table = window.BattleTeambuilderTable[this.modid];
-				if (id in table.overrideSpeciesData) {
+				const tempModid = this.modid in window.BattleTeambuilderTable ? this.modid : this.modid + 'vgc';
+				console.log(tempModid, window.BattleTeambuilderTable);
+				const table = window.BattleTeambuilderTable[tempModid];
+				if (table.overrideSpeciesData !== undefined && id in table.overrideSpeciesData) {
 					Object.assign(data, table.overrideSpeciesData[id]);
 				}
 			}
@@ -1603,8 +1608,11 @@ export class ModdedDex {
 				data.abilities = { 0: "No Ability" };
 			}
 
-			const table = window.BattleTeambuilderTable[this.modid];
-			if (id in table.overrideTier) data.tier = table.overrideTier[id];
+			const tempModid = this.modid in window.BattleTeambuilderTable ? this.modid : this.modid + 'vgc';
+			const table = window.BattleTeambuilderTable[tempModid];
+			if (table.overrideTier !== undefined && id in table.overrideTier) {
+				data.tier = table.overrideTier[id];
+			}
 			if (!data.tier && id.endsWith('totem')) {
 				data.tier = this.species.get(id.slice(0, -5)).tier;
 			}
@@ -1659,7 +1667,8 @@ export class ModdedDex {
 				}
 			}
 			if (this.modid !== `gen${this.gen}`) {
-				const table = window.BattleTeambuilderTable[this.modid];
+				const tempModid = this.modid in window.BattleTeambuilderTable ? this.modid : this.modid + 'vgc';
+				const table = window.BattleTeambuilderTable[tempModid];
 				if (id in (table.removeType || {})) {
 					data.exists = false;
 				} else if (id in (table.overrideTypeChart || {})) {

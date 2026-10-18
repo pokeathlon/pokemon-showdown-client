@@ -768,13 +768,13 @@ abstract class BattleTypedSearch<T extends SearchType> {
 		}
 		if (format.includes('champions')) {
 			this.formatType = 'champions';
-			this.dex = Dex.mod('champions' as ID);
-			format = format.slice(9) as ID;
-			if (format.startsWith('natdex') || format.startsWith('nationaldex')) this.formatType = 'natdexchampions';
-			if (format.startsWith('natdex')) format = format.slice(6) as ID;
-			if (format.startsWith('nationaldex')) format = format.slice(11) as ID;
-			if (format.startsWith('vgc') || format.startsWith('bss')) format = 'ubers' as ID;
-			if (format.endsWith('draft')) format = 'ag' as ID;
+			// this.dex = Dex.mod('champions' as ID);
+			// format = format.slice(9) as ID;
+			// if (format.startsWith('natdex') || format.startsWith('nationaldex')) this.formatType = 'natdexchampions';
+			// if (format.startsWith('natdex')) format = format.slice(6) as ID;
+			// if (format.startsWith('nationaldex')) format = format.slice(11) as ID;
+			// if (format.startsWith('vgc') || format.startsWith('bss')) format = 'ubers' as ID;
+			// if (format.endsWith('draft')) format = 'ag' as ID;
 		}
 		if (format.startsWith('vgc')) {
 			this.formatType = 'doubles';
@@ -945,6 +945,7 @@ abstract class BattleTypedSearch<T extends SearchType> {
 		if (this.formatType === 'frlg') table = table['gen3frlg'];
 		if (this.formatType === 'champions') table = table['champions'];
 		if (this.formatType === 'natdexchampions') table = table['natdexchampions'];
+		console.log(this.dex.modid, table);
 		if (speciesid in table.learnsets || speciesid in BattleTeambuilderTable.learnsets) return speciesid;
 		const species = this.dex.species.get(speciesid);
 		if (!species.exists) return '' as ID;
@@ -1546,6 +1547,14 @@ class BattleItemSearch extends BattleTypedSearch<'item'> {
 		let table = BattleTeambuilderTable;
 		if (this.formatType?.startsWith('bdsp')) {
 			table = table['gen8bdsp'];
+		} else if (this.table?.startsWith('champions')) {
+			table = table[this.table.replace('champions', 'gen9')];
+		} else if (this.table?.startsWith('natdexchampions')) {
+			table = table[this.table.replace('champions', '')];
+		} else if (this.formatType?.startsWith('champions')) {
+			table = table[this.formatType.replace('champions', 'gen9')];
+		} else if (this.formatType?.startsWith('natdexchampions')) {
+			table = table[this.formatType.replace('champions', '')];
 		} else if (this.formatType === 'bw1') {
 			table = table['gen5bw1'];
 		} else if (this.table) {
@@ -1560,12 +1569,10 @@ class BattleItemSearch extends BattleTypedSearch<'item'> {
 			table = table[`gen${this.dex.gen}doubles`];
 		} else if (this.formatType === 'metronome') {
 			table = table[`gen${this.dex.gen}metronome`];
-		} else if (this.formatType === 'champions') {
-			table = table[`champions`];
-		} else if (this.formatType === 'natdexchampions') {
-			table = table[`natdexchampions`];
 		} else if (this.dex.gen < 9) {
 			table = table[`gen${this.dex.gen}`];
+		} else {
+			table = table[this.dex.modid];
 		}
 		if (!table.itemSet) {
 			table.itemSet = table.items.map((r: any) => {

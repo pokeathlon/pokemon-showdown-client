@@ -598,7 +598,7 @@
 		// power, accuracy, pp
 		var pp = (move.pp === 1 || move.noPPBoosts ? move.pp : move.pp * 8 / 5);
 		if (this.engine && this.engine.dex.gen < 3) pp = Math.min(61, pp);
-		if (this.engine && this.engine.dex.modid === 'champions') {
+		if (this.engine && this.engine.dex.modid.startsWith('champions')) {
 			pp = move.pp > 20 ? 20 : move.pp;
 			if (!move.noPPBoosts) pp = (pp / 5 + 1) * 4;
 		}
@@ -639,7 +639,7 @@
 		// power, accuracy, pp
 		var pp = (move.pp === 1 || move.noPPBoosts ? move.pp : move.pp * 8 / 5);
 		if (this.engine && this.engine.dex.gen < 3) pp = Math.min(61, pp);
-		if (this.engine && this.engine.dex.modid === 'champions') {
+		if (this.engine && this.engine.dex.modid.startsWith('champions')) {
 			pp = move.pp > 20 ? 20 : move.pp;
 			if (!move.noPPBoosts) pp = (pp / 5 + 1) * 4;
 		}
@@ -682,7 +682,7 @@
 		// power, accuracy, pp
 		var pp = move.pp === 1 || move.noPPBoosts ? move.pp : move.pp * 8 / 5;
 		if (this.engine && this.engine.dex.gen < 3) pp = Math.min(61, pp);
-		if (this.engine && this.engine.dex.modid === 'champions') {
+		if (this.engine && this.engine.dex.modid.startsWith('champions')) {
 			pp = move.pp > 20 ? 20 : move.pp;
 			if (!move.noPPBoosts) pp = (pp / 5 + 1) * 4;
 		}
