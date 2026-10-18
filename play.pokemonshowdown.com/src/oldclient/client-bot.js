@@ -8,6 +8,8 @@
 		name: '',
 		format: '',
 		pending: null,
+		team: '',
+		resuming: false,
 		popup: null,
 		room: null,
 		overrides: null,
@@ -32,6 +34,7 @@
 				while (Bot.queue.length) Bot.post(Bot.queue.shift());
 				break;
 			case 'ready':
+				Bot.resuming = false;
 				Bot.format = data.format;
 				if (data.name) Bot.name = data.name;
 				Bot.challenge();
@@ -72,6 +75,7 @@
 				break;
 			case 'battle':
 				Bot.battles[data.room] = true;
+				Bot.remember(data.room, data.format);
 				Bot.update('');
 				if (Bot.popup) Bot.popup.close();
 				break;
@@ -87,9 +91,11 @@
 				if (Bot.analyses[data.from]) Bot.analyses[data.room] = Bot.analyses[data.from];
 				delete Bot.battles[data.from];
 				delete Bot.analyses[data.from];
+				Bot.forget(data.from, data.room);
 				break;
 			case 'end':
 				delete Bot.battles[data.room];
+				Bot.forget(data.room);
 				Bot.reload();
 				break;
 			case 'closed':
@@ -100,19 +106,49 @@
 			}
 		},
 		start: function (format, team, botTeam, sheets) {
-			var self = this;
 			this.pending = {format: format, team: team, sheets: sheets};
 			this.format = '';
+			this.team = botTeam ? Storage.getPackedTeam(botTeam) : '';
 			Storage.prefs('botformat', format);
+			this.launch(format, this.team, '');
+			this.update(this.loaded ? "Starting the bot..." : "Loading the bot (this can take a while the first time)...");
+		},
+		launch: function (format, team, name) {
+			var self = this;
 			app.once('response:pokeathlete', function (key) {
 				if (!key) return self.report("This server doesn't allow bots.");
 				self.post({
 					type: 'start', url: (Config.server.port === 443 || Config.server.https ? 'wss' : 'ws') + '://' + Config.server.host + ':' + Config.server.port + Config.sockjsprefix + '/websocket',
-					owner: app.user.get('userid'), key: key, format: format, team: botTeam ? Storage.getPackedTeam(botTeam) : '', settings: self.settings(), speed: self.device(), ask: true
+					owner: app.user.get('userid'), key: key, format: format, team: team, name: name, settings: self.settings(), speed: self.device(), ask: true
 				});
 			});
 			app.send('/cmd pokeathlete');
-			this.update(this.loaded ? "Starting the bot..." : "Loading the bot (this can take a while the first time)...");
+		},
+		resume: function (games) {
+			if (!app.user.get('named')) return;
+			var saved = Storage.prefs('botbattles') || {};
+			var kept = {};
+			var waiting = null;
+			for (var id in saved) {
+				if (!games[id]) continue;
+				kept[id] = saved[id];
+				if (!this.battles[id]) waiting = saved[id];
+			}
+			Storage.prefs('botbattles', $.isEmptyObject(kept) ? null : kept);
+			if (!waiting || this.resuming) return;
+			this.resuming = true;
+			this.launch(waiting.format, waiting.team, waiting.name);
+		},
+		remember: function (id, format) {
+			var saved = Storage.prefs('botbattles') || {};
+			if (!saved[id]) saved[id] = {format: format, team: this.team || '', name: this.name};
+			Storage.prefs('botbattles', saved);
+		},
+		forget: function (id, renamed) {
+			var saved = Storage.prefs('botbattles') || {};
+			if (renamed && saved[id]) saved[renamed] = saved[id];
+			delete saved[id];
+			Storage.prefs('botbattles', $.isEmptyObject(saved) ? null : saved);
 		},
 		challenge: function () {
 			var pending = this.pending;
@@ -712,6 +748,12 @@
 	};
 	MainMenuRoom.prototype.botBattle = function () {
 		app.addPopup(BotPopup);
+	};
+
+	var updateSearch = MainMenuRoom.prototype.updateSearch;
+	MainMenuRoom.prototype.updateSearch = function (data) {
+		updateSearch.apply(this, arguments);
+		if (data) Bot.resume(data.games || {});
 	};
 
 }).call(this, jQuery);
