@@ -77,7 +77,10 @@
 				break;
 			case 'notice':
 			case 'error':
-				Bot.report(data.split('\n')[0]);
+				var message = (data.message || data).split('\n')[0];
+				var battleRoom = data.room && app.rooms[data.room];
+				if (battleRoom && battleRoom.battle) battleRoom.add('|error|Bot: ' + message);
+				else Bot.report(message);
 				break;
 			case 'rename':
 				if (Bot.battles[data.from]) Bot.battles[data.room] = Bot.battles[data.from];
@@ -96,9 +99,9 @@
 				break;
 			}
 		},
-		start: function (format, team, botTeam) {
+		start: function (format, team, botTeam, sheets) {
 			var self = this;
-			this.pending = {format: format, team: team};
+			this.pending = {format: format, team: team, sheets: sheets};
 			this.format = '';
 			Storage.prefs('botformat', format);
 			app.once('response:pokeathlete', function (key) {
@@ -118,7 +121,7 @@
 			this.update("Challenging " + this.name + "...");
 			var name = this.name;
 			app.sendTeam(pending.team, function () {
-				app.send('/challenge ' + name + ', ' + pending.format);
+				app.send('/challenge ' + name + ', ' + pending.format + (pending.sheets ? '@@@Show Team Sheets' : ''));
 			});
 		},
 		settings: function () {
@@ -165,7 +168,7 @@
 			var room = app.rooms[id];
 			return !!(room && room.request && !room.request.wait && !(room.choice && room.choice.waiting) && !room.battleEnded);
 		},
-		battle: function (format, team, botTeam) {
+		battle: function (format, team, botTeam, sheets) {
 			var self = this;
 			var own = Storage.teams[team];
 			var bots = Storage.teams[botTeam];
@@ -174,10 +177,10 @@
 			this.botTeamIndex = +botTeam;
 			if (bots && bots.teamid && !bots.loaded) {
 				return app.loadTeam(bots, function () {
-					self.start(format, own, bots);
+					self.start(format, own, bots, sheets);
 				});
 			}
-			this.start(format, own, bots);
+			this.start(format, own, bots, sheets);
 		},
 		update: function (status) {
 			if (this.popup) this.popup.$('.status').text(status);
@@ -417,7 +420,8 @@
 		type: 'semimodal',
 		events: {
 			'input input': 'change',
-			'change input': 'change'
+			'change input': 'change',
+			'change input[name=analysis]': 'toggleAnalysis'
 		},
 		initialize: function (data) {
 			Bot.popup = this;
@@ -429,6 +433,8 @@
 			buf += '<p><label class="label">Your team:</label>' + team + '</p>';
 			buf += '<p><label class="label">Bot\'s team:</label>' + this.renderBotTeam(format, $(team).val()) + '</p>';
 			if (!this.fromSettings) buf += '<div class="strength"></div>';
+			buf += '<p><label class="checkbox"><input type="checkbox" name="analysis"' + (Storage.prefs('botanalysis') !== false ? ' checked' : '') + ' /> Show bot logs</label></p>';
+			buf += '<p><label class="checkbox" title="You and the bot see each other\'s Pokémon, moves, items, abilities and Tera Types from the start"><input type="checkbox" name="sheets"' + (Storage.prefs('botsheets') ? ' checked' : '') + ' /> Open team sheets</label></p>';
 			buf += '<p class="status"></p>';
 			buf += '<p class="buttonbar" style="margin-top:12px"><button type="submit" class="button"><strong>Battle!</strong></button> ' + (this.fromSettings ? '' : '<button type="button" name="settings" class="button"><i class="fa fa-cog"></i> Bot settings</button> ') + '<button type="button" name="close" class="button">Cancel</button></p>';
 			buf += '</form>';
@@ -484,8 +490,13 @@
 			}
 			app.tryJoinRoom('botsettings');
 		},
+		toggleAnalysis: function (e) {
+			Storage.prefs('botanalysis', $(e.currentTarget).is(':checked') ? null : false);
+		},
 		submit: function () {
-			Bot.battle(this.$('button[name=format]').val(), this.$('button[name=team]').val(), this.$('button[name=botTeam]').val());
+			var sheets = this.$('input[name=sheets]').is(':checked');
+			Storage.prefs('botsheets', sheets || null);
+			Bot.battle(this.$('button[name=format]').val(), this.$('button[name=team]').val(), this.$('button[name=botTeam]').val(), sheets);
 		}
 	}));
 
@@ -494,8 +505,7 @@
 		title: 'Bot settings',
 		events: {
 			'input input': 'change',
-			'change input, select': 'change',
-			'change input[name=analysis]': 'toggleAnalysis'
+			'change input, select': 'change'
 		},
 		initialize: function () {
 			Bot.room = this;
@@ -533,7 +543,6 @@
 				return;
 			}
 
-			buf += '<p><label><input type="checkbox" name="analysis"' + (Storage.prefs('botanalysis') !== false ? ' checked' : '') + ' /> Show what the bot\'s search did after each turn</label></p>';
 			buf += '<h3>Strength</h3>';
 			buf += '<div style="margin-left:16px">' + this.renderTable([this.find('time'), this.find('threads')]);
 			if (this.value('threads') !== data.threads) buf += '<p><small style="color:#888">Threads after your battle: ' + this.value('threads') + '</small></p>';
@@ -648,9 +657,6 @@
 			this.updateSpeed();
 			this.benched = this.costs();
 			Bot.post({type: 'bench', format: this.curFormat, settings: Bot.settings(), speed: Bot.device(), reference: full});
-		},
-		toggleAnalysis: function (e) {
-			Storage.prefs('botanalysis', $(e.currentTarget).is(':checked') ? null : false);
 		},
 		resetAll: function () {
 			Bot.overrides = {};
