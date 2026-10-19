@@ -460,7 +460,7 @@ process.stdout.write("Building `data/teambuilder-tables.js`... ");
 						species.tags.includes('Restricted Legendary') ? 'Restricted' :
 						species.nfe ? (species.prevo ? 'NFE' : 'LC') : 'Regular';
 				}
-				if (isMariomonVGC || isChampionsMariomon || isPOAVGC) {
+				if (isMariomonVGC || isPOAVGC) {
 					if (species.isNonstandard) return 'Illegal';
 					if (baseSpecies.tags.includes('Mythical')) return 'Mythical';
 					if (baseSpecies.tags.includes('Restricted Legendary')) return 'Restricted Legendary';
@@ -482,7 +482,7 @@ process.stdout.write("Building `data/teambuilder-tables.js`... ");
 					if (isNatDexPOA && species.isNonstandard && species.isNonstandard !== "Unobtainable") tier = 'Illegal';
 					return tier;
 				}
-				if (isPOA || isInsg || isUranium || isInfinity || isMariomon || isSoulstones) {
+				if (isPOA || isInsg || isUranium || isInfinity || isMariomon || isChampionsMariomon || isSoulstones) {
 					let tier = isDoubles ? species.doublesTier : species.tier;
 					if (species.isNonstandard === "Custom") tier = 'Illegal';
 					if ((isPOA) && ["Custom", "Unobtainable"].includes(species.isNonstandard)) tier = 'Illegal';
@@ -701,7 +701,7 @@ process.stdout.write("Building `data/teambuilder-tables.js`... ");
 			if (isVGC || isGen9BH) {
 				return ["Mythical", "Restricted", "Regular", "NFE", "LC"];
 			}
-			if (isMariomonVGC || isChampionsMariomon || isPOAVGC) {
+			if (isMariomonVGC || isPOAVGC) {
 				return ["Mythical", "Restricted Legendary", "Regular", "NFE", "LC"];
 			}
 			if (isRS) {
