@@ -720,7 +720,7 @@ abstract class BattleTypedSearch<T extends SearchType> {
 					if (info.banlist.includes('DUber')) format = 'doublesou' as ID;
 					if (info.ruleset.includes('Flat Rules')) format = 'mariomonvgc' as ID;
 					if (info.ruleset.includes('Flat Rules') && info.mod === 'gen9pokeathlon') format = 'pokeathlonvgc' as ID;
-					this.table = info.mod + (info.mod.includes('pokeathlon') && (info.ruleTable.includes('standardnatdex') || info.ruleTable.includes('natdexmod')) ? 'natdex' : '') + 'doubles';
+					this.table = info.mod + (info.mod.includes('pokeathlon') && (info.ruleTable.includes('standardnatdex') || info.ruleTable.includes('natdexmod')) ? 'natdex' : '') + (info.mod.startsWith('champions') ? '' : 'doubles');
 				} else {
 					format = 'ag' as ID;
 					if (info.banlist.includes('ND AG') || info.banlist.includes('AG')) format = 'ubers' as ID;
