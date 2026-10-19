@@ -659,6 +659,11 @@ class OptionsPanel extends PSRoomPanel {
 		const timestamp = (ev.currentTarget as HTMLSelectElement).value as TimestampOptions;
 		PS.prefs.set('timestamps', { ...PS.prefs.timestamps, pms: timestamp || undefined });
 	};
+	setDefaultClient = (ev: Event) => {
+		const client = (ev.currentTarget as HTMLSelectElement).value;
+		PS.router.setDefaultClientCookie(client as 'old' | 'new');
+		this.forceUpdate();
+	};
 
 	handleOnChange = (ev: Event) => {
 		let elem = ev.currentTarget as HTMLInputElement;
@@ -711,6 +716,7 @@ class OptionsPanel extends PSRoomPanel {
 		const singlePanel = TL`Single panel`;
 		const verticalTabs = TL`Vertical tabs`;
 		const automaticLanguage = Dex.text.findLanguage(Dex.text.getBrowserLanguage())?.name;
+		const defaultClient = /(?:^|;\s*)preactalpha=1(?:;|$)/.test(document.cookie) ? 'new' : 'old';
 		return <PSPanelWrapper room={room} width={380}><div class="pad">
 			<p style="padding-left:50px">
 				<img
@@ -743,6 +749,23 @@ class OptionsPanel extends PSRoomPanel {
 					</select>
 				</label>
 			</p>
+			<hr />
+			<div class="construction">
+				<p>
+					This is the new client.
+				</p>
+				<label class="label" style="width:auto">{TL.label(TL`Default`)}<select
+					name="defaultclient" class="select" onChange={this.setDefaultClient} value={defaultClient}
+				>
+					<option value="old">Old client</option>
+					<option value="new">New client</option>
+				</select></label>
+				<p>
+					<a class="button" href="/oldclient" style="font-weight: normal">
+						{defaultClient === 'old' ? "Back to old client" : "Use old client temporarily"}
+					</a>
+				</p>
+			</div>
 			<hr />
 			<h3>{TL`Appearance`}</h3>
 			<p>
@@ -1096,7 +1119,7 @@ class ReplacePlayerPanel extends PSRoomPanel {
 		const newPlayer = this.base?.querySelector<HTMLInputElement>("input[name=newplayer]")?.value;
 		if (!newPlayer?.length) return battleRoom.errorReply(TL`Enter player's name`);
 		if (battleRoom.battle.ended) return battleRoom.errorReply(TL`Cannot replace player, battle has already ended.`);
-		let playerSlot = battleRoom.battle.p1.id === PS.user.userid ? "p1" : "p2";
+		const playerSlot = battleRoom.battle.mySide.sideid;
 		battleRoom.send('/leavebattle');
 		battleRoom.send(`/addplayer ${newPlayer}, ${playerSlot}`);
 		this.close();
@@ -1491,7 +1514,7 @@ class ChatFormattingPanel extends PSRoomPanel {
 						onChange={this.handleOnChange}
 						type="checkbox"
 						name="greentext"
-						checked={PS.prefs.chatformatting.hidegreentext}
+						checked={!!PS.prefs.chatformatting.hidegreentext}
 					/> Suppress <span class="greentext">&gt;greentext</span>
 				</label>
 			</p>
@@ -1501,7 +1524,7 @@ class ChatFormattingPanel extends PSRoomPanel {
 						onChange={this.handleOnChange}
 						type="checkbox"
 						name="me"
-						checked={PS.prefs.chatformatting.hideme}
+						checked={!!PS.prefs.chatformatting.hideme}
 
 					/> Suppress <code>/me</code> <em>action formatting</em>
 				</label>
@@ -1512,7 +1535,7 @@ class ChatFormattingPanel extends PSRoomPanel {
 						onChange={this.handleOnChange}
 						type="checkbox"
 						name="spoiler"
-						checked={PS.prefs.chatformatting.hidespoiler}
+						checked={!!PS.prefs.chatformatting.hidespoiler}
 					/> Auto-show spoilers: <span class="spoiler">these things</span>
 				</label>
 			</p>
@@ -1522,7 +1545,7 @@ class ChatFormattingPanel extends PSRoomPanel {
 						onChange={this.handleOnChange}
 						type="checkbox"
 						name="links"
-						checked={PS.prefs.chatformatting.hidelinks}
+						checked={!!PS.prefs.chatformatting.hidelinks}
 					/> Make [[clickable links]] unclickable
 				</label>
 			</p>
@@ -1532,7 +1555,7 @@ class ChatFormattingPanel extends PSRoomPanel {
 						onChange={this.handleOnChange}
 						type="checkbox"
 						name="interstice"
-						checked={PS.prefs.chatformatting.hideinterstice}
+						checked={!!PS.prefs.chatformatting.hideinterstice}
 					/> Don't warn for untrusted links
 				</label>
 			</p>
@@ -1571,6 +1594,19 @@ class BattleOptionsPanel extends PSRoomPanel {
 	static readonly location = 'modal-popup';
 	static readonly noURL = true;
 
+	handleForfeit = (ev: MouseEvent) => {
+		const room = this.getBattleRoom();
+		if (!room) return this.close();
+		ev.preventDefault();
+		ev.stopImmediatePropagation();
+		PS.confirm(TL`Forfeiting makes you lose the battle. Are you sure?`, {
+			okButton: TL`[Forfeit]`, parentElem: ev.currentTarget as HTMLElement,
+		}).then(confirmed => {
+			if (!confirmed) return;
+			room.send('/forfeit');
+			this.close();
+		});
+	};
 	handleHardcoreMode = (ev: Event) => {
 		const mode = (ev.currentTarget as HTMLInputElement).checked;
 		const room = this.getBattleRoom();
@@ -1701,7 +1737,7 @@ class BattleOptionsPanel extends PSRoomPanel {
 			{battleRoom && <>
 				<p><strong>{TL`In this battle`}</strong></p>
 				<p class="buttonbar">
-					<button data-cmd="/closeand /inopener /forfeit" class="button" disabled={!isPlaying}>
+					<button data-cmdpreview="/forfeit" onClick={this.handleForfeit} class="button" disabled={!isPlaying}>
 						{TL`[Forfeit]`}
 					</button> {}
 					<button data-cmd="/closeand /inopener /offertie" class="button" disabled={!canOfferTie}>

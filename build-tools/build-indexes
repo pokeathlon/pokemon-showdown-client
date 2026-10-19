@@ -36,6 +36,7 @@ process.stdout.write("Syncing fangame sprites... \n");
 if (!noUpdate) child_process.execSync('git pull', { cwd: 'play.pokemonshowdown.com/sprites/fangame-sprites' });
 
 const Dex = require('../caches/pokemon-showdown/dist/sim/dex').Dex;
+const { CLIENT_MODS } = require('./build-translations');
 const CompoundWordNames = require('../caches/pokemon-showdown/dist/data/aliases').CompoundWordNames;
 const toID = Dex.toID;
 process.stdout.write("Loading gen 6 data... ");
@@ -1357,11 +1358,12 @@ process.stdout.write("Building `data/teambuilder-tables.js`... ");
 		'abilities', 'baseStats', 'cosmeticFormes', 'isNonstandard', 'requiredItems', 'types', 'unreleasedHidden',
 		'num', 'battleOnly', 'prevo', 'evos',
 	];
+	// Descs omitted (they're all compiled into data/text/*)
 	const overrideMoveKeys = [
-		'accuracy', 'basePower', 'category', 'desc', 'flags', 'isNonstandard', 'noSketch', 'pp', 'priority', 'shortDesc', 'target', 'type',
+		'accuracy', 'basePower', 'category', 'flags', 'isNonstandard', 'noSketch', 'pp', 'priority', 'target', 'type',
 	];
-	const overrideAbilityKeys = ['desc', 'flags', 'isNonstandard', 'rating', 'shortDesc'];
-	const overrideItemKeys = ['desc', 'fling', 'isNonstandard', 'naturalGift', 'shortDesc'];
+	const overrideAbilityKeys = ['flags', 'isNonstandard', 'rating'];
+	const overrideItemKeys = ['fling', 'isNonstandard', 'naturalGift'];
 
 	//
 	// Past gen table
@@ -1450,12 +1452,7 @@ process.stdout.write("Building `data/teambuilder-tables.js`... ");
 	// Mods
 	//
 
-	for (const mod of [
-		'gen3rs', 'gen3frlg', 'gen5bw1', 'gen7letsgo', 'gen8bdsp', 'gen9ssb', 'champions',
-		'gen9infinitefusion', 'gen7infinitefusion', 'gen9pokeathlon', 'gen9insurgence', 'gen6insurgence',
-		'gen9uranium', 'gen6uranium', 'gen9infinity', 'gen6infinity', 'gen9mariomon', 'championsmariomon', 'gen9chaos', 'gen9chaosfusion',
-		'gen9chaosmayhem', 'gen9soulstones',
-	]) {
+	for (const mod of CLIENT_MODS) {
 		const modDex = Dex.mod(mod);
 		const modData = modDex.data;
 		const parentDex = Dex.forGen(modDex.gen);
@@ -1584,9 +1581,6 @@ process.stdout.write("Building `data/moves,items,abilities,typechart,learnsets.j
 	const Moves = Dex.data.Moves;
 	for (const id in Moves) {
 		const move = Dex.moves.get(Moves[id].name);
-		const text = Dex.text.get(move);
-		if (text.desc) Moves[id].desc = text.desc;
-		if (text.shortDesc) Moves[id].shortDesc = text.shortDesc;
 		if (move.basePowerCallback) Moves[id].basePowerCallback = true;
 	}
 	const buf = 'exports.BattleMovedex = ' + es3stringify(Moves) + ';';
@@ -1600,12 +1594,6 @@ process.stdout.write("Building `data/moves,items,abilities,typechart,learnsets.j
 
 {
 	const Items = Dex.data.Items;
-	for (const id in Items) {
-		const item = Dex.items.get(Items[id].name);
-		const text = Dex.text.get(item);
-		if (text.desc) Items[id].desc = text.desc;
-		if (text.shortDesc) Items[id].shortDesc = text.shortDesc;
-	}
 	const buf = 'exports.BattleItems = ' + es3stringify(Items) + ';';
 	fs.writeFileSync('play.pokemonshowdown.com/data/items.js', buf);
 	fs.writeFileSync('play.pokemonshowdown.com/data/items.json', JSON.stringify(Items));
@@ -1617,12 +1605,6 @@ process.stdout.write("Building `data/moves,items,abilities,typechart,learnsets.j
 
 {
 	const Abilities = Dex.data.Abilities;
-	for (const id in Abilities) {
-		const ability = Dex.abilities.get(Abilities[id].name);
-		const text = Dex.text.get(ability);
-		if (text.desc) Abilities[id].desc = text.desc;
-		if (text.shortDesc) Abilities[id].shortDesc = text.shortDesc;
-	}
 	const buf = 'exports.BattleAbilities = ' + es3stringify(Abilities) + ';';
 	fs.writeFileSync('play.pokemonshowdown.com/data/abilities.js', buf);
 	fs.writeFileSync('play.pokemonshowdown.com/data/abilities.json', JSON.stringify(Abilities));

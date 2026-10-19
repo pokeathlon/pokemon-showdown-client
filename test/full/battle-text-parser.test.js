@@ -20,8 +20,8 @@ global.BattleText = {en: {
 		mistyterrain: {block: '{POKEMON}: misty block'},
 	},
 	Moves: {}, Abilities: {}, Items: {}, Pokedex: {}, Tags: {},
-	TypeNames: {fire: 'Fire'},
-	NatureNames: {adamant: 'Adamant'},
+	TypeNames: {Fire: 'Fire', Water: 'English Water'},
+	NatureNames: {Adamant: 'Adamant', Modest: 'English Modest'},
 	StatNames: {atk: 'Attack', stats: 'stats'},
 }, 'en-afd': {
 	Default: {default: {hitCount: 'April hits: {NUMBER}'}},
@@ -96,12 +96,12 @@ describe('BattleTextParser', () => {
 				sunnyday: {weatherName: 'はれ'},
 			},
 			Pokedex: {ironleaves: {name: 'テツノイサハ', baseSpecies: 'テツノイサハ'}},
-			TypeNames: {fire: 'ほのお'},
-			NatureNames: {adamant: 'いじっぱり'},
+			TypeNames: {Fire: 'ほのお'},
+			NatureNames: {Adamant: 'いじっぱり'},
 			Tags: {physical: {name: 'ぶつり', hint: 'ぶつりのヒント'}},
-			GenderNames: {female: 'メス'},
-			EggGroupNames: {humanlike: 'ひとがた'},
-			ColorNames: {purple: 'むらさき'},
+			GenderNames: {F: 'メス'},
+			EggGroupNames: {'Human-Like': 'ひとがた'},
+			ColorNames: {Purple: 'むらさき'},
 			StatusNames: {brn: 'やけど'},
 			TargetNames: {self: '自分'},
 			StatNames: {atk: '攻撃'},
@@ -123,15 +123,11 @@ describe('BattleTextParser', () => {
 		assert.equal(parser.itemName('Life Orb'), 'いのちのたま');
 		assert.equal(parser.abilityName('Levitate'), 'ふゆう');
 		assert.equal(global.Dex.text.get(global.Dex.types.get('Fire'), 'ja').name, 'ほのお');
-		assert.equal(global.Dex.text.typeName('Fire', 'ja'), 'ほのお');
+		assert.equal(global.Dex.text.get(global.Dex.types.get('Fire'), 'en').name, 'Fire');
+		assert.equal(global.Dex.text.get(global.Dex.types.get('Water'), 'ja').name, 'English Water');
 		assert.equal(global.Dex.text.get(global.BattleNatures.Adamant, 'ja').name, 'いじっぱり');
-		assert.equal(global.Dex.text.natureName('Adamant', 'ja'), 'いじっぱり');
 		assert.equal(global.Dex.text.get(global.BattleNatures.Adamant, 'en').name, 'Adamant');
-		assert.equal(global.Dex.text.natureName('Adamant', 'en'), 'Adamant');
-		assert.equal(global.Dex.text.categoryName('Physical', 'ja'), 'ぶつり');
-		assert.equal(global.Dex.text.genderName('F', 'ja'), 'メス');
-		assert.equal(global.Dex.text.eggGroupName('Human-Like', 'ja'), 'ひとがた');
-		assert.equal(global.Dex.text.colorName('Purple', 'ja'), 'むらさき');
+		assert.equal(global.Dex.text.get(global.BattleNatures.Modest, 'ja').name, 'English Modest');
 		assert.deepEqual(
 			parser.pokemonFull('p1a: Salad', 'Iron Leaves'),
 			['p1', 'Salad（**テツノイサハ**）']
@@ -233,6 +229,12 @@ describe('BattleTextParser', () => {
 		}
 		assert.deepEqual(global.TL.tag, {physical: 'ぶつり'});
 		assert.deepEqual(global.TL.tagHint, {physical: 'ぶつりのヒント'});
+		assert.equal(global.TL.type.Fire, 'ほのお');
+		assert.equal(global.TL.nature.Adamant, 'いじっぱり');
+		assert.equal(global.TL.tag.physical, 'ぶつり');
+		assert.equal(global.TL.gender.F, 'メス');
+		assert.equal(global.TL.egggroup['Human-Like'], 'ひとがた');
+		assert.equal(global.TL.color.Purple, 'むらさき');
 		assert.equal(global.TL('Moves'), 'UIの技');
 		assert.equal(global.TL`Moves`, 'UIの技');
 		assert.equal(global.TL('Add Pokémon'), 'ポケモンを追加');
@@ -248,6 +250,8 @@ describe('BattleTextParser', () => {
 		assert.equal(global.TL`${'A won'}.`, 'A won。');
 		global.Dex.prefs = prefs;
 		void global.Dex.loadTextData();
+		assert.equal(global.TL.type.Fire, 'Fire');
+		assert.equal(global.TL.nature.Adamant, 'Adamant');
 
 		global.BattleText.en.Moves.testmove = {name: 'Localized Name', start: 'modern', gen4: {start: 'old'}};
 		const move = new global.Dex.Move('testmove', 'Fallback Name', {desc: 'Fallback description'});

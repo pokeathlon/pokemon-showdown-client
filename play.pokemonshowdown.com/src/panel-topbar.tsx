@@ -143,6 +143,10 @@ export class PSHeader extends preact.Component {
 		let { icon, title: roomTitle } = PSHeader.roomInfo(room);
 		if (room.type === 'rooms' && PS.leftPanelWidth !== null) roomTitle = '';
 		if (room.type === 'battle') className += ' roomtab-battle';
+		if (room.type === 'team' || room.type === 'viewteam') {
+			className += ' roomtab-team';
+			hoverTitle = roomTitle + (hoverTitle ? `\n${hoverTitle}` : '');
+		}
 
 		let closeButton = null;
 		if (closable) {
@@ -247,7 +251,7 @@ export class PSHeader extends preact.Component {
 			<div class="scrollable-part">
 				<img
 					class="logo"
-					src={`https://${Config.routes.client}/favicon-256.png`}
+					src={`https://${Config.routes.client}/iconbeta.png`}
 					alt="Pokémon Showdown! (beta)"
 					width="50" height="50"
 				/>
@@ -297,7 +301,7 @@ export class PSHeader extends preact.Component {
 				>
 					<i class={PS.prefs.mute ? 'fa fa-volume-off' : 'fa fa-volume-up'}></i>
 				</button> {}
-				<button class="icon button" data-href="options" title={TL`[Options]`} aria-label={TL`[Options]`}>
+				<button class="icon button alt-notifying" data-href="options" title={TL`[Options]`} aria-label={TL`[Options]`}>
 					<i class="fa fa-cog" aria-hidden></i>
 				</button>
 			</div>
@@ -306,7 +310,7 @@ export class PSHeader extends preact.Component {
 					<li>
 						<img
 							class="logo"
-							src={`https://${Config.routes.client}/favicon-256.png`}
+							src={`https://${Config.routes.client}/iconbeta.png`}
 							alt="Pokémon Showdown! (beta)"
 							width="48" height="48"
 						/>
@@ -346,7 +350,7 @@ export class PSMiniHeader extends preact.Component {
 		const notificationsCount = Object.values(PS.rooms).filter(
 			room => room !== PS.room && room?.notifications.length
 		).length;
-		const { icon, title } = PSHeader.roomInfo(PS.panel);
+		const { icon, title } = PSHeader.roomInfo(PS.getPanel());
 		const userColor = window.BattleLog && `color:${PS.user.away ? '#888' : BattleLog.usernameColor(PS.user.userid)}`;
 		const showMenuButton = PSView.narrowMode;
 		const notifying = (

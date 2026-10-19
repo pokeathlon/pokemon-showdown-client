@@ -577,7 +577,7 @@ export class DexSearch {
 			switch (fType) {
 			case 'type':
 				let type = fId.charAt(0).toUpperCase() + fId.slice(1) as Dex.TypeName;
-				const typeName = TL.type[fId] || type;
+				const typeName = TL.type[type] || type;
 				buf.push(['header', TL`${typeName}-type Pokémon`]);
 				for (let id in BattlePokedex) {
 					if (!BattlePokedex[id].types) continue;
@@ -602,7 +602,7 @@ export class DexSearch {
 			switch (fType) {
 			case 'type':
 				let type = fId.charAt(0).toUpperCase() + fId.slice(1);
-				const typeName = TL.type[fId] || type;
+				const typeName = TL.type[type] || type;
 				buf.push(['header', TL`${typeName}-type moves`]);
 				for (let id in BattleMovedex) {
 					if (BattleMovedex[id].type === type) {
@@ -774,6 +774,9 @@ abstract class BattleTypedSearch<T extends SearchType> {
 			if (format.startsWith('natdex') || format.startsWith('nationaldex')) this.formatType = 'natdexchampions';
 			if (format.startsWith('natdex')) format = format.slice(6) as ID;
 			if (format.startsWith('nationaldex')) format = format.slice(11) as ID;
+			if (format.startsWith('vgc')) this.isDoubles = true;
+			// we don't have Champions tables for VGC/BSS yet, so we're using Ubers for now
+			// also makes it so we don't override formatType later
 			if (format.startsWith('vgc') || format.startsWith('bss')) format = 'ubers' as ID;
 			if (format.endsWith('draft')) format = 'ag' as ID;
 		}
