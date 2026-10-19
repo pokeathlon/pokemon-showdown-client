@@ -1531,6 +1531,9 @@
 					var format = BattleLog.escapeFormat(matches[1]);
 
 					if (silent && !Dex.prefs('showbattles')) return;
+					var lobbyBattles = Dex.prefs('lobbybattles');
+					var lobbyBattle = (row[row.length - 1] === 'ladder' || row[row.length - 1] === 'bot') ? row[row.length - 1] : 'human';
+					var hidden = lobbyBattles === 'none' || (lobbyBattles === 'ladder' && lobbyBattle !== 'ladder') || (lobbyBattles === 'human' && lobbyBattle === 'bot');
 
 					this.addJoinLeave();
 					var battletype = 'Battle';
@@ -1538,7 +1541,7 @@
 						battletype = format + ' battle';
 						if (format === 'Random Battle') battletype = 'Random Battle';
 					}
-					this.$chat.append('<div class="notice"><a href="' + app.root + id + '" class="ilink">' + battletype + ' started between <strong style="' + BattleLog.hashColor(toUserid(name)) + '">' + BattleLog.escapeHTML(name) + '</strong> and <strong style="' + BattleLog.hashColor(toUserid(name2)) + '">' + BattleLog.escapeHTML(name2) + '</strong>.</a></div>');
+					this.$chat.append('<div class="notice lobbybattle-' + lobbyBattle + '"' + (hidden ? ' style="display:none"' : '') + '><a href="' + app.root + id + '" class="ilink">' + battletype + ' started between <strong style="' + BattleLog.hashColor(toUserid(name)) + '">' + BattleLog.escapeHTML(name) + '</strong> and <strong style="' + BattleLog.hashColor(toUserid(name2)) + '">' + BattleLog.escapeHTML(name2) + '</strong>.</a></div>');
 					break;
 
 				case 'j':

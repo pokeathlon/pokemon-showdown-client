@@ -476,6 +476,7 @@
 			'change select[name=bg]': 'setBg',
 			'change select[name=timestamps-lobby]': 'setTimestampsLobby',
 			'change select[name=timestamps-pms]': 'setTimestampsPMs',
+			'change select[name=lobbybattles]': 'setLobbyBattles',
 			'change input[name=syncteams]': 'setSyncTeams',
 			'change select[name=onepanel]': 'setOnePanel',
 			'change select[name=theme]': 'setTheme',
@@ -569,6 +570,8 @@
 			var timestamps = this.timestamps = (Dex.prefs('timestamps') || {});
 			buf += '<p><label class="optlabel">Timestamps in chat rooms: <select name="timestamps-lobby" class="button"><option value="off">Off</option><option value="minutes"' + (timestamps.lobby === 'minutes' ? ' selected="selected"' : '') + '>[HH:MM]</option><option value="seconds"' + (timestamps.lobby === 'seconds' ? ' selected="selected"' : '') + '>[HH:MM:SS]</option></select></label></p>';
 			buf += '<p><label class="optlabel">Timestamps in PMs: <select name="timestamps-pms" class="button"><option value="off">Off</option><option value="minutes"' + (timestamps.pms === 'minutes' ? ' selected="selected"' : '') + '>[HH:MM]</option><option value="seconds"' + (timestamps.pms === 'seconds' ? ' selected="selected"' : '') + '>[HH:MM:SS]</option></select></label></p>';
+			var lobbyBattles = Dex.prefs('lobbybattles') || 'all';
+			buf += '<p><label class="optlabel">Battles in lobby: <select name="lobbybattles" class="button"><option value="all"' + (lobbyBattles === 'all' ? ' selected="selected"' : '') + '>All</option><option value="human"' + (lobbyBattles === 'human' ? ' selected="selected"' : '') + '>Human vs human</option><option value="ladder"' + (lobbyBattles === 'ladder' ? ' selected="selected"' : '') + '>Ladder</option><option value="none"' + (lobbyBattles === 'none' ? ' selected="selected"' : '') + '>None</option></select></label></p>';
 			buf += '<p><label class="optlabel">Chat preferences: <button name="formatting" class="button">Text formatting</button></label></p>';
 			var syncTeams = !Storage.prefs('nosyncteams');
 			buf += '<p><label class="optlabel">Download teams from server: <input type="checkbox" name="syncteams" ' + (syncTeams ? 'checked ' : '') + '></input></p>';
@@ -688,6 +691,13 @@
 		setTimestampsPMs: function (e) {
 			this.timestamps.pms = e.currentTarget.value;
 			Storage.prefs('timestamps', this.timestamps);
+		},
+		setLobbyBattles: function (e) {
+			var lobbyBattles = e.currentTarget.value;
+			Storage.prefs('lobbybattles', lobbyBattles);
+			$('.lobbybattle-human').toggle(lobbyBattles === 'all' || lobbyBattles === 'human');
+			$('.lobbybattle-ladder').toggle(lobbyBattles !== 'none');
+			$('.lobbybattle-bot').toggle(lobbyBattles === 'all');
 		},
 		setSyncTeams: function () {
 			Storage.prefs('nosyncteams', !Storage.prefs('nosyncteams'));
