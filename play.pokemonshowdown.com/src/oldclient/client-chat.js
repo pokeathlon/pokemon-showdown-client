@@ -1535,7 +1535,7 @@
 					var lobbyBattle = (row[row.length - 1] === 'ladder' || row[row.length - 1] === 'bot') ? row[row.length - 1] : 'human';
 					var hidden = lobbyBattles === 'none' || (lobbyBattles === 'ladder' && lobbyBattle !== 'ladder') || (lobbyBattles === 'human' && lobbyBattle === 'bot');
 
-					this.addJoinLeave();
+					if (!hidden) this.addJoinLeave();
 					var battletype = 'Battle';
 					if (format) {
 						battletype = format + ' battle';
