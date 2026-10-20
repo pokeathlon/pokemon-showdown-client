@@ -296,7 +296,8 @@ export class BattleLog {
 			} else {
 				started = TL`Battle started between ${battleP1} and ${battleP2}.`;
 			}
-			divClass = 'notice';
+			const lobbyBattle = ['ladder', 'bot'].includes(args[args.length - 1]) ? args[args.length - 1] : 'human';
+			divClass = `notice lobbybattle-${lobbyBattle}`;
 			divHTML = `<a href="/${BattleLog.escapeHTML(id)}" class="ilink">${started}</a>`;
 			this.joinLeave = null;
 			break;

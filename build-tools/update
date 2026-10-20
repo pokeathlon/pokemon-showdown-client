@@ -149,6 +149,12 @@ try {
 	);
 } catch {}
 
+compiledFiles += await compiler.compileToFile(
+	['caches/pokemon-showdown/data/split-names.ts'],
+	'play.pokemonshowdown.com/js/split-names.js',
+	compileOpts
+);
+
 if (!compileOpts.ignore) {
 	compiledFiles += await compiler.compileToFile(
 		['play.pokemonshowdown.com/src/battle-animations.ts', 'play.pokemonshowdown.com/src/battle-animations-moves.ts'],

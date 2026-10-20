@@ -159,11 +159,11 @@ export const PSBackground = new class extends PSStreamModel<string | null> {
 		this.id = bgid;
 
 		// curid
-		if (!bgid || bgid === 'waterfall') {
+		if (!bgid) {
 			if (location.host === 'smogtours.psim.us') {
 				bgid = 'shaymin';
 			} else {
-				const bgs = ['horizon', 'ocean', 'shaymin', 'charizards'];
+				const bgs = ['horizon', 'ocean', 'waterfall', 'shaymin', 'charizards'];
 				bgid = bgs[Math.floor(Math.random() * bgs.length)];
 				// if someone clicked the random button, try to roll a different bg than before
 				if (bgid === this.curId) bgid = bgs[Math.floor(Math.random() * bgs.length)];
@@ -185,64 +185,34 @@ export const PSBackground = new class extends PSStreamModel<string | null> {
 		let attrib = null;
 		switch (bgid) {
 		case 'horizon':
-			menuColors = [
-				"318.87640449438203,35.177865612648226%",
-				"216,46.2962962962963%",
-				"221.25,32.25806451612904%",
-				"197.8021978021978,52.60115606936417%",
-				"232.00000000000003,19.480519480519483%",
-				"228.38709677419354,60.7843137254902%",
-			];
+			menuColors = ["290,30%", "300,30%", "310,30%", "320,30%", "330,30%", "340,30%"];
 			attrib = {
-				url: 'https://vtas.deviantart.com/art/Pokemon-Horizon-312267168',
-				title: 'Horizon',
-				artist: 'Vivian Zou',
+				url: 'https://www.fusiondex.org/artists/_sadfroggy/',
+				title: 'Luterra',
+				artist: 'Sadfrog! (_sadfroggy on Discord)',
 			};
 			break;
 		case 'ocean':
-			menuColors = [
-				"82.8169014084507,34.63414634146342%",
-				"216.16438356164383,29.55465587044534%",
-				"212.92682926829266,59.42028985507245%",
-				"209.18918918918916,57.51295336787566%",
-				"199.2857142857143,48.275862068965495%",
-				"213.11999999999998,55.06607929515419%",
-			];
+			menuColors = ["200,35%", "210,35%", "220,35%", "230,35%", "240,35%", "250,35%"];
+			break;
+		case 'waterfall':
+			menuColors = ["0,0%", "0,0%", "0,0%", "0,0%", "0,0%", "0,0%"];
 			attrib = {
-				url: 'https://quanyails.deviantart.com/art/Sunrise-Ocean-402667154',
-				title: 'Sunrise Ocean',
-				artist: 'Quanyails',
+				url: 'https://www.instagram.com/idol_is_propaganda',
+				title: 'POA Mons',
+				artist: 'Ruoska! (ru_was_here on Discord)',
 			};
 			break;
 		case 'shaymin':
-			menuColors = [
-				"39.000000000000064,21.7391304347826%",
-				"170.00000000000003,2.380952380952378%",
-				"157.5,11.88118811881188%",
-				"174.78260869565216,12.041884816753928%",
-				"185.00000000000003,12.76595744680851%",
-				"20,5.660377358490567%",
-			];
+			menuColors = ["0,80%", "5,80%", "10,80%", "15,80%", "20,80%", "25,80%"];
 			attrib = {
-				url: 'http://cargocollective.com/bluep',
-				title: 'Shaymin',
-				artist: 'Daniel Kong',
+				url: 'https://www.fusiondex.org/artists/.nottomention/',
+				title: "Season's Symphony",
+				artist: 'NotToMention! (.nottomention on Discord)',
 			};
 			break;
 		case 'charizards':
-			menuColors = [
-				"37.159090909090914,74.57627118644066%",
-				"10.874999999999998,70.79646017699115%",
-				"179.51612903225808,52.10084033613446%",
-				"20.833333333333336,36.73469387755102%",
-				"192.3076923076923,80.41237113402063%",
-				"210,29.629629629629633%",
-			];
-			attrib = {
-				url: 'https://lit.link/en/seiryuuden',
-				title: 'Charizards',
-				artist: 'Jessica Valencia',
-			};
+			menuColors = ["250,40%", "260,40%", "270,40%", "280,40%", "290,40%", "300,40%"];
 			break;
 		case 'digimon':
 			menuColors = [

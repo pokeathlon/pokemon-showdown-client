@@ -540,8 +540,7 @@ export const Dex = new class implements ModdedDex {
 		return this.formats.get(format).gen;
 	}
 	forFormat(format: string) {
-		const mod = this.formats.get(format).mod;
-		return this.mod((mod === 'champions' && window.Formats?.[toID(format)]?.mod || mod) as ID);
+		return this.mod((window.Formats?.[toID(format)]?.mod || this.formats.get(format).mod) as ID);
 	}
 
 	resolveAvatar(avatar: string): string {
@@ -1628,8 +1627,8 @@ export class ModdedDex {
 			if (this.gen < 6) curNames.splice(curNames.indexOf('Fairy'), 1);
 			if (this.gen < 2) curNames.splice(curNames.indexOf('Dark'), 1);
 			if (this.gen < 2) curNames.splice(curNames.indexOf('Steel'), 1);
-			this.types.namesCache = curNames;
-			return curNames;
+			this.types.namesCache = curNames.filter(name => this.types.get(name).exists);
+			return this.types.namesCache;
 		},
 		get: (name: string): Dex.Type => {
 			const id = toID(name);

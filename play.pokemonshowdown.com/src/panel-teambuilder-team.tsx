@@ -343,11 +343,7 @@ class TeamPanel extends PSRoomPanel<TeamRoom> {
 					<button class="button" data-href={`teamstorage-${team.key}`}>
 						<i class="fa fa-plug"></i> {TL`Disconnected (wrong account?)`}
 					</button>
-				) : (
-					<button class="button" data-href={`teamstorage-${team.key}`}>
-						<i class="fa fa-laptop"></i> {TL`Local`}
-					</button>
-				)}
+				) : null}
 				<div style={room.width < 550 ? "margin-top:8px" : "float:right"}><button
 					name="format" value={team.format} data-selecttype="teambuilder"
 					class="select formatselect" data-href="/formatdropdown" onChange={this.handleChangeFormat}
@@ -375,7 +371,7 @@ class TeamPanel extends PSRoomPanel<TeamRoom> {
 				{!!(team.packedTeam && team.format.length > 4) && <p>
 					<button data-cmd="/validate" class="button"><i class="fa fa-check"></i> {TL`[Validate]`}</button>
 				</p>}
-				{!!(team.packedTeam || team.uploaded) && <p class="infobox" style="padding: 5px 8px">
+				{!!(team.uploaded || team.teamid) && <p class="infobox" style="padding: 5px 8px">
 					{team.uploadedPackedTeam && !team.uploaded ? <>
 						{TL`Uploading...`}
 					</> : team.uploaded ? <>

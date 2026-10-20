@@ -1,0 +1,182 @@
+.roomcounters .usercount,
+.roomcounters .button:hover .usercount {
+	background: url(https://play.pokemonshowdown.com/sprites/gen5ani/jirachi.gif) center no-repeat;
+}
+.roomcounters .battlecount,
+.roomcounters .button:hover .battlecount {
+	background: url(https://play.pokemonshowdown.com/sprites/gen5ani/victini.gif) center no-repeat;
+}
+.rainbow {
+	animation: rainbow 2.5s linear infinite;
+}
+@keyframes rainbow {
+	0%, 100% {
+		color: rgb(205,50,50);
+	}
+	8% {
+		color: rgb(205,77,50);
+	}
+	16% {
+		color: rgb(205,205,50);
+	}
+	25% {
+		color: rgb(77,205,50);
+	}
+	33% {
+		color: rgb(50,205,50);
+	}
+	41% {
+		color: rgb(50,205,77);
+	}
+	50% {
+		color: rgb(50,205,205);
+	}
+	58% {
+		color: rgb(50,77,205);
+	}
+	66% {
+		color: rgb(50,50,205);
+	}
+	75% {
+		color: rgb(77,50,205);
+	}
+	83% {
+		color: rgb(205,50,205);
+	}
+	91% {
+		color: rgb(205,50,77);
+	}
+}
+.lobbybattles-human .lobbybattle-bot,
+.lobbybattles-ladder .lobbybattle-human,
+.lobbybattles-ladder .lobbybattle-bot,
+.lobbybattles-none .lobbybattle-human,
+.lobbybattles-none .lobbybattle-ladder,
+.lobbybattles-none .lobbybattle-bot {
+	display: none;
+}
+.userlist-queue {
+	background: rgba(0, 0, 0, .45);
+	color: #FFFFFF;
+	padding: 2px;
+}
+.userlist-queue:empty {
+	display: none;
+}
+.userlist-queue p {
+	margin: 2px 0;
+	font-size: 7pt;
+}
+.userlist-queue strong {
+	text-shadow: 1px 1px black;
+}
+.menugroup .searching .button {
+	display: block;
+	box-sizing: border-box;
+	width: 100%;
+	margin-bottom: 2px;
+	white-space: nowrap;
+	overflow: hidden;
+	text-overflow: ellipsis;
+}
+.mainmenu.button[data-href="bot"] {
+	width: 230px;
+}
+.bot-reset {
+	padding: 0 4px;
+	font-size: 8pt;
+}
+.bot-note {
+	color: #888888;
+}
+.botsettings h2 small {
+	color: #888888;
+	font-size: 9pt;
+	font-weight: normal;
+}
+.bot-group {
+	margin-left: 16px;
+}
+.bot-table {
+	border-spacing: 0 2px;
+	margin: 4px 0;
+	width: 100%;
+	table-layout: fixed;
+}
+.bot-table th {
+	text-align: right;
+	font-weight: normal;
+	padding-right: 8px;
+	width: min(230px, 30vw);
+}
+.bot-table td {
+	white-space: nowrap;
+}
+.bot-speed {
+	margin-top: 16px;
+	color: #888888;
+}
+.bot-columns {
+	columns: 250px;
+	column-gap: 24px;
+	margin: 4px 0;
+}
+.bot-columns div {
+	break-inside: avoid;
+	padding: 1px 0;
+}
+.set-form .set-fusion {
+	left: 120px;
+}
+.tiny-layout .set-form .set-fusion {
+	left: 23%;
+}
+.set-form .set-fusion .textbox {
+	animation: rainbow 2.5s linear infinite;
+}
+.set-form .double-ability {
+	display: flex;
+}
+.set-form .double-ability .textbox {
+	width: 50%;
+}
+.tiny-layout .set-form .set-stats .label small {
+	display: none;
+}
+.folderpane h3 {
+	font-size: 10px;
+	white-space: nowrap;
+	overflow: hidden;
+	text-overflow: ellipsis;
+}
+.dexlist .result.banned a {
+	opacity: .5;
+	cursor: not-allowed;
+}
+.dexlist .result.banned a:hover,
+.dexlist .result.banned a[aria-selected] {
+	border-color: #D80000;
+	background: #F77A7A;
+}
+.dexlist .result.banned a.cur {
+	border-color: #550000;
+	background: rgba(248, 0, 0, .4);
+}
+.dexlist .result.banned a.cur:hover,
+.dexlist .result.banned a.cur[aria-selected] {
+	border-color: #550000;
+	background: #F80000;
+}
+.dark .dexlist .result.banned a:hover,
+.dark .dexlist .result.banned a[aria-selected] {
+	border-color: #770000;
+	background: rgba(100, 0, 0, .5);
+}
+.dark .dexlist .result.banned a.cur:hover,
+.dark .dexlist .result.banned a.cur[aria-selected] {
+	border-color: #BB0000;
+	background: rgba(100, 0, 0, .4);
+}
+.ps-popup .botform .label {
+	width: 246px;
+}

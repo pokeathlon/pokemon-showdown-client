@@ -211,7 +211,7 @@ class TeambuilderRoom extends PSRoom {
 				key: '',
 			};
 		} else {
-			const format = this.curFolder && !this.curFolder.endsWith('/') ? this.curFolder as ID : this.DEFAULT_FORMAT;
+			const format = this.curFolder && !this.curFolder.endsWith('/') ? this.curFolder as ID : 'gen7ifdexou' as ID;
 			const folder = this.curFolder.endsWith('/') ? this.curFolder.slice(0, -1) : '';
 			return {
 				name: `${isBox ? "Box" : "Untitled"} ${PS.teams.list.length + 1}`,
@@ -561,7 +561,7 @@ class TeambuilderPanel extends PSRoomPanel<TeambuilderRoom> {
 		} else {
 			children = [
 				<i class={`fa ${folderOpenIcon}-o`}></i>,
-				value.slice(4) || TL`(uncategorized)`,
+				window.Formats?.[value]?.name.replace(/^\[[^\]]*\] /, '') || value.slice(4) || TL`(uncategorized)`,
 			];
 		}
 
@@ -690,12 +690,17 @@ class TeambuilderPanel extends PSRoomPanel<TeambuilderRoom> {
 			folders.push(room.curFolder);
 		}
 
+		const sections: string[] = Object.values(window.Formats || {}).map((format: any) => format.section);
 		PSUtils.sortBy(folders, folder => [
-			folder.endsWith('/') ? 10 : -parseInt(folder.charAt(3), 10),
+			folder.endsWith('/') ? 10 : window.Formats?.[folder] ? -10 : -parseInt(folder.charAt(3), 10),
+			window.Formats?.[folder] ? sections.indexOf(window.Formats[folder].section) : 0,
 			folder,
 		]);
 
 		return folders;
+	}
+	getFormatSection(format: string): string {
+		return window.Formats?.[format]?.section || TL`Gen ${format.charAt(3)}`;
 	}
 	renderFolderList() {
 		const folders = this.getFolderList();
@@ -711,19 +716,18 @@ class TeambuilderPanel extends PSRoomPanel<TeambuilderRoom> {
 
 		let renderedFolders: preact.ComponentChild[] = [];
 
-		/** 0 = folder, 1-9 = format generation */
-		let gen = -1;
+		let section: string | null = null;
 		for (let format of folders) {
-			const newGen = format.endsWith('/') ? 0 : parseInt(format.charAt(3), 10);
-			if (gen !== newGen) {
-				gen = newGen;
-				if (gen === 0) {
+			const newSection = format.endsWith('/') ? '' : this.getFormatSection(format);
+			if (section !== newSection) {
+				section = newSection;
+				if (!section) {
 					renderedFolders.push(...renderedFormatFolders);
 					renderedFormatFolders = [];
 					renderedFolders.push(<div class="foldersep"></div>);
 					renderedFolders.push(<div class="folder"><h3>{TL`Folders`}</h3></div>);
 				} else {
-					renderedFolders.push(<div class="folder"><h3>{TL`Gen ${gen}`}</h3></div>);
+					renderedFolders.push(<div class="folder"><h3>{section}</h3></div>);
 				}
 			}
 			renderedFolders.push(this.renderFolder(format));
@@ -744,8 +748,8 @@ class TeambuilderPanel extends PSRoomPanel<TeambuilderRoom> {
 	renderMobileFolderSelect() {
 		const room = this.props.room;
 		const renderedFolders: preact.ComponentChild[] = [];
-		const formatGroups: { [gen: number]: preact.ComponentChild[] | undefined } = {};
-		const gens: number[] = [];
+		const formatGroups: { [section: string]: preact.ComponentChild[] | undefined } = {};
+		const sections: string[] = [];
 
 		for (const folder of this.getFolderList()) {
 			if (folder.endsWith('/')) {
@@ -753,9 +757,9 @@ class TeambuilderPanel extends PSRoomPanel<TeambuilderRoom> {
 					<option value={folder}>{folder.slice(0, -1) || TL`Teams not in any folders`}</option>
 				);
 			} else {
-				const gen = parseInt(folder.charAt(3), 10);
-				const group = formatGroups[gen] || (formatGroups[gen] = []);
-				if (!group.length) gens.push(gen);
+				const section = this.getFormatSection(folder);
+				const group = formatGroups[section] || (formatGroups[section] = []);
+				if (!group.length) sections.push(section);
 				group.push(
 					<option value={folder}>
 						{BattleLog.formatName(folder)}{folder.length <= 4 ? ` ${TL`(uncategorized)`}` : ''}
@@ -767,9 +771,9 @@ class TeambuilderPanel extends PSRoomPanel<TeambuilderRoom> {
 		return <>
 			<select class="select teambuilder-folder-select" value={room.curFolder} onChange={this.changeMobileFolder}>
 				<option value="">{TL`All teams`}</option>
-				{gens.map(gen => (
-					<optgroup label={TL`Gen ${gen}`}>
-						{formatGroups[gen]}
+				{sections.map(section => (
+					<optgroup label={section}>
+						{formatGroups[section]}
 					</optgroup>
 				))}
 				<option value={ADD_FORMAT_FOLDER_VALUE}>{TL`[(add format folder)]`}</option>

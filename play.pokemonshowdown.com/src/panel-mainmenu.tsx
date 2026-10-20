@@ -52,6 +52,7 @@ export class MainMenuRoom extends PSRoom {
 	/** used to track the moment between "search sent" and "server acknowledged search sent" */
 	teamSent: string | null = null;
 	search: { searching: string[], games: Record<RoomID, string> | null } = { searching: [], games: null };
+	ladderQueue: { [formatid: string]: number } = {};
 	disallowSpectators: boolean | null = PS.prefs.disallowspectators;
 	lastChallenged: number | null = null;
 	adjustPrivacy() {
@@ -77,11 +78,10 @@ export class MainMenuRoom extends PSRoom {
 		this.update(null);
 	};
 	searchingFormat() {
-		return this.searchCountdown?.format || this.teamSent ||
-			this.search.searching?.[this.search.searching.length - 1] || null;
+		return this.searchCountdown?.format || this.teamSent || null;
 	}
-	cancelSearch = () => {
-		if (this.searchCountdown) {
+	cancelSearch = (format?: string) => {
+		if (this.searchCountdown && (!format || toID(format) === toID(this.searchCountdown.format))) {
 			clearTimeout(this.searchCountdown.timer);
 			this.searchCountdown = null;
 			this.update(null);
@@ -89,7 +89,7 @@ export class MainMenuRoom extends PSRoom {
 		}
 		if (this.teamSent || this.search.searching?.length) {
 			this.teamSent = null;
-			PS.send(`/cancelsearch`);
+			PS.send(`/cancelsearch${format ? ` ${format}` : ''}`);
 			this.update(null);
 			return true;
 		}
@@ -124,6 +124,7 @@ export class MainMenuRoom extends PSRoom {
 			).then(res => {
 				if (!res?.username) {
 					PS.user.initializing = false;
+					if (PS.prefs.challengeonly) PS.user.challengeOnlyRename();
 					return;
 				}
 				// | , ; are not valid characters in names
@@ -294,7 +295,7 @@ export class MainMenuRoom extends PSRoom {
 					}
 				}
 				let id = toID(name);
-				let isTeambuilderFormat = !team && !name.endsWith('Custom Game');
+				let isTeambuilderFormat = !team && !name.endsWith('Custom Game') && !name.endsWith('CG');
 				let teambuilderFormat = '' as ID;
 				let teambuilderFormatName = '';
 				if (isTeambuilderFormat) {
@@ -481,6 +482,11 @@ export class MainMenuRoom extends PSRoom {
 				PS.teams.uploading = null;
 			}
 			break;
+		case 'ladderqueue':
+			this.ladderQueue = response || {};
+			PS.rooms['formatdropdown']?.update(null);
+			PS.rooms['lobby']?.update(null);
+			break;
 		case 'teamupdate':
 			for (const team of PS.teams.list) {
 				if (team.teamid === Number(response.teamid)) {
@@ -505,10 +511,10 @@ export class MainMenuRoom extends PSRoom {
 class NewsPanel extends PSRoomPanel {
 	static readonly id = 'news';
 	static readonly routes = ['news'];
-	static readonly title = 'News';
+	static readonly title = 'Latest News';
 	static readonly location = 'mini-window';
 	static getTitle() {
-		return TL`News`;
+		return TL`Latest News`;
 	}
 	override componentDidMount() {
 		super.componentDidMount();
@@ -719,9 +725,21 @@ class MainMenuPanel extends PSRoomPanel<MainMenuRoom> {
 			) : (
 				<button class="mainmenu1 mainmenu big button" type="submit">
 					<strong>{TL`[Battle!]`}</strong><br />
-					<small>{TL`Find a random opponent`}</small>
+					<small>{PS.mainmenu.search.searching?.length ? TL`Search multiple formats` : TL`Find a random opponent`}</small>
 				</button>
 			)}
+			{!!PS.mainmenu.search.searching?.length && <p class="searching">
+				<label class="label">{TL`Searching:`}</label>
+				{PS.mainmenu.search.searching.map(format => <button
+					type="button" class="button" data-cmd={`/cancelsearch ${format}`}
+				>
+					<i class="fa fa-refresh fa-spin" aria-hidden></i> {BattleLog.formatName(format).replace(/^\[[^\]]*\] /, '')} {}
+					<i class="fa fa-times-circle" aria-hidden></i>
+				</button>)}
+			</p>}
+			<p><button class="mainmenu1 mainmenu button" type="button" data-href="bot">
+				<strong>{TL`Battle a bot`}</strong>
+			</button></p>
 		</TeamForm>;
 	}
 	renderBackgroundCredit() {
@@ -761,7 +779,6 @@ class MainMenuPanel extends PSRoomPanel<MainMenuRoom> {
 						<p><a class={"mainmenu4 mainmenu" + onlineButton} href="battles">{TL`Watch a battle`}</a></p>
 						<p><a class={"mainmenu5 mainmenu" + onlineButton} href="users">{TL`Find a user`}</a></p>
 						<p><a class={"mainmenu6 mainmenu" + onlineButton} href="view-friends-all">{TL`Friends`}</a></p>
-						<p><a class={"mainmenu7 mainmenu" + onlineButton} href="resources">{TL`Info & Resources`}</a></p>
 					</div>
 				</div>
 				<div class="mainmenu-right" style={{ display: PS.leftPanelWidth ? 'none' : 'block' }}>

@@ -25,7 +25,7 @@ https://psim.us/dev
 <html><head>
 	<meta charset="UTF-8" />
 	<meta name="viewport" content="width=device-width,initial-scale=1.0,minimum-scale=1.0" />
-	<title>Showdown!</title>
+	<title>Pok&eacute;athlon!</title>
 	<link rel="shortcut icon" href="favicon.ico" id="dynamic-favicon" />
 	<link rel="stylesheet" href="/style/battle.css?" />
 	<link rel="stylesheet" href="/style/client2.css?" />
@@ -39,7 +39,7 @@ https://psim.us/dev
 	<div id="ps-frame">
 		<div id="header" class="header">
 			<div class="maintabbarbottom"></div>
-			<img class="logo" src="https://play.pokemonshowdown.com/iconbeta.png" alt="Pokémon Showdown! (beta)" width="50" height="50">
+			<img class="logo" src="https://play.pokemonshowdown.com/pokemonshowdownbeta.png" srcset="https://play.pokemonshowdown.com/pokemonshowdownbeta@2x.png 2x" alt="Pokémon Showdown! (beta)" width="146" height="44">
 		</div>
 		<div class="ps-room scrollable" id="room-">
 			<div class="mainmenu-mini-windows">
@@ -47,7 +47,16 @@ https://psim.us/dev
 					<h3 class="mini-window-header"><button class="closebutton" tabindex="-1" aria-label="Close"><i class="fa fa-times-circle"></i></button>News</h3>
 					<div id="room-news" class="mini-window-contents ps-room-light scrollable" style="height: auto;" data-newsid="<!-- newsid -->">
 						<div class="readable-bg">
-							<!-- build-tools/news-embed.php -->
+							<div class="newsentry"><h2>Welcome to Pokéathlon!</h2><p>Have fun with the fusions, and make sure to join the <a target="_blank" href="https://discord.gg/vsEN6mzuNj">Pokéathlon Discord</a> for other fangames (coming soon) and custom Pokémon creation.</p><p>—<strong><a class="rainbow" target="_blank" href="https://ko-fi.com/yoshifanfic">yoshifanfic</a></strong> <small class="date">on Nov 16, 2023</small></p></div>
+							<div class="newsentry">
+							<h2>List of Fangames</h2>
+							<h4 style="display:inline-block;margin-bottom:10px;margin-top:5px;margin-left:5px"><img src="https://static.wikia.nocookie.net/infinitefusion/images/4/4a/Site-favicon.ico" width="11px" height="11px" style="margin-right:5px"><a target="_blank" href="https://infinitefusion.fandom.com/wiki/Pok%C3%A9mon_Infinite_Fusion_Wiki" style="color:rgb(141, 110, 255);text-decoration:none;"> Pokémon Infinite Fusion </a></h4>
+							<h4 style="display:inline-block;margin-bottom:10px;margin-left:5px"><img src="https://p-insurgence.com/favicon.ico" width="11px" height="11px" style="margin-right:5px"><a target="_blank" href="https://wiki.p-insurgence.com/" style="color:rgb(141, 110, 255);text-decoration:none;"> Pokémon Insurgence </a></h4>
+							<h4 style="display:inline-block;margin-bottom:10px;margin-left:5px"><img src="https://static.wikia.nocookie.net/pokemon-uranium/images/4/4a/Site-favicon.ico" width="11px" height="11px" style="margin-right:5px"><a target="_blank" href="https://pokemon-uranium.fandom.com/wiki/Main_Page" style="color:rgb(141, 110, 255);text-decoration:none;"> Pokémon Uranium </a></h4>
+							<h4 style="display:inline-block;margin-bottom:10px;margin-left:5px"><img src="https://static.wikia.nocookie.net/p-infinity/images/4/4a/Site-favicon.ico" width="11px" height="11px" style="margin-right:5px"><a target="_blank" href="https://p-infinity.fandom.com/wiki/Pokemon_Infinity_Wiki" style="color:rgb(141, 110, 255);text-decoration:none;"> Pokémon Infinity </a></h4>
+							<h4 style="display:inline-block;margin-bottom:10px;margin-left:5px"><img src="https://play.pokeathlon.com/fx/plumbercap.png" width="11px" height="11px" style="margin-right:5px"><a target="_blank" href="https://www.pokecommunity.com/threads/super-mariomon.535764/" style="color:rgb(141, 110, 255);text-decoration:none;"> Super Mariomon </a></h4>
+							<h4 style="display:inline-block;margin-bottom:20px;margin-left:5px"><img src="https://play.pokeathlon.com/sprites/fangame-sprites/soulstones/iconsprites/breloomorion.png" width="11px" height="11px" style="margin-right:5px"><a target="_blank" href="https://www.pokecommunity.com/threads/pokemon-soulstones-2-time-wardens-post-game-released.501217/" style="color:rgb(141, 110, 255);text-decoration:none;"> Soulstones 2: Time Wardens </a></h4>
+							</div>
 						</div>
 					</div>
 				</div>
@@ -57,10 +66,7 @@ https://psim.us/dev
 			</div>
 			<div class="mainmenufooter">
 				<div class="bgcredit"></div>
-				<small>
-					<a href="//dex.pokemonshowdown.com/" target="_blank">Pok&eacute;dex</a> | <a href="//replay.pokemonshowdown.com/" target="_blank">Replays</a> | <a href="http://smogon.com/forums/" target="_blank">Forum</a><br />
-					<a href="//pokemonshowdown.com/rules" target="_blank">Rules</a> | <a href="//pokemonshowdown.com/credits" target="_blank">Credits</a> | <a href="//pokemonshowdown.com/privacy" target="_blank">Privacy</a>
-				</small>
+				<small><a href="https://pokeathlon.com/" target="_blank"><strong>Pok&eacute;athlon</strong></a> | <a href="//dex.pokemonshowdown.com/" target="_blank">Pok&eacute;dex</a> | <a href="https://replay.pokeathlon.com" target="_blank">Replays</a> | <a href="https://discord.gg/vsEN6mzuNj" target="_blank">Discord</a></small>
 			</div>
 		</div>
 	</div>
@@ -80,10 +86,12 @@ https://psim.us/dev
 		linkStyle("/style/utilichart.css?");
 		linkStyle("/style/battle-search.css?");
 		linkStyle("/style/font-awesome.css");
+		linkStyle("/style/pokeathlon.css?");
 	</script>
 
 	<script defer src="/js/battle-dex-data.js?"></script>
 	<script defer src="/js/battle-dex.js?"></script>
+	<script defer src="/js/split-names.js?"></script>
 	<script defer src="/js/battle-teams.js?"></script>
 	<script defer src="/js/battle-text-parser.js?"></script>
 	<script defer src="/js/client-main.js?"></script>
@@ -127,12 +135,18 @@ https://psim.us/dev
 	<script defer src="/data/abilities.js?"></script>
 	<script defer src="/data/search-index.js?"></script>
 	<script defer src="/data/teambuilder-tables.js?"></script>
+	<script defer src="/data/formats.js?"></script>
+	<script defer src="/data/fusion-index.js?"></script>
+	<script defer src="/data/fusion-credits.js?"></script>
+	<script defer src="/data/fangame-credits.js?"></script>
+	<script defer src="/data/afd-credits.js?"></script>
 	<script defer src="/js/panel-teamdropdown.js?"></script>
 	<script defer src="/js/panel-teambuilder.js?"></script>
 	<script defer src="/js/battle-dex-search.js?"></script>
 	<script defer src="/js/battle-searchresults.js?"></script>
 	<script defer src="/js/battle-team-editor.js?"></script>
 	<script defer src="/js/panel-teambuilder-team.js?"></script>
+	<script defer src="/js/panel-bot.js?"></script>
 
 	<script defer src="/data/pokedex-mini.js?"></script>
 	<script defer src="/data/pokedex-mini-bw.js?"></script>

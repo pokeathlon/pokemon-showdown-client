@@ -79,11 +79,12 @@ export const Teams = new class {
 			if (buf) buf += ']';
 
 			// name
-			buf += (set.name || set.species);
+			const name = (!set.name || toID(set.name) === toID(set.species)) && Dex.getFusionData(set).nickname || set.name;
+			buf += (name || set.species);
 
 			// species
 			const speciesid = this.packName(set.species || set.name);
-			buf += `|${this.packName(set.name || set.species) === speciesid ? '' : speciesid}`;
+			buf += `|${this.packName(name || set.species) === speciesid ? '' : speciesid}`;
 
 			// item
 			buf += `|${this.packName(set.item)}`;
@@ -126,12 +127,16 @@ export const Teams = new class {
 			buf += `|${set.happiness !== undefined && set.happiness !== 255 ? set.happiness : ''}`;
 
 			if (set.pokeball || set.hpType || set.gigantamax ||
-				(set.dynamaxLevel !== undefined && set.dynamaxLevel !== 10) || set.teraType) {
+				(set.dynamaxLevel !== undefined && set.dynamaxLevel !== 10) || set.teraType ||
+				set.fusion || set.altsprite || set.ability2) {
 				buf += `,${set.hpType || ''}`;
 				buf += `,${this.packName(set.pokeball || '')}`;
 				buf += `,${set.gigantamax ? 'G' : ''}`;
 				buf += `,${set.dynamaxLevel !== undefined && set.dynamaxLevel !== 10 ? set.dynamaxLevel : ''}`;
 				buf += `,${set.teraType || ''}`;
+				if (set.fusion || set.altsprite || set.ability2) {
+					buf += `,${set.fusion || ''},${set.altsprite || ''},${this.packName(set.ability2)}`;
+				}
 			}
 		}
 
@@ -259,9 +264,9 @@ export const Teams = new class {
 			j = buf.indexOf(']', i);
 			let misc;
 			if (j < 0) {
-				if (i < buf.length) misc = buf.substring(i).split(',', 6);
+				if (i < buf.length) misc = buf.substring(i).split(',', 9);
 			} else {
-				if (i !== j) misc = buf.substring(i, j).split(',', 6);
+				if (i !== j) misc = buf.substring(i, j).split(',', 9);
 			}
 			if (misc) {
 				set.happiness = (misc[0] ? Number(misc[0]) : undefined);
@@ -270,6 +275,9 @@ export const Teams = new class {
 				set.gigantamax = !!misc[3] || undefined;
 				set.dynamaxLevel = (misc[4] ? Number(misc[4]) : undefined);
 				set.teraType = misc[5] || undefined;
+				set.fusion = misc[6] || undefined;
+				set.altsprite = misc[7] || undefined;
+				set.ability2 = misc[8] ? Dex.abilities.get(misc[8]).name : undefined;
 			}
 			i = j + 1;
 			if (j < 0 || i <= lastI) break;
@@ -328,7 +336,7 @@ export const Teams = new class {
 			if (set.item || dex.gen >= 2) text += ` @ ${set.item || "(no item)"}`;
 			text += `\n`;
 		} else if (set.ability && set.ability !== 'No Ability') {
-			text += `Ability: ${set.ability}\n`;
+			text += `Ability: ${set.ability}${set.ability2 ? ` / ${set.ability2}` : ''}\n`;
 		}
 
 		if (newFormat) {
@@ -405,6 +413,12 @@ export const Teams = new class {
 		if (set.teraType) {
 			text += `Tera Type: ${set.teraType}\n`;
 		}
+		if (set.fusion) {
+			text += `Fusion: ${set.fusion}\n`;
+		}
+		if (set.altsprite) {
+			text += `Alt: ${set.altsprite}\n`;
+		}
 
 		if (!newFormat) {
 			for (let move of set.moves || []) {
@@ -472,9 +486,9 @@ export const Teams = new class {
 				}
 			}
 		} else if (line.startsWith('Trait: ')) {
-			set.ability = line.slice(7);
+			[set.ability, set.ability2] = line.slice(7).split(' / ');
 		} else if (line.startsWith('Ability: ')) {
-			set.ability = line.slice(9);
+			[set.ability, set.ability2] = line.slice(9).split(' / ');
 		} else if (line.startsWith('Item: ')) {
 			set.item = line.slice(6);
 		} else if (line.startsWith('Nickname: ')) {
@@ -497,6 +511,10 @@ export const Teams = new class {
 			set.gigantamax = true;
 		} else if (line.startsWith('Tera Type: ')) {
 			set.teraType = line.slice(11);
+		} else if (line.startsWith('Fusion: ')) {
+			set.fusion = line.slice(8);
+		} else if (line.startsWith('Alt: ')) {
+			set.altsprite = line.slice(5);
 		} else if (line.startsWith('EVs: ')) {
 			const evLines = line.slice(5).split('(')[0].split('/');
 			set.evs = { hp: 0, atk: 0, def: 0, spa: 0, spd: 0, spe: 0 };

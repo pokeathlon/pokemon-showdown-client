@@ -10,6 +10,7 @@
 import preact from "../js/lib/preact";
 import { Dex, TL, toID, type ID } from "./battle-dex";
 import type { DexSearch, SearchRow, SearchType } from "./battle-dex-search";
+import { BattleLog } from "./battle-log";
 import { Config } from "./client-main";
 
 const RESULT_ROW_HEIGHT = 33;
@@ -45,7 +46,7 @@ function getLocalizedMatch(name: string, canonicalName: string, matchStart: numb
 }
 
 export class PSSearchResults extends preact.Component<{
-	search: DexSearch, class?: string, style?: string | null,
+	search: DexSearch, format?: ID, class?: string, style?: string | null,
 	prepend?: preact.ComponentChildren, children?: preact.ComponentChildren,
 	hideFilters?: boolean,
 	/** type = '' means a filter was selected,
@@ -61,6 +62,14 @@ export class PSSearchResults extends preact.Component<{
 	renderedStart = -1;
 	renderedEnd = -1;
 	renderedLength = -1;
+
+	isBanned(type: SearchType, id: ID) {
+		const ruleTable: string[] | undefined = window.Formats?.[this.props.format!]?.ruleTable;
+		if (!ruleTable) return false;
+		if (ruleTable.includes(`-${type}:${id}`)) return true;
+		return type === 'pokemon' &&
+			ruleTable.includes(`-basepokemon:${toID(this.props.search.dex.species.get(id).baseSpecies)}`);
+	}
 
 	renderPokemonSortRowHTML(index: number) {
 		const search = this.props.search;
@@ -106,7 +115,7 @@ export class PSSearchResults extends preact.Component<{
 		if (!pokemon) return `<li class="result" value="${index}">Unrecognized pokemon</li>`;
 
 		const pokemonText = search.dex.text.get(pokemon);
-		const displayName = pokemonText.name;
+		const displayName = BattleLog.hideForm(pokemonText.name)!;
 		[matchStart, matchEnd] = getLocalizedMatch(displayName, pokemon.name, matchStart, matchEnd);
 		const baseIndex = pokemonText.baseSpecies ? displayName.indexOf(pokemonText.baseSpecies) : -1;
 		const baseStart = Math.max(0, baseIndex);
@@ -116,7 +125,8 @@ export class PSSearchResults extends preact.Component<{
 		for (const stat of Object.values(stats)) bst += stat;
 		if (search.dex.gen < 2) bst -= stats['spd'];
 
-		let buf = `<li class="result" value="${index}"><a href="${this.URL_ROOT}pokemon/${id}" ` +
+		let buf = `<li class="result${this.isBanned('pokemon', id) ? ' banned' : ''}" value="${index}">` +
+			`<a href="${this.URL_ROOT}pokemon/${id}" ` +
 			`class="${id === this.speciesId ? 'cur' : ''}" data-target="push" ` +
 			`data-entry="pokemon|${escapeHTML(pokemon.name)}">` +
 			`<span class="col numcol">${escapeHTML(search.getTier(pokemon))}</span>` +
@@ -126,9 +136,8 @@ export class PSSearchResults extends preact.Component<{
 			)}</span>`;
 		if (errorMessage) return `${buf}${errorMessage}</a></li>`;
 
-		buf += `<span class="col typecol">${pokemon.types.map(type =>
-			`<img src="${Dex.resourcePrefix}sprites/types/${type}.png" alt="${escapeHTML(TL.type[type] || type)}" height="14" width="32" class="pixelated" />`
-		).join('')}</span>`;
+		buf += `<span class="col typecol"${pokemon.types.length > 2 ? ' style="padding-top:0"' : ''}>` +
+			`${pokemon.types.map(type => Dex.getTypeIcon(type)).join('')}</span>`;
 
 		if (search.numAbilityCols) {
 			const ability0 = search.dex.text.get(search.dex.abilities.get(pokemon.abilities['0'])).name;
@@ -210,7 +219,8 @@ export class PSSearchResults extends preact.Component<{
 		const itemName = id ? this.renderNameHTML(itemText.name, matchStart, matchEnd) :
 			`<i>${escapeHTML(TL`(no item)`)}</i>`;
 
-		return `<li class="result" value="${index}"><a href="${this.URL_ROOT}items/${id}" ` +
+		return `<li class="result${this.isBanned('item', id) ? ' banned' : ''}" value="${index}">` +
+			`<a href="${this.URL_ROOT}items/${id}" ` +
 			`class="${id === this.itemId ? 'cur' : ''}" data-target="push" data-entry="item|${escapeHTML(item.name)}">` +
 			`<span class="col itemiconcol"><span class="pixelated" style="${escapeHTML(Dex.getItemIcon(item))}"></span></span>` +
 			`<span class="col namecol">${itemName}</span>` +
@@ -229,7 +239,8 @@ export class PSSearchResults extends preact.Component<{
 			this.renderNameHTML(abilityText.name, matchStart, matchEnd) :
 			`<i>${escapeHTML(TL`(no ability)`)}</i>`;
 
-		return `<li class="result" value="${index}"><a href="${this.URL_ROOT}abilities/${id}" ` +
+		return `<li class="result${this.isBanned('ability', id) ? ' banned' : ''}" value="${index}">` +
+			`<a href="${this.URL_ROOT}abilities/${id}" ` +
 			`class="${id === this.abilityId ? 'cur' : ''}" data-target="push" data-entry="ability|${escapeHTML(ability.name)}">` +
 			`<span class="col namecol">${abilityName}</span>` +
 			(errorMessage || '') +
@@ -256,7 +267,8 @@ export class PSSearchResults extends preact.Component<{
 		const tagStart = moveText.name === move.name && move.name.startsWith('Hidden Power') ? 12 : 0;
 		[matchStart, matchEnd] = getLocalizedMatch(moveText.name, move.name, matchStart, matchEnd);
 
-		let buf = `<li class="result" value="${index}"><a href="${this.URL_ROOT}moves/${id}" ` +
+		let buf = `<li class="result${this.isBanned('move', id) ? ' banned' : ''}" value="${index}">` +
+			`<a href="${this.URL_ROOT}moves/${id}" ` +
 			`class="${this.moveIds.includes(id) ? 'cur' : ''}" data-target="push" data-entry="${escapeHTML(entry)}">` +
 			`<span class="col movenamecol">${this.renderNameHTML(moveText.name, matchStart, matchEnd, tagStart)}</span>`;
 		if (errorMessage) return `${buf}${errorMessage}</a></li>`;
@@ -267,9 +279,7 @@ export class PSSearchResults extends preact.Component<{
 			pp = move.pp > 20 ? 20 : move.pp;
 			if (!move.noPPBoosts) pp = (pp / 5 + 1) * 4;
 		}
-		buf += `<span class="col typecol">` +
-			`<img src="${Dex.resourcePrefix}sprites/types/${encodeURIComponent(move.type)}.png" ` +
-			`alt="${escapeHTML(TL.type[move.type] || move.type)}" height="14" width="32" class="pixelated" />` +
+		buf += `<span class="col typecol">${Dex.getTypeIcon(move.type)}` +
 			`<img src="${Dex.resourcePrefix}sprites/categories/${escapeHTML(move.category)}.png" ` +
 			`alt="${escapeHTML(TL.tag[toID(move.category)] || move.category)}" height="14" width="32" class="pixelated" />` +
 			`</span>` +
@@ -289,8 +299,7 @@ export class PSSearchResults extends preact.Component<{
 		return `<li class="result" value="${index}"><a href="${this.URL_ROOT}types/${id}" ` +
 			`data-target="push" data-entry="type|${escapeHTML(name)}">` +
 			`<span class="col namecol">${this.renderNameHTML(displayName, matchStart, matchEnd)}</span>` +
-			`<span class="col typecol"><img src="${Dex.resourcePrefix}sprites/types/${encodeURIComponent(name)}.png" ` +
-			`alt="${escapeHTML(displayName)}" height="14" width="32" class="pixelated" /></span>` +
+			`<span class="col typecol">${Dex.getTypeIcon(name)}</span>` +
 			(errorMessage || '') +
 			`</a></li>`;
 	}
@@ -328,6 +337,8 @@ export class PSSearchResults extends preact.Component<{
 		else if (id === 'water1') name = 'Water 1';
 		else if (id === 'water2') name = 'Water 2';
 		else if (id === 'water3') name = 'Water 3';
+		else if (id === 'poa') name = 'POA';
+		else if (id === 'mysterygift') name = 'Mystery Gift';
 		if (name) {
 			if (matchEnd > 5) matchEnd++;
 		} else {

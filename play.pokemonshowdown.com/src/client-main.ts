@@ -59,6 +59,7 @@ export interface PSConfig {
 	translationCachebuster?: string;
 	whitelist?: string[];
 	testclient?: boolean;
+	discordlogin?: boolean;
 }
 export declare const Config: PSConfig;
 
@@ -95,7 +96,7 @@ class PSPrefs extends PSStreamModel<string | null> {
 	/**
 	 * The theme to use. "system" matches the theme of the system accessing the client.
 	 */
-	theme: 'light' | 'dark' | 'system' = 'light';
+	theme: 'light' | 'dark' | 'system' = 'dark';
 	/**
 	 * Disables animated GIFs, but keeps other animations enabled.
 	 * Workaround for a Chrome 64 bug with GIFs.
@@ -108,7 +109,7 @@ class PSPrefs extends PSStreamModel<string | null> {
 
 	/* Graphics Preferences */
 	noanim: boolean | null = null;
-	bwgfx: boolean | null = null;
+	bwgfx: boolean | null = true;
 	nopastgens: boolean | null = null;
 
 	/* Chat Preferences */
@@ -152,6 +153,7 @@ class PSPrefs extends PSStreamModel<string | null> {
 	showjoins: { [serverid: string]: { [roomid: string]: 1 | 0 } } | null = null;
 	showdebug: boolean | null = null;
 	showbattles = true;
+	lobbybattles: 'human' | 'ladder' | 'none' | null = null;
 	/**
 	 * Comma-separated lists of room titles to autojoin. Single
 	 * string is for Main.
@@ -192,6 +194,7 @@ class PSPrefs extends PSStreamModel<string | null> {
 	newsid = 0;
 
 	avatar: string | null = null;
+	challengeonly: string | null = null;
 	serversettings: {
 		blockPMs?: boolean | string,
 		blockChallenges?: boolean,
@@ -647,7 +650,9 @@ class PSTeams extends PSStreamModel<'team' | 'format'> {
  * User
  *********************************************************************/
 
-export type PSLoginState = { error?: string, success?: true, name?: string, needsPassword?: true, needsGoogle?: true };
+export type PSLoginState = {
+	error?: string, success?: true, name?: string, needsPassword?: true, needsGoogle?: true, needsDiscord?: true,
+};
 class PSUser extends PSStreamModel<PSLoginState | null> {
 	name = "";
 	group = '';
@@ -660,6 +665,7 @@ class PSUser extends PSStreamModel<PSLoginState | null> {
 	loggingIn: string | null = null;
 	initializing = true;
 	gapiLoaded = false;
+	discordListening = false;
 	nameRegExp: RegExp | null = null;
 	setName(fullName: string, named: boolean, avatar: string) {
 		const loggingIn = (!this.named && named);
@@ -789,6 +795,8 @@ class PSUser extends PSStreamModel<PSLoginState | null> {
 			this.updateLogin({ name, needsPassword: true });
 		} else if (assertion === ';;@gmail') {
 			this.updateLogin({ name, needsGoogle: true });
+		} else if (assertion === ';;@discord') {
+			this.updateLogin({ name, needsDiscord: true });
 		} else if (assertion.startsWith(';;')) {
 			this.updateLogin({ error: assertion.slice(2) });
 		} else if (assertion.includes('\n') || !assertion) {
@@ -798,10 +806,44 @@ class PSUser extends PSStreamModel<PSLoginState | null> {
 			this.update({ success: true });
 		}
 	}
+	discordRename() {
+		const origin = Config.testclient ? `https://${Config.routes.client}` : location.origin;
+		if (!this.discordListening) {
+			this.discordListening = true;
+			window.addEventListener('message', ev => {
+				if (ev.origin !== origin || ev.data?.type !== 'discord-login') return;
+				this.registered = { name: ev.data.username, userid: toID(ev.data.username) };
+				this.handleAssertion(ev.data.username, ev.data.assertion);
+			});
+		}
+		window.open(
+			`${origin}/api/discord/login?challstr=${encodeURIComponent(this.challstr)}&serverid=${encodeURIComponent(PS.server.id)}`,
+			'ps-discord-login', 'popup=1,width=500,height=750'
+		);
+	}
+	codeRename(code: string) {
+		PSLoginServer.query('discord/code', { code, challstr: this.challstr }).then(data => {
+			if (!data?.curuser?.loggedin) {
+				PS.alert(data?.actionerror || "That login code is invalid or expired.");
+				return;
+			}
+			this.registered = { name: data.curuser.username, userid: toID(data.curuser.username) };
+			this.handleAssertion(data.curuser.username, data.assertion);
+		});
+	}
+	challengeOnlyRename() {
+		let seed = PS.prefs.challengeonly;
+		if (!seed) {
+			seed = Array.from(crypto.getRandomValues(new Uint8Array(16)), b => ('0' + b.toString(16)).slice(-2)).join('');
+			PS.prefs.set('challengeonly', seed);
+		}
+		PS.send(`/challengeonly ${seed}`);
+	}
 	logOut() {
 		PSLoginServer.query(
 			'logout', { userid: this.userid }
 		);
+		PS.prefs.set('challengeonly', null);
 		PS.send(`/logout`);
 		PS.connection?.disconnect();
 
@@ -1361,8 +1403,8 @@ export class PSRoom extends PSStreamModel<Args | null> implements RoomOptions {
 			}
 			PS.connection?.disconnect();
 		},
-		'cancelsearch'() {
-			if (PS.mainmenu.cancelSearch()) {
+		'cancelsearch'(target) {
+			if (PS.mainmenu.cancelSearch(target)) {
 				this.add(`||Search cancelled.`, true);
 			} else {
 				this.errorReply(`You're not currently searching.`);

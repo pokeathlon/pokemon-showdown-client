@@ -433,7 +433,7 @@ class UserOptionsPanel extends PSRoomPanel {
 				)}
 			</p>
 			<p>
-				<button data-href={`view-help-request-report-user-${targetUser}`} class="button">
+				<button data-cmd={`/report ${targetUser}`} class="button">
 					{TL`[Report]`}
 				</button>
 			</p>
@@ -659,6 +659,10 @@ class OptionsPanel extends PSRoomPanel {
 		const timestamp = (ev.currentTarget as HTMLSelectElement).value as TimestampOptions;
 		PS.prefs.set('timestamps', { ...PS.prefs.timestamps, pms: timestamp || undefined });
 	};
+	setLobbyBattles = (ev: Event) => {
+		const lobbyBattles = (ev.currentTarget as HTMLSelectElement).value as 'human' | 'ladder' | 'none';
+		PS.prefs.set('lobbybattles', lobbyBattles || null);
+	};
 	setDefaultClient = (ev: Event) => {
 		const client = (ev.currentTarget as HTMLSelectElement).value;
 		PS.router.setDefaultClientCookie(client as 'old' | 'new');
@@ -731,7 +735,7 @@ class OptionsPanel extends PSRoomPanel {
 				<button class="button" data-href="avatars">{TL`[Avatar...]`}</button>
 			</p>
 
-			{PS.user.named && (PS.user.registered?.userid === PS.user.userid ?
+			{PS.user.named && !Config.discordlogin && (PS.user.registered?.userid === PS.user.userid ?
 				<button className="button" data-href="changepassword">{TL`[Password...]`}</button> :
 				<button className="button" data-href="register">{TL`[Register]`}</button>)}
 
@@ -875,6 +879,16 @@ class OptionsPanel extends PSRoomPanel {
 				</select></label>
 			</p>
 			<p>
+				<label class="optlabel">Battles in lobby: <select
+					name="lobbybattles" class="select" onChange={this.setLobbyBattles} value={PS.prefs.lobbybattles || ''}
+				>
+					<option value="">All</option>
+					<option value="human">Human vs human</option>
+					<option value="ladder">Ladder</option>
+					<option value="none">None</option>
+				</select></label>
+			</p>
+			<p>
 				<label class="optlabel">
 					{TL.label(TL`Chat preferences`)}
 					<button class="button" data-href="chatformatting">{TL`[Text formatting...]`}</button>
@@ -884,6 +898,8 @@ class OptionsPanel extends PSRoomPanel {
 			{PS.user.named ? <p class="buttonbar" style="text-align: right">
 				<button class="button" data-href="login"><i class="fa fa-pencil" aria-hidden></i> {TL`[Change name]`}</button> {}
 				<button class="button" data-cmd="/logout"><i class="fa fa-power-off" aria-hidden></i> {TL`[Log out]`}</button>
+			</p> : Config.discordlogin ? <p class="buttonbar" style="text-align: right">
+				<button class="button" data-href="logincode">Login code</button>
 			</p> : <p class="buttonbar" style="text-align: right">
 				<button class="button" data-href="login"><i class="fa fa-pencil" aria-hidden></i> {TL`[Choose name]`}</button>
 			</p> }
@@ -976,14 +992,25 @@ class LoginPanel extends PSRoomPanel {
 		ev.stopImmediatePropagation();
 		this.setState({ passwordShown: !this.state.passwordShown });
 	};
+	discordLogin = (ev: Event) => {
+		ev.preventDefault();
+		this.close();
+		PS.user.discordRename();
+	};
+	challengeOnlyLogin = (ev: Event) => {
+		ev.preventDefault();
+		this.close();
+		PS.user.challengeOnlyRename();
+	};
 	override render() {
 		const room = this.props.room;
 		const loginState = room.args as PSLoginState;
+		const discordOnly = Config.discordlogin && !PS.user.registered && !loginState?.name;
 		return <PSPanelWrapper room={room} width={280}><div class="pad">
 			<h3>{TL`[Log in]`}</h3>
 			<form onSubmit={this.handleSubmit}>
 				{loginState?.error && <p class="error">{loginState.error}</p>}
-				<p><label class="label">
+				{discordOnly ? <p>Log in with Discord to play on this server.</p> : <p><label class="label">
 					{TL.label(TL`Username`)}
 					<small class="preview" style={`color:${BattleLog.usernameColor(toID(this.getUsername()))}`}>{TL`(color)`}</small>
 					<input
@@ -991,8 +1018,8 @@ class LoginPanel extends PSRoomPanel {
 						onInput={this.update} onChange={this.update} autocomplete="username"
 						value={this.getUsername()} disabled={!!PS.user.loggingIn || !!loginState?.name}
 					/>
-				</label></p>
-				{PS.user.named && !loginState && <p>
+				</label></p>}
+				{PS.user.named && !loginState && !discordOnly && <p>
 					<small>{TL`(Others will be able to see your name change. To change name privately, use "Log out")`}</small>
 				</p>}
 				{loginState?.needsPassword && <p>
@@ -1009,6 +1036,7 @@ class LoginPanel extends PSRoomPanel {
 						><i class="fa fa-eye" aria-hidden></i></button>
 					</label>
 				</p>}
+				{loginState?.needsDiscord && <p class="error">This name needs a Discord login.</p>}
 				{loginState?.needsGoogle && <>
 					<p><i class="fa fa-level-up fa-rotate-90" aria-hidden></i> <strong>{TL`if you registered this name:`}</strong></p>
 					<p><GooglePasswordBox name={this.getUsername()} /></p>
@@ -1023,6 +1051,12 @@ class LoginPanel extends PSRoomPanel {
 						</>
 					) : loginState?.needsGoogle ? (
 						<button type="button" onClick={this.reset} class="button">{TL`[Cancel]`}</button>
+					) : discordOnly || loginState?.needsDiscord ? (
+						<>
+							<button type="button" onClick={this.discordLogin} class="button"><strong>Discord login</strong></button> {}
+							<button type="button" onClick={this.challengeOnlyLogin} class="button"><strong>Challenge-only</strong></button> {}
+							<button type="button" name="closeRoom" class="button">{TL`[Cancel]`}</button>
+						</>
 					) : (
 						<>
 							<button type="submit" class="button"><strong>{TL`[Choose name]`}</strong></button> {}
@@ -1041,6 +1075,39 @@ class LoginPanel extends PSRoomPanel {
 						<button class="button" onClick={this.reset}>{TL`[Try another name]`}</button>
 					</p>
 				</div>}
+			</form>
+		</div></PSPanelWrapper>;
+	}
+}
+
+class LoginCodePanel extends PSRoomPanel {
+	static readonly id = 'logincode';
+	static readonly routes = ['logincode'];
+	static readonly location = 'modal-popup';
+	static readonly noURL = true;
+
+	override focus() {
+		this.base!.querySelector<HTMLInputElement>('input[name=code]')?.focus();
+	}
+	handleSubmit = (ev: Event) => {
+		ev.preventDefault();
+		const code = this.base!.querySelector<HTMLInputElement>('input[name=code]')!.value;
+		this.close();
+		PS.user.codeRename(code);
+	};
+	override render() {
+		return <PSPanelWrapper room={this.props.room} width={280}><div class="pad">
+			<form onSubmit={this.handleSubmit}>
+				<p><label class="label">
+					Login code: <input
+						class="textbox" type="text" name="code"
+						autocomplete="one-time-code" spellcheck={false}
+					/>
+				</label></p>
+				<p class="buttonbar">
+					<button type="submit" class="button"><strong>{TL`[Log in]`}</strong></button> {}
+					<button type="button" name="closeRoom" class="button">{TL`[Cancel]`}</button>
+				</p>
 			</form>
 		</div></PSPanelWrapper>;
 	}
@@ -1447,19 +1514,23 @@ class BackgroundListPanel extends PSRoomPanel {
 			<div class="bglist">
 				<button onClick={this.setBg} value="charizards" class={option('charizards')}>
 					<span class="bg" style="background-position: 0 -0px"></span>{}
-					Charizards
+					Park
 				</button>
 				<button onClick={this.setBg} value="horizon" class={option('horizon')}>
 					<span class="bg" style="background-position: 0 -90px"></span>{}
-					Horizon
+					Luterra
+				</button>
+				<button onClick={this.setBg} value="waterfall" class={option('waterfall')}>
+					<span class="bg" style="background-position: 0 -180px"></span>{}
+					POA
 				</button>
 				<button onClick={this.setBg} value="ocean" class={option('ocean')}>
 					<span class="bg" style="background-position: 0 -270px"></span>{}
-					Ocean
+					Reshiram
 				</button>
 				<button onClick={this.setBg} value="shaymin" class={option('shaymin')}>
 					<span class="bg" style="background-position: 0 -360px"></span>{}
-					Shaymin
+					Season's Symphony
 				</button>
 				<button onClick={this.setBg} value="solidblue" class={option('solidblue')}>
 					<span class="bg" style="background: #344b6c"></span>{}
@@ -2115,6 +2186,7 @@ PS.addRoomType(
 	VolumePanel,
 	OptionsPanel,
 	LoginPanel,
+	LoginCodePanel,
 	AvatarsPanel,
 	ChangePasswordPanel,
 	RegisterPanel,

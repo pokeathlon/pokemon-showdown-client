@@ -100,7 +100,7 @@ export class PSRouter {
 		const panelState = (PS.leftPanelWidth && PS.baseRoom ?
 			PS.leftPanel.id + '..' + PS.rightPanel!.id :
 			room.id);
-		const newTitle = roomid === '' ? 'Showdown!' : `${room.getTitle()} - Showdown!`;
+		const newTitle = roomid === '' ? 'Pokéathlon!' : `${room.getTitle()} - Pokéathlon!`;
 		let changed: boolean | null = (roomid !== this.roomid);
 
 		this.roomid = roomid;

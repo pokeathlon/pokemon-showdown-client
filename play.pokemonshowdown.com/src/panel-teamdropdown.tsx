@@ -156,7 +156,7 @@ export function TeamBox(props: {
 	let contents;
 	if (team) {
 		team.iconCache ||= team.packedTeam ? (
-			Teams.unpackSpeciesOnly(team.packedTeam).map(
+			Teams.unpack(team.packedTeam).map(
 				// can't use <PSIcon>, weird interaction with iconCache
 				// don't try this at home; I'm a trained professional
 				pokemon => PSIcon({ pokemon })
@@ -367,9 +367,16 @@ class FormatDropdownPanel extends PSRoomPanel {
 	format: string | null = null;
 	search = '';
 	openSections = PS.prefs.openformats || {
-		'S/V Singles': true, 'S/V Doubles': true, 'Unofficial Metagames': true, 'National Dex': true,
-		'Ladder Spotlight': true, 'Other Metagames': true, 'Random Meta of the Decade': true,
+		'Infinite Fusion: Regional Dex': true, 'Infinite Fusion: Doubles': true, 'Infinite Fusion: National Dex': true,
+		'Infinite Fusion: Extras': true, 'Draft': false, 'Super Mariomon!': true, 'Insurgence Formats': true,
+		'Uranium Formats': true, 'Infinity Formats': true, 'Soulstones Formats': true, 'Pokéathlon: Full Dex': true,
+		'Pokéathlon: Gen 2': true, 'Pokéathlon: Gen 1': true, 'Pokéathlon: Doubles': true, 'Pokéathlon: Extras': true,
+		'Chaos': true, 'Chaos: Extras': true,
 	};
+	override componentDidMount() {
+		super.componentDidMount();
+		if (this.props.room.parentElem?.getAttribute('data-selecttype') === 'search') PS.send(`/cmd ladderqueue`);
+	}
 	click = (e: MouseEvent) => {
 		let curTarget = e.target as HTMLElement | null;
 		let target;
@@ -428,6 +435,11 @@ class FormatDropdownPanel extends PSRoomPanel {
 			}
 		}
 		const curGen = (gen: string) => this.gen === gen ? ' cur' : '';
+		const ladderQueue: { [formatid: string]: number } =
+			room.parentElem.getAttribute('data-selecttype') === 'search' ? PS.mainmenu.ladderQueue : {};
+		const totalSearches = Object.values(ladderQueue).reduce((total, count) => total + count, 0);
+		const queueStyle = (id: ID) => ladderQueue[id] ?
+			`background:hsl(120,${Math.round(100 * ladderQueue[id] / totalSearches)}%,30%);color:#FFF` : undefined;
 		const searchBar = <div>
 			<input
 				type="search" name="search" placeholder={TL`Search formats`} class="textbox autofocus" autocomplete="off"
@@ -528,7 +540,9 @@ class FormatDropdownPanel extends PSRoomPanel {
 						if (selectType === 'challenge' && format.challengeShow === false) return null;
 						if (selectType === 'search' && format.searchShow === false) return null;
 						if (selectType === 'teambuilder' && !format.isTeambuilderFormat) return null;
-						return <li><button value={format.name} class={`option${curFormat === format.id ? ' cur' : ''}`}>
+						return <li><button
+							value={format.name} class={`option${curFormat === format.id ? ' cur' : ''}`} style={queueStyle(format.id)}
+						>
 							{format.name.replace('[Gen 8 ', '[').replace('[Gen 9] ', '').replace('[Gen 7 ', '[')}
 							{format.section === 'No Format' && <em> {TL`(uncategorized)`}</em>}
 							<i class="star fa fa-star cur" data-cmd={`/unstar ${format.id}`}></i>
@@ -540,7 +554,7 @@ class FormatDropdownPanel extends PSRoomPanel {
 						if (!unstarred.length) return null;
 						const options = <ul>{unstarred.map(format => <li key={format.id}><button
 							value={format.name}
-							class={`option${curFormat === format.id ? ' cur' : ''}`}
+							class={`option${curFormat === format.id ? ' cur' : ''}`} style={queueStyle(format.id)}
 						>
 							{format.name.replace('[Gen 8 ', '[').replace('[Gen 9] ', '').replace('[Gen 7 ', '[')}
 							{format.section === 'No Format' && <em> {TL`(uncategorized)`}</em>}

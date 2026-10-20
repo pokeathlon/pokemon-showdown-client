@@ -252,17 +252,11 @@ class RoomsPanel extends PSRoomPanel {
 			</button>
 			<div class="roomcounters">
 				<a class="button" href="users" title={TL`Find an online user`}>
-					<span
-						class={`pixelated usercount${Dex.afdMode === true ? ' afd' : ''}`}
-						title={TL`Meloetta is PS's mascot! The Aria forme is about using its voice, and represents our chatrooms.`}
-					></span>
+					<span class={`pixelated usercount${Dex.afdMode === true ? ' afd' : ''}`}></span>
 					<strong>{rooms.userCount || '-'}</strong> {TL`users online`}
 				</a> {}
 				<a class="button" href="battles" title={TL`Watch an active battle`}>
-					<span
-						class={`pixelated battlecount${Dex.afdMode ? ' afd' : ''}`}
-						title={TL`Meloetta is PS's mascot! The Pirouette forme is Fighting-type, and represents our battles.`}
-					></span>
+					<span class={`pixelated battlecount${Dex.afdMode ? ' afd' : ''}`}></span>
 					<strong>{rooms.battleCount || '-'}</strong> {TL`active battles`}
 				</a>
 			</div>
@@ -270,12 +264,12 @@ class RoomsPanel extends PSRoomPanel {
 				<div dangerouslySetInnerHTML={{ __html: Config.includes.roomlistTopHTML }} />
 			)}
 			<div>
-				<select name="sections" class="select" onChange={this.changeSection}>
+				{!!rooms.sectionTitles?.length && <select name="sections" class="select" onChange={this.changeSection}>
 					<option value="">{TL`(All rooms)`}</option>
-					{rooms.sectionTitles?.map(title => {
+					{rooms.sectionTitles.map(title => {
 						return <option value={title}> {title} </option>;
 					})}
-				</select>
+				</select>}
 				<p><input
 					type="search" name="roomsearch" class="textbox autofocus" style="width: 100%; max-width: 480px"
 					placeholder={TL`Join or search for rooms`} autocomplete="off"
@@ -283,6 +277,13 @@ class RoomsPanel extends PSRoomPanel {
 				/></p>
 			</div>
 			{this.renderRoomList()}
+			{!this.search && <div class="roomlist">
+				<a href="https://discord.com/invite/vsEN6mzuNj" target="_blank" class="blocklink">
+					<small style="float:right">(2800+ members)</small>
+					<strong><i class="fa fa-comments-o" aria-hidden></i> Discord<br /></strong>
+					<small>The Pokéathlon Discord.</small>
+				</a>
+			</div>}
 		</div></PSPanelWrapper>;
 	}
 	getRoomListFocusTitle(): string | undefined {
@@ -312,7 +313,7 @@ class RoomsPanel extends PSRoomPanel {
 
 			return <>
 				<div class="roomlist">
-					<h2>{title}</h2>
+					{!!this.search && <h2>{title}</h2>}
 					{rooms.map((roomInfo, i) => <div key={roomInfo.title}>
 						<a href={`/${roomInfo.id || toID(roomInfo.title)}`} class={`blocklink${i === index ? " cur" : ''}`}>
 							{roomInfo.userCount !== undefined && <small style="float:right">({TL`${roomInfo.userCount} users`})</small>}

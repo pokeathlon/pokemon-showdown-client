@@ -77,6 +77,7 @@ export class ChatRoom extends PSRoom {
 		)) {
 			if (this.pmTarget === null) {
 				PS.send(`/join ${this.id}`);
+				if (this.id === 'lobby') PS.send(`/cmd ladderqueue`);
 				this.connected = 'pending';
 			} else {
 				this.connectMode = null;
@@ -1349,6 +1350,9 @@ class ChatPanel extends PSRoomPanel<ChatRoom> {
 		this.subscribeTo(PS.user, () => {
 			this.props.room.updateTarget();
 		});
+		this.subscribeTo(PS.prefs, key => {
+			if (key === 'lobbybattles') this.forceUpdate();
+		});
 	}
 	send = (text: string, elem: HTMLElement) => {
 		this.props.room.send(text, elem);
@@ -1478,9 +1482,10 @@ class ChatPanel extends PSRoomPanel<ChatRoom> {
 		const room = this.props.room;
 		const userListWidth = room.width < 550 ? 0 : 146;
 		const challengeOpen = room.challengeMenuOpen || room.challenging || room.challenged;
+		const lobbyBattles = ` lobbybattles-${PS.prefs.lobbybattles || 'all'}`;
 		return <PSPanelWrapper room={room} focusClick noScroll fullSize>
 			<ChatLog
-				class={`chat-log${!userListWidth ? '' : ' hasuserlist'}${challengeOpen ? ' challenge-open' : ''}`}
+				class={`chat-log${!userListWidth ? '' : ' hasuserlist'}${challengeOpen ? ' challenge-open' : ''}${lobbyBattles}`}
 				room={this.props.room} left={userListWidth} top={room.tour?.info.isActive ? 30 : 0}
 			>
 				{this.renderControls()}
@@ -1525,6 +1530,16 @@ export class ChatUserList extends preact.Component<{
 			) : (
 				<button data-href="userlist" class="button button-middle">{userCountText}</button>
 			)}
+			{room.id === 'lobby' && !this.props.minimized && <div class="userlist-queue">
+				{Object.entries(PS.mainmenu.ladderQueue).map(([formatid, count]) => {
+					const formatName = window.BattleFormats?.[formatid]?.name || formatid;
+					return <p key={formatid}>
+						<strong style={{ color: BattleLog.usernameColor(formatName as ID) }}>
+							{formatName.replace(/^\[[^\]]*\] /, '')}:
+						</strong> {count}
+					</p>;
+				})}
+			</div>}
 			<ul>
 				{room.onlineUsers.map(([userid, name]) => {
 					const groupSymbol = name.charAt(0);
