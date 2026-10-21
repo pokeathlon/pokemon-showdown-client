@@ -6,7 +6,9 @@
 		loaded: false,
 		queue: [],
 		name: '',
-		format: '',
+		ready: {},
+		keys: {},
+		requests: {},
 		pending: null,
 		team: '',
 		resuming: false,
@@ -35,8 +37,8 @@
 				break;
 			case 'ready':
 				Bot.resuming = false;
-				Bot.format = data.format;
-				if (data.name) Bot.name = data.name;
+				Bot.ready[data.format] = true;
+				Bot.name = data.name;
 				Bot.challenge();
 				break;
 			case 'name':
@@ -98,16 +100,11 @@
 				Bot.forget(data.room);
 				Bot.reload();
 				break;
-			case 'closed':
-				Bot.battles = {};
-				Bot.name = '';
-				Bot.report("The bot disconnected.");
-				break;
 			}
 		},
 		start: function (format, team, botTeam, sheets) {
 			this.pending = {format: format, team: team, sheets: sheets};
-			this.format = '';
+			delete this.ready[format];
 			this.team = botTeam ? Storage.getPackedTeam(botTeam) : '';
 			Storage.prefs('botformat', format);
 			this.launch(format, this.team, '');
@@ -115,12 +112,27 @@
 		},
 		launch: function (format, team, name) {
 			var self = this;
-			app.once('response:pokeathlete', function (key) {
-				if (!key) return self.report("This server doesn't allow bots.");
+			this.withKey(function (owner, key) {
+				if (!key) {
+					self.resuming = false;
+					return self.report("This server doesn't allow bots.");
+				}
 				self.post({
 					type: 'start', url: (Config.server.port === 443 || Config.server.https ? 'wss' : 'ws') + '://' + Config.server.host + ':' + Config.server.port + Config.sockjsprefix + '/websocket',
-					owner: app.user.get('userid'), key: key, format: format, team: team, name: name, settings: self.settings(), speed: self.device(), ask: true
+					owner: owner, key: key, format: format, team: team, name: name, settings: self.settings(), speed: self.device(), ask: true
 				});
+			});
+		},
+		withKey: function (callback) {
+			var owner = app.user.get('userid');
+			if (this.keys[owner]) return callback(owner, this.keys[owner]);
+			if (this.requests[owner]) return this.requests[owner].push(callback);
+			var callbacks = this.requests[owner] = [callback];
+			var self = this;
+			app.once('response:pokeathlete', function (key) {
+				delete self.requests[owner];
+				if (key) self.keys[owner] = key;
+				for (var i = 0; i < callbacks.length; i++) callbacks[i](owner, key);
 			});
 			app.send('/cmd pokeathlete');
 		},
@@ -152,7 +164,7 @@
 		},
 		challenge: function () {
 			var pending = this.pending;
-			if (!pending || !this.name || this.format !== pending.format) return;
+			if (!pending || !this.name || !this.ready[pending.format]) return;
 			this.pending = null;
 			this.update("Challenging " + this.name + "...");
 			var name = this.name;
@@ -161,16 +173,7 @@
 			});
 		},
 		settings: function () {
-			if (!this.overrides) {
-				this.overrides = $.extend(true, {}, Storage.prefs('botsettings') || {});
-				delete this.overrides.ponder;
-				delete this.overrides.foeExploration;
-				delete this.overrides.infer;
-				delete this.overrides.evStep;
-				delete this.overrides.particles;
-				delete this.overrides.method;
-				delete this.overrides.worlds;
-			}
+			if (!this.overrides) this.overrides = $.extend(true, {}, Storage.prefs('botsettings') || {});
 			return this.overrides;
 		},
 		reload: function () {
@@ -179,7 +182,7 @@
 			this.frame = null;
 			this.loaded = false;
 			this.name = '';
-			this.format = '';
+			this.ready = {};
 			if (this.room) this.room.update();
 		},
 		shape: function (search, weight) {
@@ -315,7 +318,7 @@
 		},
 		renderLabel: function (setting, text) {
 			var label = BattleLog.escapeHTML(text || setting.label);
-			return '<label data-label="' + BattleLog.escapeHTML(setting.key) + '">' + (this.changed(setting) ? '<em>' + label + '</em>' : label) + '</label>';
+			return '<label data-label="' + BattleLog.escapeHTML(setting.key) + '"' + (setting.title ? ' title="' + BattleLog.escapeHTML(setting.title) + '"' : '') + '>' + (this.changed(setting) ? '<em>' + label + '</em>' : label) + '</label>';
 		},
 		renderRange: function (setting) {
 			var view = this.view(setting);
@@ -579,15 +582,12 @@
 				return;
 			}
 
-			buf += '<h3>Strength</h3>';
-			buf += '<div style="margin-left:16px">' + this.renderTable([this.find('time'), this.find('threads')]);
-			if (this.value('threads') !== data.threads) buf += '<p><small style="color:#888">Threads after your battle: ' + this.value('threads') + '</small></p>';
-			buf += '</div>';
-
 			for (var k = 0; k < data.sections.length; k++) {
 				var groups = this.groups(data.sections[k]);
 				for (var m = 0; m < groups.length; m++) {
-					buf += '<h3>' + BattleLog.escapeHTML(groups.length === 1 ? data.sections[k].section : groups[m].group) + '</h3><div style="margin-left:16px">' + this.renderBlocks(groups[m].settings) + '</div>';
+					buf += '<h3' + (groups[m].title ? ' title="' + BattleLog.escapeHTML(groups[m].title) + '"' : '') + '>' + BattleLog.escapeHTML(groups.length === 1 ? data.sections[k].section : groups[m].group) + '</h3><div style="margin-left:16px">' + this.renderBlocks(groups[m].settings);
+					if (groups[m].settings.some(function (setting) { return setting.key === 'threads'; }) && this.value('threads') !== data.threads) buf += '<p><small style="color:#888">Threads after your battle: ' + this.value('threads') + '</small></p>';
+					buf += '</div>';
 				}
 			}
 			buf += '<div style="margin-left:16px;margin-top:16px"><table data-speed style="border-spacing:0 2px;margin:4px 0;width:100%;table-layout:fixed;color:#888"></table></div>';
@@ -601,7 +601,12 @@
 			for (var i = 0; i < this.data.schema.length; i++) {
 				var group = this.data.schema[i];
 				if (section.groups.indexOf(group.group) < 0 || (group.bot && group.bot !== 'mcts')) continue;
-				var settings = group.settings.filter(function (setting) { return !setting.basic && !setting.hidden; });
+				var settings = [];
+				for (var j = 0; j < group.settings.length; j++) {
+					if (group.settings[j].hidden) continue;
+					settings.push(group.settings[j]);
+					if (group.settings[j].key === 'time') settings.push(this.find('threads'));
+				}
 				if (settings.length) groups.push($.extend({}, group, {settings: settings}));
 			}
 			return groups;
