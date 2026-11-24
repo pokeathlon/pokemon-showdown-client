@@ -97,7 +97,7 @@ export class LadderFormatRoom extends PSRoom {
 			const prefix = toID(this.searchValue);
 			PS.send(`/cmd laddertop ${this.format}${prefix ? ` ,${prefix}` : ''}`);
 		} else if (this.format !== undefined) {
-			Net(`//pokemonshowdown.com/ladder/${this.format}.json`)
+			Net(`//play.pokeathlon.com/ladder/${this.format}.json`)
 				.get({
 					query: {
 						prefix: toID(searchValue),

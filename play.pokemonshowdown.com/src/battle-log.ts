@@ -56,6 +56,8 @@ export class BattleLog {
 	 */
 	perspective: -1 | 0 | 1 = -1;
 	getHighlight: ((line: Args) => boolean) | null = null;
+	isIgnored: ((name: string) => boolean) | null = null;
+	canRevealMessages: (() => boolean) | null = null;
 	constructor(elem: HTMLDivElement, scene?: BattleScene | null, innerElem?: HTMLDivElement) {
 		this.elem = elem;
 
@@ -185,8 +187,9 @@ export class BattleLog {
 					return;
 				}
 			}
-			const ignoreList = window.app?.ignore || window.PS?.prefs?.ignore;
-			if (ignoreList?.[toUserid(name)] && ' +^\u2605\u2606'.includes(rank)) return;
+			const isIgnored = this.isIgnored ? this.isIgnored(name) :
+				window.app?.ignore?.[toUserid(name)] && ' +^\u2605\u2606'.includes(rank);
+			if (isIgnored) return;
 			const timestampHtml = BattleLog.renderTimestamp(timestamp, showTimestamps);
 			const isHighlighted = window.app?.rooms?.[battle!.roomid].getHighlight(message) || this.getHighlight?.(args);
 			[divClass, divHTML, noNotify] = this.parseChatMessage(message, name, timestampHtml, isHighlighted);
@@ -274,7 +277,8 @@ export class BattleLog {
 			}
 			const colorStyle = ` style="color:${BattleLog.usernameColor(toID(args[1]))}"`;
 			const pmTarget = BattleLog.escapeHTML(args[2]);
-			divHTML = `<strong${colorStyle}> ${this.renderName(args[1])}:</strong> <span class="message-pm"><i style="cursor:pointer" data-href="dm-${toID(args[1])}">${TL`(Private to ${pmTarget})`}</i> ${BattleLog.parseMessage(args[3])} </span>`;
+			divHTML = BattleLog.renderTimestamp(null, showTimestamps) +
+				`<strong${colorStyle}> ${this.renderName(args[1])}:</strong> <span class="message-pm"><i style="cursor:pointer" data-href="dm-${toID(args[1])}">${TL`(Private to ${pmTarget})`}</i> ${BattleLog.parseMessage(args[3])} </span>`;
 			break;
 
 		case 'b': case 'B': {
@@ -320,7 +324,7 @@ export class BattleLog {
 			this.unlinkChatFrom(user);
 			if (args[1] !== 'unlink') {
 				const lineCount = parseInt(args[3], 10);
-				this.hideChatFrom(user, args[1] === 'hide', lineCount);
+				this.hideChatFrom(user, args[1] === 'hide' || !!this.canRevealMessages?.(), lineCount);
 			}
 			return;
 		}
@@ -1631,7 +1635,8 @@ export class BattleLog {
 
 					if (iconType === 'pokemon') {
 						setAttrib('class', 'picon' + (className ? ' ' + className : ''));
-						unsanitizedStyle = Dex.getPokemonIcon(iconValue);
+						unsanitizedStyle = Dex.getPokemonIcon(getAttrib('fusion') ?
+							{ species: iconValue, fusion: getAttrib('fusion') } as any : iconValue);
 					} else if (iconType === 'item') {
 						setAttrib('class', 'itemicon' + (className ? ' ' + className : ''));
 						unsanitizedStyle = Dex.getItemIcon(iconValue);
@@ -1725,12 +1730,12 @@ export class BattleLog {
 		);
 	}
 	static hideForm(input: string) {
-		let filters = ["-Orion"]
+		let filters = ["-Orion"];
 		for (const filter of filters) {
 			if (input.includes(filter)) {
-				return input.replace(filter, '')
+				return input.replace(filter, '');
 			} else {
-				return input
+				return input;
 			}
 		}
 	}

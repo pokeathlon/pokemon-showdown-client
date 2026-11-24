@@ -24,10 +24,10 @@
 			app.user.on('change:named', this.updateUser, this);
 			this.update();
 			this.chatroomInterval = setInterval(function () {
-				if (app.curSideRoom && ['rooms', 'lobby'].includes(app.curSideRoom.id)) {
+				if (app.curSideRoom && app.curSideRoom.id === 'rooms') {
 					app.send('/cmd rooms');
 				}
-			}, 10 * 1000);
+			}, 20 * 1000);
 		},
 		initSectionSelection: function () {
 			var buf = ['<option value="">(All rooms)</option>'];
@@ -46,7 +46,7 @@
 			this.update();
 		},
 		focus: function () {
-			if (new Date().getTime() - this.lastUpdate > 10 * 1000) {
+			if (new Date().getTime() - this.lastUpdate > 20 * 1000) {
 				app.send('/cmd rooms');
 				this.lastUpdate = new Date().getTime();
 			}
@@ -143,7 +143,6 @@
 				});
 			}
 
-			var spotlightLabel = '';
 			var spotlightRooms = [];
 			var officialRooms = [];
 			var otherRooms = [];
@@ -152,7 +151,6 @@
 				var roomData = allRooms[i];
 				if (roomData.spotlight) {
 					spotlightRooms.push(roomData);
-					spotlightLabel = roomData.spotlight;
 				} else if (roomData.section === 'Official') {
 					officialRooms.push(roomData);
 				} else if (roomData.privacy === 'hidden') {
@@ -163,15 +161,21 @@
 			}
 
 			this.$('.roomlist').first().html(
-				(officialRooms.length ? officialRooms.sort(this.compareRooms).map(this.renderRoomBtn).join("") : '') +
-				(spotlightRooms.length ? spotlightRooms.sort(this.compareRooms).map(this.renderRoomBtn).join("") : '')
+				(officialRooms.length ?
+					officialRooms.sort(this.compareRooms).map(this.renderRoomBtn).join("") : ''
+				) +
+				(spotlightRooms.length ?
+					spotlightRooms.sort(this.compareRooms).map(this.renderRoomBtn).join("") : ''
+				)
 			);
 			this.$('.roomlist').last().html(
-				(otherRooms.length ? otherRooms.sort(this.compareRooms).map(this.renderRoomBtn).join("") : '') +
-				(hiddenRooms.length && this.showMoreRooms ? hiddenRooms.sort(this.compareRooms).map(this.renderRoomBtn).join("") : '')
-			);
-			this.$('.roomlist').last().html(
-				`<div><a href="https://discord.com/invite/vsEN6mzuNj" target="_blank" class="blocklink"><small style="float:right">(2800+ members)</small><strong><i class="fa fa-comments-o"></i> Discord<br></strong><small>The Pok&eacute;athlon Discord.</small></a></div>`
+				(otherRooms.length ?
+					otherRooms.sort(this.compareRooms).map(this.renderRoomBtn).join("") : ''
+				) +
+				(hiddenRooms.length && this.showMoreRooms ?
+					hiddenRooms.sort(this.compareRooms).map(this.renderRoomBtn).join("") : ''
+				) +
+				'<div><a href="https://discord.com/invite/vsEN6mzuNj" target="_blank" class="blocklink"><small style="float:right">(2800+ members)</small><strong><i class="fa fa-comments-o"></i> Discord<br></strong><small>The Pok&eacute;athlon Discord.</small></a></div>'
 			);
 		},
 		roomlist: function () {

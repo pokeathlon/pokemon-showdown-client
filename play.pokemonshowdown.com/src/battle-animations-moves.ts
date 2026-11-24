@@ -22060,6 +22060,7 @@ export const BattleMoveAnims: AnimTable = {
 	},
 	makeitrain: {
 		anim(scene, [attacker, ...defenders]) {
+			scene.backgroundEffect('#000000', 1300, 0.2);
 			for (const defender of defenders) {
 				scene.showEffect('electroball', {
 					x: attacker.x,
@@ -22072,50 +22073,58 @@ export const BattleMoveAnims: AnimTable = {
 					opacity: 1,
 				}, 'accel', 'explode');
 
-				for (let i = 1; i <= 3; i++) {
-					scene.showEffect('electroball', {
-						x: attacker.x - 10,
-						y: attacker.y + 25,
-						z: attacker.z,
-						scale: 0.1,
-						opacity: 1,
-						time: 500 * i,
-					}, {
-						x: defender.x,
-						y: defender.y,
-						z: defender.z,
-						opacity: 0,
-						time: 500 * i + 100,
-					}, 'decel');
+				for (let i = 1; i <= 8; i++) {
+
+					const hitPos = (-1) ** i * (32 - i * 8);
+
 					scene.showEffect('electroball', {
 						x: attacker.x,
 						y: attacker.y,
 						z: attacker.z,
-						scale: 0.1,
-						opacity: 1,
-						time: 600 * i,
+						scale: 0.2,
+						opacity: 0.7,
+						time: 75 * i + 500,
 					}, {
-						x: defender.x,
-						y: defender.y,
+						x: defender.x + hitPos,
+						y: defender.y - hitPos,
 						z: defender.z,
-						opacity: 0,
-						time: 600 * i + 100,
-					}, 'accel');
-					scene.showEffect('electroball', {
-						x: attacker.x + 10,
-						y: attacker.y - 25,
-						z: attacker.z,
-						scale: 0.1,
-						opacity: 1,
-						time: 700 * i,
+						scale: 0.4,
+						opacity: 0.4,
+						time: 75 * i + 700,
+					}, 'decel', 'explode');
+
+					scene.showEffect('shine', {
+						x: defender.x + hitPos,
+						y: defender.y - hitPos,
+						z: defender.z,
+						scale: 0.5,
+						opacity: 0.8,
+						time: 75 * i + 700,
 					}, {
-						x: defender.x,
-						y: defender.y,
-						z: defender.z,
 						opacity: 0,
-						time: 700 * i + 100,
-					}, 'accel');
+						time: 75 * i + 800,
+					}, 'accel', 'fade');
 				}
+
+				defender.delay(700);
+
+				for (let i = 1; i <= 3; i++) {
+					defender.anim({
+						z: defender.behind(5),
+						time: 75,
+					}, 'swing');
+					defender.anim({
+						time: 75,
+					}, 'swing');
+				}
+
+				defender.anim({
+					z: defender.behind(10),
+					time: 100,
+				}, 'swing');
+				defender.anim({
+					time: 150,
+				}, 'swing');
 			}
 		},
 	},
@@ -39861,7 +39870,11 @@ export const BattleMoveAnims: AnimTable = {
 			}, 'linear', 'fade');
 			for (let i = 0; i < 3; i++) {
 				let mult = 1;
-				if (i === 1) { mult = 5; } else if (i === 2) { mult = 3; }
+				if (i === 1) {
+					mult = 5;
+				} else if (i === 2) {
+					mult = 3;
+				}
 				scene.showEffect('shine', {
 					x: attacker.x + i * 10,
 					y: attacker.y,
@@ -40179,7 +40192,7 @@ export const BattleMoveAnims: AnimTable = {
 				time: 1100,
 			}, 'linear');
 
-			scene.showEffect('poisonwisp', {
+			scene.showEffect('purplewisp', {
 				x: defender.x + 40,
 				y: defender.y + 30,
 				z: defender.z,
@@ -40191,7 +40204,7 @@ export const BattleMoveAnims: AnimTable = {
 				opacity: 0,
 				time: 1000,
 			}, 'accel');
-			scene.showEffect('poisonwisp', {
+			scene.showEffect('purplewisp', {
 				x: defender.x - 40,
 				y: defender.y + 30,
 				z: defender.z,
@@ -40203,7 +40216,7 @@ export const BattleMoveAnims: AnimTable = {
 				opacity: 0,
 				time: 1200,
 			}, 'accel');
-			scene.showEffect('poisonwisp', {
+			scene.showEffect('purplewisp', {
 				x: defender.x,
 				y: defender.y + 40,
 				z: defender.z,
@@ -40867,7 +40880,6 @@ BattleMoveAnims['fissionburst'] = {
 };
 BattleMoveAnims['flameimpact'] = {
 	anim(scene, [attacker, defender]) {
-		BattleMoveAnims['shadowforce'].prepareAnim;
 		BattleMoveAnims['flamecharge'].anim(scene, [attacker, defender]);
 	},
 };
@@ -40918,7 +40930,6 @@ BattleMoveAnims['nuclearwind'] = {
 BattleMoveAnims['oceanswrath'] = { anim: BattleMoveAnims['originpulse'].anim };
 BattleMoveAnims['protonbeam'] = {
 	anim(scene, [attacker, defender]) {
-		BattleMoveAnims['hyperbeam'].prepareAnim;
 		BattleMoveAnims['hyperbeam'].anim(scene, [attacker, defender]);
 	},
 };

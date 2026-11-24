@@ -1,5 +1,68 @@
 (function ($) {
 
+	var NEW_CLIENT_LANGUAGE_MESSAGES = {
+		de: {
+			title: 'Pokémon Showdown auf Deutsch',
+			body: 'Der neue Pokémon-Showdown-Client ist auf Deutsch verfügbar.',
+			button: 'Neuen Client ausprobieren'
+		},
+		es: {
+			title: 'Pokémon Showdown en español',
+			body: 'El nuevo cliente de Pokémon Showdown está disponible en español.',
+			button: 'Probar el cliente nuevo'
+		},
+		fr: {
+			title: 'Pokémon Showdown en français',
+			body: 'Le nouveau client de Pokémon Showdown est disponible en français.',
+			button: 'Essayer le nouveau client'
+		},
+		it: {
+			title: 'Pokémon Showdown in italiano',
+			body: 'Il nuovo client di Pokémon Showdown è disponibile in italiano.',
+			button: 'Prova il nuovo client'
+		},
+		nl: {
+			title: 'Pokémon Showdown in het Nederlands',
+			body: 'De nieuwe Pokémon Showdown-client is beschikbaar in het Nederlands.',
+			button: 'Nieuwe client proberen'
+		},
+		pt: {
+			title: 'Pokémon Showdown em português',
+			body: 'O novo cliente do Pokémon Showdown está disponível em português.',
+			button: 'Experimentar o novo cliente'
+		},
+		tr: {
+			title: 'Türkçe Pokémon Showdown',
+			body: 'Yeni Pokémon Showdown istemcisi Türkçe olarak kullanılabilir.',
+			button: 'Yeni istemciyi dene'
+		},
+		hi: {
+			title: 'हिंदी में Pokémon Showdown',
+			body: 'नया Pokémon Showdown क्लाइंट हिंदी में उपलब्ध है।',
+			button: 'नया क्लाइंट आज़माएँ'
+		},
+		ja: {
+			title: '日本語版 Pokémon Showdown',
+			body: '新しい Pokémon Showdown クライアントは日本語で利用できます。',
+			button: '新しいクライアントを試す'
+		},
+		'zh-cn': {
+			title: '简体中文版 Pokémon Showdown',
+			body: '新版 Pokémon Showdown 客户端支持简体中文。',
+			button: '试用新版客户端'
+		},
+		'zh-tw': {
+			title: '繁體中文版 Pokémon Showdown',
+			body: '新版 Pokémon Showdown 用戶端支援繁體中文。',
+			button: '試用新版用戶端'
+		},
+		ko: {
+			title: '한국어 Pokémon Showdown',
+			body: '새 Pokémon Showdown 클라이언트는 한국어를 지원합니다.',
+			button: '새 클라이언트 사용해 보기'
+		}
+	};
+
 	this.MainMenuRoom = this.Room.extend({
 		type: 'mainmenu',
 		tinyWidth: 340,
@@ -60,7 +123,8 @@
 
 			buf += '<div class="menugroup"><p><button class="button mainmenu4 onlineonly disabled" name="joinRoom" value="battles">Watch a battle</button></p>';
 			buf += '<p><button class="button mainmenu5 onlineonly disabled" name="finduser">Find a user</button></p>';
-			buf += '<p><button class="button mainmenu6 onlineonly disabled" name="send" value="/friends">Friends</button></p></div>';
+			buf += '<p><button class="button mainmenu6 onlineonly disabled" name="send" value="/friends">Friends</button></p>';
+			buf += '<p><button class="button mainmenu7" name="joinRoom" value="resources">Info & Resources</button></p></div>';
 
 			this.$('.mainmenu').html(buf);
 
@@ -76,6 +140,17 @@
 
 			this.$activityMenu = this.$('.activitymenu');
 			this.$pmBox = this.$activityMenu.find('.pmbox');
+
+			var newClientMessage = NEW_CLIENT_LANGUAGE_MESSAGES[Dex.text.getBrowserLanguage()];
+			if (newClientMessage) {
+				this.addPseudoPM({
+					title: newClientMessage.title,
+					html: '<div class="pad"><p>' + newClientMessage.body + '</p>' +
+						'<p><a class="button" href="/newclient">' + newClientMessage.button + '</a></p></div>',
+					cssClass: 'newclient-embed',
+					noMinimize: true
+				});
+			}
 
 			app.on('init:formats', this.updateFormats, this);
 			this.updateFormats();
@@ -712,26 +787,25 @@
 			var $searchForm = $('.mainmenu button.big').closest('form');
 			var $formatButton = $searchForm.find('button[name=format]');
 			var $teamButton = $searchForm.find('button[name=team]');
-			if (!this.searching || $.isArray(this.searching) && !this.searching.length) {
-				var format = $formatButton.val();
-				var teamIndex = $teamButton.val();
-				$formatButton.replaceWith(this.renderFormats(format));
-				$teamButton.replaceWith(this.renderTeams(format, teamIndex));
+			var format = $formatButton.val();
+			var teamIndex = $teamButton.val();
+			$formatButton.replaceWith(this.renderFormats(format));
+			$teamButton.replaceWith(this.renderTeams(format, teamIndex));
 
-				$searchForm.find('button.big').html('<strong>Battle!</strong><br /><small>Find a random opponent</small>').removeClass('disabled');
-				$searchForm.find('p.cancel').remove();
-			} else {
-				$formatButton.addClass('preselected')[0].disabled = true;
-				$teamButton.addClass('preselected')[0].disabled = true;
-				$searchForm.find('button.big').html('<strong><i class="fa fa-refresh fa-spin"></i> Searching...</strong>').addClass('disabled');
+			$searchForm.find('button.big').html('<strong>Battle!</strong><br /><small>Find a random opponent</small>').removeClass('disabled');
+			$searchForm.find('p.cancel, p.searching').remove();
+			if (this.searching && !($.isArray(this.searching) && !this.searching.length)) {
+				$searchForm.find('button.big small').text('Search multiple formats');
+				var buf = '<p class="searching"><label class="label">Searching:</label>';
 				var searchEntries = $.isArray(this.searching) ? this.searching : [this.searching];
 				for (var i = 0; i < searchEntries.length; i++) {
 					var format = searchEntries[i].format || searchEntries[i];
+					buf += '<button name="cancelSearch" value="' + BattleLog.escapeHTML(format) + '" class="button" style="width:100%;margin-bottom:2px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis"><i class="fa fa-refresh fa-spin"></i> ' + BattleLog.escapeHTML(BattleLog.formatName(format).replace(/^\[[^\]]*\] /, '')) + ' <i class="fa fa-times-circle"></i></button>';
 					if (format.substr(0, 4) === 'gen5' && !Dex.loadedSpriteData['bw']) {
 						Dex.loadSpriteData('bw');
-						break;
 					}
 				}
+				$searchForm.prepend(buf + '</p>');
 			}
 
 			var $searchGroup = $searchForm.closest('.menugroup');
@@ -1130,6 +1204,10 @@
 			var format = $formatButton.val();
 			var teamIndex = $teamButton.val();
 			var team = null;
+			if ($.isArray(this.searching) && this.searching.indexOf(format) >= 0) {
+				app.addPopupMessage("You're already searching for a " + BattleLog.formatName(format) + " battle.");
+				return;
+			}
 			if (Storage.teams[teamIndex]) team = Storage.teams[teamIndex];
 			if (!window.BattleFormats[format].team && (teamIndex === '' || !team)) {
 				if (Storage.teams) {
@@ -1143,19 +1221,18 @@
 			$formatButton.addClass('preselected')[0].disabled = true;
 			$teamButton.addClass('preselected')[0].disabled = true;
 			$searchForm.find('button.big').html('<strong><i class="fa fa-refresh fa-spin"></i> Connecting...</strong>').addClass('disabled');
-			$searchForm.append('<p class="cancel buttonbar"><button name="cancelSearch" class="button">Cancel</button></p>');
+			$searchForm.append('<p class="cancel buttonbar"><button name="cancelSearch" value="' + BattleLog.escapeHTML(format) + '" class="button">Cancel</button></p>');
 
 			var self = this;
-			app.sendTeam(team, function () {
-				self.searchDelay = setTimeout(function () {
+			self.searchDelay = setTimeout(function () {
+				app.sendTeam(team, function () {
 					app.send(self.adjustPrivacy($privacyCheckbox.is(':checked')) + '/search ' + format);
-				}, 3000);
-			});
+				});
+			}, 3000);
 		},
-		cancelSearch: function () {
+		cancelSearch: function (format) {
 			clearTimeout(this.searchDelay);
-			app.send('/cancelsearch');
-			this.searching = false;
+			app.send('/cancelsearch ' + format);
 			this.updateSearch();
 		},
 		finduser: function () {
@@ -1282,7 +1359,7 @@
 				this.open = Storage.prefs('openformats') || {
 					"Infinite Fusion: Regional Dex": true, "Infinite Fusion: Doubles": true, "Infinite Fusion: National Dex": true, "Infinite Fusion: Extras": true, "Draft": false,
 					"Super Mariomon!": true, "Insurgence Formats": true, "Uranium Formats": true, "Infinity Formats": true, "Soulstones Formats": true, "Rejuvenation Formats": true,
-					"Pokéathlon: Full Dex": true, "Pokéathlon: Gen 2": true, "Pokéathlon: Gen 1": true, "Pokéathlon: Doubles": true, "Pokéathlon: Extras": true, "Chaos": true, "Chaos: Extras": true,
+					"Pokéathlon: Full Dex": true, "Pokéathlon: Gen 2": true, "Pokéathlon: Gen 1": true, "Pokéathlon: Doubles": true, "Pokéathlon: Extras": true, "Chaos": true, "Chaos: Extras": true
 				};
 			}
 			if (!this.starred) this.starred = Storage.prefs('starredformats') || {};
@@ -1291,6 +1368,13 @@
 			this.selectType = data.selectType;
 			this.$form = this.sourceEl.closest('form');
 			if (!this.selectType) this.selectType = (this.$form.data('search') ? 'search' : 'challenge');
+			if (this.selectType === 'search') {
+				this.listenTo(app, 'response:ladderqueue', function (ladderQueue) {
+					this.ladderQueue = ladderQueue;
+					this.update();
+				});
+				app.send('/cmd ladderqueue');
+			}
 
 			var html = '<p><ul class="popupmenu"><li><input name="search" placeholder="Search formats" value="' + this.search + '" class="textbox autofocus" autocomplete="off" />';
 			html += '</li></ul></p><span name="formats">';
@@ -1303,6 +1387,9 @@
 			var curFormat = data.format;
 			var bufs = [];
 			var curBuf = 0;
+			var ladderQueue = this.ladderQueue || {};
+			var totalSearches = 0;
+			for (var i in ladderQueue) totalSearches += ladderQueue[i];
 			if (this.selectType === 'watch' && !this.search) {
 				bufs[1] = '<li><button name="selectFormat" value="" class="option' + (curFormat === '' ? ' cur' : '') + '">(All formats)</button></li>';
 			}
@@ -1322,7 +1409,8 @@
 				var formatName = BattleLog.escapeFormat(BattleFormats[i].id);
 				bufs[1] += (
 					'<li><button name="selectFormat" value="' + i +
-					'" class="option' + (curFormat === i ? ' cur' : '') + '">' + formatName +
+					'" class="option' + (curFormat === i ? ' cur' : '') + '"' +
+					(ladderQueue[i] ? ' style="background:hsl(120,' + Math.round(100 * ladderQueue[i] / totalSearches) + '%,30%);color:#FFF"' : '') + '>' + formatName +
 					'<i class="fa fa-star" style="float: right; color: #FFD700; text-shadow: 0 0 1px #000;"></i></button></li>'
 				);
 			}
@@ -1353,7 +1441,8 @@
 				var formatName = BattleLog.escapeFormat(format.id);
 				bufs[curBuf] += (
 					'<li><button name="selectFormat" value="' + i +
-					'" class="option' + (curFormat === i ? ' cur' : '') + '">' + formatName +
+					'" class="option' + (curFormat === i ? ' cur' : '') + '"' +
+					(ladderQueue[i] ? ' style="background:hsl(120,' + Math.round(100 * ladderQueue[i] / totalSearches) + '%,30%);color:#FFF"' : '') + '>' + formatName +
 					'<i class="fa fa-star subtle" style="float: right;"></i></button></li>'
 				);
 			}

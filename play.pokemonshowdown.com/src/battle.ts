@@ -137,9 +137,6 @@ export class Pokemon implements PokemonDetails, PokemonHealth {
 		this.searchid = data.searchid;
 
 		this.sprite = side.battle.scene.addPokemonSprite(this);
-
-		this.innates = data.innates;
-		this.baseInnates = data.baseInnates;
 	}
 
 	isActive() {
@@ -378,7 +375,7 @@ export class Pokemon implements PokemonDetails, PokemonHealth {
 			if (ppUsed[1] < 0) ppUsed[1] = 0;
 			const move = this.side.battle.dex.moves.get(entry[0]);
 			let maxpp = (move.pp === 1 || move.noPPBoosts ? move.pp : move.pp * 8 / 5);
-			if (this.side.battle.tier.includes('Champions')) {
+			if (this.side.battle.format.isChampions) {
 				maxpp = move.pp > 20 ? 20 : move.pp;
 				maxpp = move.pp === 1 || move.noPPBoosts ? move.pp : (move.pp / 5 + 1) * 4;
 			}
@@ -519,29 +516,14 @@ export class Pokemon implements PokemonDetails, PokemonHealth {
 	}
 	getTypes(serverPokemon?: ServerPokemon, preterastallized = false): [readonly Dex.TypeName[], Dex.TypeName | ''] {
 		let types: readonly Dex.TypeName[];
-		if (this.fusion) {
-
-			const fusionSpecies = Dex.mod('gen9infinitefusion').species.get(this.fusion);
-			const species = Dex.mod('gen9infinitefusion').species.get(this.speciesForme);
-
-			let speciesTypes = species.types;
-			let fusionTypes = fusionSpecies.types;
-
-			if (speciesTypes.length === 2 && speciesTypes.includes('Flying') && speciesTypes.includes('Normal')) speciesTypes = ['Flying'];
-			if (fusionTypes.length === 2 && fusionTypes.includes('Flying') && fusionTypes.includes('Normal')) fusionTypes = ['Flying'];
-
-			const typesSet = new Set([speciesTypes[0]]);
-			const bonusType = fusionTypes[fusionTypes.length - 1];
-			typesSet.add(bonusType);
-			if (fusionTypes.length === 2 && typesSet.size === 1) typesSet.add(fusionTypes[0]);
-			return [Array.from(typesSet), ''];
-		}
 		if (!preterastallized && this.terastallized && this.terastallized !== 'Stellar') {
 			types = [this.terastallized as Dex.TypeName];
 		} else if (this.volatiles.typechange) {
 			types = this.volatiles.typechange[1].split('/');
 		} else if (this.moddedType.length) {
 			types = this.moddedType;
+		} else if (this.fusion) {
+			types = Dex.getFusionTypes(this.getSpecies(serverPokemon).types, this.side.battle.dex.species.get(this.fusion).types);
 		} else {
 			types = this.getSpecies(serverPokemon).types;
 		}
@@ -925,7 +907,7 @@ export class Side {
 		this.battle.lastMove = 'switch-in';
 		const effect = Dex.getEffect(kwArgs.from);
 		if (['batonpass', 'zbatonpass', 'shedtail', 'grabandgo'].includes(effect.id)) {
-			pokemon.copyVolatileFrom(this.lastPokemon!, effect.id === 'shedtail' ? 'shedtail' : effect.id ==='batonpass' ? 'batonpass': 'grabandgo');
+			pokemon.copyVolatileFrom(this.lastPokemon!, effect.id === 'shedtail' ? 'shedtail' : effect.id === 'batonpass' ? 'batonpass' : 'grabandgo');
 		} else if (this.battle.tier.includes(`Relay Race`) && !effect.id) {
 			if (this.lastPokemon && !this.lastPokemon.fainted) pokemon.copyVolatileFrom(this.lastPokemon, 'batonpass');
 		}
@@ -1001,7 +983,7 @@ export class Side {
 		pokemon.statusData.toxicTurns = 0;
 		pokemon.strangeAnatomyTurns = 0;
 		if (this.battle.gen === 5) pokemon.statusData.sleepTurns = 0;
-		if (this.battle.tier.includes('Champions')) {
+		if (this.battle.format.isChampions) {
 			pokemon.timesAttacked = 0;
 		}
 		this.lastPokemon = pokemon;
@@ -1078,8 +1060,6 @@ export interface PokemonDetails {
 	fusion: string;
 	altsprite: string;
 	searchid: string;
-	innates?: string[];
-	baseInnates?: string[];
 }
 export interface PokemonHealth {
 	hp: number;
@@ -1117,6 +1097,8 @@ export interface ServerPokemon extends PokemonDetails, PokemonHealth {
 	teraType: string;
 	/** falsy if the pokemon is not terastallized, otherwise it is the Tera Type of the Pokemon */
 	terastallized: string;
+	innates?: string[];
+	baseInnates?: string[];
 }
 
 export class Battle {
@@ -1199,6 +1181,7 @@ export class Battle {
 	teamPreviewCount = 0;
 	speciesClause = false;
 	tier = '';
+	format = Dex.formats.get('');
 	gameType: 'singles' | 'doubles' | 'triples' | 'multi' | 'freeforall' | 'rotation' = 'singles';
 	compatMode = true;
 	rated: string | boolean = false;
@@ -1386,6 +1369,7 @@ export class Battle {
 		// activity queue state
 		this.activeMoveIsSpread = null;
 		this.currentStep = 0;
+		this.preemptStepQueue = [];
 		this.resetTurnsSinceMoved();
 		this.nextStep();
 	}
@@ -1476,7 +1460,7 @@ export class Battle {
 		if (turnNum === this.turn + 1) {
 			this.endLastTurnPending = true;
 		}
-		if (this.turn && !this.usesUpkeep) this.updateTurnCounters(); // for compatibility with old replays
+		if (this.turn > 0 && !this.usesUpkeep) this.updateTurnCounters(); // for compatibility with old replays
 		this.turn = turnNum;
 		this.started = true;
 
@@ -1535,7 +1519,27 @@ export class Battle {
 			'mist', 'lightscreen', 'reflect', 'spikes', 'safeguard', 'tailwind', 'toxicspikes', 'permafrost', 'livewire', 'hotcoals', 'stealthrock', 'waterpledge', 'firepledge', 'grasspledge', 'stickyweb', 'auroraveil', 'gmaxsteelsurge', 'gmaxcannonade', 'gmaxvinelash', 'gmaxwildfire',
 		];
 		if (this.gameType === 'freeforall') {
-			// TODO: Add FFA support
+			// Court Change rotates side conditions clockwise in a free-for-all
+
+			// the list of all sides in clockwise order
+			const sides = [this.sides[0], this.sides[3], this.sides[1], this.sides[2]];
+			const temp: { [k: number]: Side["sideConditions"] } = { 0: {}, 1: {}, 2: {}, 3: {} };
+			for (const side of sides) {
+				for (const id in side.sideConditions) {
+					if (!sideConditions.includes(id)) continue;
+					temp[side.n][id] = side.sideConditions[id];
+					side.removeSideCondition(id);
+				}
+			}
+			for (let i = 0; i < 4; i++) {
+				const sourceSide = sides[i]; // the current side in rotation
+				const sourceSideConditions = temp[sourceSide.n];
+				const targetSide = sides[(i + 1) % 4]; // the next side in rotation
+				for (const id in sourceSideConditions) {
+					targetSide.sideConditions[id] = sourceSideConditions[id];
+					this.scene.addSideCondition(targetSide.n, id as ID);
+				}
+			}
 			return;
 		}
 		let side1 = this.sides[0];
@@ -3394,15 +3398,9 @@ export class Battle {
 		output.gender = '';
 		output.ident = (!isTeamPreview ? pokemonid : '');
 		output.searchid = (!isTeamPreview ? `${pokemonid}|${details}` : '');
-		output.innates = [];
-		output.baseInnates = [];
 		let splitDetails = details.split(', ');
-		if (splitDetails[splitDetails.length - 1].startsWith('innates: ')) {
-			output.innates = splitDetails[splitDetails.length - 1].slice(9).split('-');
-			splitDetails.pop();
-		}
-		if (splitDetails[splitDetails.length - 1].startsWith('baseInnates: ')) {
-			output.baseInnates = splitDetails[splitDetails.length - 1].slice(13).split('-');
+		if (splitDetails[splitDetails.length - 1].startsWith('tera:')) {
+			output.terastallized = splitDetails[splitDetails.length - 1].slice(5);
 			splitDetails.pop();
 		}
 		if (splitDetails[splitDetails.length - 1].startsWith('alt: ')) {
@@ -3411,10 +3409,6 @@ export class Battle {
 		}
 		if (splitDetails[splitDetails.length - 1].startsWith('fusion: ')) {
 			output.fusion = splitDetails[splitDetails.length - 1].slice(8);
-			splitDetails.pop();
-		}
-		if (splitDetails[splitDetails.length - 1].startsWith('tera:')) {
-			output.terastallized = splitDetails[splitDetails.length - 1].slice(5);
 			splitDetails.pop();
 		}
 		if (splitDetails[splitDetails.length - 1] === 'shiny') {
@@ -3586,6 +3580,18 @@ export class Battle {
 			this.nextStep();
 		}
 	}
+	addBatch(commands: string[]) {
+		for (const command of commands) {
+			switch (command.split('|', 2)[1]) {
+			case 'c': case 'c:': case 'chat': case 'chatmsg': case 'inactive':
+				this.run(command, true);
+				this.preemptStepQueue.push(command);
+				break;
+			}
+			this.stepQueue.push(command);
+		}
+		this.add();
+	}
 	/**
 	 * PS's preempt system is intended to show chat messages immediately,
 	 * instead of waiting for the battle to get to the point where the
@@ -3624,6 +3630,7 @@ export class Battle {
 		}
 		case 'tier': {
 			this.tier = args[1];
+			this.format = Dex.formats.get(this.tier);
 			if (this.tier.endsWith('Random Battle')) {
 				this.speciesClause = true;
 			}
@@ -3935,6 +3942,7 @@ export class Battle {
 		case 'gen': {
 			this.gen = parseInt(args[1], 10);
 			this.dex = Dex.forGen(this.gen);
+			this.scene.updateGen();
 			this.log(args);
 			break;
 		}
@@ -4023,7 +4031,8 @@ export class Battle {
 			}
 		}
 
-		if (nextLine.startsWith('|start') || args[0] === 'teampreview') {
+		// Replays before clicking "Play" will pause themselves on the line before `|start`
+		if (nextLine.startsWith('|start') || args[0] === 'start' || args[0] === 'teampreview') {
 			if (this.turn === -1) {
 				this.turn = 0;
 				this.scene.updateBgm();

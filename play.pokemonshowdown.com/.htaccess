@@ -8,7 +8,7 @@ AddType application/x-tgz .tgz
 AddType application/x-chrome-extension .crx
 AddType application/x-web-app-manifest+json .webapp
 
-<filesMatch "^caches/index-(old|new)\.html$">
+<filesMatch "^index-(old|new|test)\.html$">
   FileETag None
   <ifModule mod_headers.c>
      Header unset ETag
@@ -19,7 +19,7 @@ AddType application/x-web-app-manifest+json .webapp
 </filesMatch>
 
 <filesMatch "colors\.json$">
-    Header set Access-Control-Allow-Origin "*" 
+    Header set Access-Control-Allow-Origin "*"
     Header set Access-Control-Allow-Methods "GET,POST,OPTIONS"
 </filesMatch>
 
@@ -105,6 +105,8 @@ RewriteRule ^(.*) https://play.pokemonshowdown.com/$1 [R=301,L]
 RewriteRule ^style/fonts?/.*?\.(eot|svg|ttf|woff|woff2)$ - [E=SAFE_RESOURCE:1]
 RewriteRule ^data\/.*\.js(?:on)?$ - [E=SAFE_RESOURCE:1]
 Header set Access-Control-Allow-Origin * env=SAFE_RESOURCE
+Header set Access-Control-Allow-Methods "GET,POST,OPTIONS"
+Header set Access-Control-Allow-Headers "Content-Type, X-Requested-With"
 
 # Redirect old battles to their corresponding replay
 # RewriteCond %{HTTP_HOST} ^play\.pokemonshowdown\.com$ [NC]
@@ -123,10 +125,13 @@ RewriteCond %{DOCUMENT_ROOT}/$1 !-d
 RewriteRule ^([A-Za-z0-9][A-Za-z0-9-]*)/$ /$1 [R=301,L]
 
 # Anything that looks like a roomid: connect to the server
+RewriteCond %{DOCUMENT_ROOT}/caches/index-test.html -f
+RewriteRule ^index-test\.html$ ./caches/index-test.html [L,E=INDEX_PAGE:1]
+RewriteRule ^oldclient$ ./caches/index-old.html [L,E=INDEX_PAGE:1]
 RewriteCond %{HTTP_COOKIE} ^.*preactalpha=1.*$
 RewriteRule ^(|[A-Za-z0-9][A-Za-z0-9-]*)$ ./caches/index-new.html [L,E=INDEX_PAGE:1]
 RewriteRule ^$ - [E=INDEX_PAGE:1]
-RewriteRule ^(preactalpha|preactbeta|beta|dev|development|login|users|(dm|challenge|user|viewuser|ladder)-[a-z0-9-]*)$ ./caches/index-new.html [L,E=INDEX_PAGE:1]
+RewriteRule ^(newclient|preactalpha|preactbeta|beta|dev|development|login|users|(dm|challenge|user|viewuser|ladder)-[a-z0-9-]*)$ ./caches/index-new.html [L,E=INDEX_PAGE:1]
 RewriteRule ^(|[A-Za-z0-9][A-Za-z0-9-]*)$ ./caches/index-old.html [L,E=INDEX_PAGE:1]
 
 # RewriteRule ^crossprotocol\.html$ - [E=CROSSPROTOCOL:1]

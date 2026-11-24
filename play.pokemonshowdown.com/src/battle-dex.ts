@@ -21,13 +21,13 @@
 import { Pokemon, type ServerPokemon } from "./battle";
 import {
 	BattleAvatarNumbers, BattleBaseSpeciesChart, BattlePokemonIconIndexes, BattlePokemonIconIndexesLeft,
-	Ability, Item, Move, Species, PureEffect, type ID, type NatureEffect, type Type,
+	Ability, Item, Move, Species, PureEffect, BattleFormat, type FormatData, type ID, type NatureEffect, type Type,
 } from "./battle-dex-data";
 import type * as DexData from "./battle-dex-data";
 import type { Teams } from "./battle-teams";
 import { Config } from "./client-main";
 import { BattleLog } from "./battle-log";
-import { SplitNames } from './battle-split-names';
+import { getFusionName } from '../../caches/pokemon-showdown/data/split-names';
 
 export declare namespace Dex {
 	/* eslint-disable @typescript-eslint/no-shadow */
@@ -35,6 +35,7 @@ export declare namespace Dex {
 	export type Item = DexData.Item;
 	export type Move = DexData.Move;
 	export type Species = DexData.Species;
+	export type Format = DexData.BattleFormat;
 	export type Type = DexData.Type;
 	export type Nature = DexData.Nature;
 	export type PureEffect = DexData.PureEffect;
@@ -138,12 +139,6 @@ interface ClientDexText {
 	languages(): Language[];
 	findLanguage(lang: string): Language | null;
 	get(effect: TranslatableEffect, lang?: string): ClientEffectTextEntry;
-	typeName(name: string, lang?: string): string;
-	natureName(name: string, lang?: string): string;
-	categoryName(name: string, lang?: string): string;
-	genderName(name: string, lang?: string): string;
-	eggGroupName(name: string, lang?: string): string;
-	colorName(name: string, lang?: string): string;
 }
 
 function translate(strings: TemplateStringsArray, ...values: unknown[]): string;
@@ -271,17 +266,13 @@ type OtherNameTable =
 	'StatNames' | 'StatMediumNames' | 'StatShortNames';
 
 function getOtherName(table: OtherNameTable, name: string, lang: string): string {
-	let id: string = toID(name);
-	if (table === 'GenderNames') {
-		id = ({ m: 'male', f: 'female', n: 'genderless' } as Record<string, string>)[id] || id;
-	}
-	return BattleText[lang]?.[table]?.[id] || BattleText.en?.[table]?.[id] || name;
+	return BattleText[lang]?.[table]?.[name] || BattleText.en?.[table]?.[name] || name;
 }
 
 /**
  * Does actually match ClientEffectTextEntry exactly.
  */
-function getTextEntry(effect: TranslatableEffect, gen: number, lang: string): ClientEffectTextEntry {
+function getTextEntry(effect: TranslatableEffect, modid: string, gen: number, lang: string): ClientEffectTextEntry {
 	if (effect.effectType === 'Species') {
 		const entry = BattleText[lang]?.Pokedex?.[effect.id] || BattleText.en?.Pokedex?.[effect.id];
 		return {
@@ -302,7 +293,7 @@ function getTextEntry(effect: TranslatableEffect, gen: number, lang: string): Cl
 	const entry = {} as ClientEffectTextEntry;
 	assignTextFields(entry, english);
 	assignTextFields(entry, localized);
-	for (let i = 1; i <= 8; i++) {
+	for (let i = 1; i < Dex.gen; i++) {
 		const genName = `gen${i}`;
 		const englishGen = english[genName];
 		const localizedGen = localized[genName];
@@ -313,22 +304,22 @@ function getTextEntry(effect: TranslatableEffect, gen: number, lang: string): Cl
 			entry[genName] = genEntry;
 		}
 	}
-	for (let i = 8; i >= gen; i--) {
+	for (let i = Dex.gen - 1; i >= gen; i--) {
 		const genName = `gen${i}`;
 		const englishGen = english[genName];
 		const localizedGen = localized[genName];
 		if (englishGen && typeof englishGen === 'object') assignTextFields(entry, englishGen);
 		if (localizedGen && typeof localizedGen === 'object') assignTextFields(entry, localizedGen);
 	}
-	const fallback = effect as unknown as { desc?: string, shortDesc?: string };
+	if (!/^gen\d+$/.test(modid)) {
+		const englishMod = english[modid];
+		const localizedMod = localized[modid];
+		if (englishMod && typeof englishMod === 'object') assignTextFields(entry, englishMod);
+		if (localizedMod && typeof localizedMod === 'object') assignTextFields(entry, localizedMod);
+	}
 	if (typeof entry.name !== 'string') entry.name = effect.name;
-	if (typeof entry.desc !== 'string') {
-		entry.desc = fallback.desc || fallback.shortDesc ||
-			(typeof entry.shortDesc === 'string' ? entry.shortDesc : '');
-	}
-	if (typeof entry.shortDesc !== 'string') {
-		entry.shortDesc = fallback.shortDesc || fallback.desc || entry.desc;
-	}
+	if (typeof entry.desc !== 'string') entry.desc = typeof entry.shortDesc === 'string' ? entry.shortDesc : '';
+	if (typeof entry.shortDesc !== 'string') entry.shortDesc = entry.desc;
 	return entry;
 }
 
@@ -456,6 +447,7 @@ export interface SpriteData {
 	isFrontSprite?: boolean;
 	cryurl?: string;
 	shiny?: boolean;
+	flip?: boolean;
 }
 
 export interface TeambuilderSpriteData {
@@ -524,26 +516,32 @@ export const Dex = new class implements ModdedDex {
 		if (!gen) return this;
 		return this.mod(`gen${gen}` as ID);
 	}
+	formats = {
+		cache: Object.create(null) as { [id: string]: BattleFormat },
+		get(name: string): BattleFormat {
+			const id = toID(name);
+			this.cache[id] ||= new BattleFormat(name, window.BattleFormats?.[id]);
+			return this.cache[id];
+		},
+		load(data: { [id: string]: FormatData }): { [id: string]: BattleFormat } {
+			// Update in-place so retained references get updated too
+			for (const id in this.cache) {
+				Object.assign(this.cache[id], new BattleFormat(this.cache[id].name, data[id]));
+			}
+			const formats: { [id: string]: BattleFormat } = {};
+			for (const id in data) {
+				const format = this.cache[id] ||= new BattleFormat(data[id].name, data[id]);
+				formats[id] = format;
+			}
+			return formats;
+		},
+	};
 	formatGen(format: string) {
-		const formatid = toID(format);
-		if (!formatid) return Dex.gen;
-		if (!formatid.startsWith('gen')) return 6;
-		return parseInt(formatid.charAt(3)) || Dex.gen;
+		return this.formats.get(format).gen;
 	}
 	forFormat(format: string) {
-		let dex = Dex.forGen(Dex.formatGen(format));
-
-		const formatid = toID(format).slice(4);
-		if (dex.gen === 7 && formatid.includes('letsgo')) {
-			dex = Dex.mod('gen7letsgo' as ID);
-		}
-		if (dex.gen === 8 && formatid.includes('bdsp')) {
-			dex = Dex.mod('gen8bdsp' as ID);
-		}
-		if (dex.gen === 9 && formatid.includes('champions')) {
-			dex = Dex.mod('champions' as ID);
-		}
-		return dex;
+		const mod = this.formats.get(format).mod;
+		return this.mod((mod === 'champions' && window.Formats?.[toID(format)]?.mod || mod) as ID);
 	}
 
 	resolveAvatar(avatar: string): string {
@@ -555,7 +553,7 @@ export const Dex = new class implements ModdedDex {
 		}
 		if (avatar.includes('.')) {
 			// custom avatar served by the server
-			return 'https://sim.pokeathlon.com/avatars/' + encodeURIComponent(avatar).replace(/\%3F/g, '?');
+			return 'https://sim.pokeathlon.com/avatars/' + encodeURIComponent(avatar).replace(/%3F/g, '?');
 		}
 		return Dex.resourcePrefix + 'sprites/trainers/' + Dex.sanitizeName(avatar || 'unknown') + '.png';
 	}
@@ -613,15 +611,8 @@ export const Dex = new class implements ModdedDex {
 			return TEXT_LANGUAGE_TABLE[lang.toLowerCase()] || TEXT_LANGUAGE_TABLE[toID(lang)] || null;
 		},
 		get: (effect: TranslatableEffect, lang = Dex.text.getLanguage()) => {
-			return getTextEntry(effect, 9, lang);
+			return getTextEntry(effect, 'gen9', 9, lang);
 		},
-		typeName: (name, lang = Dex.text.getLanguage()) => getOtherName('TypeNames', name, lang),
-		natureName: (name, lang = Dex.text.getLanguage()) => getOtherName('NatureNames', name, lang),
-		categoryName: (name, lang = Dex.text.getLanguage()) =>
-			BattleText[lang]?.Tags?.[toID(name)]?.name || BattleText.en?.Tags?.[toID(name)]?.name || name,
-		genderName: (name, lang = Dex.text.getLanguage()) => getOtherName('GenderNames', name, lang),
-		eggGroupName: (name, lang = Dex.text.getLanguage()) => getOtherName('EggGroupNames', name, lang),
-		colorName: (name, lang = Dex.text.getLanguage()) => getOtherName('ColorNames', name, lang),
 	};
 
 	getShortName(name: string) {
@@ -767,6 +758,15 @@ export const Dex = new class implements ModdedDex {
 			if (data && typeof data.exists === 'boolean') {
 				species = data;
 			} else {
+				if (data?.isCosmeticForme) {
+					data = {
+						...this.species.get(data.baseSpecies),
+						...data,
+						baseForme: "",
+						otherFormes: null,
+						cosmeticFormes: null,
+					};
+				}
 				if (!data) data = { exists: false };
 				if (!data.tier && id.endsWith('totem')) {
 					data.tier = this.species.get(id.slice(0, -5)).tier;
@@ -975,7 +975,7 @@ export const Dex = new class implements ModdedDex {
 		}
 
 		if (fusionData.extension !== '') {
-			spriteData.url = 'https://play.pokeathlon.com/sprites/fusion-sprites/' + fusionData.extension + '.png';
+			spriteData.url = Dex.resourcePrefix + 'sprites/fusion-sprites/' + fusionData.extension + '.png';
 			spriteData.pixelated = true;
 			spriteData.gen = 5;
 			if (!spriteData.isFrontSprite) spriteData.flip = true;
@@ -983,12 +983,12 @@ export const Dex = new class implements ModdedDex {
 		}
 
 		for (let fangame of ["Infinite Fusion", "Pokeathlon", "Insurgence", "Uranium", "Infinity", "Mariomon", "Soulstones", "Rejuvenation"]) {
-			if (species.tags.includes(fangame)) {
-				if (species.eggGroups.includes("Digimon")) spriteData.url = 'https://play.pokeathlon.com/sprites/fangame-sprites/infinity/digimon/' + (spriteData.isFrontSprite ? 'front' : 'back') + (spriteData.shiny ? '-shiny' : '') + '/' + species.id + '.png';
+			if (species.eggGroups.includes(fangame)) {
+				if (species.eggGroups.includes("Digimon")) spriteData.url = Dex.resourcePrefix + 'sprites/fangame-sprites/infinity/digimon/' + (spriteData.isFrontSprite ? 'front' : 'back') + (spriteData.shiny ? '-shiny' : '') + '/' + species.id + '.png';
 				else if (species.eggGroups.includes("Mariomon") && (Dex.afdMode || options.afd)) {
-					spriteData.url = 'https://play.pokeathlon.com/sprites/fangame-sprites/mariomon/afd-front' + (spriteData.shiny ? '-shiny' : '') + '/' + species.id + '.gif';
+					spriteData.url = Dex.resourcePrefix + 'sprites/fangame-sprites/mariomon/afd-front' + (spriteData.shiny ? '-shiny' : '') + '/' + species.id + '.gif';
 					if (!spriteData.isFrontSprite) spriteData.flip = true;
-				} else spriteData.url = 'https://play.pokeathlon.com/sprites/fangame-sprites/' + toID(fangame) + '/' + (!["Infinite Fusion"].includes(fangame) ? (spriteData.isFrontSprite ? 'front' : 'back') + (spriteData.shiny ? '-shiny' : '') + '/' : '') + species.id + (["Pokeathlon", "Uranium"].includes(fangame) ? '.gif' : '.png');
+				} else spriteData.url = Dex.resourcePrefix + 'sprites/fangame-sprites/' + toID(fangame) + '/' + (!["Infinite Fusion"].includes(fangame) ? (spriteData.isFrontSprite ? 'front' : 'back') + (spriteData.shiny ? '-shiny' : '') + '/' : '') + species.id + (["Pokeathlon", "Uranium"].includes(fangame) ? '.gif' : '.png');
 				spriteData.pixelated = true;
 				spriteData.gen = 5;
 				if (fangame === "Mariomon") {
@@ -1006,19 +1006,11 @@ export const Dex = new class implements ModdedDex {
 		spriteData.gen = Math.max(graphicsGen, Math.min(species.gen, 5));
 		const baseDir = ['', 'gen1', 'gen2', 'gen3', 'gen4', 'gen5', '', '', '', ''][spriteData.gen];
 
-		let animationData = null;
 		let miscData = null;
 		let speciesid = species.id;
 		if (species.isTotem) speciesid = toID(name);
-		if (baseDir === '' && window.BattlePokemonSprites) {
-			animationData = BattlePokemonSprites[speciesid];
-		}
-		if (baseDir === 'gen5' && window.BattlePokemonSpritesBW) {
-			animationData = BattlePokemonSpritesBW[speciesid];
-		}
 		if (window.BattlePokemonSprites) miscData = BattlePokemonSprites[speciesid];
 		if (!miscData && window.BattlePokemonSpritesBW) miscData = BattlePokemonSpritesBW[speciesid];
-		if (!animationData) animationData = {};
 		if (!miscData) miscData = {};
 
 		if (miscData.num !== 0 && miscData.num > -5000) {
@@ -1069,17 +1061,30 @@ export const Dex = new class implements ModdedDex {
 			spriteData.cryurl += '.mp3';
 		}
 
-		if (animationData[facing + 'f'] && options.gender === 'F') facing += 'f';
-		let allowAnim = !Dex.prefs('noanim') && !Dex.prefs('nogif');
-		if (allowAnim && spriteData.gen >= 6) spriteData.pixelated = false;
-		if (allowAnim && animationData[facing] && spriteData.gen >= 5) {
-			if (facing.endsWith('f')) name += '-f';
-			dir = baseDir + 'ani' + dir;
-
-			spriteData.w = animationData[facing].w;
-			spriteData.h = animationData[facing].h;
-			spriteData.url += dir + '/' + name + '.gif';
-		} else {
+		let animatedSprite = false;
+		if (!Dex.prefs('noanim') && !Dex.prefs('nogif') && spriteData.gen >= 5) {
+			const animationArray: [AnyObject, string][] = [];
+			if (baseDir === '' && window.BattlePokemonSprites) {
+				animationArray.push([BattlePokemonSprites[speciesid], '']);
+			}
+			if (window.BattlePokemonSpritesBW) {
+				animationArray.push([BattlePokemonSpritesBW[speciesid], 'gen5']);
+			}
+			for (const [animationData, animDir] of animationArray) {
+				if (!animationData) continue;
+				if (animationData[facing + 'f'] && options.gender === 'F') facing += 'f';
+				if (!animationData[facing]) continue;
+				if (facing.endsWith('f')) name += '-f';
+				if (spriteData.gen >= 6) spriteData.pixelated = false;
+				dir = animDir + 'ani' + dir;
+				spriteData.w = animationData[facing].w;
+				spriteData.h = animationData[facing].h;
+				spriteData.url += dir + '/' + name + '.gif';
+				animatedSprite = true;
+				break;
+			}
+		}
+		if (!animatedSprite) {
 			// There is no entry or enough data in pokedex-mini.js
 			// Handle these in case-by-case basis; either using BW sprites or matching the played gen.
 			dir = (baseDir || 'gen5') + dir;
@@ -1160,7 +1165,6 @@ export const Dex = new class implements ModdedDex {
 		}
 
 		let id = toID(pokemon);
-
 		if (!pokemon || typeof pokemon === 'string') pokemon = null;
 		// @ts-expect-error safe, but too lazy to cast
 		if (pokemon?.speciesForme) id = toID(pokemon.speciesForme);
@@ -1173,47 +1177,58 @@ export const Dex = new class implements ModdedDex {
 		}
 		let num = this.getPokemonIconNum(id, pokemon?.gender === 'F', facingLeft);
 
-		let fusion = pokemon?.fusion ? toID(pokemon.fusion) : '';
-		let species = Dex.species.get(id);
+		let top = Math.floor(num / 12) * 30;
+		let left = (num % 12) * 40;
+		let fainted = ((pokemon as Pokemon | ServerPokemon)?.fainted ?
+			`;opacity:.3;filter:grayscale(100%) brightness(.5)` : ``);
 
-		let fainted = ((pokemon as Pokemon | ServerPokemon)?.fainted ? `;opacity:.3;filter:grayscale(100%) brightness(.5)` : ``);
+		const backgrounds = [id, pokemon?.fusion ? toID(pokemon.fusion) : ''].filter(Boolean).map(iconId => {
+			const species = Dex.species.get(iconId);
 
-		if (species.tags.includes("Infinite Fusion")) {
-			return `image-rendering:pixelated;animation: rainbowshadow ${((Math.random() * 2) + 2)}s infinite;background:transparent url(https://play.pokeathlon.com/sprites/fangame-sprites/infinitefusion/iconsprites/${id}.png) no-repeat scroll ${fainted}`;
-		}
+			if (species.eggGroups.includes("Infinite Fusion")) {
+				return `transparent url(${Dex.resourcePrefix}sprites/fangame-sprites/infinitefusion/iconsprites/${iconId}.png) no-repeat scroll`;
+			}
 
-		if (species.tags.includes("Pokeathlon")) {
-			return `image-rendering:pixelated;background:transparent url(https://play.pokeathlon.com/sprites/fangame-sprites/pokeathlon/iconsprites/${id}.png) no-repeat scroll ${fainted}`;
-		}
+			if (species.eggGroups.includes("Pokeathlon")) {
+				return `transparent url(${Dex.resourcePrefix}sprites/fangame-sprites/pokeathlon/iconsprites/${iconId}.png) no-repeat scroll`;
+			}
 
-		if (species.tags.includes("Insurgence")) {
-			return `image-rendering:pixelated;background:transparent url(https://play.pokeathlon.com/sprites/fangame-sprites/insurgence/iconsprites/${id}.png) no-repeat scroll ${fainted}`;
-		}
+			if (species.eggGroups.includes("Insurgence")) {
+				return `transparent url(${Dex.resourcePrefix}sprites/fangame-sprites/insurgence/iconsprites/${iconId}.png) no-repeat scroll`;
+			}
 
-		if (species.tags.includes("Uranium")) {
-			return `image-rendering:pixelated;background:transparent;background-image:url(https://play.pokeathlon.com/sprites/fangame-sprites/uranium/iconsprites/${id}.gif);background-repeat:no-repeat;background-position:4px -1px;background-size:32px;${fainted}`;
-		}
+			if (species.eggGroups.includes("Uranium")) {
+				return `transparent url(${Dex.resourcePrefix}sprites/fangame-sprites/uranium/iconsprites/${iconId}.gif) no-repeat 4px -1px / 32px`;
+			}
 
-		if (species.tags.includes("Infinity")) {
-			return `image-rendering:pixelated;background:transparent url(https://play.pokeathlon.com/sprites/fangame-sprites/infinity/iconsprites/${id}.png) no-repeat scroll ${fainted}`;
-		}
+			if (species.eggGroups.includes("Infinity")) {
+				return `transparent url(${Dex.resourcePrefix}sprites/fangame-sprites/infinity/iconsprites/${iconId}.png) no-repeat scroll`;
+			}
 
-		if (species.tags.includes("Mariomon")) {
-			// return `image-rendering:pixelated;background-image:url(https://play.pokeathlon.com/sprites/fangame-sprites/mariomon/front/${id}.png);background-position:5px 0px;background-repeat:no-repeat;background-size:30px;${fainted}`;
-			return `image-rendering:pixelated;background:transparent;background-image:url(https://play.pokeathlon.com/sprites/fangame-sprites/mariomon/iconsprites/${id}.gif);background-repeat:no-repeat;background-position:4px -1px;${fainted}`;
-		}
+			if (species.eggGroups.includes("Mariomon")) {
+				return `transparent url(${Dex.resourcePrefix}sprites/fangame-sprites/mariomon/iconsprites/${iconId}.gif) no-repeat 4px -1px`;
+			}
 
 		if (species.tags.includes("Rejuvenation")) {
 			// return `image-rendering:pixelated;background-image:url(https://play.pokeathlon.com/sprites/fangame-sprites/mariomon/front/${id}.png);background-position:5px 0px;background-repeat:no-repeat;background-size:30px;${fainted}`;
 			return `image-rendering:pixelated;background:transparent;background-image:url(https://play.pokeathlon.com/sprites/fangame-sprites/rejuvenation/iconsprites/${id}.gif);background-repeat:no-repeat;background-size:32px 32px;width:40px;height:30px;background-position:4px 0;${fainted}`;
 		}
 
-		if (species.tags.includes("Soulstones")) {
-			return `image-rendering:pixelated;background:transparent url(https://play.pokeathlon.com/sprites/fangame-sprites/soulstones/iconsprites/${id}.png);background-repeat:no-repeat;background-position:4px -1px;background-size:32px;${fainted}`;
+			if (species.eggGroups.includes("Soulstones")) {
+				return `transparent url(${Dex.resourcePrefix}sprites/fangame-sprites/soulstones/iconsprites/${iconId}.png) no-repeat 4px -1px / 32px`;
+			}
+
+			if (iconId !== id) {
+				num = this.getPokemonIconNum(iconId as ID, false, facingLeft);
+				top = Math.floor(num / 12) * 30;
+				left = (num % 12) * 40;
+			}
+			return `transparent url(${Dex.resourcePrefix}sprites/pokemonicons-sheet.png?v22) no-repeat scroll -${left}px -${top}px`;
+		});
+		if (backgrounds.length > 1) {
+			return `image-rendering:pixelated;background:${backgrounds[0]};--picon-head:${backgrounds[0]};--picon-body:${backgrounds[1]}${fainted}`;
 		}
-		let top = Math.floor(num / 12) * 30;
-		let left = (num % 12) * 40;
-		return `image-rendering:pixelated;${fusion.length ? 'animation: rainbowshadow ' + ((Math.random() * 2) + 2) + 's infinite;' : ''}background:transparent url(${Dex.resourcePrefix}sprites/pokemonicons-sheet.png?v21) no-repeat scroll -${left}px -${top}px${fainted}`;
+		return `image-rendering:pixelated;background:${backgrounds[0]}${fainted}`;
 	}
 
 	getTeambuilderSpriteData(pokemon: any, dex: ModdedDex = Dex): TeambuilderSpriteData {
@@ -1299,30 +1314,30 @@ export const Dex = new class implements ModdedDex {
 
 		const fusionData = this.getFusionData(pokemon);
 		if (fusionData.extension !== '') {
-			let url = 'https://play.pokeathlon.com/sprites/fusion-sprites/' + fusionData.extension + '.png';
-			return 'background-image:url(' + url + ');background-position:' + data.x + 'px ' + data.y + 'px;background-repeat:no-repeat;background-size:100px;image-rendering:pixelated';
+			const url = Dex.resourcePrefix + 'sprites/fusion-sprites/' + fusionData.extension + '.png';
+			return `background-image:url(${url});background-position:${data.x}px ${data.y}px;background-repeat:no-repeat;background-size:100px;image-rendering:pixelated`;
 		}
 		for (let fangame of ["Infinite Fusion", "Pokeathlon", "Insurgence", "Uranium", "Infinity", "Mariomon", "Soulstones", "Rejuvenation"]) {
-			if (Dex.species.get(pokemon.species).tags.includes(fangame)) {
-				let url = 'https://play.pokeathlon.com/sprites/fangame-sprites/' + toID(fangame) + (!["Infinite Fusion"].includes(fangame) ? '/front' + shiny : '') + '/' + toID(pokemon.species) + (["Pokeathlon", "Uranium"].includes(fangame) ? '.gif' : '.png');
-				if (Dex.species.get(pokemon.species).eggGroups.includes('Digimon')) url = 'https://play.pokeathlon.com/sprites/fangame-sprites/infinity/digimon/front' + shiny + '/' + toID(pokemon.species) + '.png';
-				return 'background-image:url(' + url + ');background-position:' + data.x + 'px ' + data.y + 'px;background-repeat:no-repeat;background-size:100px;image-rendering:pixelated';
+			if (Dex.species.get(pokemon.species).eggGroups.includes(fangame)) {
+				let url = Dex.resourcePrefix + 'sprites/fangame-sprites/' + toID(fangame) + (!["Infinite Fusion"].includes(fangame) ? '/front' + shiny : '') + '/' + toID(pokemon.species) + (["Pokeathlon", "Uranium"].includes(fangame) ? '.gif' : '.png');
+				if (Dex.species.get(pokemon.species).eggGroups.includes('Digimon')) url = Dex.resourcePrefix + 'sprites/fangame-sprites/infinity/digimon/front' + shiny + '/' + toID(pokemon.species) + '.png';
+				return `background-image:url(${url});background-position:${data.x}px ${data.y}px;background-repeat:no-repeat;background-size:100px;image-rendering:pixelated`;
 			}
 		}
 
-		return 'background-image:url(' + Dex.resourcePrefix + data.spriteDir + shiny + '/' + data.spriteid + '.png);background-position:' + data.x + 'px ' + data.y + 'px;background-repeat:no-repeat;background-size:100px;image-rendering:pixelated;';
+		return `background-image:url(${Dex.resourcePrefix}${data.spriteDir}${shiny}/${data.spriteid}.png);background-position:${data.x}px ${data.y}px;background-repeat:no-repeat;background-size:100px;image-rendering:pixelated;`;
 	}
 
 	getItemIcon(item: any) {
 		let num = 0;
 		if (typeof item === 'string' && window.BattleItems) item = window.BattleItems[toID(item)];
 		if (item?.spritenum) num = item.spritenum;
-		if (num === -1) return 'background:transparent url(https://play.pokeathlon.com/sprites/fangame-sprites/insurgence/items/' + item.id + '.png) center/24px';
-		if (num === -2) return 'background:transparent url(https://play.pokeathlon.com/sprites/fangame-sprites/uranium/items/' + item.id + '.png) center/24px';
-		if (num === -3) return 'background:transparent url(https://play.pokeathlon.com/sprites/fangame-sprites/pokeathlon/items/' + item.id + '.png) center/24px';
-		if (num === -4) return 'background:transparent url(https://play.pokeathlon.com/sprites/fangame-sprites/infinity/items/' + item.id + '.png) center/24px';
-		if (num === -5) return 'background:transparent url(https://play.pokeathlon.com/sprites/fangame-sprites/mariomon/items/' + item.id + '.png) center/24px';
-		if (num === -6) return 'background:transparent url(https://play.pokeathlon.com/sprites/fangame-sprites/soulstones/items/' + item.id + '.png) center/24px';
+		if (num === -1) return 'background:transparent url(' + Dex.resourcePrefix + 'sprites/fangame-sprites/insurgence/items/' + item.id + '.png) center/24px';
+		if (num === -2) return 'background:transparent url(' + Dex.resourcePrefix + 'sprites/fangame-sprites/uranium/items/' + item.id + '.png) center/24px';
+		if (num === -3) return 'background:transparent url(' + Dex.resourcePrefix + 'sprites/fangame-sprites/pokeathlon/items/' + item.id + '.png) center/24px';
+		if (num === -4) return 'background:transparent url(' + Dex.resourcePrefix + 'sprites/fangame-sprites/infinity/items/' + item.id + '.png) center/24px';
+		if (num === -5) return 'background:transparent url(' + Dex.resourcePrefix + 'sprites/fangame-sprites/mariomon/items/' + item.id + '.png) center/24px';
+		if (num === -6) return 'background:transparent url(' + Dex.resourcePrefix + 'sprites/fangame-sprites/soulstones/items/' + item.id + '.png) center/24px';
 		if (num === -7) return 'background:transparent url(https://play.pokeathlon.com/sprites/fangame-sprites/rejuvenation/items/' + item.id + '.png) center/24px';
 
 		let top = Math.floor(num / 16) * 24;
@@ -1332,10 +1347,10 @@ export const Dex = new class implements ModdedDex {
 
 	getTypeIcon(type: string | null, b?: boolean) { // b is just for utilichart.js
 		type = this.types.get(type).name;
-		if (!type || type === '???') type = 'notype';
-		let sanitizedType = type.replace(/\?/g, '%3f');
-		const alt = BattleLog.escapeHTML(TL.type[toID(type)] || type);
-		return `<img src="https://play.pokeathlon.com/fx/types/${sanitizedType}.png" alt="${alt}" height="14" width="32" class="pixelated${b ? ' b' : ''}" />`;
+		if (!type) type = '???';
+		let sanitizedType = type === '???' ? 'notype' : type;
+		const alt = BattleLog.escapeHTML(TL.type[type] || type);
+		return `<img src="${Dex.fxPrefix}types/${sanitizedType}.png" alt="${alt}" height="14" width="32" class="pixelated${b ? ' b' : ''}" />`;
 	}
 
 	getCategoryIcon(category: string | null) {
@@ -1366,10 +1381,20 @@ export const Dex = new class implements ModdedDex {
 		return this.pokeballs;
 	}
 
+	getFusionTypes(headTypes: readonly Dex.TypeName[], bodyTypes: readonly Dex.TypeName[]) {
+		if (headTypes.length === 2 && headTypes.includes('Flying') && headTypes.includes('Normal')) headTypes = ['Flying'];
+		if (bodyTypes.length === 2 && bodyTypes.includes('Flying') && bodyTypes.includes('Normal')) bodyTypes = ['Flying'];
+		const types = [headTypes[0]];
+		const bonusType = bodyTypes[bodyTypes.length - 1];
+		if (!types.includes(bonusType)) types.push(bonusType);
+		if (bodyTypes.length === 2 && types.length === 1) types.push(bodyTypes[0]);
+		return types;
+	}
+
 	getFusionData(pokemon: any) {
 		const alphabet = 'abcdefghijklmnopqrstuvwxyz';
 
-		let fusionData = {
+		const fusionData = {
 			extension: '',
 			credit: '',
 			nickname: '',
@@ -1386,38 +1411,27 @@ export const Dex = new class implements ModdedDex {
 		const head_species_all = Dex.species.get((pokemon.speciesForme || pokemon.species));
 		const body_species_all = Dex.species.get(pokemon.fusion);
 
-		if (head_species_all.id !== body_species_all.id && toID(head_species_all.baseSpecies) in SplitNames && toID(body_species_all.baseSpecies) in SplitNames) {
-			let head_name = SplitNames[toID(head_species_all.baseSpecies)][0];
-			let body_name = SplitNames[toID(body_species_all.baseSpecies)][1];
-
-			if (head_name.endsWith('-') || head_name.endsWith(' ')) {
-				body_name = body_name.replace(' ', '').replace('-', '');
-				body_name = body_name[0].toUpperCase() + body_name.slice(1);
-			} if (head_name.endsWith(body_name.charAt(0))) body_name = body_name.slice(1);
-
-			fusionData.nickname = head_name + body_name;
+		if (head_species_all.id !== body_species_all.id) {
+			fusionData.nickname = getFusionName(toID(head_species_all.baseSpecies), toID(body_species_all.baseSpecies));
 		}
 
 		if (
-			dex.species.get(pokemon.fusion).exists && dex.species.get((pokemon.speciesForme || pokemon.species)) &&
-			dex.species.get(pokemon.fusion).isNonstandard !== "Custom" && dex.species.get((pokemon.speciesForme || pokemon.species)).isNonstandard !== "Custom"
+			head_species.exists && body_species.exists &&
+			head_species.isNonstandard !== "Custom" && body_species.isNonstandard !== "Custom" &&
+			head_species.num > 0 && body_species.num > 0
 		) {
-			if (head_species.num > 0 && body_species.num > 0) {
-				let head_num = head_species.num.toString();
-				let body_num = body_species.num.toString();
-
-				let extension = head_num + '.' + body_num;
-				const FusionIndex = window.BattleFusionIndex;
-				if (head_num.toString() in FusionIndex && FusionIndex[head_num].includes(body_num.toString())) {
-					for (let sprite of FusionIndex[head_num]) {
-						if (alphabet.includes(sprite.slice(-1)) &&
-							sprite.slice(0, -1) === body_num.toString() &&
-							!fusionData.alts.includes(sprite.slice(-1))) fusionData.alts += sprite.slice(-1);
-					}
-					fusionData.extension = extension;
-					if (pokemon.altsprite && FusionIndex[head_num].includes(body_num.toString() + pokemon.altsprite)) fusionData.extension += pokemon.altsprite;
-					if (fusionData.extension in window.FusionCredit) fusionData.credit = window.FusionCredit[fusionData.extension];
+			const head_num = head_species.num.toString();
+			const body_num = body_species.num.toString();
+			const FusionIndex = window.BattleFusionIndex;
+			if (head_num in FusionIndex && FusionIndex[head_num].includes(body_num)) {
+				for (const sprite of FusionIndex[head_num]) {
+					if (alphabet.includes(sprite.slice(-1)) &&
+						sprite.slice(0, -1) === body_num &&
+						!fusionData.alts.includes(sprite.slice(-1))) fusionData.alts += sprite.slice(-1);
 				}
+				fusionData.extension = head_num + '.' + body_num;
+				if (pokemon.altsprite && FusionIndex[head_num].includes(body_num + pokemon.altsprite)) fusionData.extension += pokemon.altsprite;
+				if (fusionData.extension in window.FusionCredit) fusionData.credit = window.FusionCredit[fusionData.extension];
 			}
 		}
 		return fusionData;
@@ -1428,9 +1442,9 @@ export const Dex = new class implements ModdedDex {
 
 		const dex = Dex.mod('gen9chaos' as ID);
 		const species = dex.species.get((pokemon.speciesForme || pokemon.species));
-		if (species.tags.includes("Mariomon") && (Dex.afdMode)) {
+		if (species.eggGroups.includes("Mariomon") && (Dex.afdMode)) {
 			if (window.AFDCredit && species.id in window.AFDCredit) return window.AFDCredit[species.id];
-		} else if (species.tags.includes("Pokeathlon") || species.tags.includes("Insurgence") || species.tags.includes("Uranium") || species.tags.includes("Infinity") || species.tags.includes("Mariomon")) {
+		} else if (species.eggGroups.includes("Pokeathlon") || species.eggGroups.includes("Insurgence") || species.eggGroups.includes("Uranium") || species.eggGroups.includes("Infinity") || species.eggGroups.includes("Mariomon")) {
 			if (window.FangameCredit && species.id in window.FangameCredit) return window.FangameCredit[species.id];
 		}
 		return false;
@@ -1451,8 +1465,8 @@ export class ModdedDex {
 	constructor(modid: ID) {
 		this.modid = modid;
 		let gen = parseInt(modid.charAt(3), 10);
-		if (this.modid === 'champions') gen = 9;
-		if ((modid !== 'champions' && !modid.startsWith('gen')) || !gen) throw new Error("Unsupported modid");
+		if (this.modid.startsWith('champions')) gen = 9;
+		if ((!modid.startsWith('champions') && !modid.startsWith('gen')) || !gen) throw new Error("Unsupported modid");
 		this.gen = gen;
 	}
 	text: ClientDexText = {
@@ -1461,15 +1475,8 @@ export class ModdedDex {
 		languages: () => Dex.text.languages(),
 		findLanguage: lang => Dex.text.findLanguage(lang),
 		get: (effect: TranslatableEffect, lang = Dex.text.getLanguage()) => {
-			return getTextEntry(effect, this.gen, lang);
+			return getTextEntry(effect, this.modid, this.gen, lang);
 		},
-		typeName: (name, lang = Dex.text.getLanguage()) => getOtherName('TypeNames', name, lang),
-		natureName: (name, lang = Dex.text.getLanguage()) => getOtherName('NatureNames', name, lang),
-		categoryName: (name, lang = Dex.text.getLanguage()) =>
-			BattleText[lang]?.Tags?.[toID(name)]?.name || BattleText.en?.Tags?.[toID(name)]?.name || name,
-		genderName: (name, lang = Dex.text.getLanguage()) => getOtherName('GenderNames', name, lang),
-		eggGroupName: (name, lang = Dex.text.getLanguage()) => getOtherName('EggGroupNames', name, lang),
-		colorName: (name, lang = Dex.text.getLanguage()) => getOtherName('ColorNames', name, lang),
 	};
 	moves = {
 		get: (name: string): Move => {

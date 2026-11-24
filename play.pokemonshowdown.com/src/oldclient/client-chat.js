@@ -1079,6 +1079,10 @@
 				});
 				return false;
 
+			case 'resources':
+				app.joinRoom('resources');
+				return false;
+
 			case 'buttonmute':
 				if (this.checkBroadcast(cmd, text)) return false;
 				var self = this;
@@ -1527,14 +1531,17 @@
 					var format = BattleLog.escapeFormat(matches[1]);
 
 					if (silent && !Dex.prefs('showbattles')) return;
+					var lobbyBattles = Dex.prefs('lobbybattles');
+					var lobbyBattle = (row[row.length - 1] === 'ladder' || row[row.length - 1] === 'bot') ? row[row.length - 1] : 'human';
+					var hidden = lobbyBattles === 'none' || (lobbyBattles === 'ladder' && lobbyBattle !== 'ladder') || (lobbyBattles === 'human' && lobbyBattle === 'bot');
 
-					this.addJoinLeave();
+					if (!hidden) this.addJoinLeave();
 					var battletype = 'Battle';
 					if (format) {
 						battletype = format + ' battle';
 						if (format === 'Random Battle') battletype = 'Random Battle';
 					}
-					this.$chat.append('<div class="notice"><a href="' + app.root + id + '" class="ilink">' + battletype + ' started between <strong style="' + BattleLog.hashColor(toUserid(name)) + '">' + BattleLog.escapeHTML(name) + '</strong> and <strong style="' + BattleLog.hashColor(toUserid(name2)) + '">' + BattleLog.escapeHTML(name2) + '</strong>.</a></div>');
+					this.$chat.append('<div class="notice lobbybattle-' + lobbyBattle + '"' + (hidden ? ' style="display:none"' : '') + '><a href="' + app.root + id + '" class="ilink">' + battletype + ' started between <strong style="' + BattleLog.hashColor(toUserid(name)) + '">' + BattleLog.escapeHTML(name) + '</strong> and <strong style="' + BattleLog.hashColor(toUserid(name2)) + '">' + BattleLog.escapeHTML(name2) + '</strong>.</a></div>');
 					break;
 
 				case 'j':
@@ -1928,6 +1935,10 @@
 	var UserList = this.UserList = Backbone.View.extend({
 		initialize: function (options) {
 			this.room = options.room;
+			if (this.room.id === 'lobby') {
+				this.listenTo(app, 'response:ladderqueue', this.updateLadderSearches);
+				app.send('/cmd ladderqueue');
+			}
 		},
 		events: {
 			'click .userlist-count': 'toggleUserlist'
@@ -1939,13 +1950,8 @@
 			buf += '<li class="userlist-count" id="' + this.room.id + '-userlist-users" style="text-align:center;padding:2px 0">';
 			buf += '<small id="' + this.room.id + '-usercount-users">' + usersString + '</small></li>';
 
-			if (this.room.id == "lobby") {
-				buf += '<li id="' + this.room.id + '-userlist-queue" style="background: rgba(0, 0, 0, 0.45);height: unset;padding: 2px;">';
-				for (var format in app.roomsData.ladderSearches) {
-					buf += '<p style="font-size: 7pt;"><b style="' + BattleLog.hashColor(format) + ';text-shadow: 1px 1px black;">' + format.split(']').slice(1).join(']') + ':</b> ' + app.roomsData.ladderSearches[format] + '</p>';
-				}
-				buf += '</li>';
-				setInterval(() => this.updateLadderSearches(), 5 * 1000);
+			if (this.room.id === 'lobby') {
+				buf += '<li id="' + this.room.id + '-userlist-queue" style="background: rgba(0, 0, 0, 0.45);height: unset;padding: 2px;">' + this.ladderSearchesHTML() + '</li>';
 			}
 
 			var users = [];
@@ -1991,12 +1997,17 @@
 			var users = Math.max(this.room.userCount.users || 0, this.room.userCount.globalUsers || 0);
 			$('#' + this.room.id + '-usercount-users').html('' + users + (users === 1 ? ' user' : ' users'));
 		},
-		updateLadderSearches: function () {
+		ladderSearchesHTML: function () {
 			var buf = '';
-			for (var format in app.roomsData.ladderSearches) {
-				buf += '<p style="font-size: 7pt;"><b style="' + BattleLog.hashColor(format) + ';text-shadow: 1px 1px black;">' + format.split(']').slice(1).join(']') + ':</b> ' + app.roomsData.ladderSearches[format] + '</p>';
+			for (var formatid in this.ladderQueue) {
+				var format = window.BattleFormats && BattleFormats[formatid] ? BattleFormats[formatid].name : formatid;
+				buf += '<p style="font-size: 7pt;"><b style="' + BattleLog.hashColor(format) + ';text-shadow: 1px 1px black;">' + BattleLog.escapeHTML(format.replace(/^\[[^\]]*\] /, '')) + ':</b> ' + this.ladderQueue[formatid] + '</p>';
 			}
-			$('#' + this.room.id + '-userlist-queue').html(buf);
+			return buf;
+		},
+		updateLadderSearches: function (ladderQueue) {
+			this.ladderQueue = ladderQueue;
+			$('#' + this.room.id + '-userlist-queue').html(this.ladderSearchesHTML());
 		},
 		add: function (userid) {
 			$('#' + this.room.id + '-userlist-user-' + userid).remove();
@@ -2016,7 +2027,7 @@
 					return;
 				}
 			}
-			$(this.constructItem(userid)).insertAfter($(users[right ? right : 1]));
+			$(this.constructItem(userid)).insertAfter($(users[right]));
 		},
 		remove: function (userid) {
 			$('#' + this.room.id + '-userlist-user-' + userid).remove();
@@ -2037,8 +2048,6 @@
 				text += '<strong><em style="' + color + '">' + BattleLog.escapeHTML(user.name) + '</em></strong>';
 			} else if (details.type === 'staff') {
 				text += '<strong style="' + color + '">' + BattleLog.escapeHTML(user.name) + '</strong>';
-			} else if (details.type === 'punishment') {
-				text += '<span>punished user</span>';
 			} else {
 				text += '<span style="' + color + '">' + BattleLog.escapeHTML(user.name) + '</span>';
 			}
@@ -2051,6 +2060,7 @@
 			var id = elem.id.substr(this.room.id.length + 1);
 			switch (id) {
 			case 'userlist-users':
+			case 'userlist-queue':
 				return -1; // `elem` comes first
 			case 'userlist-empty':
 			case 'userlist-unregistered':
@@ -2098,6 +2108,115 @@
 				elem.remove();
 			}
 		}
+	});
+
+	this.ResourceRoom = HTMLRoom.extend({
+		events: { 'keydown [name=search]': 'searchCommands' },
+		type: 'resources',
+		title: 'Help',
+		search: '',
+		searchCommands: function (e) {
+			this.search = toID($(e.currentTarget).val());
+			this.update();
+		},
+
+		initialize: function () {
+			this.$el.addClass('ps-room-light').addClass('scrollable');
+			var buf = '<div class="pad">';
+			buf += '<h2>PS! Informational Resources</h2><hr />';
+			buf += 'PS! is a wide and varied site, with more facets than can be covered here easily.<br />';
+			buf += 'While this page chiefly documents the ever-shifting set of commands available to PS! users, here are some useful resources for newcomers:<br />';
+			buf += '- <a href="https://www.smogon.com/forums/threads/3676132/">Beginner\'s Guide to Pok&eacute;mon Showdown</a><br />';
+			buf += '- <a href="https://www.smogon.com/dp/articles/intro_comp_pokemon">An introduction to competitive Pok&eacute;mon</a><br />';
+			buf += '- <a href="https://www.smogon.com/sm/articles/sm_tiers">What do \'OU\', \'UU\', etc mean?</a><br />';
+			buf += '- <a href="https://www.smogon.com/dex/ss/formats/">What are the rules for each format?</a><br />';
+			buf += '- <a href="https://www.smogon.com/ss/articles/clauses">What is \'Sleep Clause\' and other clauses?</a><br />';
+			buf += '- <a href="https://www.smogon.com/articles/getting-started">Next Steps for Competitive Battling</a><br />';
+			buf += '- <button class="button" name="send" value="/report">Report a user</button><br />';
+			buf += '- <button class="button" name="send" value="/join help">Join the Help room for live help</button>';
+			buf += '<hr /><strong>Commands:</strong><br />';
+			buf += 'Within any of the chats, and in private messages, it is possible to type in commands (messages beginning with <code>/</code>) in order to perform a particular action. ';
+			buf += 'A great number of these commands exist, with some only available to certain users. ';
+			buf += 'For instance, you can broadcast commands to others with the <code>!</code> command prefix, but only when you\'re a player in a battle or a Voice (+) user. ';
+			buf += 'For more information on ranks, type <code>/groups</code> in any chat. You can also use the "chat self" button on your username in the top right if you need a place to send these commands ';
+			buf += 'without joining a room.<br /><br />';
+
+			buf += '<details class="readmore"><summary>Here\'s a list of the most useful commands for the average Pokemon Showdown experience:</summary>';
+			buf += '<p>COMMANDS: /report, /msg, /reply, /logout, /challenge, /search, /rating, /whois, /user, /join, /leave, /userauth, /roomauth</p>';
+			buf += '<p>BATTLE ROOM COMMANDS: /savereplay, /hideroom, /inviteonly, /invite, /timer, /forfeit</p>';
+			buf += '<p>OPTION COMMANDS: /nick, /avatar, /ignore, /status, /away, /busy, /back, /timestamps, /highlight, /showjoins, /hidejoins, /blockchallenges, /blockpms</p>';
+			buf += '<p>INFORMATIONAL/RESOURCE COMMANDS: /groups, /faq, /rules, /intro, /formatshelp, /othermetas, /analysis, /punishments, /calc, /git, /cap, /roomhelp, /roomfaq (replace / with ! to broadcast. Broadcasting requires: + % @ # ~)</p>';
+			buf += '<p>DATA COMMANDS: /data, /dexsearch, /movesearch, /itemsearch, /learn, /statcalc, /effectiveness, /weakness, /coverage, /randommove, /randompokemon (replace / with ! to broadcast. Broadcasting requires: + % @ # ~)</p>';
+			buf += '<p>For an overview of room commands, use /roomhelp</p>';
+			buf += '<p>For details of a specific command, you can use the command <code>/help [command]</code>, for example <code>/help data</code>.</p>';
+			buf += '</details><br />';
+
+			buf += 'A complete list of commands available to regular users is provided below. Use <code>/help [commandname]</code> for more in-depth information on how to use them.';
+			buf += '<hr />';
+			buf += '<label for="search">Search/filter commands:</label> ';
+			buf += '<input name="search" placeholder="search" style="width: 25%" value="' + this.search + '" /><br />';
+			buf += '<span name="cmdbuffer">' + this.getCommandList() + '</span>';
+			this.$el.html(buf);
+		},
+		update: function () {
+			this.$el.find('[name="cmdbuffer"]').html(this.getCommandList());
+		},
+		getCommandList: function () {
+			var buf = '';
+			var search = this.search;
+			var keys = Object.keys(BattleChatCommands).sort(function (a, b) {
+				// pin info to the top ALWAYS
+				if (b.endsWith('info')) return 2;
+				// prefer default commands near the top, more generally useful
+				if (b.includes('chat-commands')) return 1;
+				var aCount = BattleChatCommands[a].filter(function (x) {
+					return toID(x).includes(search);
+				}).length;
+				var bCount = BattleChatCommands[b].filter(function (x) {
+					return toID(x).includes(search);
+				}).length;
+
+				return (bCount - aCount) || a.localeCompare(b);
+			}).filter(function (plugin) {
+				return !(plugin.endsWith('admin'));
+			});
+
+			for (var i = 0; i < keys.length; i++) {
+				var pluginName = keys[i];
+				var cmdTable = BattleChatCommands[pluginName];
+				if (!cmdTable.length) continue;
+				if (pluginName.startsWith('chat-plugins')) {
+					pluginName = 'Chat plugin: ' + pluginName.split('/').slice(1).join('/');
+				} else if (pluginName.startsWith('chat-commands')) {
+					pluginName = 'Core commands: ' + pluginName.split('/').slice(1).join('/'); ;
+				}
+				var matchedCmds = [];
+				for (var j = 0; j < cmdTable.length; j++) {
+					if (this.search.length && !toID(cmdTable[j]).includes(this.search)) {
+						continue;
+					}
+					matchedCmds.push('<li>' + cmdTable[j] + '</li>');
+				}
+				var open = ((
+					this.search.length && matchedCmds.length) || pluginName.includes('Core')
+				) ? ' open' : '';
+				var empty = this.search.length && !matchedCmds.length;
+
+				if (!empty) buf += '<details class="readmore" ' + open + '><summary>';
+				buf += '<strong>' + pluginName + '</strong>';
+				if (!empty) {
+					buf += '</summary><ul>';
+					buf += matchedCmds.join('');
+					buf += '</ul></details>';
+				} else {
+					buf += '<br /><br />';
+				}
+				buf += '<br />';
+			}
+			return buf;
+		},
+		join: function () {},
+		leave: function () {}
 	});
 
 }).call(this, jQuery);

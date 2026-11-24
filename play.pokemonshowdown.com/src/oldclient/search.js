@@ -191,6 +191,11 @@
 
 	// These all have static versions
 
+	/** The format's dex (for gen-specific text), or the current-gen dex if there's no engine yet */
+	Search.prototype.dex = function () {
+		return this.engine ? this.engine.dex : Dex;
+	};
+
 	Search.prototype.renderRow = function (id, type, matchStart, matchLength, errorMessage, attrs) {
 		// errorMessage = '<span class="col illegalcol"><em>' + errorMessage + '</em></span>';
 		switch (type) {
@@ -299,10 +304,10 @@
 		var id = toID(pokemon.name);
 		if (Search.urlRoot) attrs += ' href="' + Search.urlRoot + 'pokemon/' + id + '" data-target="push"';
 
-		let banned = false;
+		var banned = false;
 		if (this.format && this.format in window.Formats) {
-			let format = window.Formats[this.format];
-			if (format.ruleTable.includes('-pokemon:' + pokemon.id) || format.ruleTable.includes('-basepokemon:' + toID(pokemon.baseSpecies))) banned = true; 
+			var format = window.Formats[this.format];
+			if (format.ruleTable.includes('-pokemon:' + pokemon.id) || format.ruleTable.includes('-basepokemon:' + toID(pokemon.baseSpecies))) banned = true;
 		}
 
 		var buf = '<li class="' + (banned ? 'banned' : 'result') + '"><a' + attrs + ' data-entry="pokemon|' + BattleLog.escapeHTML(pokemon.name) + '">';
@@ -482,13 +487,13 @@
 		if (!item) return '<li class="result">Unrecognized item</li>';
 		var id = toID(item.name);
 		if (Search.urlRoot) attrs += ' href="' + Search.urlRoot + 'items/' + id + '" data-target="push"';
-		
-		let banned = false;
+
+		var banned = false;
 		if (this.format && this.format in window.Formats) {
-			let format = window.Formats[this.format];
-			if (format.ruleTable.includes('-item:' + item.id)) banned = true; 
+			var format = window.Formats[this.format];
+			if (format.ruleTable.includes('-item:' + item.id)) banned = true;
 		}
-		
+
 		var buf = '<li class="' + (banned ? 'banned' : 'result') + '"><a' + attrs + ' data-entry="item|' + BattleLog.escapeHTML(item.name) + '">';
 
 		// icon
@@ -510,7 +515,7 @@
 		}
 
 		// desc
-		buf += '<span class="col itemdesccol">' + BattleLog.escapeHTML(item.shortDesc) + '</span> ';
+		buf += '<span class="col itemdesccol">' + BattleLog.escapeHTML(this.dex().text.get(item).shortDesc) + '</span> ';
 
 		buf += '</a></li>';
 
@@ -522,12 +527,12 @@
 		var id = toID(ability.name);
 		if (Search.urlRoot) attrs += ' href="' + Search.urlRoot + 'abilities/' + id + '" data-target="push"';
 
-		let banned = false;
+		var banned = false;
 		if (this.format && this.format in window.Formats) {
-			let format = window.Formats[this.format];
-			if (format.ruleTable.includes('-ability:' + ability.id)) banned = true; 
+			var format = window.Formats[this.format];
+			if (format.ruleTable.includes('-ability:' + ability.id)) banned = true;
 		}
-		
+
 		var buf = '<li class="' + (banned ? 'banned' : 'result') + '"><a' + attrs + ' data-entry="ability|' + BattleLog.escapeHTML(ability.name) + '">';
 
 		// name
@@ -543,7 +548,7 @@
 			return buf;
 		}
 
-		buf += '<span class="col abilitydesccol">' + BattleLog.escapeHTML(ability.shortDesc) + '</span> ';
+		buf += '<span class="col abilitydesccol">' + BattleLog.escapeHTML(this.dex().text.get(ability).shortDesc) + '</span> ';
 
 		buf += '</a></li>';
 
@@ -555,9 +560,9 @@
 		var id = toID(move.name);
 		if (Search.urlRoot) attrs += ' href="' + Search.urlRoot + 'moves/' + id + '" data-target="push"';
 
-		let banned = false;
+		var banned = false;
 		if (this.format && this.format in window.Formats) {
-			let format = window.Formats[this.format];
+			var format = window.Formats[this.format];
 			if (format.ruleTable.includes('-move:' + move.id)) banned = true;
 		}
 
@@ -598,7 +603,7 @@
 		// power, accuracy, pp
 		var pp = (move.pp === 1 || move.noPPBoosts ? move.pp : move.pp * 8 / 5);
 		if (this.engine && this.engine.dex.gen < 3) pp = Math.min(61, pp);
-		if (this.engine && this.engine.dex.modid === 'champions') {
+		if (this.engine && this.engine.dex.modid.startsWith('champions')) {
 			pp = move.pp > 20 ? 20 : move.pp;
 			if (!move.noPPBoosts) pp = (pp / 5 + 1) * 4;
 		}
@@ -607,7 +612,7 @@
 		buf += '<span class="col pplabelcol"><em>PP</em><br />' + pp + '</span> ';
 
 		// desc
-		buf += '<span class="col movedesccol">' + BattleLog.escapeHTML(move.shortDesc) + '</span> ';
+		buf += '<span class="col movedesccol">' + BattleLog.escapeHTML(this.dex().text.get(move).shortDesc) + '</span> ';
 
 		buf += '</a></li>';
 
@@ -639,7 +644,7 @@
 		// power, accuracy, pp
 		var pp = (move.pp === 1 || move.noPPBoosts ? move.pp : move.pp * 8 / 5);
 		if (this.engine && this.engine.dex.gen < 3) pp = Math.min(61, pp);
-		if (this.engine && this.engine.dex.modid === 'champions') {
+		if (this.engine && this.engine.dex.modid.startsWith('champions')) {
 			pp = move.pp > 20 ? 20 : move.pp;
 			if (!move.noPPBoosts) pp = (pp / 5 + 1) * 4;
 		}
@@ -648,7 +653,7 @@
 		buf += '<span class="col pplabelcol"><em>PP</em><br />' + pp + '</span> ';
 
 		// desc
-		buf += '<span class="col movedesccol">' + BattleLog.escapeHTML(move.shortDesc || move.desc) + '</span> ';
+		buf += '<span class="col movedesccol">' + BattleLog.escapeHTML(this.dex().text.get(move).shortDesc) + '</span> ';
 
 		buf += '</a>';
 
@@ -682,7 +687,7 @@
 		// power, accuracy, pp
 		var pp = move.pp === 1 || move.noPPBoosts ? move.pp : move.pp * 8 / 5;
 		if (this.engine && this.engine.dex.gen < 3) pp = Math.min(61, pp);
-		if (this.engine && this.engine.dex.modid === 'champions') {
+		if (this.engine && this.engine.dex.modid.startsWith('champions')) {
 			pp = move.pp > 20 ? 20 : move.pp;
 			if (!move.noPPBoosts) pp = (pp / 5 + 1) * 4;
 		}
@@ -691,7 +696,7 @@
 		buf += '<span class="col pplabelcol"><em>PP</em><br />' + pp + '</span> ';
 
 		// desc
-		buf += '<span class="col movedesccol">' + BattleLog.escapeHTML(move.shortDesc || move.desc) + '</span> ';
+		buf += '<span class="col movedesccol">' + BattleLog.escapeHTML(this.dex().text.get(move).shortDesc) + '</span> ';
 
 		buf += '</a></li>';
 
@@ -827,6 +832,7 @@
 	};
 
 	Search.gen = 9;
+	Search.dex = Search.prototype.dex;
 	Search.renderRow = Search.prototype.renderRow;
 	Search.renderPokemonRow = Search.prototype.renderPokemonRow;
 	Search.renderTaggedPokemonRowInner = Search.prototype.renderTaggedPokemonRowInner;

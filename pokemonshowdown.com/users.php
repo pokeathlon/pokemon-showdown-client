@@ -492,11 +492,15 @@ if (!$user) {
 	// Ladder
 
 	$ladderTourID = str_starts_with($user['userid'], 'lt13');
-	if ($user['userid'] === $curuser['userid'] && !$ladderTourID) {
+	$ownsUser = $user['userid'] === $curuser['userid'] || ($curuser['loggedin'] && $psdb->fetch_assoc($psdb->query(
+		"SELECT `userid` FROM `{$psdb->prefix}discord` WHERE `userid` = ? AND `discordid` = (SELECT `discordid` FROM `{$psdb->prefix}discord` WHERE `userid` = ?) LIMIT 1",
+		[$user['userid'], $curuser['userid']]
+	)));
+	if ($ownsUser && !$ladderTourID) {
 		if ($users->csrfCheck() && @$_POST['resetLadder']) {
 			$formatLadder = new NTBBLadder(@$_POST['resetLadder']);
 			if (substr($formatLadder->formatid, -7) !== 'current' && substr($formatLadder->formatid, -11) !== 'suspecttest') {
-				$formatLadder->clearWL($curuser);
+				$formatLadder->clearWL($user);
 			}
 		}
 	}
@@ -515,7 +519,7 @@ if (!$user) {
 		} else {
 			$bufs[$buftype] .= '<td style="text-align:center" colspan="2"><small style="color:#777">(more games needed)</small>';
 		}
-		if ($user['userid'] === $curuser['userid'] && !$ladderTourID) {
+		if ($ownsUser && !$ladderTourID) {
 			$bufs[$buftype] .= '</td><td style="text-align:center"><small>' . $row['w'] . '</small></td><td style="text-align:center"><small>' . $row['l'] . '</small></td>';
 			if (substr($row['formatid'], -7) !== 'current' && substr($row['formatid'], -11) !== 'suspecttest') {
 				$bufs[$buftype] .= '<td><button name="openReset" value="'.htmlspecialchars($row['formatid']).'"><small>Reset</small></button></td>';
@@ -537,7 +541,7 @@ if (!$user) {
 				<th width="50" style="text-align:center"><abbr title="user's percentage chance of winning a random battle (aka GLIXARE)">GXE</abbr></th>
 				<th width="80" style="text-align:center"><abbr title="Glicko-1 rating: rating&#177;deviation">Glicko-1</abbr></th>
 <?php
-			if ($user['userid'] === $curuser['userid']) {
+			if ($ownsUser) {
 ?>
 				<th width="20" style="text-align:center"><abbr title="Wins">W</abbr></th>
 				<th width="20" style="text-align:center"><abbr title="Losses">L</abbr></th>
@@ -556,7 +560,7 @@ if (!$user) {
 				<th width="50" style="text-align:center"><abbr title="user's percentage chance of winning a random battle (aka GLIXARE)">GXE</abbr></th>
 				<th width="80" style="text-align:center"><abbr title="Glicko-1 rating: rating&#177;deviation">Glicko-1</abbr></th>
 <?php
-			if ($user['userid'] === $curuser['userid']) {
+			if ($ownsUser) {
 ?>
 				<th width="20" style="text-align:center"><abbr title="Wins">W</abbr></th>
 				<th width="20" style="text-align:center"><abbr title="Losses">L</abbr></th>
@@ -569,7 +573,7 @@ if (!$user) {
 		}
 ?>
 <?php
-		if ($user['userid'] === $curuser['userid'] && !$ladderTourID) {
+		if ($ownsUser && !$ladderTourID) {
 ?>
 			<tr style="display:none" class="ladderresetform">
 				<td colspan="7">

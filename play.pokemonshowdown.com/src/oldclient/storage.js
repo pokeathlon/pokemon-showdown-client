@@ -32,7 +32,7 @@ Storage.bg = {
 	changeCount: 0,
 	// futureproofing in case we ever add more?
 	// because doing this once was annoying
-	MENU_BUTTONS: 6,
+	MENU_BUTTONS: 7,
 	set: function (bgUrl, bgid, noSave) {
 		if (!this.load(bgUrl, bgid)) {
 			this.extractMenuColors(bgUrl, bgid, noSave);
@@ -780,15 +780,14 @@ Storage.packTeam = function (team) {
 		if (buf) buf += ']';
 
 		// name
-		let fusionData = Dex.getFusionData(set);
-		if (fusionData.nickname !== '' && (!set.name || toID(set.name) === toID(set.species))) {
-			set.name = fusionData.nickname;
-		}
-		buf += set.name || set.species;
+		var name = set.name;
+		var fusionNickname = Dex.getFusionData(set).nickname;
+		if (fusionNickname && (!name || toID(name) === toID(set.species))) name = fusionNickname;
+		buf += name || set.species;
 
 		// species
 		var id = toID(set.species);
-		buf += '|' + (toID(set.name || set.species) === id ? '' : id);
+		buf += '|' + (toID(name || set.species) === id ? '' : id);
 
 		// item
 		buf += '|' + toID(set.item);
@@ -917,6 +916,11 @@ Storage.fastUnpackTeam = function (buf) {
 		j = buf.indexOf('|', i);
 		set.nature = buf.substring(i, j);
 		if (set.nature === 'undefined') set.nature = undefined;
+		if (set.nature) {
+			// BattleNatures is case sensitive, so if we don't do this
+			// sometimes stuff breaks. goody.
+			set.nature = set.nature.charAt(0).toUpperCase() + set.nature.slice(1);
+		}
 		i = j + 1;
 
 		// evs
@@ -1038,6 +1042,11 @@ Storage.unpackTeam = function (buf) {
 		j = buf.indexOf('|', i);
 		set.nature = buf.substring(i, j);
 		if (set.nature === 'undefined') set.nature = undefined;
+		if (set.nature) {
+			// BattleNatures is case sensitive, so if we don't do this
+			// sometimes stuff breaks. goody.
+			set.nature = set.nature.charAt(0).toUpperCase() + set.nature.slice(1);
+		}
 		i = j + 1;
 
 		// evs
@@ -1145,8 +1154,8 @@ Storage.packedTeamNames = function (buf) {
 Storage.packedTeamIcons = function (buf) {
 	if (!buf) return '<em>(empty team)</em>';
 
-	return this.packedTeamNames(buf).map(function (species) {
-		return '<span class="picon" style="' + Dex.getPokemonIcon(species) + '"><span style="font-size:0px">' + toID(species) + '</span></span>';
+	return this.unpackTeam(buf).map(function (set) {
+		return '<span class="picon" style="' + Dex.getPokemonIcon(set) + '"><span style="font-size:0px">' + toID(set.species) + '</span></span>';
 	}).join('');
 };
 
@@ -1394,7 +1403,7 @@ Storage.exportFolder = function (folder) {
 	}
 	return buf;
 };
-Storage.exportTeam = function (team, hidestats) {
+Storage.exportTeam = function (team, hidestats, shownature) {
 	if (!team) return "";
 	if (typeof team === 'string') {
 		if (team.indexOf('\n') >= 0) return team;
@@ -1464,9 +1473,11 @@ Storage.exportTeam = function (team, hidestats) {
 			if (!first) {
 				text += "  \n";
 			}
-			if (curSet.nature) {
-				text += '' + curSet.nature + ' Nature' + "  \n";
-			}
+		}
+		if ((!hidestats || shownature) && curSet.nature) {
+			text += '' + curSet.nature + ' Nature' + "  \n";
+		}
+		if (!hidestats) {
 			var first = true;
 			if (curSet.ivs) {
 				var defaultIvs = true;

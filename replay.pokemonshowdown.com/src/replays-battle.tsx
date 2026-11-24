@@ -616,15 +616,6 @@ export class BattlePanel extends preact.Component<{ id: string, user: PSReplays[
 			{!!this.result?.private && <p>
 				<strong><i class="fa fa-lock" aria-hidden></i> PRIVATE</strong> - make sure you have the owner's permission to share
 			</p>}
-			<p>
-				<label>
-					Short URL: <input
-						name="shareurl" type="text" class="textbox" readOnly size={60}
-						style="max-width:99%;box-sizing:border-box;field-sizing:content;padding-right:20px"
-						value={this.shareURL()} onFocus={this.selectShareURL}
-					/>
-				</label>
-			</p>
 			{this.result ? <p>
 				<span style={{ float: 'right' }}>
 					{this.props.user?.isLeader && <button

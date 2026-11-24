@@ -90,6 +90,8 @@
 				return buf + '><i class="fa fa-pencil-square-o"></i> <span>Teambuilder</span></a><button class="closebutton" name="closeRoom" value="' + 'teambuilder" aria-label="Close"><i class="fa fa-times-circle"></i></button></li>';
 			case 'ladder':
 				return buf + '><i class="fa fa-list-ol"></i> <span>Ladder</span></a><button class="closebutton" name="closeRoom" value="' + 'ladder" aria-label="Close"><i class="fa fa-times-circle"></i></button></li>';
+			case 'resources':
+				return buf + '><i class="fa fa-question-circle"></i> <span>Resources</span></a><button class="closebutton" name="closeRoom" value="' + 'resources" aria-label="Close"><i class="fa fa-times-circle"></i></button></li>';
 			case 'battles':
 				return buf + '><i class="fa fa-caret-square-o-right"></i> <span>Battles</span></a><button class="closebutton" name="closeRoom" value="' + 'battles" aria-label="Close"><i class="fa fa-times-circle"></i></button></li>';
 			case 'rooms':
@@ -134,7 +136,12 @@
 			this.$('.logo').show();
 			this.$('.maintabbar').removeClass('minitabbar');
 
-			var buf = '<ul>' + this.renderRoomTab(app.rooms['']) + this.renderRoomTab(app.rooms['teambuilder']) + this.renderRoomTab(app.rooms['ladder']) + '</ul>';
+			var buf = '<ul>' + (
+				this.renderRoomTab(app.rooms['']) +
+				this.renderRoomTab(app.rooms['teambuilder']) +
+				this.renderRoomTab(app.rooms['ladder']) +
+				this.renderRoomTab(app.rooms['resources'])
+			) + '</ul>';
 			var sideBuf = '';
 
 			var notificationCount = app.rooms[''].notifications ? 1 : 0;
@@ -203,7 +210,7 @@
 			for (var i in app.rooms) {
 				if (app.rooms[i] !== app.curRoom && app.rooms[i].notificationClass === ' notifying') notificationClass = ' notifying';
 			}
-			var buf = '<ul><li><a class="button minilogo' + notificationClass + '" href="' + app.root + '"><img src="' + Dex.resourcePrefix + 'favicon-256.png" width="32" height="32" alt="Pok&eacute;mon Showdown! (beta)" /><i class="fa fa-caret-down" style="display:inline-block"></i></a></li></ul>';
+			var buf = '<ul><li><a class="button minilogo' + notificationClass + '" href="' + app.root + '"><img src="' + Dex.resourcePrefix + 'iconbeta.png" width="32" height="32" alt="Pok&eacute;mon Showdown! (beta)" /><i class="fa fa-caret-down" style="display:inline-block"></i></a></li></ul>';
 
 			buf += '<ul>' + this.renderRoomTab(app.curRoom) + '</ul>';
 
@@ -469,9 +476,11 @@
 			'change select[name=bg]': 'setBg',
 			'change select[name=timestamps-lobby]': 'setTimestampsLobby',
 			'change select[name=timestamps-pms]': 'setTimestampsPMs',
+			'change select[name=lobbybattles]': 'setLobbyBattles',
 			'change input[name=syncteams]': 'setSyncTeams',
 			'change select[name=onepanel]': 'setOnePanel',
 			'change select[name=theme]': 'setTheme',
+			'change select[name=defaultclient]': 'setDefaultClient',
 			'change input[name=logchat]': 'setLogChat',
 			'change input[name=selfhighlight]': 'setSelfHighlight',
 			'click img': 'avatars',
@@ -491,7 +500,7 @@
 				buf += '<p><input name="statustext" />';
 				buf += '<button class="button" name="editstatus"><i class="fa fa-pencil"></i></button></p>';
 			}
-			if (app.user.get('named')) {
+			if (app.user.get('named') && !Config.discordlogin) {
 				var registered = app.user.get('registered');
 				if (registered && (registered.userid === app.user.get('userid'))) {
 					buf += '<p><button class="button" name="changepassword">Password...</button></p>';
@@ -499,6 +508,19 @@
 					buf += '<p><button class="button" name="register">Register</button></p>';
 				}
 			}
+
+			buf += '<hr />';
+			var hasClientCookie = /(?:^|;\s*)preactalpha=/.test(document.cookie);
+			var defaultClient = /(?:^|;\s*)preactalpha=1(?:;|$)/.test(document.cookie) ? 'new' : 'old';
+			if (hasClientCookie) {
+				buf += '<p>This is the old client.</p>';
+				buf += '<label class="optlabel">Default: <select name="defaultclient" class="button"><option value="old"' + (defaultClient === 'old' ? ' selected="selected"' : '') + '>Old client</option><option value="new"' + (defaultClient === 'new' ? ' selected="selected"' : '') + '>New client</option></select></label>';
+			} else {
+				buf += '<p>We\'re working on a new client! Try it out!</p>';
+			}
+			var switchClientLabel = !hasClientCookie ? 'Try new client' :
+				(defaultClient === 'new' ? 'Back to new client' : 'Use new client temporarily');
+			buf += '<p><a class="button' + (hasClientCookie ? '' : ' alt-notifying') + '" href="/newclient">' + switchClientLabel + '</a></p>';
 
 			buf += '<hr />';
 			buf += '<p><strong>Graphics</strong></p>';
@@ -562,6 +584,8 @@
 			var timestamps = this.timestamps = (Dex.prefs('timestamps') || {});
 			buf += '<p><label class="optlabel">Timestamps in chat rooms: <select name="timestamps-lobby" class="button"><option value="off">Off</option><option value="minutes"' + (timestamps.lobby === 'minutes' ? ' selected="selected"' : '') + '>[HH:MM]</option><option value="seconds"' + (timestamps.lobby === 'seconds' ? ' selected="selected"' : '') + '>[HH:MM:SS]</option></select></label></p>';
 			buf += '<p><label class="optlabel">Timestamps in PMs: <select name="timestamps-pms" class="button"><option value="off">Off</option><option value="minutes"' + (timestamps.pms === 'minutes' ? ' selected="selected"' : '') + '>[HH:MM]</option><option value="seconds"' + (timestamps.pms === 'seconds' ? ' selected="selected"' : '') + '>[HH:MM:SS]</option></select></label></p>';
+			var lobbyBattles = Dex.prefs('lobbybattles') || 'all';
+			buf += '<p><label class="optlabel">Battles in lobby: <select name="lobbybattles" class="button"><option value="all"' + (lobbyBattles === 'all' ? ' selected="selected"' : '') + '>All</option><option value="human"' + (lobbyBattles === 'human' ? ' selected="selected"' : '') + '>Human vs human</option><option value="ladder"' + (lobbyBattles === 'ladder' ? ' selected="selected"' : '') + '>Ladder</option><option value="none"' + (lobbyBattles === 'none' ? ' selected="selected"' : '') + '>None</option></select></label></p>';
 			buf += '<p><label class="optlabel">Chat preferences: <button name="formatting" class="button">Text formatting</button></label></p>';
 			var syncTeams = !Storage.prefs('nosyncteams');
 			buf += '<p><label class="optlabel">Download teams from server: <input type="checkbox" name="syncteams" ' + (syncTeams ? 'checked ' : '') + '></input></p>';
@@ -575,6 +599,8 @@
 			buf += '<hr />';
 			if (app.user.get('named')) {
 				buf += '<p class="buttonbar" style="text-align:right"><button name="login" class="button"><i class="fa fa-pencil"></i> Change name</button> <button name="logout" class="button"><i class="fa fa-power-off"></i> Log out</button></p>';
+			} else if (Config.discordlogin) {
+				buf += '<p class="buttonbar" style="text-align:right"><button name="loginCode" class="button">Login code</button></p>';
 			} else {
 				buf += '<p class="buttonbar" style="text-align:right"><button name="login" class="button">Choose name</button></p>';
 			}
@@ -614,6 +640,11 @@
 				}
 			}
 			$('html').toggleClass('dark', theme === 'dark');
+		},
+		setDefaultClient: function (e) {
+			document.cookie = 'preactalpha=' + (e.currentTarget.value === 'new' ? '1' : '0') +
+				'; expires=Thu, 1 Sep 2027 12:00:00 UTC; path=/';
+			this.update();
 		},
 		setBwgfx: function (e) {
 			var bwgfx = !!e.currentTarget.checked;
@@ -680,6 +711,13 @@
 			this.timestamps.pms = e.currentTarget.value;
 			Storage.prefs('timestamps', this.timestamps);
 		},
+		setLobbyBattles: function (e) {
+			var lobbyBattles = e.currentTarget.value;
+			Storage.prefs('lobbybattles', lobbyBattles);
+			$('.lobbybattle-human').toggle(lobbyBattles === 'all' || lobbyBattles === 'human');
+			$('.lobbybattle-ladder').toggle(lobbyBattles !== 'none');
+			$('.lobbybattle-bot').toggle(lobbyBattles === 'all');
+		},
 		setSyncTeams: function () {
 			Storage.prefs('nosyncteams', !Storage.prefs('nosyncteams'));
 			if (!Storage.prefs('nosyncteams')) {
@@ -722,6 +760,9 @@
 		},
 		login: function () {
 			app.addPopup(LoginPopup);
+		},
+		loginCode: function () {
+			app.addPopup(LoginCodePopup);
 		},
 		register: function () {
 			app.addPopup(RegisterPopup);
@@ -925,6 +966,31 @@
 		}
 	});
 
+	var DISCORD_LOGIN_BUTTONBAR = '<p class="buttonbar"><button type="button" name="discord" class="button"><strong>Discord login</strong></button> <button type="button" name="challengeOnly" class="button"><strong>Challenge-only</strong></button> <button type="button" name="close" class="button">Cancel</button></p>';
+	var discordLogin = function () {
+		this.close();
+		app.user.discordRename();
+	};
+	var challengeOnlyLogin = function () {
+		this.close();
+		app.user.challengeOnlyRename();
+	};
+
+	var LoginCodePopup = this.LoginCodePopup = Popup.extend({
+		type: 'semimodal',
+		initialize: function () {
+			var buf = '<form>';
+			buf += '<p><label class="label">Login code: <input class="textbox autofocus" type="text" name="code" autocomplete="one-time-code" autocapitalize="characters" spellcheck="false"></label></p>';
+			buf += '<p class="buttonbar"><button type="submit" class="button"><strong>Log in</strong></button> <button type="button" name="close" class="button">Cancel</button></p>';
+			buf += '</form>';
+			this.$el.html(buf);
+		},
+		submit: function (data) {
+			this.close();
+			app.user.codeRename(data.code);
+		}
+	});
+
 	var LoginPopup = this.LoginPopup = Popup.extend({
 		type: 'semimodal',
 		initialize: function (data) {
@@ -969,6 +1035,14 @@
 				}
 			}
 
+			if (Config.discordlogin && !app.user.get('registered')) {
+				buf += '<p>Log in with Discord to play on this server.</p>';
+				buf += DISCORD_LOGIN_BUTTONBAR;
+				buf += '</form>';
+				this.$el.html(buf);
+				return;
+			}
+
 			var name = (data.name || '');
 			if (!name && app.user.get('named')) name = app.user.get('name');
 			buf += '<p><label class="label">Username: <small class="preview" style="' + BattleLog.hashColor(toUserid(name)) + '">(color)</small><input class="textbox autofocus" type="text" name="username" value="' + BattleLog.escapeHTML(name) + '" autocomplete="username"></label></p>';
@@ -989,6 +1063,8 @@
 			var css = BattleLog.hashColor(toUserid(name)).slice(6, -1);
 			preview.css('color', css);
 		},
+		discord: discordLogin,
+		challengeOnly: challengeOnlyLogin,
 		force: function () {
 			var sourceEl = this.sourceEl;
 			this.close();
@@ -1118,6 +1194,8 @@
 				}
 			} else if (data.reason) {
 				buf += '<p>' + BattleLog.escapeHTML(data.reason) + '</p>';
+			} else if (data.special === '@discord') {
+				buf += '<p class="error">This name needs a Discord login.</p>';
 			} else {
 				buf += '<p class="error">The name you chose is registered.</p>';
 			}
@@ -1128,6 +1206,8 @@
 				buf += '<div id="g_id_onload" data-client_id="912270888098-jjnre816lsuhc5clj3vbcn4o2q7p4qvk.apps.googleusercontent.com" data-context="signin" data-ux_mode="popup" data-callback="gapiCallback" data-auto_prompt="false"></div>';
 				buf += '<div class="g_id_signin" data-type="standard" data-shape="pill" data-theme="filled_blue" data-text="continue_with" data-size="large" data-logo_alignment="left" data-auto_select="true" data-itp_support="true" style="width:fit-content;margin:0 auto">[loading Google log-in button]</div>';
 				buf += '<p class="buttonbar"><button name="close" class="button">Cancel</button></p>';
+			} else if (data.special === '@discord') {
+				buf += DISCORD_LOGIN_BUTTONBAR;
 			} else {
 				buf += '<p><label class="label">Password: <input class="textbox autofocus" type="password" name="password" autocomplete="current-password" style="width:173px"><button type="button" name="showPassword" aria-label="Show password" style="float:right;margin:-21px 0 10px;padding: 2px 6px" class="button"><i class="fa fa-eye"></i></button></label></p>';
 				buf += '<p class="buttonbar"><button type="submit" class="button"><strong>Log in</strong></button> <button type="button" name="close" class="button">Cancel</button></p>';
@@ -1153,6 +1233,8 @@
 				document.getElementsByTagName('head')[0].appendChild(script);
 			}
 		},
+		discord: discordLogin,
+		challengeOnly: challengeOnlyLogin,
 		login: function () {
 			this.close();
 			app.addPopup(LoginPopup);

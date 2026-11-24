@@ -238,7 +238,7 @@ function toId() {
 		 *   `login:noresponse`
 		 *     triggered if the login server did not return a response
 		 */
-		finishRename: function (name, assertion) {
+		finishRename: function (name, assertion, registered) {
 			if (assertion.slice(0, 14).toLowerCase() === '<!doctype html') {
 				// some sort of MitM proxy; ignore it
 				var endIndex = assertion.indexOf('>');
@@ -254,11 +254,14 @@ function toId() {
 				this.trigger('login:authrequired', name);
 			} else if (assertion === ';;@gmail') {
 				this.trigger('login:authrequired', name, '@gmail');
+			} else if (assertion === ';;@discord') {
+				this.trigger('login:authrequired', name, '@discord');
 			} else if (assertion.substr(0, 2) === ';;') {
 				this.trigger('login:invalidname', name, assertion.substr(2));
 			} else if (assertion.indexOf('\n') >= 0 || !assertion) {
 				app.addPopupMessage("Something is interfering with our connection to the login server.");
 			} else {
+				if (registered) this.set('registered', registered);
 				app.trigger('loggedin');
 				app.send('/trn ' + name + ',0,' + assertion);
 			}
@@ -311,9 +314,6 @@ function toId() {
 					// success!
 					self.set('registered', data.curuser);
 					self.finishRename(name, data.assertion);
-
-					Storage.prefs('user', name);
-					Storage.prefs('pass', password);
 				} else {
 					// wrong password
 					if (special === '@gmail') {
@@ -328,6 +328,54 @@ function toId() {
 					});
 				}
 			}), 'text');
+		},
+		discordListening: false,
+		discordRename: function () {
+			var self = this;
+			var origin = Config.testclient ? 'https://' + Config.routes.client : location.origin;
+			if (!this.discordListening) {
+				this.discordListening = true;
+				window.addEventListener('message', function (event) {
+					if (event.origin !== origin) return;
+					if (!event.data || event.data.type !== 'discord-login') return;
+					self.finishRename(event.data.username, event.data.assertion, {
+						username: event.data.username,
+						userid: toUserid(event.data.username)
+					});
+				});
+			}
+			window.open(
+				origin + '/api/discord/login?challstr=' + encodeURIComponent(this.challstr) +
+				'&serverid=' + encodeURIComponent(Config.server.id),
+				'ps-discord-login', 'popup=1,width=500,height=750'
+			);
+		},
+		codeRename: function (code) {
+			var self = this;
+			$.post(this.getActionPHP(), {
+				act: 'discord/code',
+				code: code,
+				challstr: this.challstr
+			}, Storage.safeJSON(function (data) {
+				if (data && data.curuser && data.curuser.loggedin) {
+					self.set('registered', data.curuser);
+					self.finishRename(data.curuser.username, data.assertion);
+				} else {
+					app.addPopupMessage(data.actionerror || "That login code is invalid or expired.");
+				}
+			}), 'text');
+		},
+		challengeOnlyRename: function () {
+			var seed = Storage.prefs('challengeonly');
+			if (!seed) {
+				var bytes = new Uint8Array(16);
+				window.crypto.getRandomValues(bytes);
+				seed = Array.prototype.map.call(bytes, function (b) {
+					return ('0' + b.toString(16)).slice(-2);
+				}).join('');
+				Storage.prefs('challengeonly', seed);
+			}
+			app.send('/challengeonly ' + seed);
 		},
 		challstr: '',
 		receiveChallstr: function (challstr) {
@@ -345,33 +393,27 @@ function toId() {
 				 */
 				this.challstr = challstr;
 				var self = this;
-				self.loaded = true;
-				if (Storage.prefs('user') && Storage.prefs('pass')) {
-					self.passwordRename(Storage.prefs('user'), Storage.prefs('pass'));
-				} else {
-					app.topbar.updateUserbar();
-				}
-				// $.post(this.getActionPHP(), {
-				// 	act: 'upkeep',
-				// 	challstr: this.challstr
-				// }, Storage.safeJSON(function (data) {
-				// 	self.loaded = true;
-				// 	if (!data.username) {
-				// 		app.topbar.updateUserbar();
-				// 		return;
-				// 	}
+				$.post(this.getActionPHP(), {
+					act: 'upkeep',
+					challstr: this.challstr
+				}, Storage.safeJSON(function (data) {
+					self.loaded = true;
+					if (!data.username) {
+						if (Storage.prefs('challengeonly')) self.challengeOnlyRename();
+						app.topbar.updateUserbar();
+						return;
+					}
 
-				// 	// | , ; are not valid characters in names
-				// 	data.username = data.username.replace(/[\|,;]+/g, '');
+					data.username = data.username.replace(/[\|,;]+/g, '');
 
-				// 	if (data.loggedin) {
-				// 		self.set('registered', {
-				// 			username: data.username,
-				// 			userid: toUserid(data.username)
-				// 		});
-				// 	}
-				// 	self.finishRename(data.username, data.assertion);
-				// }), 'text');
+					if (data.loggedin) {
+						self.set('registered', {
+							username: data.username,
+							userid: toUserid(data.username)
+						});
+					}
+					self.finishRename(data.username, data.assertion);
+				}), 'text');
 			}
 		},
 		/**
@@ -385,6 +427,7 @@ function toId() {
 
 			Storage.prefs('user', false);
 			Storage.prefs('pass', false);
+			Storage.prefs('challengeonly', null);
 
 			app.send('/logout');
 			app.trigger('init:socketclosed', "You have been logged out and disconnected.<br /><br />If you wanted to change your name while staying connected, use the 'Change Name' button or the '/nick' command.", false);
@@ -905,7 +948,9 @@ function toId() {
 				history.replaceState(null, null, location.pathname);
 			}
 			if (fragment && fragment.includes('.')) fragment = '';
-			this.fragment = fragment = toRoomid(fragment || '');
+			fragment = toRoomid(fragment || '');
+			if (fragment === 'oldclient') fragment = '';
+			this.fragment = fragment;
 			if (this.initialFragment === undefined) this.initialFragment = fragment;
 			this.tryJoinRoom(fragment);
 			this.updateTitle(this.rooms[fragment]);
@@ -984,6 +1029,7 @@ function toId() {
 					team.team = data.team;
 					team.loaded = true;
 					callback(team);
+					Storage.saveTeams();
 					var entry = app.loadingTeamQueue.shift();
 					if (entry) {
 						app.loadTeam(entry[0], entry[1]);
@@ -1071,8 +1117,8 @@ function toId() {
 					this.renameRoom(roomid, parts[0], parts[1]);
 				} else if (data === 'nonexistent' && Config.server.id && roomid.slice(0, 7) === 'battle-' && errormessage) {
 					var replayid = roomid.slice(7);
-					// if (Config.server.id !== 'showdown') replayid = Config.server.id + '-' + replayid;
-					var replayLink = 'https://sim.pokeathlon.com/replays/' + replayid;
+					if (Config.server.id !== 'showdown') replayid = Config.server.id + '-' + replayid;
+					var replayLink = 'https://' + Config.routes.replays + '/' + replayid;
 					var self = this;
 					$.ajax(replayLink + '.json', { dataType: 'json' }).done(function (replay) {
 						if (replay) {
@@ -1492,6 +1538,7 @@ function toId() {
 					}
 				}
 			}
+			window.BattleFormats = Dex.formats.load(BattleFormats);
 			if (columnChanged) app.supports['formatColumns'] = true;
 			this.trigger('init:formats');
 		},
@@ -1541,7 +1588,7 @@ function toId() {
 						var target = this.pathname.substr(1);
 
 						// keep this in sync with .htaccess
-						var shortLinks = /^(rooms?suggestions?|suggestions?|adminrequests?|forgotpassword|bugs?(reports?)?|formatsuggestions|rules?|faq|credits?|news|privacy|contact|dex|(damage)?calc|insecure|replays?|devdiscord|smogdex|smogcord|forums?|trustworthy\-dlc\-link)$/;
+						var shortLinks = /^(rooms?suggestions?|suggestions?|adminrequests?|forgotpassword|bugs?(reports?)?|formatsuggestions|rules?|faq|credits?|news|privacy|contact|dex|(damage)?calc|insecure|replays?|devdiscord|smogdex|smogcord|forums?|trustworthy\-dlc\-link|oldclient|newclient)$/;
 						if (target === 'appeal' || target === 'appeals') target = 'view-help-request--appeal';
 						if (target === 'report') target = 'view-help-request--report';
 						if (target === 'requesthelp') target = 'view-help-request--other';
@@ -1709,6 +1756,7 @@ function toId() {
 				'ladder': LadderRoom,
 				'lobby': ChatRoom,
 				'staff': ChatRoom,
+				'resources': ResourceRoom,
 				'constructor': ChatRoom
 			};
 			var typeTable = {
@@ -1745,7 +1793,7 @@ function toId() {
 				if (this.curSideRoom === oldRoom) this.curSideRoom = room;
 				if (this.sideRoom === oldRoom) this.sideRoom = room;
 			}
-			if (['', 'teambuilder', 'ladder', 'rooms'].indexOf(room.id) < 0) {
+			if (['', 'teambuilder', 'ladder', 'rooms', 'resources'].indexOf(room.id) < 0) {
 				if (room.isSideRoom) {
 					this.sideRoomList.push(room);
 				} else {
@@ -2164,7 +2212,7 @@ function toId() {
 			if (this.dismissingSource && $(data.sourceEl)[0] === this.dismissingSource) return;
 			while (this.popups.length) {
 				var prevPopup = this.popups[this.popups.length - 1];
-				if (data.sourcePopup === prevPopup) {
+				if (data.sourcePopup === prevPopup || prevPopup.$el.has(data.sourceEl).length) {
 					break;
 				}
 				var sourceEl = prevPopup.sourceEl ? prevPopup.sourceEl[0] : null;
@@ -2819,7 +2867,7 @@ function toId() {
 
 			var buf = '<div class="userdetails">';
 			if (avatar) buf += '<img class="trainersprite' + (userid === ownUserid ? ' yours' : '') + '" src="' + Dex.resolveAvatar(avatar) + '" />';
-			buf += '<strong>' + (globalGroup.type === 'punishment' ? 'punished user' : '<a href="//' + Config.routes.users + '/' + userid + '" target="_blank">' + BattleLog.escapeHTML(name) + '</a>') + '</strong><br />';
+			buf += '<strong><a href="//' + Config.routes.users + '/' + userid + '" target="_blank">' + BattleLog.escapeHTML(name) + '</a></strong><br />';
 			var offline = data.rooms === false;
 			if (data.status || offline) {
 				var status = offline ? '(Offline)' : data.status.startsWith('!') ? data.status.slice(1) : data.status;

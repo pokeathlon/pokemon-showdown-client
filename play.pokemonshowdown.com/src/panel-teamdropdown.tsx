@@ -8,6 +8,7 @@
 import { PS, type Team } from "./client-main";
 import { PSIcon, PSPanelWrapper, PSRoomPanel } from "./panels";
 import { Dex, TL, toID, type ID } from "./battle-dex";
+import { type FormatData } from "./battle-dex-data";
 import { Teams } from "./battle-teams";
 
 export class PSTeambuilder {
@@ -37,166 +38,6 @@ export class PSTeambuilder {
 		const delimIndex = buffer.lastIndexOf(delimiter);
 		if (delimIndex < 0) return [buffer, ''];
 		return [buffer.slice(0, delimIndex), buffer.slice(delimIndex + delimiter.length)];
-	}
-	static parseExportedTeamLine(line: string, isFirstLine: boolean, set: Dex.PokemonSet) {
-		if (isFirstLine || line.startsWith('[')) {
-			let item;
-			[line, item] = line.split('@');
-			line = line.trim();
-			item = item?.trim();
-			if (item) {
-				set.item = item;
-				if (toID(set.item) === 'noitem') set.item = '';
-			}
-			if (line.endsWith(' (M)')) {
-				set.gender = 'M';
-				line = line.slice(0, -4);
-			}
-			if (line.endsWith(' (F)')) {
-				set.gender = 'F';
-				line = line.slice(0, -4);
-			}
-			if (line.startsWith('[') && line.endsWith(']')) {
-				// the ending `]` is necessary to establish this as ability
-				// (rather than nickname starting with `[`)
-				set.ability = line.slice(1, -1);
-				if (toID(set.ability) === 'selectability') {
-					set.ability = '';
-				}
-			} else if (line) {
-				const parenIndex = line.lastIndexOf(' (');
-				if (line.endsWith(')') && parenIndex !== -1) {
-					set.species = Dex.species.get(line.slice(parenIndex + 2, -1)).name;
-					set.name = line.slice(0, parenIndex);
-				} else {
-					set.species = Dex.species.get(line).name;
-					set.name = '';
-				}
-			}
-		} else if (line.startsWith('Trait: ')) {
-			set.ability = line.slice(7);
-		} else if (line.startsWith('Ability: ')) {
-			set.ability = line.slice(9);
-		} else if (line.startsWith('Item: ')) {
-			set.item = line.slice(6);
-		} else if (line.startsWith('Nickname: ')) {
-			set.name = line.slice(10);
-		} else if (line.startsWith('Species: ')) {
-			set.species = line.slice(9);
-		} else if (line === 'Shiny: Yes' || line === 'Shiny') {
-			set.shiny = true;
-		} else if (line.startsWith('Level: ')) {
-			set.level = +line.slice(7);
-		} else if (line.startsWith('Happiness: ')) {
-			set.happiness = +line.slice(11);
-		} else if (line.startsWith('Pokeball: ')) {
-			set.pokeball = line.slice(10);
-		} else if (line.startsWith('Hidden Power: ')) {
-			set.hpType = line.slice(14);
-		} else if (line.startsWith('Dynamax Level: ')) {
-			set.dynamaxLevel = +line.slice(15);
-		} else if (line === 'Gigantamax: Yes' || line === 'Gigantamax') {
-			set.gigantamax = true;
-		} else if (line.startsWith('Tera Type: ')) {
-			set.teraType = line.slice(11);
-		} else if (line.startsWith('EVs: ')) {
-			const evLines = line.slice(5).split('(')[0].split('/');
-			set.evs = { hp: 0, atk: 0, def: 0, spa: 0, spd: 0, spe: 0 };
-			let plus = '', minus = '';
-			for (let evLine of evLines) {
-				evLine = evLine.trim();
-				const spaceIndex = evLine.indexOf(' ');
-				if (spaceIndex === -1) continue;
-				const statid = BattleStatIDs[evLine.slice(spaceIndex + 1)];
-				if (!statid) continue;
-				if (evLine.charAt(spaceIndex - 1) === '+') plus = statid;
-				if (evLine.charAt(spaceIndex - 1) === '-') minus = statid;
-				set.evs[statid] = parseInt(evLine.slice(0, spaceIndex), 10) || 0;
-			}
-			const nature = this.getNature(plus as StatNameExceptHP, minus as StatNameExceptHP);
-			if (nature !== 'Serious') {
-				set.nature = nature as Dex.NatureName;
-			}
-		} else if (line.startsWith('IVs: ')) {
-			const ivLines = line.slice(5).split(' / ');
-			set.ivs = { hp: 31, atk: 31, def: 31, spa: 31, spd: 31, spe: 31 };
-			for (let ivLine of ivLines) {
-				ivLine = ivLine.trim();
-				const spaceIndex = ivLine.indexOf(' ');
-				if (spaceIndex === -1) continue;
-				const statid = BattleStatIDs[ivLine.slice(spaceIndex + 1)];
-				if (!statid) continue;
-				let statval = parseInt(ivLine.slice(0, spaceIndex), 10);
-				if (isNaN(statval)) statval = 31;
-				set.ivs[statid] = statval;
-			}
-		} else if (/^[A-Za-z]+ (N|n)ature/.exec(line)) {
-			let natureIndex = line.indexOf(' Nature');
-			if (natureIndex === -1) natureIndex = line.indexOf(' nature');
-			if (natureIndex === -1) return;
-			line = line.slice(0, natureIndex);
-			if (line !== 'undefined') set.nature = line as Dex.NatureName;
-		} else if (line.startsWith('-') || line.startsWith('~') || line.startsWith('Move:')) {
-			if (line.startsWith('Move:')) line = line.slice(4);
-			line = line.slice(line.charAt(1) === ' ' ? 2 : 1);
-			if (line.startsWith('Hidden Power [')) {
-				let hpType = line.slice(14, line.indexOf(']')) as Dex.TypeName;
-				if (hpType.includes(']') || hpType.includes('[')) hpType = '' as any;
-				line = 'Hidden Power ' + hpType;
-				set.hpType = hpType;
-			}
-			if (line === 'Frustration' && set.happiness === undefined) {
-				set.happiness = 0;
-			}
-			set.moves.push(line);
-		}
-	}
-	static getNature(plus: StatNameExceptHP | '', minus: StatNameExceptHP | '') {
-		if (!plus || !minus) {
-			return 'Serious';
-		}
-		for (const i in BattleNatures) {
-			if (BattleNatures[i as 'Serious'].plus === plus && BattleNatures[i as 'Serious'].minus === minus) {
-				return i;
-			}
-		}
-		return 'Serious';
-	}
-	static importTeam(buffer: string): Dex.PokemonSet[] {
-		const lines = buffer.split("\n");
-
-		const sets: Dex.PokemonSet[] = [];
-		let curSet: Dex.PokemonSet | null = null;
-
-		while (lines.length && !lines[0]) lines.shift();
-		while (lines.length && !lines[lines.length - 1]) lines.pop();
-
-		if (lines.length === 1 && lines[0].includes('|')) {
-			return Teams.unpack(lines[0]);
-		}
-		for (let line of lines) {
-			line = line.trim();
-			if (line === '' || line === '---') {
-				curSet = null;
-			} else if (line.startsWith('===')) {
-				// team backup format; ignore
-			} else if (line.includes('|')) {
-				// packed format
-				const team = PS.teams.unpackLine(line);
-				if (!team) continue;
-				return Teams.unpack(team.packedTeam);
-			} else if (!curSet) {
-				curSet = {
-					name: '', species: '', gender: '',
-					moves: [],
-				};
-				sets.push(curSet);
-				this.parseExportedTeamLine(line, true, curSet);
-			} else {
-				this.parseExportedTeamLine(line, false, curSet);
-			}
-		}
-		return sets;
 	}
 	static importTeamBackup(buffer: string): Team[] {
 		const teams: Team[] = [];
@@ -262,9 +103,9 @@ export class PSTeambuilder {
 					moves: [],
 				};
 				sets.push(curSet);
-				this.parseExportedTeamLine(line, true, curSet);
+				Teams.parseExportedTeamLine(line, true, curSet);
 			} else {
-				this.parseExportedTeamLine(line, false, curSet);
+				Teams.parseExportedTeamLine(line, false, curSet);
 			}
 		}
 		if (curTeam) {
@@ -284,9 +125,7 @@ export class PSTeambuilder {
 		if (dataTransfer) {
 			dataTransfer.effectAllowed = 'copyMove';
 			dataTransfer.setData("text/plain", "[Team] " + team.name);
-			let filename = team.name;
-			if (team.format) filename = '[' + team.format + '] ' + filename;
-			filename = $.trim(filename).replace(/[\\/]+/g, '') + '.txt';
+			const filename = Teams.getFilename(team);
 			const urlprefix = "data:text/plain;base64,";
 			const contents = PSTeambuilder.exportPackedTeam(team).replace(/\n/g, '\r\n');
 			const downloadurl = "text/plain:" + filename + ":" + urlprefix + encodeURIComponent(window.btoa(unescape(encodeURIComponent(contents))));
@@ -307,7 +146,12 @@ export class PSTeambuilder {
 	}
 }
 
-export function TeamBox(props: { team: Team | null, noLink?: boolean, button?: boolean }) {
+export function TeamBox(props: {
+	team: Team | null,
+	noLink?: boolean,
+	button?: boolean,
+	onClick?: () => void,
+}) {
 	const team = props.team;
 	let contents;
 	if (team) {
@@ -321,7 +165,7 @@ export function TeamBox(props: { team: Team | null, noLink?: boolean, button?: b
 			<em>{team.isBox ? TL`(empty box)` : TL`(empty team)`}</em>
 		);
 		let format = team.format as string;
-		if (format.startsWith(`gen${Dex.gen}`)) format = format.slice(4);
+		if (format.startsWith(Dex.modid)) format = format.slice(4);
 		format = (format ? `[${format}] ` : ``) + (team.folder ? `${team.folder}/` : ``);
 		contents = [
 			<strong>{team.isBox && <i class="fa fa-archive"></i>} {format && <span>{format}</span>}{team.name}</strong>,
@@ -343,7 +187,10 @@ export function TeamBox(props: { team: Team | null, noLink?: boolean, button?: b
 			{contents}
 		</div>;
 	}
-	return <a href={`team-${team ? team.key : ''}`} class={className} draggable onDragStart={PSTeambuilder.dragStart}>
+	return <a
+		href={`team-${team ? team.key : ''}`} class={className} draggable
+		onDragStart={PSTeambuilder.dragStart} onClick={props.onClick}
+	>
 		{contents}
 	</a>;
 }
@@ -510,29 +357,6 @@ class TeamDropdownPanel extends PSRoomPanel {
 	}
 }
 
-export interface FormatData {
-	id: ID;
-	name: string;
-	team?: 'preset' | null;
-	section: string;
-	column: number;
-	searchShow?: boolean;
-	challengeShow?: boolean;
-	tournamentShow?: boolean;
-	bestOfDefault?: boolean;
-	teraPreviewDefault?: boolean;
-	itemClauseDefault?: boolean;
-	rated: boolean;
-	teambuilderLevel?: number | null;
-	partner?: boolean;
-	teambuilderFormat?: ID;
-	battleFormat?: string;
-	isTeambuilderFormat: boolean;
-	effectType: 'Format';
-}
-
-declare const BattleFormats: { [id: string]: FormatData };
-
 export type SelectType = 'teambuilder' | 'challenge' | 'search' | 'tournament';
 class FormatDropdownPanel extends PSRoomPanel {
 	static readonly id = 'formatdropdown';
@@ -542,6 +366,10 @@ class FormatDropdownPanel extends PSRoomPanel {
 	gen = '' as ID;
 	format: string | null = null;
 	search = '';
+	openSections = PS.prefs.openformats || {
+		'S/V Singles': true, 'S/V Doubles': true, 'Unofficial Metagames': true, 'National Dex': true,
+		'Ladder Spotlight': true, 'Other Metagames': true, 'Random Meta of the Decade': true,
+	};
 	click = (e: MouseEvent) => {
 		let curTarget = e.target as HTMLElement | null;
 		let target;
@@ -563,6 +391,16 @@ class FormatDropdownPanel extends PSRoomPanel {
 	toggleGen = (ev: Event) => {
 		const target = ev.currentTarget as HTMLButtonElement;
 		this.gen = this.gen === target.value ? '' as ID : target.value as ID;
+		this.forceUpdate();
+	};
+	toggleSection = (ev: Event) => {
+		const target = ev.currentTarget as HTMLDetailsElement;
+		const section = target.dataset.section!;
+		// Filtering temporarily opens sections (without changing saved preferences)
+		if (!toID(this.search) && !this.gen && target.open !== !!this.openSections[section]) {
+			this.openSections = { ...this.openSections, [section]: target.open };
+			PS.prefs.set('openformats', this.openSections);
+		}
 		this.forceUpdate();
 	};
 	override render() {
@@ -590,7 +428,7 @@ class FormatDropdownPanel extends PSRoomPanel {
 			}
 		}
 		const curGen = (gen: string) => this.gen === gen ? ' cur' : '';
-		const searchBar = <div style="margin-bottom: 0.5em">
+		const searchBar = <div>
 			<input
 				type="search" name="search" placeholder={TL`Search formats`} class="textbox autofocus" autocomplete="off"
 				onInput={this.updateSearch} onChange={this.updateSearch}
@@ -625,13 +463,13 @@ class FormatDropdownPanel extends PSRoomPanel {
 			if (selectType === 'challenge' && format.challengeShow === false) return false;
 			if (selectType === 'search' && format.searchShow === false) return false;
 			if (selectType === 'tournament' && format.tournamentShow === false) return false;
-			if (selectType === 'teambuilder' && format.team) return false;
+			if (selectType === 'teambuilder' && !format.isTeambuilderFormat) return false;
 			return true;
 		});
 
-		let curSection = '';
+		type FormatSection = { section: string, formats: { id: ID, name: string, section: string }[] };
 		let curColumnNum = 0;
-		let curColumn: ({ id: ID, name: string, section: string } | { id: null, section: string })[] = [];
+		let curColumn: FormatSection[] = [];
 		const columns = [curColumn];
 		const searchID = toID(this.search);
 		for (const format of formats) {
@@ -647,19 +485,17 @@ class FormatDropdownPanel extends PSRoomPanel {
 				}
 				curColumnNum = format.column;
 			}
-			if (format.section !== curSection) {
-				curSection = format.section;
-				if (curSection) {
-					curColumn.push({ id: null, section: curSection });
-				}
+			let curSection = curColumn[curColumn.length - 1];
+			if (format.section !== curSection?.section) {
+				curSection = { section: format.section, formats: [] };
+				curColumn.push(curSection);
 			}
-			curColumn.push(format);
+			curSection.formats.push(format);
 		}
 		if (this.gen && selectType === 'teambuilder') {
 			columns[0].unshift({
-				id: this.gen,
-				name: `[Gen ${this.gen.slice(3)}]`,
-				section: 'No Format',
+				section: '',
+				formats: [{ id: this.gen, name: `[Gen ${this.gen.slice(3)}]`, section: 'No Format' }],
 			});
 		}
 
@@ -673,8 +509,8 @@ class FormatDropdownPanel extends PSRoomPanel {
 		return <PSPanelWrapper room={room} width={width}><div class="pad">
 			{searchBar}
 			{columns.map(column => (
-				<ul class="options" onClick={this.click}>
-					{!starredDone && starred?.map((id, i) => {
+				<div class="options-column" onClick={this.click}>
+					{!starredDone && !!starred.length && <ul>{starred.map((id, i) => {
 						if (this.gen && !id.startsWith(this.gen)) return null;
 						let format = BattleFormats[id] as FormatData | undefined;
 						if (/^gen[1-9]$/.test(id)) {
@@ -682,6 +518,7 @@ class FormatDropdownPanel extends PSRoomPanel {
 								id: id as ID,
 								name: `[Gen ${id.slice(3)}]`,
 								section: 'No Format',
+								isTeambuilderFormat: true,
 								challengeShow: false,
 								searchShow: false,
 							} as any;
@@ -690,33 +527,40 @@ class FormatDropdownPanel extends PSRoomPanel {
 						if (i === starred.length - 1) starredDone = true;
 						if (selectType === 'challenge' && format.challengeShow === false) return null;
 						if (selectType === 'search' && format.searchShow === false) return null;
-						if (selectType === 'teambuilder' && format.team) return null;
+						if (selectType === 'teambuilder' && !format.isTeambuilderFormat) return null;
 						return <li><button value={format.name} class={`option${curFormat === format.id ? ' cur' : ''}`}>
 							{format.name.replace('[Gen 8 ', '[').replace('[Gen 9] ', '').replace('[Gen 7 ', '[')}
 							{format.section === 'No Format' && <em> {TL`(uncategorized)`}</em>}
 							<i class="star fa fa-star cur" data-cmd={`/unstar ${format.id}`}></i>
 						</button></li>;
+					})}</ul>}
+					{column.map(({ section, formats: sectionFormats }) => {
+						// don't repeat starred formats
+						const unstarred = sectionFormats.filter(format => !starred.includes(format.id));
+						if (!unstarred.length) return null;
+						const options = <ul>{unstarred.map(format => <li key={format.id}><button
+							value={format.name}
+							class={`option${curFormat === format.id ? ' cur' : ''}`}
+						>
+							{format.name.replace('[Gen 8 ', '[').replace('[Gen 9] ', '').replace('[Gen 7 ', '[')}
+							{format.section === 'No Format' && <em> {TL`(uncategorized)`}</em>}
+							<i class="star fa fa-star-o" data-cmd={`/star ${format.id}`}></i>
+						</button></li>)}</ul>;
+						if (!section) return options;
+						return <details
+							// reset open state when search/filter changes
+							key={`${section}:${this.gen}:${searchID}`} data-section={section} class="details"
+							// always default to open when searching/filtering
+							open={!!(searchID || this.gen || this.openSections[section])} onToggle={this.toggleSection}
+						>
+							<summary>{section}</summary>
+							{options}
+						</details>;
 					})}
-					{column.map(format => {
-						// do not include starred formats
-						if (starred.includes(format.id || '')) return '';
-						if (format.id) {
-							return <li><button
-								value={format.name}
-								class={`option${curFormat === format.id ? ' cur' : ''}`}
-							>
-								{format.name.replace('[Gen 8 ', '[').replace('[Gen 9] ', '').replace('[Gen 7 ', '[')}
-								{format.section === 'No Format' && <em> {TL`(uncategorized)`}</em>}
-								<i class="star fa fa-star-o" data-cmd={`/star ${format.id}`}></i>
-							</button></li>;
-						} else {
-							return <li><h3>{format.section}</h3></li>;
-						}
-					})}
-				</ul>
+				</div>
 			))}
 			{noResults && <p><em>{searchID ? TL`No formats matching "${searchID}" found` : TL`No formats found`}</em></p>}
-			<div style="float: left"></div>
+			<div style="clear: left"></div>
 		</div></PSPanelWrapper>;
 	}
 }

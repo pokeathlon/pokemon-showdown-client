@@ -147,7 +147,7 @@ export class BattleTextParser {
 				return { args: ['-singlemove', pokemon, effect], kwArgs: { of: target } };
 			}
 			if ([
-				'bind', 'greatbind', 'wrap', 'clamp', 'whirlpool', 'firespin', 'magmastorm', 'sandtomb', 'infestation', 'snaptrap', 'thundercage', 'trapped', 'thornprison', 'sandsnare',
+				'bind', 'greatbind', 'wrap', 'clamp', 'whirlpool', 'firespin', 'magmastorm', 'sandtomb', 'infestation', 'snaptrap', 'thundercage', 'trapped', 'thornprison', 'sandsnare', 'oceanswrath',
 			].includes(id)) {
 				return { args: ['-start', pokemon, effect], kwArgs: { of: target } };
 			}
@@ -225,6 +225,7 @@ export class BattleTextParser {
 			if (args[1] === 'Snow') args[1] = 'Snowscape';
 			break;
 		}
+
 		case '-ability': {
 			if (args[3] && (args[3].startsWith('p1') || args[3].startsWith('p2') || args[3] === 'boost')) {
 				args[4] = args[3];

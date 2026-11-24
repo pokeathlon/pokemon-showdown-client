@@ -52,8 +52,8 @@ ga('send', 'pageview');
 				<li><a class="button nav-first<?php if ($panels->tab === 'home') echo ' cur'; ?>" href="/"><img src="/images/pokemonshowdownbeta.png" srcset="/images/pokemonshowdownbeta.png 1x, /images/pokemonshowdownbeta@2x.png 2x" alt="Pok&eacute;mon Showdown" width="146" height="44" /> Home</a></li>
 				<li><a class="button" href="//<?= $psconfig['routes']['dex'] ?>/">Pok&eacute;dex</a></li>
 				<li><a class="button" href="//<?= $psconfig['routes']['replays'] ?>/">Replay</a></li>
-				<li><a class="button purplebutton" href="//smogon.com/dex/" target="_blank">Strategy</a></li>
-				<li><a class="button nav-last purplebutton" href="//smogon.com/forums/" target="_blank">Forum</a></li>
+				<li><a class="button purplebutton" href="https://pokeathlon.wiki.gg/" target="_blank">Strategy</a></li>
+				<li><a class="button nav-last purplebutton" href="https://discord.gg/AY9UmkTKuh" target="_blank">Forum</a></li>
 			</ul>
 			<ul class="nav nav-play">
 				<li><a class="button greenbutton nav-first nav-last" href="//<?= $psconfig['routes']['client'] ?>/">Play</a></li>
