@@ -672,7 +672,7 @@
 				var typeValueTracker = new ModifiableValue(this.battle, this.battle.nearSide.active[activePos], this.battle.myPokemon[pos]);
 				var currentlyDynamaxed = (!canDynamax && maxMoves);
 				var nearActive = this.battle.nearSide.active;
-				var pokemon = nearActive[0];
+				var pokemon = nearActive[activePos];
 				let ability = this.battle.myPokemon[pos].ability
 				for (var i = 0; i < curActive.moves.length; i++) {
 					var moveData = curActive.moves[i];
@@ -703,7 +703,7 @@
 							}
 						}
 						if (this.battle.hasPseudoWeather('Corrosive Mist Field')) {
-							if (move.type === 'Fire' || ability === 'corrosion' || dex.move.category === 'Special' ||
+							if (move.type === 'Fire' || ability === 'corrosion' || move.category === 'Special' ||
 								['gravity', 'seedflare', 'defog', 'gust', 'hurricane', 'razorwind', 'supersonicskystrike', 
 								'tailwind', 'twister', 'whirlwind', 'eruption', 'explosion', 'firepledge', 'flameburst', 
 								'heatwave', 'incinerate','infernooverdrive','lavaplume','mindblown','searingshot','self-destruct',
@@ -742,7 +742,7 @@
 								['anchorshot', 'dragondarts', 'waterpulse', 'bounce', 'fly', 'dive', 'skydrop', 'aciddownpour', 'wavecrash'].includes(move.id)) {
 								fieldMod = 'mask-fieldUp';
 							}
-							if (['Fire', 'Ground'].includes(move.type) || (move.type != 'Water' && !pokemon.types.includes('Water') && move.category === 'Physical' && !['swiftswim', 'steelworker'].includes(ability)) || move.id === 'tarshot') {
+							if (['Fire', 'Ground'].includes(move.type) || (move.type != 'Water' && !pokemon.getTypeList(switchables[pos]).includes('Water') && move.category === 'Physical' && !['swiftswim', 'steelworker'].includes(ability)) || move.id === 'tarshot') {
 								fieldMod = 'mask-fieldDown';
 							}
 						}
@@ -1174,12 +1174,13 @@
 
 					} else { // Vanilla buttons
 						if (moveData.disabled) {
-						movebuttons += '<button disabled class="movebutton has-tooltip" data-tooltip="' + BattleLog.escapeHTML(tooltipArgs) + '">';
-					} else {
-						movebuttons += '<button class="movebutton type-' + moveType + ' has-tooltip" name="chooseMove" value="' + (i + 1) + '" data-move="' + BattleLog.escapeHTML(moveData.move) + '" data-target="' + BattleLog.escapeHTML(moveData.target) + '" data-tooltip="' + BattleLog.escapeHTML(tooltipArgs) + '">';
-						hasMoves = true;
+							movebuttons += '<button disabled class="movebutton has-tooltip" data-tooltip="' + BattleLog.escapeHTML(tooltipArgs) + '">';
+						} else {
+							movebuttons += '<button class="movebutton type-' + moveType + ' has-tooltip" name="chooseMove" value="' + (i + 1) + '" data-move="' + BattleLog.escapeHTML(moveData.move) + '" data-target="' + BattleLog.escapeHTML(moveData.target) + '" data-tooltip="' + BattleLog.escapeHTML(tooltipArgs) + '">';
+							hasMoves = true;
+						}
+						movebuttons += name + '<br /><small class="type">' + (moveType ? Dex.types.get(moveType).name : "Unknown") + ' <span class="effectiveness-icon">' + moveEffectiveness + '</span></small> <small class="pp">' + pp + '</small>&nbsp;</button> ';
 					}
-					movebuttons += name + '<br /><small class="type">' + (moveType ? Dex.types.get(moveType).name : "Unknown") + ' <span class="effectiveness-icon">' + moveEffectiveness + '</span></small> <small class="pp">' + pp + '</small>&nbsp;</button> ';
 				}
 				if (!hasMoves) {
 					moveMenu += '<button class="movebutton" name="chooseMove" value="0" data-move="Struggle" data-target="randomNormal">Struggle<br /><small class="type">Normal</small> <small class="pp">&ndash;</small>&nbsp;</button> ';

@@ -952,19 +952,19 @@ License: GPLv2
 	background: #21A5D0 url(https://play.pokeathlon.com/sprites/fangame-sprites/rejuvenation/fields/weather-icyfield.png) no-repeat scroll left top;
 	color: #41C5F0;
 }
-.dragonsdenweather {
+.dragonsdenfieldweather {
 	background: #C40A00 url(https://play.pokeathlon.com/sprites/fangame-sprites/rejuvenation/fields/weather-dragonsdenfield.png) no-repeat scroll left top;
 	color: #2C0200;
 }
-.corrosivemistfield {
+.corrosivemistfieldweather {
 	background: #CA3E92 url(https://play.pokeathlon.com/sprites/fangame-sprites/rejuvenation/fields/weather-corrosivemistfield.png) no-repeat scroll left top;
 	color: #B24CC8;
 }
-.skyfield {
+.skyfieldweather {
 	background: #CF6D08 url(https://play.pokeathlon.com/sprites/fangame-sprites/rejuvenation/fields/weather-skyfield.png) no-repeat scroll left top;
 	color: #732106;
 }
-.frozendimensionalfield {
+.frozendimensionalfieldweather {
 	background: #7A8CB3 url(https://play.pokeathlon.com/sprites/fangame-sprites/rejuvenation/fields/weather-frozendimensionalfield.png) no-repeat scroll left top;
 	color: #7BB5CB;
 }

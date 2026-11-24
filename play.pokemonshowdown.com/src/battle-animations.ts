@@ -57,6 +57,7 @@ export class BattleScene implements BattleSceneStub {
 	$options: JQuery = null!;
 	log: BattleLog;
 	$terrain: JQuery = null!;
+	$battlefield: JQuery = null!;
 	$weather: JQuery = null!;
 	$bgEffect: JQuery = null!;
 	$bg: JQuery = null!;
@@ -154,6 +155,7 @@ export class BattleScene implements BattleSceneStub {
 
 		this.$bg = $('<div class="backdrop pixelated" style="background-image:url(' + Dex.resourcePrefix + this.backdropImage + ');display:block;opacity:0.8"></div>');
 		this.$terrain = $('<div class="weather"></div>');
+		this.$battlefield = $('<div class="weather"></div>');
 		this.$weather = $('<div class="weather"></div>');
 		this.$bgEffect = $('<div></div>');
 		this.$sprite = $('<div></div>');
@@ -179,6 +181,7 @@ export class BattleScene implements BattleSceneStub {
 
 		this.$battle.append(this.$bg);
 		this.$battle.append(this.$terrain);
+		this.$battle.append(this.$battlefield);
 		this.$battle.append(this.$weather);
 		this.$battle.append(this.$bgEffect);
 		this.$battle.append(this.$sprite);
@@ -1051,9 +1054,20 @@ export class BattleScene implements BattleSceneStub {
 			weather = '' as ID;
 		}
 		let terrain = '' as ID;
-		for (const pseudoWeatherData of this.battle.pseudoWeather) {
-			terrain = toID(pseudoWeatherData[0]);
+		let activeTerrain = '' as ID;
+		let battlefield = '' as ID;
+		for (const [name] of this.battle.pseudoWeather) {
+			const id = toID(name);
+			if (id.endsWith('field')) {
+				battlefield = id;
+			} else {
+				terrain = id;
+				if (id.endsWith('terrain')) activeTerrain = id;
+			}
 		}
+		if (battlefield && activeTerrain) terrain = activeTerrain;
+		this.$battlefield.attr('class', battlefield ? 'weather ' + battlefield + 'weather' : 'weather');
+		this.$battlefield.css('opacity', terrain ? 0.5 : 1);
 		if (weather === 'desolateland' || weather === 'primordialsea' || weather === 'deltastream') {
 			isIntense = true;
 		}

@@ -1562,8 +1562,9 @@ export class Battle {
 			}
 		}
 	}
-	updateTurnCounters() {
+	updateTurnCounters(newBattlefield = false) {
 		for (const pWeather of this.pseudoWeather) {
+			if (newBattlefield && toID(pWeather[0]).endsWith('field')) continue;
 			if (pWeather[1]) pWeather[1]--;
 			if (pWeather[2]) pWeather[2]--;
 		}
@@ -3281,14 +3282,10 @@ export class Battle {
 			this.activateAbility(poke, fromeffect);
 			let minTimeLeft = 5;
 			let maxTimeLeft = 0;
-			if (effect.id.endsWith('terrain')) {
-				for (let i = this.pseudoWeather.length - 1; i >= 0; i--) {
-					let pwID = toID(this.pseudoWeather[i][0]);
-					if (pwID.endsWith('terrain')) {
-						this.pseudoWeather.splice(i, 1);
-						continue;
-					}
-				}
+			const isBattlefield = effect.id.endsWith('field');
+			if (isBattlefield || effect.id.endsWith('terrain')) {
+				const suffix = isBattlefield ? 'field' : 'terrain';
+				this.pseudoWeather = this.pseudoWeather.filter(([name]) => !toID(name).endsWith(suffix));
 				if (this.gen > 6) maxTimeLeft = 8;
 			} else if (effect.id === 'trickroom') {
 				for (let i = this.pseudoWeather.length - 1; i >= 0; i--) {
@@ -3616,7 +3613,7 @@ export class Battle {
 		}
 		case 'upkeep': {
 			this.usesUpkeep = true;
-			this.updateTurnCounters();
+			this.updateTurnCounters(!!kwArgs.newfield);
 			// Prevents getSwitchedPokemon from skipping over a Pokemon that switched out mid turn (e.g. U-turn)
 			for (const side of this.sides) {
 				side.lastPokemon = null;
