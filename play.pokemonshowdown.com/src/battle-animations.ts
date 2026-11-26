@@ -14,9 +14,9 @@
 import type { Battle, HPColor, Pokemon, Side, WeatherState } from './battle';
 import type { BattleSceneStub } from './battle-scene-stub';
 import { BattleMoveAnims } from './battle-animations-moves';
-import { BattleLog } from './battle-log';
+import { BattleLog, eHTML } from './battle-log';
 import { type BattleBGM, BattleSound } from './battle-sound';
-import { Dex, toID, type ID, type SpriteData } from './battle-dex';
+import { Dex, TL, toID, type ID, type SpriteData } from './battle-dex';
 import { BattleNatures } from './battle-dex-data';
 import { BattleTooltips } from './battle-tooltips';
 import { BattleTextParser, type Args, type KWArgs } from './battle-text-parser';
@@ -152,7 +152,7 @@ export class BattleScene implements BattleSceneStub {
 		this.$battle = $('<div class="innerbattle"></div>');
 		this.$frame.append(this.$battle);
 
-		this.$bg = $('<div class="backdrop pixelated" style="background-image:url(https://play.pokeathlon.com/' + this.backdropImage + ');display:block;opacity:0.8"></div>');
+		this.$bg = $('<div class="backdrop pixelated" style="background-image:url(' + Dex.resourcePrefix + this.backdropImage + ');display:block;opacity:0.8"></div>');
 		this.$terrain = $('<div class="weather"></div>');
 		this.$weather = $('<div class="weather"></div>');
 		this.$bgEffect = $('<div></div>');
@@ -167,10 +167,10 @@ export class BattleScene implements BattleSceneStub {
 		this.$sprite.append(this.$spritesFront[0]);
 		this.$sprite.append(this.$sprites[0]);
 
-		this.$stat = $('<div role="complementary" aria-label="Active Pokemon"></div>');
+		this.$stat = $(eHTML`<div role="complementary" aria-label="${TL`Active Pokémon`}"></div>`);
 		this.$fx = $('<div></div>');
-		this.$leftbar = $('<div class="leftbar" role="complementary" aria-label="Your Team"></div>');
-		this.$rightbar = $('<div class="rightbar" role="complementary" aria-label="Opponent\'s Team"></div>');
+		this.$leftbar = $(eHTML`<div class="leftbar" role="complementary" aria-label="${TL`Your team`}"></div>`);
+		this.$rightbar = $(eHTML`<div class="rightbar" role="complementary" aria-label="${TL`Opponent's team`}"></div>`);
 		this.$turn = $('<div></div>');
 		this.$messagebar = $('<div class="messagebar message"></div>');
 		this.$delay = $('<div></div>');
@@ -594,16 +594,21 @@ export class BattleScene implements BattleSceneStub {
 		} else if (typeof rated === 'string' && rated.startsWith('National Pokemon Association')) {
 			bg = 'fx/bg-npa.png';
 			this.setBgm(-101);
+		} else if (typeof rated === 'string' && rated.startsWith('World Cup of Pokemon')) {
+			bg = 'fx/bg-wcop.png';
+			this.setBgm(-101);
+		} else if (typeof rated === 'string' && rated.startsWith('Smogon Champions League')) {
+			bg = 'fx/bg-scl.png';
+			this.setBgm(-101);
 		} else {
 			if (this.battle.dex.modid === 'gen9mariomon') {
 				const marioBGs = Object.keys(BattleBackdropsMario);
 				bg = marioBGs[this.numericId % marioBGs.length];
 
 				const marioMusic = Object.keys(BattleMusicMario);
-				let bgm = marioMusic[this.numericId % marioMusic.length];
-				if (!this.bgm || (this.bgm && this.bgm.url != bgm)) this.message(`\u266b <i>${BattleMusicMario[bgm].title}</i> - <b>${BattleMusicMario[bgm].composer}</b> \u266b`);
+				const bgm = marioMusic[this.numericId % marioMusic.length];
+				if (this.bgm?.url !== bgm) this.message(`\u266b <i>${BattleMusicMario[bgm].title}</i> - <b>${BattleMusicMario[bgm].composer}</b> \u266b`);
 				this.bgm = BattleSound.loadBgm(bgm, BattleMusicMario[bgm].loopstart, BattleMusicMario[bgm].loopend, this.bgm);
-
 			} else if (gen <= 1) bg = 'fx/bg-gen1.png?';
 			else if (gen <= 2) bg = 'fx/bg-gen2.png?';
 			else if (gen <= 3) bg = `fx/${BattleBackdropsThree[this.numericId % BattleBackdropsThree.length]}?`;
@@ -613,7 +618,7 @@ export class BattleScene implements BattleSceneStub {
 
 		this.backdropImage = bg;
 		if (this.$bg) {
-			this.$bg.css('background-image', `url(https://play.pokeathlon.com/${this.backdropImage})`);
+			this.$bg.css('background-image', `url(${Dex.resourcePrefix}${this.backdropImage})`);
 		}
 	}
 
@@ -695,16 +700,18 @@ export class BattleScene implements BattleSceneStub {
 				pokemonhtml += `<span class="picon" style="${Dex.getPokemonIcon('pokeball-none')}"></span>`;
 			} else if (noShow) {
 				if (poke?.fainted) {
-					pokemonhtml += `<span${tooltipCode} style="${Dex.getPokemonIcon('pokeball-fainted')}" aria-label="Fainted"></span>`;
+					pokemonhtml += `<span${tooltipCode} style="${Dex.getPokemonIcon('pokeball-fainted')}" aria-label="${BattleLog.escapeHTML(TL.status.fnt || 'Fainted')}"></span>`;
 				} else if (poke?.status) {
-					pokemonhtml += `<span${tooltipCode} style="${Dex.getPokemonIcon('pokeball-statused')}" aria-label="Statused"></span>`;
+					pokemonhtml += `<span${tooltipCode} style="${Dex.getPokemonIcon('pokeball-statused')}" aria-label="${BattleLog.escapeHTML(TL`Statused`)}"></span>`;
 				} else {
-					pokemonhtml += `<span${tooltipCode} style="${Dex.getPokemonIcon('pokeball')}" aria-label="Non-statused"></span>`;
+					pokemonhtml += `<span${tooltipCode} style="${Dex.getPokemonIcon('pokeball')}" aria-label="${BattleLog.escapeHTML(TL`Non-statused`)}"></span>`;
 				}
 			} else if (iconType === 'pseudo-zoroark') {
-				pokemonhtml += `<span class="picon" style="${Dex.getPokemonIcon('zoroark')}" title="Unrevealed Illusion user" aria-label="Unrevealed Illusion user"></span>`;
+				const unrevealedIllusion = BattleLog.escapeHTML(TL`Unrevealed Illusion user`);
+				pokemonhtml += `<span class="picon" style="${Dex.getPokemonIcon('zoroark')}" title="${unrevealedIllusion}" aria-label="${unrevealedIllusion}"></span>`;
 			} else if (!poke) {
-				pokemonhtml += `<span class="picon" style="${Dex.getPokemonIcon('pokeball')}" title="Not revealed" aria-label="Not revealed"></span>`;
+				const notRevealed = BattleLog.escapeHTML(TL`Not revealed`);
+				pokemonhtml += `<span class="picon" style="${Dex.getPokemonIcon('pokeball')}" title="${notRevealed}" aria-label="${notRevealed}"></span>`;
 			} else if (!poke.ident && this.battle.teamPreviewCount && this.battle.teamPreviewCount < side.pokemon.length) {
 				// in VGC (bring 6 pick 4) and other pick-less-than-you-bring formats, this is
 				// a pokemon that's been brought but not necessarily picked
@@ -727,24 +734,36 @@ export class BattleScene implements BattleSceneStub {
 			// just in case
 			for (const badgeData of side.badges.slice(0, 3)) {
 				// ${badge.type}|${badge.format}|${BADGE_THRESHOLDS[badge.type]}-${badge.season}
-				const [type, format, details] = badgeData.split('|');
+				const [type = '', format = '', details = ''] = badgeData.split('|');
+				const badgeType = toID(type);
 				// todo, maybe make this more easily configured if we ever add badges for other stuff?
 				// but idk that we're planning that for now so
 				const [threshold] = details.split('-');
-				const hover = `User is Top ${threshold} on the ${format} Ladder`;
+				const hover = BattleLog.escapeHTML(`User is Top ${threshold} on the ${format} Ladder`);
 				// ou and randbats get diff badges from everyone else, find it
 				// (regex futureproofs for double digit gens)
 				let formatType = format.split(/gen\d+/)[1] || 'none';
 				if (!['ou', 'randombattle'].includes(formatType)) {
 					formatType = 'rotating';
 				}
-				badgehtml += `<img src="${Dex.resourcePrefix}/sprites/misc/${formatType}_${type}.png" style="padding: 0px 1px 0px 1px" width="16px" height="16px" title="${hover}" />`;
+				badgehtml += `<img src="${Dex.resourcePrefix}/sprites/misc/${formatType}_${badgeType}.png" style="padding: 0px 1px 0px 1px" width="16px" height="16px" title="${hover}" />`;
 			}
 			badgehtml += '</span>';
 		}
+		let avatar = Dex.resolveAvatar(side.avatar);
+		let noflip = '';
+		if (posStr.startsWith('near')) {
+			if (avatar.includes('unknown.png')) {
+				avatar = avatar.replace('unknown.png', 'unknown-flipped.png');
+				noflip = ' noflip';
+			} else if (avatar.includes('unknownf.png')) {
+				avatar = avatar.replace('unknownf.png', 'unknownf-flipped.png');
+				noflip = ' noflip';
+			}
+		}
 		return (
 			`<div class="trainer trainer-${posStr}"${faded}><strong>${BattleLog.escapeHTML(side.name)}</strong>` +
-			`<div class="trainersprite"${ratinghtml} style="background-image:url(${Dex.resolveAvatar(side.avatar)})">` +
+			`<div class="trainersprite${noflip}"${ratinghtml} style="background-image:url(${avatar})">` +
 			`</div>${badgehtml}${pokemonhtml}</div>`
 		);
 	}
@@ -886,8 +905,8 @@ export class BattleScene implements BattleSceneStub {
 				textBuf += pokemon.speciesForme;
 				let url = spriteData.url;
 				// if (this.paused) url.replace('/xyani', '/xy').replace('.gif', '.png');
-				buf += '<img src="' + url + '" width="' + spriteData.w + '" height="' + spriteData.h + '" style="image-rendering:pixelated;position:absolute;top:' + Math.floor(y - spriteData.h / 2) + 'px;left:' + Math.floor(x - spriteData.w / 2) + 'px"' + (spriteData.flip ? ' class="flip" ' : '') + '/>';
-				buf2 += '<div style="position:absolute;top:' + (y + 45) + 'px;left:' + (x - 40) + 'px;width:80px;font-size:10px;text-align:center;color:#FFF;">';
+				buf += `<img src="${url}" width="${spriteData.w}" height="${spriteData.h}" style="image-rendering:pixelated;position:absolute;top:${Math.floor(y - spriteData.h / 2)}px;left:${Math.floor(x - spriteData.w / 2)}px"${spriteData.flip ? ' class="flip"' : ''} />`;
+				buf2 += `<div style="position:absolute;top:${y + 45}px;left:${x - 40}px;width:80px;font-size:10px;text-align:center;color:#FFF;">`;
 				const gender = pokemon.gender;
 				if (gender === 'M' || gender === 'F') {
 					buf2 += `<img src="${Dex.fxPrefix}gender-${gender.toLowerCase()}.png" alt="${gender}" width="7" height="10" class="pixelated" style="margin-bottom:-1px" /> `;
@@ -940,24 +959,33 @@ export class BattleScene implements BattleSceneStub {
 		this.$battle.find('.playbutton1, .playbutton2').remove();
 	}
 
+	turnsLeft(min: number, max = 0) {
+		if (max) {
+			const range = TL.orList([`${min}`, `${max}`]);
+			return TL`(${range} turns)`;
+		}
+		return min === 1 ? TL`(${min} turn)` : TL`(${min} turns)`;
+	}
 	pseudoWeatherLeft(pWeather: WeatherState) {
-		let buf = `<br />${Dex.moves.get(pWeather[0]).name}`;
+		let buf = `<br />${TL(Dex.moves.get(pWeather[0]))}`;
 		if (!pWeather[1] && pWeather[2]) {
 			pWeather[1] = pWeather[2];
 			pWeather[2] = 0;
 		}
 		if (this.battle.gen < 7 && this.battle.hardcoreMode) return buf;
 		if (pWeather[2]) {
-			return `${buf} <small>(${pWeather[1]} or ${pWeather[2]} turns)</small>`;
+			return `${buf} <small>${this.turnsLeft(pWeather[1], pWeather[2])}</small>`;
 		}
 		if (pWeather[1]) {
-			return `${buf} <small>(${pWeather[1]} turn${pWeather[1] === 1 ? '' : 's'})</small>`;
+			return `${buf} <small>${this.turnsLeft(pWeather[1])}</small>`;
 		}
 		return buf; // weather not found
 	}
 	sideConditionLeft(cond: Side['sideConditions'][string], isFoe: boolean, all?: boolean) {
 		if (!cond[2] && !cond[3] && !all) return '';
-		let buf = `<br />${isFoe && !all ? "Foe's " : ""}${Dex.moves.get(cond[0]).name}`;
+		const condition = TL(Dex.moves.get(cond[0]));
+		const foeCondition = TL`Foe's ${condition}`;
+		let buf = `<br />${isFoe && !all ? foeCondition : condition}`;
 		if (this.battle.gen < 7 && this.battle.hardcoreMode) return buf;
 
 		if (!cond[2] && !cond[3]) return buf;
@@ -966,9 +994,9 @@ export class BattleScene implements BattleSceneStub {
 			cond[3] = 0;
 		}
 		if (!cond[3]) {
-			return `${buf} <small>(${cond[2]} turn${cond[2] === 1 ? '' : 's'})</small>`;
+			return `${buf} <small>${this.turnsLeft(cond[2])}</small>`;
 		}
-		return `${buf} <small>(${cond[2]} or ${cond[3]} turns)</small>`;
+		return `${buf} <small>${this.turnsLeft(cond[2], cond[3])}</small>`;
 	}
 	weatherLeft() {
 		if (this.battle.gen < 7 && this.battle.hardcoreMode) return '';
@@ -976,24 +1004,13 @@ export class BattleScene implements BattleSceneStub {
 		let weatherhtml = ``;
 
 		if (this.battle.weather) {
-			const weatherNameTable: { [id: string]: string } = {
-				sunnyday: 'Sun',
-				desolateland: 'Intense Sun',
-				raindance: 'Rain',
-				primordialsea: 'Heavy Rain',
-				sandstorm: 'Sandstorm',
-				newmoon: 'New Moon',
-				thunderstorm: 'Thunderstorm',
-				fallout: 'Fallout',
-				hail: 'Hail',
-				snowscape: 'Snow',
-				deltastream: 'Strong Winds',
-			};
-			weatherhtml = `${weatherNameTable[this.battle.weather] || this.battle.weather}`;
+			weatherhtml = BattleTextParser.weatherName(this.battle.weather);
 			if (this.battle.weatherMinTimeLeft !== 0) {
-				weatherhtml += ` <small>(${this.battle.weatherMinTimeLeft} or ${this.battle.weatherTimeLeft} turns)</small>`;
+				weatherhtml += ` <small>${this.turnsLeft(
+					this.battle.weatherMinTimeLeft, this.battle.weatherTimeLeft
+				)}</small>`;
 			} else if (this.battle.weatherTimeLeft !== 0) {
-				weatherhtml += ` <small>(${this.battle.weatherTimeLeft} turn${this.battle.weatherTimeLeft === 1 ? '' : 's'})</small>`;
+				weatherhtml += ` <small>${this.turnsLeft(this.battle.weatherTimeLeft)}</small>`;
 			}
 			const nullifyWeather = this.battle.abilityActive(['Air Lock', 'Cloud Nine']);
 			weatherhtml = `${nullifyWeather ? '<s>' : ''}${weatherhtml}${nullifyWeather ? '</s>' : ''}`;
@@ -1081,7 +1098,8 @@ export class BattleScene implements BattleSceneStub {
 			this.$turn.html('');
 			return;
 		}
-		this.$turn.html(`<div class="turn has-tooltip" data-tooltip="field" data-ownheight="1">Turn ${this.battle.turn}</div>`);
+		const turnText = BattleLog.escapeHTML(this.log.turnText(`${this.battle.turn}`));
+		this.$turn.html(`<div class="turn has-tooltip" data-tooltip="field" data-ownheight="1">${turnText}</div>`);
 	}
 	incrementTurn() {
 		if (!this.animating) return;
@@ -1089,7 +1107,8 @@ export class BattleScene implements BattleSceneStub {
 		const turn = this.battle.turn;
 		if (turn <= 0) return;
 		const $prevTurn = this.$turn.children();
-		const $newTurn = $(`<div class="turn has-tooltip" data-tooltip="field" data-ownheight="1">Turn ${turn}</div>`);
+		const turnText = BattleLog.escapeHTML(this.log.turnText(`${turn}`));
+		const $newTurn = $(`<div class="turn has-tooltip" data-tooltip="field" data-ownheight="1">${turnText}</div>`);
 		$newTurn.css({
 			opacity: 0,
 			left: 160,
@@ -1596,7 +1615,7 @@ export class BattleScene implements BattleSceneStub {
 
 	typeAnim(pokemon: Pokemon, types: string) {
 		const result = BattleLog.escapeHTML(types).split('/').map(type =>
-			'<img src="https://play.pokeathlon.com/fx/types/' + type + '.png" alt="' + type + '" class="pixelated" />'
+			`<img src="${Dex.fxPrefix}types/${encodeURIComponent(type)}.png" alt="${type}" class="pixelated" />`
 		).join(' ');
 		this.resultAnim(pokemon, result, 'neutral');
 	}
@@ -1930,7 +1949,7 @@ export class Sprite {
 		if (spriteData) {
 			sp = spriteData;
 			let rawHTML = sp.rawHTML ||
-				'<img src="' + sp.url + '" style="display:none;position:absolute"' + (sp.pixelated ? ' class="pixelated' + (sp.flip ? ' flip' : '') + '"' : '') + ' />';
+				`<img src="${sp.url!}" style="display:none;position:absolute"${sp.pixelated ? ` class="pixelated${sp.flip ? ' flip' : ''}"` : ''} />`;
 			this.$el = $(rawHTML);
 		} else {
 			sp = {
@@ -2054,6 +2073,8 @@ export class PokemonSprite extends Sprite {
 		watersport: ['Water Sport', 'good'],
 		mudsport: ['Mud Sport', 'good'],
 		substitute: null,
+		weardown: ['Wear Down', 'bad'],
+		vanguard: ['Vanguard', 'good'],
 		// sub graphics are handled elsewhere, see Battle.Sprite.animSub()
 		uproar: ['Uproar', 'neutral'],
 		rage: ['Rage', 'neutral'],
@@ -2083,6 +2104,7 @@ export class PokemonSprite extends Sprite {
 		laserfocus: ['Laser Focus', 'good'],
 		spotlight: ['Spotlight', 'neutral'],
 		itemremoved: null,
+		firewall: ['Fire Wall', 'good'],
 		// partial trapping
 		bind: ['Bind', 'bad'],
 		greatbind: ['Great Bind', 'bad'],
@@ -2095,6 +2117,9 @@ export class PokemonSprite extends Sprite {
 		thundercage: ['Thunder Cage', 'bad'],
 		whirlpool: ['Whirlpool', 'bad'],
 		wrap: ['Wrap', 'bad'],
+		thornprison: ['Thorn Prison', 'bad'],
+		sandsnare: ['Sand Snare', 'bad'],
+		oceanswrath: ['Oceans Wrath', 'bad'],
 		// Gen 1-2
 		mist: ['Mist', 'good'],
 		// Gen 1
@@ -2129,7 +2154,7 @@ export class PokemonSprite extends Sprite {
 		retribution4: ['Retribution: 4', 'good'],
 		retribution5: ['Retribution: 5', 'good'],
 		physical: null,
-		special: null
+		special: null,
 	};
 	forme = '';
 	cryurl: string | undefined = undefined;
@@ -2359,7 +2384,7 @@ export class PokemonSprite extends Sprite {
 		if (this.$el) {
 			this.$el.stop(true, false);
 			this.$el.remove();
-			const $newEl = $('<img src="' + this.sp.url + '" style="display:none;position:absolute"' + (this.sp.pixelated ? ' class="pixelated' + (this.sp.flip ? ' flip' : '') + '"' : '') + ' />');
+			const $newEl = $(`<img src="${this.sp.url!}" style="display:none;position:absolute"${this.sp.pixelated ? ` class="pixelated${this.sp.flip ? ' flip' : ''}"` : ''} />`);
 			this.$el = $newEl;
 		}
 
@@ -2958,8 +2983,8 @@ export class PokemonSprite extends Sprite {
 		let buf = '<div class="statbar' + (this.isFrontSprite ? ' lstatbar' : ' rstatbar') + this.getClassForPosition(pokemon.slot) + '" style="display: none">';
 		const ignoreNick = this.isFrontSprite && (this.scene.battle.ignoreOpponent || this.scene.battle.ignoreNicks);
 		buf += `<strong>${BattleLog.escapeHTML(ignoreNick ? pokemon.speciesForme : pokemon.name)}`;
-		if (pokemon.fusion || pokemon.getSpecies().tags.includes('Infinite Fusion')) {
-			buf += ` <img src="https://play.pokeathlon.com/fx/fused.png" alt="Fused" style="vertical-align:text-bottom;" height="16" width="16" />`;
+		if (pokemon.fusion || pokemon.getSpecies().eggGroups.includes('Infinite Fusion')) {
+			buf += ` <img src="${Dex.fxPrefix}fused.png" alt="Fused" style="vertical-align:text-bottom;" height="16" width="16" />`;
 		}
 		const gender = pokemon.gender;
 		if (gender === 'M' || gender === 'F') {
@@ -2975,7 +3000,7 @@ export class PokemonSprite extends Sprite {
 			buf += ` <img src="${Dex.resourcePrefix}sprites/misc/${symbol}.png" alt="${symbol}" style="vertical-align:text-bottom;" />`;
 		}
 		if (pokemon.terastallized) {
-			buf += ` <img src="https://play.pokeathlon.com/fx/types/Tera${pokemon.terastallized}.png" alt="Tera-${pokemon.terastallized}" style="vertical-align:text-bottom;" height="16" width="16" />`;
+			buf += ` <img src="${Dex.fxPrefix}types/Tera${pokemon.terastallized}.png" alt="Tera-${pokemon.terastallized}" style="vertical-align:text-bottom;" height="16" width="16" />`;
 		}
 
 		buf += `</strong><div class="hpbar"><div class="hptext"></div><div class="hptextborder"></div><div class="prevhp"><div class="hp"></div></div><div class="status"></div>`;
@@ -3050,23 +3075,25 @@ export class PokemonSprite extends Sprite {
 			status += '<span class="par">PAR</span> ';
 		} else if (pokemon.status === 'frz') {
 			status += '<span class="frz">FRZ</span> ';
+		} else if (pokemon.status === 'frb') {
+			status += '<span class="frb">FRB</span> ';
 		}
 		if (pokemon.terastallized) {
-			status += `<img src="https://play.pokeathlon.com/fx/types/${encodeURIComponent(pokemon.terastallized)}.png" alt="${pokemon.terastallized}" class="pixelated" /> `;
-		} else if (pokemon.volatiles.typechange && pokemon.volatiles.typechange[1]) {
+			status += `<img src="${Dex.fxPrefix}types/${encodeURIComponent(pokemon.terastallized)}.png" alt="${pokemon.terastallized}" class="pixelated" /> `;
+		} else if (pokemon.volatiles.typechange?.[1]) {
 			const types = pokemon.volatiles.typechange[1].split('/');
 			for (const type of types) {
-				status += '<img src="https://play.pokeathlon.com/fx/types/' + encodeURIComponent(type) + '.png" alt="' + type + '" class="pixelated" /> ';
+				status += '<img src="' + Dex.fxPrefix + 'types/' + encodeURIComponent(type) + '.png" alt="' + type + '" class="pixelated" /> ';
 			}
 		} else if (pokemon.fusion) {
 			const types = pokemon.getTypes()[0];
 			for (const type of types) {
-				status += '<img src="https://play.pokeathlon.com/fx/types/' + encodeURIComponent(type) + '.png" alt="' + type + '" class="pixelated" /> ';
+				status += '<img src="' + Dex.fxPrefix + 'types/' + encodeURIComponent(type) + '.png" alt="' + type + '" class="pixelated" /> ';
 			}
 		}
 		if (pokemon.volatiles.typeadd) {
 			const type = pokemon.volatiles.typeadd[1];
-			status += '+<img src="https://play.pokeathlon.com/fx/types/' + type + '.png" alt="' + type + '" class="pixelated" /> ';
+			status += '+<img src="' + Dex.fxPrefix + 'types/' + type + '.png" alt="' + type + '" class="pixelated" /> ';
 		}
 		for (const stat in pokemon.boosts) {
 			if (pokemon.boosts[stat]) {
@@ -3165,8 +3192,8 @@ const BattleEffects: { [k: string]: SpriteData } = {
 		url: 'wisp.png',
 		w: 100, h: 100,
 	},
-	poisonwisp: {
-		url: 'poisonwisp.png',
+	purplewisp: {
+		url: 'purplewisp.png',
 		w: 100, h: 100,
 	},
 	waterwisp: {
@@ -3419,9 +3446,10 @@ const BattleEffects: { [k: string]: SpriteData } = {
 	},
 };
 (() => {
+	if (!window.Dex || !Dex.resourcePrefix) return;
 	for (const id in BattleEffects) {
 		if (!BattleEffects[id].url) continue;
-		BattleEffects[id].url = 'https://play.pokeathlon.com/fx/' + BattleEffects[id].url;
+		BattleEffects[id].url = Dex.fxPrefix + BattleEffects[id].url;
 	}
 })();
 const BattleBackdropsThree = [
@@ -3456,7 +3484,7 @@ const BattleBackdropsFive = [
 	'bg-icecave.png',
 	'bg-route.png',
 ];
-const BattleBackdrops = [
+export const BattleBackdrops = [
 	'bg-aquacordetown.jpg',
 	'bg-beach.jpg',
 	'bg-city.jpg',
@@ -5149,7 +5177,7 @@ export const BattleOtherAnims: AnimTable = {
 				opacity: 0.1,
 				time: 400,
 			}, 'decel', 'fade');
-			scene.showEffect('poisonwisp', {
+			scene.showEffect('purplewisp', {
 				x: defender.x,
 				y: defender.y - 25,
 				z: defender.z,
@@ -5161,7 +5189,7 @@ export const BattleOtherAnims: AnimTable = {
 				opacity: 0.3,
 				time: 500,
 			}, 'linear', 'fade');
-			scene.showEffect('poisonwisp', {
+			scene.showEffect('purplewisp', {
 				x: defender.x,
 				y: defender.y - 25,
 				z: defender.z,
@@ -5222,7 +5250,7 @@ export const BattleOtherAnims: AnimTable = {
 				time: 450,
 			}, 'accel');
 
-			scene.showEffect('poisonwisp', {
+			scene.showEffect('purplewisp', {
 				x: defender.x - 50,
 				y: defender.y - 40,
 				z: defender.z,
@@ -5235,7 +5263,7 @@ export const BattleOtherAnims: AnimTable = {
 				z: attacker.z,
 				time: 900,
 			}, 'decel', 'fade');
-			scene.showEffect('poisonwisp', {
+			scene.showEffect('purplewisp', {
 				x: defender.x - 50,
 				y: defender.y - 40,
 				z: defender.z,
@@ -5248,7 +5276,7 @@ export const BattleOtherAnims: AnimTable = {
 				z: attacker.z,
 				time: 900,
 			}, 'decel', 'fade');
-			scene.showEffect('poisonwisp', {
+			scene.showEffect('purplewisp', {
 				x: defender.x,
 				y: defender.y - 40,
 				z: defender.z,
@@ -5327,7 +5355,7 @@ export const BattleOtherAnims: AnimTable = {
 				time: 1350,
 			}, 'decel');
 
-			scene.showEffect('poisonwisp', {
+			scene.showEffect('purplewisp', {
 				x: attacker.x,
 				y: attacker.y - 25,
 				z: attacker.z,
@@ -5339,7 +5367,7 @@ export const BattleOtherAnims: AnimTable = {
 				opacity: 0.3,
 				time: 1200,
 			}, 'linear', 'fade');
-			scene.showEffect('poisonwisp', {
+			scene.showEffect('purplewisp', {
 				x: attacker.x,
 				y: attacker.y - 25,
 				z: attacker.z,
@@ -6193,7 +6221,7 @@ export const BattleStatusAnims: AnimTable = {
 	},
 	psn: {
 		anim(scene, [attacker]) {
-			scene.showEffect('poisonwisp', {
+			scene.showEffect('purplewisp', {
 				x: attacker.x + 30,
 				y: attacker.y - 40,
 				z: attacker.z,
@@ -6206,7 +6234,7 @@ export const BattleStatusAnims: AnimTable = {
 				opacity: 0.5,
 				time: 300,
 			}, 'decel', 'fade');
-			scene.showEffect('poisonwisp', {
+			scene.showEffect('purplewisp', {
 				x: attacker.x - 30,
 				y: attacker.y - 40,
 				z: attacker.z,
@@ -6219,7 +6247,7 @@ export const BattleStatusAnims: AnimTable = {
 				opacity: 0.5,
 				time: 400,
 			}, 'decel', 'fade');
-			scene.showEffect('poisonwisp', {
+			scene.showEffect('purplewisp', {
 				x: attacker.x,
 				y: attacker.y - 40,
 				z: attacker.z,
@@ -6308,6 +6336,57 @@ export const BattleStatusAnims: AnimTable = {
 		},
 	},
 	frz: {
+		anim(scene, [attacker]) {
+			scene.showEffect('icicle', {
+				x: attacker.x - 30,
+				y: attacker.y,
+				z: attacker.z,
+				scale: 0.5,
+				opacity: 0.5,
+				time: 200,
+			}, {
+				scale: 0.9,
+				opacity: 0,
+				time: 600,
+			}, 'linear', 'fade');
+			scene.showEffect('icicle', {
+				x: attacker.x,
+				y: attacker.y - 30,
+				z: attacker.z,
+				scale: 0.5,
+				opacity: 0.5,
+				time: 300,
+			}, {
+				scale: 0.9,
+				opacity: 0,
+				time: 650,
+			}, 'linear', 'fade');
+			scene.showEffect('icicle', {
+				x: attacker.x + 15,
+				y: attacker.y,
+				z: attacker.z,
+				scale: 0.5,
+				opacity: 0.5,
+				time: 400,
+			}, {
+				scale: 0.9,
+				opacity: 0,
+				time: 700,
+			}, 'linear', 'fade');
+			scene.showEffect('wisp', {
+				x: attacker.x,
+				y: attacker.y,
+				z: attacker.z,
+				scale: 1,
+				opacity: 0.5,
+			}, {
+				scale: 3,
+				opacity: 0,
+				time: 600,
+			}, 'linear', 'fade');
+		},
+	},
+	frb: {
 		anim(scene, [attacker]) {
 			scene.showEffect('icicle', {
 				x: attacker.x - 30,

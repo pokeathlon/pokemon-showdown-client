@@ -43,7 +43,7 @@ include_once __DIR__ . '/../config/ads-landing.inc.php';
 		margin-left: 590px;
 	}
 	@media (max-width:880px) {
-		.left iframe {
+		.left iframe, .left .screenshot img {
 			width: 275px;
 			height: 144px;
 		}
@@ -88,10 +88,10 @@ include_once __DIR__ . '/../config/ads-landing.inc.php';
 		<div class="nav-wrapper"><ul class="nav">
 			<li><a class="button nav-first cur" href="/"><img src="/images/pokemonshowdownbeta.png" srcset="/images/pokemonshowdownbeta.png 1x, /images/pokemonshowdownbeta@2x.png 2x" alt="Pok&eacute;mon Showdown" width="146" height="44" /> Home</a></li>
 			<li><a class="button" href="/dex/">Pok&eacute;dex</a></li>
-			<li><a class="button" href="//replay.pokemonshowdown.com/">Replay</a></li>
-			<li><a class="button purplebutton" href="//smogon.com/dex/" target="_blank">Strategy</a></li>
-			<li><a class="button nav-last purplebutton" href="//smogon.com/forums/" target="_blank">Forum</a></li>
-			<li><a class="button greenbutton nav-first nav-last" href="//play.pokemonshowdown.com/">Play</a></li>
+			<li><a class="button" href="//replay.pokeathlon.com/">Replay</a></li>
+			<li><a class="button purplebutton" href="https://pokeathlon.wiki.gg/" target="_blank">Strategy</a></li>
+			<li><a class="button nav-last purplebutton" href="https://discord.gg/AY9UmkTKuh" target="_blank">Forum</a></li>
+			<li><a class="button greenbutton nav-first nav-last" href="//play.pokeathlon.com/">Play</a></li>
 		</ul></div>
 	</header>
 
@@ -375,7 +375,7 @@ foreach ($latestNewsCache as $topic_id) {
 
 <footer>
 	<p>
-		<small><a href="/rules">Rules</a> | <a href="/privacy">Privacy policy</a> | <a href="/credits">Credits</a> | <a href="/contact">Contact</a></small>
+		<small><a href="/rules">Rules</a> | <a href="/credits">Credits</a> | <a href="/privacy">Privacy</a> | <a href="/contact">Contact</a></small>
 	</p>
 </footer>
 
