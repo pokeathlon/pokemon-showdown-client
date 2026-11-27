@@ -1491,7 +1491,7 @@ class BattleAbilitySearch extends BattleTypedSearch<'ability'> {
 			if (!species.abilities['S']) abilitySet.push(['header', TL`Special Event Ability`]);
 			abilitySet.push(['ability', toID(fusionSpecies.abilities['S'])]);
 		}
-		if (isAAA || format.includes('metronomebattle') || isHackmons) {
+		if (isAAA || format.includes('metronomebattle') || isHackmons || dex.moves.get('limn').exists && this.canLearn(species.id, dex.moves.get('limn').id)) {
 			let abilities: ID[] = [];
 			for (let i in this.getTable()) {
 				const ability = dex.abilities.get(i);
