@@ -418,6 +418,7 @@ export const translations: TranslationCatalog = {
 	"Unrevealed Illusion user": null,
 	"Not revealed": null,
 	"Battle controls": null,
+	"(random type)": null,
 
 	// #endregion Battle
 

@@ -536,16 +536,18 @@ export class Pokemon implements PokemonDetails, PokemonHealth {
 	}
 	isGrounded(serverPokemon?: ServerPokemon) {
 		const battle = this.side.battle;
-		if (battle.hasPseudoWeather('Gravity')) {
+		const ability = toID(this.effectiveAbility(serverPokemon));
+		const deepEarthLift = battle.hasPseudoWeather('Deep Earth Field') &&
+			['contrary', 'magnetpull', 'oblivious', 'unaware'].includes(ability);
+		if (battle.hasPseudoWeather('Gravity') && !deepEarthLift) {
 			return true;
 		} else if (this.volatiles['ingrain'] && battle.gen >= 4) {
 			return true;
-		} else if (this.volatiles['smackdown']) {
+		} else if (this.volatiles['smackdown'] || this.volatiles['groundingstomp']) {
 			return true;
 		}
 
 		let item = toID(serverPokemon ? serverPokemon.item : this.item);
-		let ability = toID(this.effectiveAbility(serverPokemon));
 		if (battle.hasPseudoWeather('Magic Room') || this.volatiles['embargo'] || ability === 'klutz') {
 			item = '' as ID;
 		}
@@ -553,19 +555,24 @@ export class Pokemon implements PokemonDetails, PokemonHealth {
 		if (item === 'ironball') {
 			return true;
 		}
-		if (['levitate', 'eelevate', 'solaridol', 'lunaridol'].includes(ability)) {
+		if (['levitate', 'solaridol', 'lunaridol'].includes(ability) ||
+			(ability === 'eelevate' && battle.dex.modid !== 'gen9rejuvenation')) {
 			return false;
 		}
 		if (this.volatiles['magnetrise'] || this.volatiles['telekinesis']) {
 			return false;
 		}
-		if (item === 'airballoon') {
+		if (item === 'airballoon' || deepEarthLift) {
 			return false;
 		}
-		if (item === 'probopasscrest' && serverPokemon && toID(serverPokemon.name) === 'probopass') {
+		if (item === 'probopasscrest' && this.getSpecies(serverPokemon).id === 'probopass') {
 			return false;
 		}
 		return !this.getTypeList(serverPokemon).includes('Flying');
+	}
+	isSemiInvulnerable() {
+		return !!(this.volatiles['fly'] || this.volatiles['bounce'] || this.volatiles['dive'] || this.volatiles['dig'] ||
+			this.volatiles['phantomforce'] || this.volatiles['shadowforce'] || this.volatiles['skydrop']);
 	}
 	effectiveAbility(serverPokemon?: ServerPokemon) {
 		const ability = this.side.battle.dex.abilities.get(
@@ -1069,6 +1076,7 @@ export interface PokemonHealth {
 	fainted?: boolean;
 }
 export interface ServerPokemon extends PokemonDetails, PokemonHealth {
+	chessPiece?: string;
 	ident: string;
 	details: string;
 	condition: string;
@@ -1156,6 +1164,7 @@ export class Battle {
 	usesUpkeep = false;
 	weather = '' as ID;
 	pseudoWeather = [] as WeatherState[];
+	fieldState: KWArgs & { crystalType?: Dex.TypeName } = {};
 	weatherTimeLeft = 0;
 	weatherMinTimeLeft = 0;
 	/**
@@ -1307,6 +1316,15 @@ export class Battle {
 		}
 		return false;
 	}
+	getTerrain() {
+		return this.pseudoWeather.find(([name]) => name.endsWith(' Terrain'))?.[0] || '';
+	}
+	getBattlefield() {
+		return this.pseudoWeather.find(([name]) => name.endsWith(' Field'))?.[0] || '';
+	}
+	fieldCounter(name: string) {
+		return Number(this.fieldState[name]) || 0;
+	}
 	getAllActive() {
 		const pokemonList = [];
 		// Sides 3 and 4 are synced with sides 1 and 2, so they don't need to be checked
@@ -1355,6 +1373,7 @@ export class Battle {
 		this.weatherTimeLeft = 0;
 		this.weatherMinTimeLeft = 0;
 		this.pseudoWeather = [];
+		this.fieldState = {};
 		this.lastMove = '';
 
 		for (const side of this.sides) {
@@ -3621,6 +3640,7 @@ export class Battle {
 			break;
 		}
 		case 'turn': {
+			this.fieldState = kwArgs;
 			this.setTurn(parseInt(args[1], 10));
 			this.log(args);
 			break;

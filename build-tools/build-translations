@@ -17,7 +17,7 @@ const CLIENT_MODS = [
 	'gen3rs', 'gen3frlg', 'gen5bw1', 'gen7letsgo', 'gen8bdsp', 'gen9ssb', 'champions',
 	'gen9infinitefusion', 'gen7infinitefusion', 'gen9pokeathlon', 'gen9insurgence', 'gen6insurgence',
 	'gen9uranium', 'gen6uranium', 'gen9infinity', 'gen6infinity', 'gen9mariomon', 'championsmariomon', 'gen9chaos', 'gen9chaosfusion',
-	'gen9chaosmayhem', 'gen9soulstones',
+	'gen9chaosmayhem', 'gen9soulstones', 'gen9rejuvenation',
 ];
 
 function es3stringify(obj) {
