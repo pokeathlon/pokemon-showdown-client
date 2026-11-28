@@ -570,10 +570,6 @@ export class Pokemon implements PokemonDetails, PokemonHealth {
 		}
 		return !this.getTypeList(serverPokemon).includes('Flying');
 	}
-	isSemiInvulnerable() {
-		return !!(this.volatiles['fly'] || this.volatiles['bounce'] || this.volatiles['dive'] || this.volatiles['dig'] ||
-			this.volatiles['phantomforce'] || this.volatiles['shadowforce'] || this.volatiles['skydrop']);
-	}
 	effectiveAbility(serverPokemon?: ServerPokemon) {
 		const ability = this.side.battle.dex.abilities.get(
 			serverPokemon?.ability || this.ability || serverPokemon?.baseAbility || ''
@@ -1315,15 +1311,6 @@ export class Battle {
 			}
 		}
 		return false;
-	}
-	getTerrain() {
-		return this.pseudoWeather.find(([name]) => name.endsWith(' Terrain'))?.[0] || '';
-	}
-	getBattlefield() {
-		return this.pseudoWeather.find(([name]) => name.endsWith(' Field'))?.[0] || '';
-	}
-	fieldCounter(name: string) {
-		return Number(this.fieldState[name]) || 0;
 	}
 	getAllActive() {
 		const pokemonList = [];
